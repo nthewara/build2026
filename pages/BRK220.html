@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRK220 — Using AI tools to teach old apps new tricks</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">BRK220</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=SgTw85Cwtm8" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Using AI tools to teach old apps new tricks</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Jeff Fritz, Nish, Hassam</span>
+      <span class="meta-item">⏱️ 43m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="github-copilot">GitHub Copilot</span><span class="chip" data-tag="app-modernization">App Modernization</span><span class="chip" data-tag="azure">Azure</span><span class="chip" data-tag="dotnet">.NET</span><span class="chip" data-tag="java">Java</span><span class="chip" data-tag="mainframe">Mainframe</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Jeff Fritz (Principal Program Manager, GitHub Copilot Modernization team) — host &amp; narrator; Nish &amp; Hassam — solution engineers / demo presenters<br>
+<strong>Duration:</strong> ~43 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=SgTw85Cwtm8">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Microsoft is reframing application modernization as a <strong>continuous, agentic, AI-driven</strong> process rather than a one-off migration project. The pitch centres on <strong>GitHub Copilot modernization</strong> (for developers/architects in the IDE &amp; CLI) working alongside <strong>Azure Copilot</strong> (for IT ops in the Azure portal) to deliver the "first end-to-end agentic modernization solution" across three pillars: <strong>scale, customization, and governance</strong>. The session announces the modernization agent and custom skills as <strong>generally available</strong>, plus a <strong>Command Center</strong> and <strong>Rulebooks</strong> in <strong>private preview</strong>, and demonstrates a wide span of scenarios — mainframe COBOL→Java, Java Struts→Spring Boot (Java 21), and ASP.NET Web Forms→Blazer→.NET 10 with Aspire — all executed by parallel cloud coding agents with human-in-the-loop control. The core message: modernize estates "in days, not months" while keeping your own standards, libraries, and governance baked in.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Modernization is now urgent + AI-led:</strong> A Forrester Q1 2026 survey cited claims <strong>94% of IT leaders rank app modernization as a top investment</strong> for the next 6–12 months; <strong>over a third of modernization projects stall</strong> because monoliths are complex, resources tight, and security concerns pile up.</li>
+<li><strong>Three customer-demanded pillars: scale, customization, governance</strong> — Forrester data cited at <strong>87%+ of organizations</strong> agreeing they need all three.</li>
+<li><strong>Two complementary products:</strong> <strong>Azure Copilot</strong> (preview) is the <strong>IT-led entry point</strong> (discovery, inventory, dependency/topology mapping, ROI, 6R wave planning, landing zones); <strong>GitHub Copilot modernization</strong> is where developers/architects do the <strong>actual execution</strong> (assess, upgrade, migrate, refactor, replatform, deploy).</li>
+<li><strong>Modernization agent is now GA</strong> — operated from the <strong>CLI</strong>, it orchestrates <strong>multiple assessments and migration plans in parallel</strong>, then hands plans to developers to execute/validate in the IDE. <strong>Java and .NET Framework upgrades are automated end-to-end</strong> from the agent CLI.</li>
+<li><strong>Custom skills are now GA</strong> — encode your team's migration patterns and proprietary libraries <strong>once, reuse across the portfolio</strong> ("write once, reuse at scale") from a centralized skill library.</li>
+<li><strong>Command Center (private preview)</strong> — a <strong>self-hostable portal</strong> bundled with the modernize CLI giving a <strong>portfolio-level dashboard</strong> (assess/plan/execute phases, project timeline, what's in flight/blocked/ready for review, ownership, auditability).</li>
+<li><strong>Rulebooks (private preview)</strong> — encode policy, security, and architectural standards as markdown that the agent optimizes into structured files; <strong>guardrails apply automatically to every plan regardless of language/tech stack</strong>, with auto-generated compliance reports.</li>
+<li><strong>Parallelization is the unlock:</strong> coding agents running in parallel can tackle estates of <strong>tens of thousands of applications</strong> — versus the old "hand-to-hand combat, a few apps at a time."</li>
+<li><strong>Proof points / ROI:</strong> <strong>70% reduction in modernization time</strong>, <strong>50%+ reduction in tech-debt effort</strong>, internal customers <strong>Xbox and Teams saw 88% time/effort savings</strong>; internal Microsoft projects saved <strong>10,000+ engineering hours</strong>; cross-customer reductions of <strong>88/80/70/60%</strong> in migration effort.</li>
+<li><strong>Built where developers already work</strong> — VS Code, Visual Studio, IntelliJ, the CLI, GitHub, and the Command Center (<strong>76% of developers</strong> live in these tools).</li>
+<li><strong>Holistic estate approach</strong> — covers VMware, Windows/Linux workloads, .NET &amp; Java apps, Oracle, SQL Server, and <strong>mainframes</strong> (via a <strong>hybrid concierge</strong> model pairing agents with partner experts). Ships with <strong>60+ specialized skills out of the box</strong>.</li>
+<li><strong>Seamless Azure Migrate ↔ GitHub Copilot handoff</strong> — start discovery from on-prem infrastructure in Azure Migrate, export a config file, and bootstrap it into the modernize CLI; reports flow back to both developer (GitHub) and IT (Azure Migrate storage).</li>
+<li><strong>Expanded scenarios</strong> newly supported: <strong>mainframes, .NET Aspire, and ASP.NET Web Forms</strong> (Web Forms in private preview).</li>
+<li><strong>Human-in-the-loop everywhere</strong> — manual execution mode creates a <strong>GitHub issue</strong> with the assessment, plan, rulebook, and a staged branch so developers retain full control of code transformation.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-why-modernization-why-now">Framing: Why modernization, why now</h3>
+<p>Jeff Fritz opens by positioning AI as a change to <strong>modernization itself</strong> — not just how you write code, but how you remove the day-to-day friction of upgrades, migrations, and tech-debt backlogs. The argument:
+- Modernization isn't new, but AI makes it <strong>more urgent than ever</strong>.
+- <strong>94% of IT leaders</strong> (Forrester Q1 2026 survey) rank app modernization as a top 6–12 month investment — "basically everybody."
+- There is huge <strong>friction (FUD/toil)</strong> in keeping legacy systems alive. <strong>Over a third of modernization projects stall</strong> because monoliths are complex, resources are tight, and security concerns accumulate.
+- When modernization stalls, <strong>tech debt grows "like a fungus"</strong>, eating time that should go toward AI-ready work.
+- Key reframe: <strong>"Modernization by itself isn't the goal — it's what it unlocks"</strong> (innovation, new capabilities). The <em>toil of getting there</em> is the real blocker, which is why teams turn to <strong>agents</strong>.</p>
+<h3 id="the-three-pillars-scale-customization-governance">The three pillars: scale, customization, governance</h3>
+<p>Customers consistently ask for the same three things (Forrester: <strong>87%+</strong> agree they need all three):
+- <strong>Scale</strong> — you can't modernize one app at a time in an editor. The <strong>entire modernization lifecycle</strong> (assessments → migration plans → version upgrades → framework changes) must scale and execute together.
+- <strong>Customization</strong> — every app is different; you didn't write the same source for each one. Agents are <strong>provisioned per-application</strong> to assess and transform code to each app's specific needs and objectives.
+- <strong>Governance</strong> — transformation must be <strong>safe</strong>: human-in-the-loop review, policies for approval/banned patterns, compliance rules baked in, plus <strong>monitoring and audit trails</strong> throughout.</p>
+<h3 id="product-tenets-design-principles">Product tenets / design principles</h3>
+<ul>
+<li><strong>Work where you work</strong> — <strong>76% of developers</strong> live in VS Code, Visual Studio, IntelliJ, the CLI, and GitHub. Bring agents to those tools rather than forcing a new console app.</li>
+<li><strong>Build with any workload</strong> — already serving <strong>16M+ .NET and Java developers</strong>; positioned as <strong>the only vendor taking a holistic estate-level approach</strong>. Enterprise modernization requires understanding <strong>apps, data, and infrastructure together</strong> — VMware, Windows/Linux, .NET/Java, Oracle, SQL Server, and <strong>mainframes</strong> (hybrid concierge = agents + partner experts).</li>
+<li><strong>Customize and govern your tools</strong> — "no black-box handoffs; you modernize your way." Ships with <strong>60+ specialized skills</strong>; layer your own <strong>custom skills and rulebooks</strong> so the agent learns how your org actually works.</li>
+</ul>
+<h3 id="the-vision-continuous-intelligent-collaborative">The vision: continuous, intelligent, collaborative</h3>
+<p>Modernization should be <strong>continuous, intelligent, and collaborative</strong>. <strong>Azure Copilot + GitHub Copilot together = the first end-to-end agentic modernization solution</strong>, unifying IT and developer workflows.</p>
+<p><strong>Azure Copilot (preview)</strong> — for IT operations folks in the Azure portal:
+- Integrates directly into Azure; standardizes migration/modernization across the estate.
+- Capabilities: <strong>rapid discovery &amp; inventory, topology &amp; dependency mapping, ROI analysis, 6R-aligned wave planning</strong> so leaders prioritize the right infra/apps/databases first.
+- Spins up <strong>Cloud Adoption Framework–aligned landing zones</strong> with compliance guardrails, ready to receive workloads.
+- Plans generated by central IT <strong>flow downstream</strong> to app/database teams — top-level decisions translate into coordinated execution at scale.</p>
+<p><strong>GitHub Copilot (modernization)</strong> — for developers/architects in the editor &amp; CLI:
+- Where the actual work happens: <strong>code assessment, version/framework upgrades, migration planning + execution, refactoring, replatforming, reimagining</strong> across apps, databases, and mainframe.
+- Deploy outputs to <strong>modern managed services on Azure</strong>.</p>
+<h3 id="the-continuous-modernization-loop">The continuous modernization loop</h3>
+<p>The lifecycle is a <strong>loop, not a one-and-done migration</strong>, captured by: <strong>plan → execute → innovate → observe → troubleshoot → optimize</strong>.
+- <strong>Modernization side (left):</strong> Azure Copilot's <strong>migration agent</strong> = IT-led entry point (planning, discovery, dependency mapping, business cases, 6R wave planning). <strong>GitHub Copilot drives execution</strong> (assess, transform code, upgrade frameworks, containerize, deploy to Azure).
+- <strong>Innovation stage:</strong> refactor/reimagine apps for <strong>AI readiness</strong> — <strong>.NET Framework → modern .NET</strong>, <strong>legacy Java → current</strong>, swapping old dependencies for <strong>modern Azure SDKs</strong>.
+- <strong>Operations side (right):</strong> keep modernized apps healthy — <strong>observability, incident response, cost &amp; performance optimization</strong>.
+- <strong>Security is woven throughout:</strong> <strong>CVE scanning, deprecated/AI API detection, remediation</strong> built into the workflow.
+- <strong>Why it works now = parallelization:</strong> coding agents in parallel can take on <strong>tens of thousands of applications</strong>, versus the old "hand-to-hand combat."</p>
+<h3 id="github-copilot-modernization-the-three-gapreview-capabilities">GitHub Copilot modernization — the three GA/preview capabilities</h3>
+<ol>
+<li><strong>Modernization agent — GA.</strong> Scales assessments and upgrades across the whole portfolio. Operated from the <strong>CLI</strong>; orchestrates multiple assessments + migration plans <strong>simultaneously</strong>, then hands plans to developers to execute/validate in the IDE. <strong>Java and .NET Framework upgrades automated end-to-end</strong> from the agent CLI.</li>
+<li><strong>Custom skills — GA.</strong> Encode your team's migration patterns once, reuse across the portfolio ("write once, reuse at scale"). Developers keep business-specific logic/goals while hitting enterprise-scale speed.</li>
+<li><strong>Command Center + Rulebooks — preview.</strong> Command Center = portfolio-level oversight; Rulebooks = baked-in policies → human-in-the-loop at every step + full auditability.</li>
+</ol>
+<p>Available everywhere teams already work: favorite editors, CLI, Command Center, and GitHub. <strong>Link:</strong> <code>aka.ms/GHCP modernization</code> → entry point for Microsoft Learn docs.</p>
+<h3 id="demo-walkthrough-pre-recorded-modernization-journeys">Demo walkthrough (pre-recorded "modernization journeys")</h3>
+<p>Jeff brings on <strong>Nish and Hassam</strong>. Hassam is challenged to start not with Java/.NET but with the hardest case — <strong>mainframe modernization</strong>.</p>
+<h4 id="1-mainframe-assessment-documentation-coboljclbmsdb2vsam">1) Mainframe assessment &amp; documentation (COBOL/JCL/BMS/DB2/VSAM)</h4>
+<ul>
+<li>Demo app = a <strong>terminal green-screen application</strong> built on <strong>COBOL, JCL scripts, and BMS screen maps</strong>.</li>
+<li><strong>Mainframe modernization is now part of GitHub Copilot modernization</strong> — designed to be <strong>succinct, cautious, step-by-step</strong> because mainframes are core business systems.</li>
+<li>Open the app in the <strong>modernize CLI</strong> and <strong>assess</strong>: the assessment reads the source (<strong>COBOL, JCL, BMS, DB2, VSAM files</strong>) and <strong>identifies missing dependencies early</strong> to avoid downstream modernization issues.</li>
+<li>Beyond catching dependency issues, it <strong>documents the mainframe</strong> (customers say they must understand what the mainframe does <em>before</em> modernizing):</li>
+<li><strong>Holistic overview / executive summary</strong> of what the app does, <strong>user personas</strong>, <strong>functional modules &amp; key capabilities</strong>, <strong>application architecture</strong>.</li>
+<li><strong>User journeys</strong> fanned out (e.g., the green-screen options), <strong>key business processes</strong> and <strong>major decision points</strong>.</li>
+<li><strong>Program-level detail:</strong> per-program overview, <strong>purpose of every data field</strong>, program structure, and most importantly the <strong>business logic</strong> (the step-by-step process).</li>
+<li><strong>Visualizations:</strong> <strong>call graph</strong> + <strong>data lineage</strong> (data inputs/outputs) to understand how the mainframe behaves.</li>
+<li>Nish summarizes: effectively <strong>reverse-engineering COBOL into documentation</strong> that can then be re-architected into a Java app.</li>
+</ul>
+<h4 id="2-mainframe-modern-app-data-layer-first-then-app">2) Mainframe → modern app (data layer first, then app)</h4>
+<ul>
+<li><strong>Step 1 — modernize the data layer to native SQL:</strong> a report <strong>maps every mainframe data field → equivalent SQL field</strong>, viewable in VS Code, with <strong>table relationships</strong> generated. At this stage you inject <strong>business-requirement changes</strong>, which <strong>carry over</strong> to the next step.</li>
+<li><strong>Step 2 — application transformation:</strong> Importantly, this is <strong>not just generating specs and feeding Copilot</strong> — there's <strong>built-in mainframe-modernization knowledge</strong> so nuances of migrating <em>from a mainframe</em> are included. Output includes <strong>setup instructions</strong> (database setup, build) and a <strong>native Java implementation</strong> of the mainframe app as an <strong>interim step</strong>, which is then customized to the target requirements.</li>
+</ul>
+<h4 id="3-the-legacy-estate-the-zava-bank-sample-app">3) The legacy estate (the "Zava Bank" sample app)</h4>
+<ul>
+<li>Nish opens a typical <strong>"Zava Bank"</strong> app, in production "for 20–25 years," in VS Code. The repo is a <strong>mixed portfolio</strong>: a <strong>Java Struts app</strong> (early-2000s) with components like an <strong>account/connection manager</strong> and a <strong>fraud detector</strong>, plus <strong>.NET apps</strong> (with <code>web.config</code>, default files, <strong>ASP.NET Web Forms</strong>) — "a mix of all the apps in a portfolio."</li>
+<li>The <strong>GitHub Copilot modernization agent in VS Code / Visual Studio</strong> lets you start from the IDE: run <strong>assessments</strong>, do <strong>runtime &amp; framework upgrades</strong>, <strong>migrate to Azure (cloud-native)</strong>, or start with <strong>security issues (CVEs/CWEs)</strong>.</li>
+<li>That works for a <strong>single app/single developer</strong>, but the real problem is <strong>~20 applications</strong> — hence the <strong>CLI</strong> at scale.</li>
+</ul>
+<h4 id="4-modernize-cli-at-scale-now-ga">4) Modernize CLI at scale (now GA)</h4>
+<ul>
+<li>First shown a <strong>JSON configuration file</strong> listing <strong>multiple projects/teams/repos</strong> (GitHub repo URLs the architect can modernize).</li>
+<li>The <strong>modernize CLI</strong> offers commands for <strong>assessment, planning, execution</strong>, plus <strong>upgrade</strong> (technical debt at scale) and <strong>model selection</strong> (pick a model that fits the scenario, or the default).</li>
+<li><strong>Assessment flow:</strong> start from the config file with exact repo URLs → confirmation prompt ("ready to modernize/assess all these?") → choose <strong>assessment domains</strong> (upgrades, cloud readiness, security) → choose <strong>analysis coverage</strong> from <strong>issue-only to full analysis</strong> (general insights, diagrams, API contracts) → optionally set <strong>target Java/.NET runtimes</strong> and <strong>target compute services</strong> for cloud readiness.</li>
+<li><strong>Local vs. cloud execution:</strong> assess <strong>locally</strong> or <strong>delegate to cloud agents</strong> to work <strong>in parallel at scale</strong> (chosen here). Also supports <strong>headless execution</strong> so you can wire it into a <strong>CI/CD pipeline</strong> for a continuous loop.</li>
+<li>On execution it <strong>clones the apps, sets up needed skills</strong>, and surfaces an <strong>assessment dashboard</strong>. In <strong>GitHub Agents HQ</strong> you watch <strong>multiple agents working in parallel</strong>.</li>
+<li>Drill into a completed item → <strong>view pull request</strong> → <strong>files changed</strong>: includes <strong>assessment overview, architecture documents, everything in markdown</strong> — "the kind of documentation that takes months for a dev team," now produced by agents at scale.</li>
+</ul>
+<h4 id="5-on-prem-starting-point-azure-migrate-handoff">5) On-prem starting point — Azure Migrate handoff</h4>
+<ul>
+<li>For orgs starting from <strong>on-prem infrastructure / production code</strong> (not code-first): a <strong>seamless handoff between Azure Migrate and the GitHub Copilot modernization agent</strong>.</li>
+<li>In <strong>Azure Migrate</strong>, central IT sees assessed apps and their infrastructure (e.g., web server = <strong>IIS</strong>). Choose <strong>"add code insights to GitHub Copilot modernization"</strong> → select <strong>at-scale code assessment with automated report upload</strong> → get a <strong>config file</strong> (similar to before but with extra Azure Migrate info + where to send the report back).</li>
+<li>Result: developers get reports in <strong>GitHub</strong>; IT gets reports back in <strong>Azure Migrate storage</strong>.</li>
+<li>A <strong>consolidated HTML report</strong> (shareable) shows: <strong>issue summary</strong>, all assessed apps, <strong>wave-planning recommendations</strong> (which apps to modernize first), <strong>cost estimates</strong> (based on <strong>Azure retail pricing</strong>; <strong>usage-based billing</strong> info planned), <strong>portfolio overview</strong>, <strong>effort distribution by application</strong>, <strong>languages</strong>, security findings (e.g., <strong>hard-coded sensitive data / connection strings in <code>web.config</code></strong> → flag need for <strong>Key Vault</strong> in cloud), and <strong>architecture diagrams</strong>.</li>
+</ul>
+<h4 id="6-command-center-private-preview">6) Command Center (private preview)</h4>
+<ul>
+<li>Announced as a <strong>self-hostable portal</strong> bundled with the modernize CLI (spun up via a command).</li>
+<li>Solves "we started modernizing but don't know where we are / who owns what." Provides a <strong>dashboard</strong> across phases (<strong>how many apps assessed / planned / executing</strong>), a <strong>project timeline</strong> (start, deadline, where agents are today), and <strong>assess/plan/execute</strong> detail.</li>
+<li>Assessments that previously ran on the <strong>architect's machine</strong> now <strong>surface in the Command Center</strong> so the <strong>whole company can share reports</strong>, <strong>compare two assessment reports</strong>, and make informed migration decisions. Same report content (CVE/CWE checks, etc.), different apps.</li>
+</ul>
+<h4 id="7-rulebooks-private-preview">7) Rulebooks (private preview)</h4>
+<ul>
+<li>For org-specific <strong>policies and guidelines</strong> when modernizing to cloud. <strong>"The agents now have rules too."</strong></li>
+<li>Created in the <strong>Command Center</strong> or the <strong>modernize CLI</strong>. Start by pasting a <strong>markdown</strong> file of rules/policies/guardrails (with plans to add more documentation sources to generate the rulebook).</li>
+<li>A generated rulebook includes a <strong>charter / high-level principles</strong> (e.g., <strong>"cloud-native authentication must use DefaultAzureCredential"</strong>), <strong>security requirements</strong>, <strong>guardrails / hard boundaries</strong> (things agents should <em>never</em> do), <strong>observability requirements</strong> (e.g., <strong>OpenTelemetry</strong>), and <strong>approved SKUs</strong> (e.g., <strong>Azure Container Apps</strong>).</li>
+<li><strong>Plan creation with rulebooks:</strong> Nish creates an <strong>execution plan</strong> to rewrite the <strong>Zava payment gateway from Struts → Java 21 (Spring Boot)</strong> — a major rewrite — optionally including the <strong>assessment report</strong> and selecting the <strong>rulebook</strong>. A <strong>plan document</strong> is generated.</li>
+<li><strong>Cross-stack consistency:</strong> compares <strong>two completely different plans</strong> — (a) <strong>Struts → Spring Boot</strong>, (b) <strong>Web Forms → Blazer → Aspire on Azure Container Apps</strong>. The plans differ by stack but <strong>both honor the rulebook</strong> (e.g., <strong>OpenTelemetry implemented in both</strong>).</li>
+<li><strong>Manual execution mode:</strong> chosen so the developer keeps <strong>full control</strong> of code transformation. From the Command Center, manual mode <strong>creates a GitHub issue</strong> containing the <strong>assessment, plan, and rulebook</strong>, and <strong>stages everything in a branch</strong>. The developer pulls it into <strong>VS Code</strong>, reviews with architects, makes changes, and executes. The pasted markdown is <strong>optimized for agents</strong> and split into <strong>specific structured files</strong>.</li>
+</ul>
+<h4 id="8-custom-skills-ga-proprietary-librariescomponents">8) Custom skills (GA) — proprietary libraries/components</h4>
+<ul>
+<li>For special internal libraries a generic coding agent wouldn't know to use. <strong>Custom skills</strong> let you inject company-specific knowledge.</li>
+<li>In VS Code's <strong>skills library</strong>, a <strong>"manage repositories"</strong> option lets you configure a <strong>central repository</strong> of organizational skills, then search and include them. Examples shown:</li>
+<li>A <strong>"Kafka → Azure Event Hubs"</strong> custom skill (custom implementation, written like standard agent skills but with internal library/config details).</li>
+<li>A <strong>PII-handling</strong> custom skill tied to the OpenTelemetry/logging rule — <strong>ensures no PII is logged</strong>.</li>
+<li>Running the (fast-forwarded) plan does a <strong>complete rewrite Struts → Spring Boot</strong>, and the transformed code shows evidence the agent <strong>respected the customizations</strong>: a <strong><code>PIIUtil</code></strong> (from the custom skill), the <strong>Event Hubs</strong> custom implementation, <strong>Key Vault config</strong> (from the rulebook), and — because the plan targeted Azure — generated <strong>infrastructure-as-code</strong> files to review and provision.</li>
+</ul>
+<h4 id="9-net-path-aspnet-web-forms-blazer-net-10-aspire-azure">9) .NET path — ASP.NET Web Forms → Blazer → .NET 10 → Aspire → Azure</h4>
+<ul>
+<li>Opens an old <strong>ASP.NET Web Forms</strong> app (default files, <code>runat="server"</code> components).</li>
+<li>Start modernizing from the <strong>Command Center plan</strong> or <strong>directly from the IDE</strong>. Prompt: <strong>"upgrade my project to .NET 10; my project has Web Forms."</strong></li>
+<li>Agent offers a <strong>target framework (.NET 10)</strong> and a <strong>Blazer hosting model</strong> (<strong>Blazer Server</strong> chosen), plus a <strong>flow mode</strong> — <strong>automatic flow mode</strong> chosen for <strong>minimal prompts</strong> ("I trust this agent for legacy modernization"). Work happens on a <strong>separate branch</strong> so nothing breaks.</li>
+<li>Output: the <strong>Web Forms project is converted to Blazer</strong>, <strong>containerized</strong>, with a log showing <strong><code>Microsoft.AspNetCore</code></strong> (the <strong>new pipeline</strong>, not the old ASP.NET pipeline).</li>
+<li><strong>Add .NET Aspire:</strong> described as a <strong>code-first layer</strong> adding <strong>orchestration and observability</strong> — recommended for new cloud-native apps and far easier to maintain than Docker Compose files. Scaffolds an <strong>app host for Aspire</strong>; the <strong>Aspire dashboard</strong> shows <strong>service discovery</strong> and the <strong>URLs of running services</strong>. Aspire is <strong>polyglot</strong> — Java + .NET can coexist (the Java Bank had Java/.NET) and be managed in one place.</li>
+<li><strong>Deploy:</strong> use the <strong>Aspire CLI deploy command</strong>, choose a <strong>region</strong>, and the app lands on <strong>Azure Container Apps</strong> with a live <strong>application URL</strong> — "a legacy Web Forms app brought to Blazer, Aspired, and deployed to the cloud."</li>
+<li>Aside: the agent could even modernize the <strong>dated '90s UI</strong> in a future modernization program ("probably add some emojis and fix it for you").</li>
+</ul>
+<h3 id="recap-jeff">Recap (Jeff)</h3>
+<p>The full set of expanded GitHub Copilot modernization capabilities:
+- <strong>Portfolio assessment &amp; migration planning — GA.</strong>
+- <strong>Custom skills — GA</strong> — apply app-specific guidance + Azure best practices; <strong>centralized skill library</strong>; agents understand your architecture, dependencies, standards, and migration strategy <strong>without hard-coding or forking the platform</strong>.
+- <strong>Rulebooks — private preview</strong> — centrally encode governance/security/architectural standards; <strong>policies apply automatically to every plan</strong>; agent <strong>auto-generates a compliance report</strong> for traceability.
+- <strong>Command Center — private preview</strong> — one view of modernization across the portfolio: what's in flight / blocked / ready for review, with <strong>auditability, clear ownership</strong>, and the ability to scale execution — "enterprise oversight at agentic speed."
+- <strong>Expanded scenarios</strong> — <strong>mainframes, Aspire, and ASP.NET Web Forms</strong> (Web Forms in private preview). For mainframes: <strong>reverse-engineer COBOL into high-level + per-program documentation</strong>, then <strong>reimagine as a native Java app with the data layer in native SQL</strong>, delivered <strong>in partnership with mainframe modernization partners</strong>.
+- <strong>Big idea:</strong> not a one-size-fits-all refactoring engine, but a <strong>governed, extensible system</strong> reflecting how each organization modernizes at scale. "Modernization isn't a per-app assignment anymore — it's a landscape"; as customers strive to be <strong>AI-ready, all layers of the estate must come along</strong>, and <strong>agents are how that happens</strong>. Closing call: <strong>"modernize in days, not months."</strong></p>
+<h3 id="customer-proof-partners">Customer proof &amp; partners</h3>
+<ul>
+<li><strong>Java — SAP Labs China</strong> modernized Java apps at scale, reducing complications and saving significant time. <strong>Dr. Richard Kai (SAP Labs China)</strong> called the modernization agent <strong>"an essential pillar of our modernization effort."</strong></li>
+<li><strong>.NET — Jordan Clay, Staff Platform Engineer at FMG:</strong> GitHub Copilot modernization <strong>"has completely changed how we think about .NET upgrades"</strong> — fully automated, customized, cloud-driven upgrades that <strong>"just work,"</strong> making it <strong>"the first tool any team should reach for."</strong></li>
+<li><strong>Internal Microsoft:</strong> projects that took <strong>weeks now done in a few hours</strong>; <strong>10,000+ engineering hours saved</strong> across projects.</li>
+<li><strong>Mainframe modernization partners:</strong> Amdocs, TCS, Infosys, Kyndryl, Accenture, Capgemini, Avanade, NTT Data, Sonata ("Sono"), and Hitachi.</li>
+</ul>
+<h3 id="closing-where-to-go-next">Closing / where to go next</h3>
+<p>Blog posts, a <strong>private preview sign-up</strong>, and a <strong>virtual deep-dive event (~2 weeks out)</strong> with hands-on guidance from the teams that built the tools (QR code on screen). Get started via the <strong>GitHub Copilot modernization documentation</strong>: <code>aka.ms/GHCP modernization</code>.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>GitHub Copilot modernization</strong> — end-to-end agentic modernization system for developers/architects (IDE + CLI); ships with 60+ specialized skills.</li>
+<li><strong>Azure Copilot (preview)</strong> — IT-ops-focused modernization in the Azure portal: discovery/inventory, topology &amp; dependency mapping, ROI analysis, 6R wave planning, landing zones.</li>
+<li><strong>Modernization agent (GA)</strong> — orchestrates parallel assessments &amp; migration plans; automates Java and .NET Framework upgrades end-to-end from the CLI.</li>
+<li><strong>Modernize CLI</strong> — command-line driver for assessment/planning/execution/upgrade; model selection; headless mode for CI/CD.</li>
+<li><strong>Custom skills (GA)</strong> — reusable, centralized org-specific migration patterns/proprietary-library knowledge (e.g., Kafka→Event Hubs, PII handling).</li>
+<li><strong>Rulebooks (private preview)</strong> — markdown-defined governance/security/architecture guardrails optimized into structured files; auto compliance reports.</li>
+<li><strong>Command Center (private preview)</strong> — self-hostable portfolio dashboard (assess/plan/execute phases, timelines, ownership, auditability).</li>
+<li><strong>GitHub Agents HQ</strong> — where parallel cloud coding agents are monitored.</li>
+<li><strong>Azure Migrate</strong> — on-prem discovery/inventory; seamless config-file handoff to GitHub Copilot modernization; receives reports back.</li>
+<li><strong>.NET Aspire</strong> — code-first orchestration + observability layer for cloud-native apps; polyglot (Java + .NET); Aspire dashboard (service discovery); Aspire CLI deploy.</li>
+<li><strong>Blazer (Blazor) Server</strong> — target hosting model for migrated ASP.NET Web Forms apps. <em>(transcript auto-caption spells it "Blazer"; product is Blazor.)</em></li>
+<li><strong>.NET 10</strong> — target framework for the Web Forms upgrade demo.</li>
+<li><strong>Spring Boot / Java 21</strong> — target for the Java Struts rewrite.</li>
+<li><strong>Azure Container Apps</strong> — managed deployment target (approved SKU example in rulebooks).</li>
+<li><strong>Azure Key Vault</strong> — recommended for secrets when moving connection strings off <code>web.config</code>.</li>
+<li><strong>DefaultAzureCredential</strong> — rulebook principle for cloud-native authentication.</li>
+<li><strong>OpenTelemetry</strong> — observability standard enforced via rulebooks.</li>
+<li><strong>Azure Event Hubs</strong> — custom-skill migration target from Kafka.</li>
+<li><strong>Legacy/source technologies referenced:</strong> COBOL, JCL, BMS screen maps, DB2, VSAM (mainframe); ASP.NET Web Forms, <code>web.config</code>, IIS; Apache Struts; VMware; Oracle; SQL Server; Windows/Linux workloads.</li>
+<li><strong>VS Code, Visual Studio, IntelliJ, GitHub</strong> — supported developer surfaces.</li>
+<li><strong>Cloud Adoption Framework (CAF)</strong> — landing zones aligned by Azure Copilot.</li>
+<li><strong>6R framework</strong> — wave-planning model for migration disposition.</li>
+<li><strong>"Zava Bank"</strong> — fictional sample legacy portfolio app used across demos.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Modernization agent — Generally Available.</strong> Scales assessments/upgrades across the portfolio from the CLI; <strong>Java and .NET Framework upgrades automated end-to-end.</strong></li>
+<li><strong>Custom skills — Generally Available.</strong> Centralized, reusable org-specific skills/library knowledge.</li>
+<li><strong>Portfolio assessment &amp; migration planning — Generally Available.</strong></li>
+<li><strong>Command Center — Private Preview.</strong> Self-hostable portfolio oversight dashboard.</li>
+<li><strong>Rulebooks — Private Preview.</strong> Centralized governance/security/architecture guardrails with auto-generated compliance reports.</li>
+<li><strong>Mainframe modernization — newly introduced</strong> as part of GitHub Copilot modernization (COBOL→docs→native Java + native SQL data layer), with partner delivery.</li>
+<li><strong>.NET Aspire support — expanded scenario.</strong></li>
+<li><strong>ASP.NET Web Forms modernization — Private Preview</strong> (Web Forms → Blazor → .NET 10).</li>
+<li><strong>Azure Migrate ↔ GitHub Copilot modernization seamless handoff</strong> (config-file bootstrap; bidirectional reports).</li>
+<li><strong>Roadmap signals:</strong> usage-based billing for cloud-readiness cost estimates ("coming"); additional documentation sources to auto-generate rulebooks; a virtual deep-dive event ~2 weeks after Build.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<p><em>(All pre-recorded "modernization journeys" on a demo machine, presented by Nish &amp; Hassam.)</em>
+- <strong>Mainframe assessment &amp; documentation</strong> — Assessed a COBOL/JCL/BMS green-screen app via the modernize CLI; produced executive overview, personas, modules, architecture, user journeys, business processes/decision points, per-program detail (every data field's purpose + business logic), and call-graph/data-lineage visualizations. <strong>Proves</strong> agents can reverse-engineer opaque mainframes into shareable documentation <em>before</em> any code change — de-risking the journey.
+- <strong>Mainframe → native Java + native SQL</strong> — Mapped every mainframe data field to SQL (viewable in VS Code with table relationships), allowed business-requirement injection that carries forward, then transformed to a native Java app using <strong>built-in mainframe knowledge</strong> (not just spec→Copilot). <strong>Proves</strong> the platform encodes domain-specific migration nuance, not generic codegen.
+- <strong>At-scale CLI assessment with parallel cloud agents</strong> — From a JSON config of ~20 repos, ran multi-domain assessments (upgrades/cloud/security) with full analysis (diagrams, API contracts), delegated to cloud agents watched in GitHub Agents HQ, output as PRs containing markdown assessment/architecture docs. <strong>Proves</strong> "months of documentation" and portfolio-scale assessment now happen in parallel automatically.
+- <strong>Azure Migrate handoff</strong> — Exported an on-prem assessment config from Azure Migrate (IIS-hosted apps) into the modernize CLI; produced a consolidated, shareable HTML report (issue summary, wave-planning recommendations, Azure retail-price cost estimates, effort distribution, security findings like hard-coded connection strings, architecture diagrams). <strong>Proves</strong> infra-first/IT-led starts integrate cleanly with developer-led code modernization, with reports flowing to both audiences.
+- <strong>Command Center</strong> — Spun up the self-hostable portal showing assess/plan/execute phases, project timeline, and comparison of two assessment reports company-wide. <strong>Proves</strong> centralized visibility/ownership for large teams running many concurrent modernizations.
+- <strong>Rulebooks + cross-stack plans</strong> — Generated a rulebook (DefaultAzureCredential, OpenTelemetry, approved SKUs, hard guardrails), then created two very different execution plans (Struts→Spring Boot/Java 21; Web Forms→Blazor→Aspire on Azure Container Apps) that <strong>both honored the same rulebook</strong>. <strong>Proves</strong> governance is enforced uniformly regardless of language/stack.
+- <strong>Manual execution → GitHub issue + staged branch</strong> — Manual mode created a GitHub issue bundling assessment + plan + rulebook and staged a branch for review in VS Code. <strong>Proves</strong> human-in-the-loop control over actual code transformation.
+- <strong>Custom skills in a real rewrite</strong> — A fast-forwarded Struts→Spring Boot rewrite produced code containing <code>PIIUtil</code> (PII custom skill), an Event Hubs implementation (Kafka→Event Hubs skill), Key Vault config (rulebook), and generated IaC for Azure. <strong>Proves</strong> the agent respects proprietary libraries + governance simultaneously.
+- <strong>.NET Web Forms → Blazor → .NET 10 → Aspire → Azure</strong> — Upgraded an ASP.NET Web Forms app to .NET 10/Blazor Server in automatic flow mode on a separate branch, containerized (new <code>Microsoft.AspNetCore</code> pipeline), added Aspire (dashboard, service discovery, polyglot Java+.NET), and deployed to Azure Container Apps with a live URL via the Aspire CLI. <strong>Proves</strong> an end-to-end legacy-to-cloud-native journey for a notoriously hard stack.</p>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>94%</strong> of IT leaders rank app modernization as a top 6–12 month investment (Forrester Q1 2026).</li>
+<li><strong>87%+</strong> of organizations agree they need all three of scale, customization, and governance (Forrester).</li>
+<li><strong>Over one-third</strong> of modernization projects stall (complexity, resources, security).</li>
+<li><strong>76%</strong> of developers live in VS Code / Visual Studio / IntelliJ / CLI / GitHub.</li>
+<li><strong>16M+</strong> .NET and Java developers served.</li>
+<li><strong>60+</strong> specialized skills out of the box.</li>
+<li>ROI: <strong>70%</strong> reduction in modernization time; <strong>50%+</strong> reduction in tech-debt effort; <strong>88%</strong> time/effort savings for <strong>Xbox and Teams</strong> internally; <strong>10,000+</strong> engineering hours saved internally; cross-customer reductions of <strong>88 / 80 / 70 / 60%</strong> in migration effort.</li>
+<li><em>"Modernization by itself isn't the goal. It is what it unlocks."</em> — Jeff Fritz</li>
+<li>Tech debt <em>"grows kind of like a fungus and eats into the time you'd be spending on the AI-ready work."</em> — Jeff Fritz</li>
+<li><em>"Before agents, this was hand-to-hand combat. A few apps at a time."</em> — on pre-agent modernization.</li>
+<li><em>"An essential pillar of our modernization effort."</em> — Dr. Richard Kai, SAP Labs China.</li>
+<li>GitHub Copilot modernization <em>"has completely changed how we think about .NET upgrades… the first tool any team should reach for."</em> — Jordan Clay, Staff Platform Engineer, FMG.</li>
+<li><em>"Modernization isn't a per-app assignment anymore. It's a landscape."</em> — Jeff Fritz.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Run the <strong>modernize CLI</strong> against a small mixed .NET/Java repo and inspect the generated assessment PR (markdown architecture docs).</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Author a <strong>rulebook</strong> (DefaultAzureCredential + OpenTelemetry + approved SKUs) and confirm it applies across two different stacks.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Build a <strong>custom skill</strong> for an internal library and verify the agent references it in a transformation.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Test the <strong>Web Forms → Blazor → .NET 10 → Aspire → Azure Container Apps</strong> path on a throwaway legacy app.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Exercise the <strong>Azure Migrate → GitHub Copilot</strong> config-file handoff end-to-end.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: What's GA vs. private-preview availability/region gating, and what licensing/billing applies (usage-based billing timing)?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: How deep is mainframe coverage (COBOL dialects, CICS/IMS, beyond DB2/VSAM)? Which partners for the hybrid concierge?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: How are secrets/PII actually validated in transformed code — is the PII skill enforced or advisory?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: How self-hostable is the Command Center (infra footprint, auth, multi-team RBAC)?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: Azure/.NET modernization labs; any legacy ASP.NET Web Forms or Java Struts apps in the estate; AI-readiness planning.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Build2026">Build2026</span> (event index)</li>
+<li><code>aka.ms/GHCP modernization</code> — Microsoft Learn entry point for GitHub Copilot modernization</li>
+<li>Topics: #topic/app-modernization #topic/github-copilot #topic/dotnet #topic/java #topic/mainframe #topic/azure</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="BRK210.html"><span class="pager-dir">← Previous</span><span class="pager-code">BRK210</span><span class="pager-title">Future of Developer Productivity: Microsoft&#x27;s EngThrive Framework in Practice</span></a>
+    <a class="pager pager-next" href="BRK223.html"><span class="pager-dir">Next →</span><span class="pager-code">BRK223</span><span class="pager-title">From rows to reasoning: Designing databases for AI apps and agents</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

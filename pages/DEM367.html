@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEM367 — Onboarding a Developer with AI: A Better First-Day Experience</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEM367</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=kppO36BR6pg" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Onboarding a Developer with AI: A Better First-Day Experience</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Michel Hubert (Avanade, Microsoft MVP)</span>
+      <span class="meta-item">⏱️ 24m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="developer-productivity">Developer Productivity</span><span class="chip" data-tag="github-copilot">GitHub Copilot</span><span class="chip" data-tag="onboarding">Onboarding</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speaker:</strong> Michel Hubert — Avanade (France), Microsoft MVP (17 years)<br>
+<strong>Duration:</strong> ~24 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=kppO36BR6pg">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>A demo-driven talk reframing developer onboarding as a <strong>developer-experience problem</strong> that AI agents (GitHub Copilot with <code>@workspace</code> context) can dramatically compress. Through a fictional new hire "Sarah" on her first day in an unfamiliar 2,000+ file, multi-language codebase, Michel walks four "acts": (1) <strong>understand the codebase</strong> — get a mental map in minutes, (2) <strong>surface hidden context</strong> — the <em>why</em> behind decisions that never made it into the docs, (3) <strong>identify what &amp; who matters</strong> — critical files and the right people to ask, and (4) <strong>ship the first PR</strong> — a real contribution that follows team conventions on day one. The central thesis: <strong>use AI as a context engine, not a code generator</strong> — in onboarding, the value is understanding what already exists. The codebase itself becomes the living documentation, and the agent reads what is <em>actually</em> there (commits, PRs, issues) rather than stale docs.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li>Onboarding to a new codebase typically takes <strong>3–9 months</strong> to reach full productivity (autonomy, not just first commit) — this is a developer-experience problem, not an HR one.</li>
+<li>An AI agent can replace what would normally be a <strong>2-hour whiteboard session with a tech lead</strong>, delivering an architectural tour, entry points, and data flow in ~2–3 minutes.</li>
+<li><strong><code>@workspace</code> gives Copilot the actual code in context</strong> — it reads imports, recent commits, and infers module boundaries from how code actually connects, rather than just listing folders.</li>
+<li>The agent can <strong>generate architecture/class diagrams directly from the code</strong> even when none exist in the documentation, by analyzing relationships and dependencies.</li>
+<li>Agents distinguish <strong>active code vs. legacy/dead code</strong> by analyzing recent commit activity per folder — invaluable for knowing where to focus.</li>
+<li>Pulling <strong>PR descriptions, commit messages, and issue threads</strong> lets the agent reconstruct the <em>full history and motivation</em> of a module — including major refactors and migration milestones — not just the latest version.</li>
+<li>The agent surfaces <strong>unwritten conventions</strong> (logging, error handling, naming) from the real active code (e.g. "use <code>structlog</code>, not the stdlib <code>logging</code>") rather than from docs.</li>
+<li>It can identify <strong>the five most important files to read first</strong> and the <strong>top contributors/owners</strong> of a module (from PR/commit history) so a newcomer knows who to ask.</li>
+<li>For the first PR: the agent reads a real issue, proposes a <strong>plan first</strong> (without writing code), then on approval <strong>implements the fix, runs tests, debugs, and drafts a convention-matching PR description</strong>.</li>
+<li><strong>Traceability matters:</strong> record which model/agent made a change (e.g. "Copilot + Claude Sonnet 4.6") in the PR so production issues can be traced back.</li>
+<li><strong>Three principles:</strong> AI is a context engine not a code generator; the codebase <em>is</em> the documentation (invest in readable code + good comments, maintain fewer pages); senior time is the scarcest resource — every question AI answers keeps the team focused.</li>
+<li><strong>Actionable metric:</strong> measure <strong>time-to-first-PR</strong> before vs. after AI. If you can't improve it, the problem is likely in your codebase's readability.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-the-moment-a-developer-joins-a-team">Framing: the moment a developer joins a team</h3>
+<p>The talk is <em>not</em> about HR onboarding or badge pickup. It's about the moment a developer opens a <strong>repo they've never seen</strong> and wonders where to start. Michel's question: how does that moment change when an <strong>AI agent sits next to you</strong>?</p>
+<p>He introduces himself as Michel Hubert, working for <strong>Avanade in France</strong>, a <strong>Microsoft MVP for 17 years</strong>.</p>
+<h3 id="three-numbers-that-set-the-scene">Three numbers that set the scene</h3>
+<ol>
+<li><strong>3–9 months</strong> — the average time for a developer to become <em>fully productive</em> (autonomous) in a new codebase. This is not "time to first commit," but time to genuinely operate independently.</li>
+<li><strong>40%</strong> — how much of <strong>week one</strong> is spent <strong>reading</strong> code, not writing it. This is normal and expected. The problem is that reading time is usually <strong>solitary</strong> and dependent on documentation quality — and documentation is generally <strong>obsolete / not up to date</strong>. That's the reality.</li>
+<li><strong>One in three questions</strong> — Michel's favorite. When you start on a new project, <strong>one in three questions never gets asked out loud</strong>: the new developer is afraid of looking dumb, the tech lead is in a meeting, or the question feels too basic.</li>
+</ol>
+<p>His conclusion: these three numbers describe <strong>developer experience</strong>, not an HR problem — and that's what the session attacks.</p>
+<h3 id="the-four-acts-the-structure-of-the-talk">The four "acts" (the structure of the talk)</h3>
+<ul>
+<li><strong>Act 1 — Understand the codebase:</strong> get from zero to a mental map in minutes.</li>
+<li><strong>Act 2 — Surface the hidden context:</strong> the decisions that shaped the code and never made it into the docs.</li>
+<li><strong>Act 3 — Identify what and who really matters:</strong> critical components and the right people to talk to.</li>
+<li><strong>Act 4 — Ship the first contribution:</strong> a real PR that follows the team's conventions on day one.</li>
+</ul>
+<p>Note on format: Michel originally wanted all demos fully live, but <strong>AI agents sometimes take minutes rather than seconds</strong>, so he ran a <strong>pseudo-live demo</strong> (pre-captured) instead.</p>
+<h3 id="meet-sarah-the-scenario">Meet "Sarah" — the scenario</h3>
+<p>Sarah is a <strong>fictional</strong> new developer in a situation everyone has seen. Day one, new team, a repo she's never opened. The reality she faces:
+- <strong>Documentation last updated 14 months ago</strong> — not up to date.
+- <strong>Tech lead is in meetings until 5:00 PM</strong> — hard to get an architecture conversation.
+- <strong>2,000+ files</strong> in the codebase — a real, substantial codebase.
+- <strong>5+ different languages:</strong> Python, React, .NET, SQL, and more.
+- A mix of <strong>legacy and recent/active code</strong>.
+- An <strong>implicit deadline:</strong> first PR by end of week. Nobody states it, but everyone expects it.</p>
+<p><strong>The actual codebase used:</strong> the open-source <strong>PostHog</strong> project, chosen specifically because it has a <strong>long history</strong>. Michel stresses: <em>the more history a codebase has, the better the agent performs</em> (more commits/PRs/issues to learn from). He has no affiliation with PostHog — it was just a convenient real-world repo with depth.</p>
+<h3 id="act-1-understand-the-codebase-zero-to-mental-map">Act 1 — Understand the codebase (zero to mental map)</h3>
+<p>Sarah opens her agent and asks the most natural question: <em>"I just joined the team. Give me a tour. Give me the entry points. Explain the codebase — not just the technical part, but the functional part too."</em></p>
+<p>Key point: the agent <strong>does not just list folders</strong>. With <strong><code>@workspace</code></strong>, Copilot gets the actual code in context — <strong>reading imports, recent commits, and inferring boundaries from how the code actually connects</strong>.</p>
+<p>What the agent returned (in ~2–3 minutes, replacing a 2-hour whiteboard session):
+- Description of the <strong>front end (React)</strong> and its different <strong>entry points</strong>.
+- Explanation of the <strong>Node.js server</strong> — its methods, modules, classes, and the files where each class lives.
+- The <strong>architecture and data flow</strong> from front end to back end, with methods and classes.
+- The <strong>query path</strong> back-to-front and the relevant <strong>Kafka topics</strong>.
+- An analysis of <strong>active code vs. older/legacy code</strong> — which folders have been active in recent months vs. where the legacy code lives (code that may never be used but won't change for months).
+- A <strong>class diagram of the whole project</strong> — <em>not in the documentation</em>, generated purely by analyzing the codebase, the classes, their relationships and dependencies. Zooming in showed a full diagram built from code alone. Michel calls this "very impressive."</p>
+<h3 id="act-2-surface-the-hidden-context-the-why">Act 2 — Surface the hidden context (the "why")</h3>
+<p>"Sarah has the map now, but a map doesn't tell you <em>why</em> the roads go that way." She needs context the documentation doesn't contain.</p>
+<p><strong>Prompt 1 — Why does this file exist?</strong> She asks the agent (with <code>@github</code>) to look at a specific file (<code>final.py</code> as spoken) and explain <em>why it exists</em> and <em>what problem it was built to solve</em>. The agent doesn't just read the code — it <strong>pulls PR descriptions, commit messages, and issue threads</strong> to understand the module's whole history, not just the last version. It returned:
+- The <strong>origin, motivation, and major refactors</strong> of the module.
+- The <strong>core algorithm</strong> for the module.
+- The <strong>full history from PRs and commits</strong> — e.g. the project started in <strong>2021</strong>; initially used <strong>ClickHouse Enterprise Edition</strong>; phase two replaced it with the <strong>open-source ClickHouse version</strong>; a later step replaced <strong>Postgres with ClickHouse</strong> — each with the relevant PRs and a <strong>timeline of milestones</strong>.</p>
+<p><strong>Prompt 2 — The Postgres → ClickHouse decision.</strong> She asks the agent to find the <strong>original decision</strong> behind PostHog using <strong>ClickHouse for analytics queries instead of Postgres</strong>. The agent analyzed all ClickHouse-related decisions in the repo/PRs and laid out the phases:
+- A <strong>pre-existing POC</strong> before 2020.
+- <strong>Phase 2:</strong> a <strong>pain point with Postgres</strong> (performance issues on specific queries) drove the analysis of Postgres vs. ClickHouse.
+- <strong>Phase 3:</strong> comparison of different candidate solutions to replace Postgres.
+- <strong>Phase 4:</strong> the <strong>migration</strong> itself — moving from Postgres to ClickHouse — with the relevant issues/PRs.
+- A <strong>timeline</strong>: POC → why ClickHouse was chosen → databases evaluated → the migration epic → the first implementation PR → when ClickHouse went to production. All reconstructed purely from the GitHub repository.</p>
+<p><strong>Prompt 3 — Unwritten conventions.</strong> She asks the agent to explain the codebase's conventions for <strong>error handling, logging, and naming</strong> — based on the <strong>real active code, not the docs</strong>. The agent returned which patterns to use, e.g.:
+- For logging: <strong><code>import structlog</code></strong> instead of the stdlib <code>logging</code> — the convention actually implemented in the project.
+- The team's <strong>error-handling</strong> convention, plus <em>how to implement logging</em> in her own code to match.</p>
+<h3 id="act-3-identify-what-who-really-matters-prioritize">Act 3 — Identify what &amp; who really matters (prioritize)</h3>
+<p>Now Sarah understands the code and the context; she needs to prioritize.</p>
+<p><strong>Prompt 1 — What to read first.</strong> She asks: <em>"What are the five files I absolutely need to read first? What are the main parts of the code?"</em> The agent returned the <strong>five important files</strong> plus a <strong>mental model</strong> built from analyzing them.</p>
+<p><strong>Prompt 2 — Who to ask.</strong> She asks <strong>who the main contributors are for the core module</strong>, so she knows who to contact for a deeper discussion. Using <strong>PR and commit history</strong>, the agent can retrieve the <strong>owner(s)</strong> of a module so she knows who to ask.
+- <strong>Observed quirk:</strong> sometimes the agent, instead of returning names directly, returned the <strong>commands to execute</strong> to find the top contributors. Michel notes this isn't a hallucination — just a "strange behavior." Sarah can run those commands herself if she wants the contributor list.</p>
+<h3 id="act-4-ship-the-first-pr-the-real-contribution">Act 4 — Ship the first PR (the real contribution)</h3>
+<p>The end-to-end first-contribution flow: read an issue → plan the approach → implement following conventions → run tests → debug → draft the PR description. Michel used a <strong>real PostHog issue (#58757)</strong>.</p>
+<p>Steps demonstrated:
+1. <strong>Explain the issue.</strong> Give the agent the issue and ask what it is, what technical changes it implies, and which files to update. The agent read the issue and explained the problem and the files to modify, including what updates are needed to succeed.
+2. <strong>Plan first, don't code yet.</strong> Before writing anything, ask the agent for an <strong>approach / strategy / workflow</strong> and to find the relevant files — <em>but explicitly not to update the code yet</em>. The agent analyzed the <strong>root cause</strong> and advised changing the <strong>back end and database (adding a new column)</strong>, provided the <strong>serializer</strong>, and laid out all the code to implement. This produces a reviewable plan.
+3. <strong>Implement the fix.</strong> Once the plan looks right, ask the agent to <strong>implement</strong> it. The agent applied the updates (shown as the changed/added lines on the right of the editor).
+4. <strong>Run tests &amp; self-debug.</strong> Ask the agent to <strong>run the tests to verify no regression</strong>, and <em>if tests fail, debug and fix them</em>.
+5. <strong>Draft the PR description.</strong> Ask the agent for the <strong>team's PR convention/structure</strong>. It analyzed the <strong>most recent PRs</strong> to learn the structure, then auto-generated the description — <strong>title, problem statement, and the changes</strong> made to fix the issue (back end and front end).
+6. <strong>Traceability.</strong> The PR also records that it was <strong>authored with an agent</strong> — specifically <strong>Copilot + Claude Sonnet 4.6</strong>. Michel stresses this is <em>very important</em>: if a problem appears in production, you can trace which model/agent made the change.</p>
+<h3 id="three-principles-to-take-home">Three principles to take home</h3>
+<ol>
+<li><strong>AI as a context engine, not a code generator.</strong> In onboarding, the value is <em>not</em> in writing code — it's in <strong>understanding what already exists</strong>. Don't judge an agent by how well it <em>writes</em>; judge it by <strong>how well it explains</strong>.</li>
+<li><strong>The codebase is the documentation.</strong> An agent reads <strong>what is actually there</strong>, not what we wish was there. This changes your relationship with documentation: <strong>fewer pages to maintain, more investment in the codebase</strong>. Make the code <strong>readable</strong> and add <strong>good comments</strong> so the agent can analyze context globally.</li>
+<li><strong>Senior time is the scarcest resource.</strong> Every question asked and answered by AI keeps the team focused. AI is <strong>not a replacement for humans</strong> — it's an <strong>assistant / pair programmer</strong> that helps you understand and resolve issues.</li>
+</ol>
+<h3 id="call-to-action-conclusion">Call to action &amp; conclusion</h3>
+<ul>
+<li><strong>"Try it on Monday."</strong> Give your next hire an AI agent and <strong>measure time-to-first-PR</strong> — a very important metric. If you <em>can't</em> improve it, you likely have a <strong>problem in your codebase</strong>. Compare day-one-to-first-PR <strong>before vs. after AI</strong>.</li>
+<li>Closing maxim: <em>"Onboarding used to be a test of patience; with AI it can become a test of curiosity."</em></li>
+<li>The whole onboarding reduces to <strong>"one prompt, one plan, one PR — day one."</strong> In reality not literally one day, but <strong>a few days rather than a few months</strong>, with a more productive new developer.</li>
+<li>Contact Michel via <strong>LinkedIn</strong>; no live Q&amp;A in-session but he's available to meet during Build.</li>
+</ul>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>GitHub Copilot</strong> — the AI coding agent used throughout as the "agent sitting next to you" for onboarding tasks.</li>
+<li><strong><code>@workspace</code> (Copilot context)</strong> — feeds Copilot the actual repo code, imports, and recent commits so it infers real module boundaries instead of just listing folders.</li>
+<li><strong><code>@github</code> (Copilot context)</strong> — pulls PR descriptions, commit messages, and issue threads to reconstruct module history and decisions.</li>
+<li><strong>Claude Sonnet 4.6</strong> — the underlying model used (with Copilot) to author the demo PR; called out for traceability.</li>
+<li><strong>PostHog</strong> — open-source product analytics project used as the demo codebase (chosen for its long, rich history). 2,000+ files, 5+ languages.</li>
+<li><strong>ClickHouse</strong> — column-oriented analytics database PostHog migrated to (from Enterprise Edition → open source) for analytics queries.</li>
+<li><strong>PostgreSQL (Postgres)</strong> — the original database PostHog used before migrating analytics to ClickHouse due to performance pain points.</li>
+<li><strong>Apache Kafka</strong> — message/streaming layer; the agent surfaced the relevant Kafka topics in the data-flow analysis.</li>
+<li><strong>React</strong> — front-end framework of the demo codebase.</li>
+<li><strong>Node.js</strong> — back-end server in the demo codebase (methods/modules/classes mapped by the agent).</li>
+<li><strong>.NET</strong> — one of the languages present in the multi-language codebase.</li>
+<li><strong>SQL</strong> — used in the codebase (database layer).</li>
+<li><strong>Python</strong> — primary language of much of the codebase (e.g. <code>structlog</code>/<code>logging</code> convention example, <code>final.py</code>).</li>
+<li><strong>structlog</strong> — the structured-logging library that is the project's <em>actual</em> logging convention (vs. stdlib <code>logging</code>).</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p>None explicitly announced. This is a practitioner/demo session showcasing existing GitHub Copilot capabilities (<code>@workspace</code>, <code>@github</code>) applied to developer onboarding — no new product releases, previews, or GA announcements.</p>
+<h2 id="demos">💡 Demos</h2>
+<p>A single continuous <strong>pseudo-live (pre-captured) demo</strong> of the four acts, all run against the open-source <strong>PostHog</strong> repo:
+- <strong>Act 1 — Codebase tour:</strong> Proved an agent with <code>@workspace</code> can produce a full architectural map (entry points, front-end/back-end, data flow, Kafka topics, active-vs-legacy code, <strong>and an auto-generated class diagram</strong>) in ~2–3 minutes — replacing a 2-hour tech-lead whiteboard session.
+- <strong>Act 2 — Hidden context:</strong> Proved the agent can reconstruct a module's <em>why</em> and full history (origin, motivation, refactors, the 2021→ ClickHouse migration timeline, the Postgres→ClickHouse decision rationale) and surface <strong>unwritten conventions</strong> (e.g. <code>structlog</code>) from PRs/commits/active code — none of it in the docs.
+- <strong>Act 3 — Prioritize:</strong> Proved the agent can name the <strong>top-5 files to read first</strong> and identify <strong>module owners/contributors</strong> from PR/commit history (sometimes returning the <em>commands</em> to find them).
+- <strong>Act 4 — First PR:</strong> Proved an end-to-end first contribution on a <strong>real issue (#58757)</strong> — explain issue → plan-only → implement fix → run/debug tests → draft a convention-matching PR description, with the agent/model (Copilot + Claude Sonnet 4.6) recorded for traceability.</p>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>3–9 months</strong> to become fully productive (autonomous) in a new codebase.</li>
+<li><strong>40%</strong> of week one is spent reading code, not writing it.</li>
+<li><strong>1 in 3</strong> questions a new developer has never gets asked out loud.</li>
+<li>Codebase scale: <strong>2,000+ files</strong>, <strong>5+ languages</strong>, docs <strong>14 months stale</strong>, tech lead unavailable until <strong>5 PM</strong>.</li>
+<li>Demo repo history starts in <strong>2021</strong>; real issue used: <strong>#58757</strong>; model: <strong>Claude Sonnet 4.6</strong> + Copilot.</li>
+<li>
+<blockquote>
+<p>"Don't judge an agent by how well it writes. Judge it by how well it explains."</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>"The codebase is the documentation. An agent reads what's actually there, not what we wish was there."</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>"Senior time is the scarcest resource."</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>"Onboarding used to be a test of patience; with AI it can become a test of curiosity."</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>"One prompt, one plan, one PR — day one."</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Point GitHub Copilot <code>@workspace</code> + <code>@github</code> at one of our larger legacy repos and run the four acts — especially the <strong>auto-generated class diagram</strong> and the <strong>"why does this file exist?"</strong> history reconstruction.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Establish a <strong>time-to-first-PR</strong> baseline for new hires, then re-measure after giving them an AI-agent onboarding flow.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Ask the agent to extract our <strong>unwritten conventions</strong> (logging/error handling/naming) from active code and compare against our written contributing guide.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: Does <code>@workspace</code> context scale cleanly to 2,000+ file / multi-language repos in practice, or does it need scoping? How fresh does the PR/commit index need to be?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: For the "plan first, then implement" flow — how reliably does the agent respect "don't change code yet," and how good is its self-debugging on failing tests?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: Avanade/internal developer onboarding, DevEx initiatives, reducing reliance on stale docs, codebase-readability standards (comments as agent context).</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEM362.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEM362</span><span class="pager-title">Building a Multi-Agent Workflow in Microsoft Fabric</span></a>
+    <a class="pager pager-next" href="DEM369.html"><span class="pager-dir">Next →</span><span class="pager-code">DEM369</span><span class="pager-title">Responsible AI in Action: From Principles to Real-World Engineering</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEMSP395 — Teach AI agents to manage context with Elastic Agent Builder</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEMSP395</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=jxKihBelsH0" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Teach AI agents to manage context with Elastic Agent Builder</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Mike Richter (Microsoft), Deepthi (Elastic)</span>
+      <span class="meta-item">⏱️ 17m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="elastic">Elastic</span><span class="chip" data-tag="search">Search</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Mike Richter (Principal Partner Solution Architect, Microsoft) &amp; Deepthi (Product Manager for Agent Builder, Elastic)<br>
+<strong>Duration:</strong> ~17 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=jxKihBelsH0">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>This partner session pairs Microsoft and Elastic to show why Elastic is an enterprise-ready fit on Azure and how <strong>Elastic Agent Builder</strong> solves the "context gap" — the problem of business data sitting in disconnected silos that AI agents can't reach. Mike Richter covers the procurement, identity, networking, and Foundry-LLM integration story for running Elastic on Azure, while Deepthi demos a <strong>context engine</strong> that gathers context from inside and outside Elastic via agents, skills, connectors, plugins, and attachments. Through a banking customer-support scenario, the live demo builds and customizes an agent that queries Elastic case data, custom ESQL/index tools, and federated connectors (SharePoint, GitHub, Slack) — all in one transparent conversational flow. A key claim: by metadata-mapping fields once (e.g. recognizing personal information), Elastic reduces token usage by roughly <strong>20–34%</strong> while improving security and response quality.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Elastic on Azure is procurement-simple</strong>: buy via Elastic Cloud or the Microsoft Marketplace, draw down Azure commitment (MACC) dollars, and get a single Azure bill — available in ~15 Azure regions and growing.</li>
+<li><strong>Enterprise-ready integration</strong>: Entra ID single sign-on into the Elastic portal, <strong>Private Link</strong> so Elastic becomes part of your Azure VNet, no egress costs, and no added cross-region latency when co-located with your workloads.</li>
+<li><strong>Reuse Microsoft Foundry LLMs</strong> (Anthropic, OpenAI, etc.) and your PTUs to power agents inside Elastic — no separate model stack required.</li>
+<li><strong>The core problem is the "context gap"</strong>: data sits in siloed systems with isolated context, which breaks what AI needs to execute well; Elastic bridges this by querying data both inside AND outside Elastic.</li>
+<li><strong>Context engine</strong> maps/aligns siloed data once and assigns the right definitions (metadata), so the system doesn't have to recompute meaning repeatedly — this is what drives the token savings.</li>
+<li><strong>Metadata understanding improves security</strong>: once Elastic learns that first name + last name + email + phone = personal information, it recognizes those same fields in Salesforce data and the agent can decide whether to include them in a response.</li>
+<li><strong>Claimed ~20–34% reduction in token usage</strong> from this curated, pre-mapped context approach.</li>
+<li><strong>Building blocks</strong>: Agents + Skills (built on your data), Connectors (fetch external context), Plugins (domain-specific skills/connectors), and Attachments (dashboards, file uploads) — all unified by the context engine.</li>
+<li><strong>Transparency by design</strong>: Agent Builder shows which tools/skills/plugins were called for each response, removing the "black box" feel and giving developers traceable reasoning.</li>
+<li><strong>Customization is first-class</strong>: custom instructions, custom <strong>skills</strong> (swim lanes with set instructions/format + associated tools), and custom <strong>tools</strong> built via ESQL query language, an index, workflows, or MCP.</li>
+<li><strong>Federated connectors</strong> (SharePoint / SharePoint Server, Slack, GitHub) extend agents beyond Elastic for true cross-system retrieval.</li>
+<li><strong>Write actions require human approval</strong>: sending a summary to Slack (Teams already in preview) prompts for explicit approval because write operations can be complex/risky.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="speakers-framing">Speakers &amp; Framing</h3>
+<ul>
+<li><strong>Mike Richter</strong> — Principal Partner Solution Architect at Microsoft. His mission is helping partners build and sell solutions on Azure; he frames Elastic as an ideal partner and notes he personally built demo applications on Elastic Agent Builder.</li>
+<li><strong>Deepthi</strong> — Product Manager at Elastic, primarily focused on <strong>Agent Builder</strong>. She owns the product walkthrough and live demo.</li>
+<li>Mike mentioned he'd be staffing the <strong>"apps and agents" yellow booths</strong> right after the session for follow-up conversations and to show what he built.</li>
+</ul>
+<h3 id="part-1-elastic-on-azure-the-partnership-story-mike">Part 1 — Elastic on Azure: The Partnership Story (Mike)</h3>
+<p>The first segment is the business/platform case for running Elastic on Azure:</p>
+<ul>
+<li><strong>Easy to buy</strong>: Elastic is available in ~15 Azure regions today, with more being added. Microsoft customers with Azure commitment dollars (a MACC agreement — which most large companies have, often without realizing it) can spend those committed dollars on Elastic.</li>
+<li><strong>Single Azure bill</strong>: Purchase through Elastic's cloud offering or the Microsoft Marketplace, and it consolidates into one Azure bill — simplifying procurement for enterprise customers.</li>
+<li><strong>Deployment options</strong>: Both Elastic's <strong>hosted</strong> offering and its <strong>serverless</strong> offering are now available on Azure.</li>
+<li><strong>Co-location benefits</strong>: If your Azure workloads run in a supported region (e.g. East US), you can talk to Elastic with <strong>no egress costs</strong> and <strong>no additional latency</strong> — avoiding cross-region hops.</li>
+<li><strong>Identity / Entra ID</strong>: Sign into the Microsoft portal with Entra ID and use that same identity to sign into the Elastic portal — to create indexes, create agents, and do everything inside Elastic.</li>
+<li><strong>Private networking</strong>: You can talk to Elastic's managed service over <strong>Private Link</strong>, so Elastic is effectively part of your Azure VNet. This satisfies compliance requirements where data sources must be reached privately — and it works whether running via Elastic Cloud or the Marketplace.</li>
+<li><strong>Vector / RAG ready</strong>: Elastic has first-class <strong>vector support</strong>; the solution is built for RAG and agentic applications on Azure.</li>
+<li><strong>Foundry LLM reuse</strong>: Customers with a MACC agreement and PTUs can reuse Microsoft Foundry LLMs (Anthropic, OpenAI, etc.) to power their Elastic agents.</li>
+<li><strong>Agent Builder on Azure</strong>: Elastic Agent Builder runs in Azure — which is the bridge to Deepthi's segment.</li>
+<li><strong>Free credits offer</strong>: Deepthi added that attendees could get up to <strong>$1,000 in Elastic credits</strong> by visiting the Elastic booth.</li>
+</ul>
+<h3 id="part-2-the-context-gap-problem-deepthi">Part 2 — The Context Gap Problem (Deepthi)</h3>
+<p>Deepthi reframes from "Elastic is on Microsoft" to "what does Elastic actually do in the world of AI?":</p>
+<ul>
+<li><strong>The problem</strong>: Disparate systems hold data, and that data/state sits in <strong>siloed context</strong>. When you try to leverage AI — or run your own business with AI — this siloed context "breaks the whole theme" of what needs to be executed from an AI perspective.</li>
+<li><strong>Elastic's answer</strong>: Bridge the context gap not just by <strong>bringing data into Elastic</strong>, but also by <strong>querying data that sits outside Elastic</strong> in different systems — then wrapping it in good context retrieval to return a response that is both <strong>high quality</strong> AND <strong>token optimized</strong>.</li>
+</ul>
+<h3 id="part-3-the-architecture-context-engine">Part 3 — The Architecture / Context Engine</h3>
+<p>Deepthi walks through a layered architecture for solving the context gap:</p>
+<ul>
+<li><strong>Lowest tier — gather context</strong>: Collect information/context from different sources, whether the data is in Elastic or outside Elastic in the broader Microsoft ecosystem.</li>
+<li><strong>Build your own</strong>: Create your own agents and capabilities around <strong>skills</strong> and <strong>connectors</strong> — these pull in context sitting across systems.</li>
+<li><strong>Dispatch to endpoints</strong>: Send results to entry points / endpoints such as an agent in <strong>Microsoft Foundry</strong>, an agent on <strong>MCP / Copilot Studio</strong>, or any other endpoint even outside the Microsoft ecosystem.</li>
+</ul>
+<p><strong>The building blocks of the context engine:</strong>
+- <strong>Agents &amp; Skills</strong> — build on top of your data.
+- <strong>Connectors</strong> — fetch context from different external systems.
+- <strong>Plugins</strong> — domain-specific skills and connectors that add deeper domain-level knowledge.
+- <strong>Attachments</strong> — dashboard attachments or file uploads that add context to your agent.</p>
+<p><strong>What the context engine does (the differentiator):</strong>
+- It <strong>maps / aligns</strong> each piece of siloed data and sets up the <strong>right definitions</strong> so the system doesn't have to churn and recompute what the data means again and again.
+- <strong>Worked example</strong>: Phone number, email, first name, and last name together constitute <strong>personal information</strong>. Elastic "metasizes" (assigns metadata to) these as personal-information metadata. Later, when retrieving Salesforce customer data with those same fields, it recognizes that it is handling personal information.
+- <strong>Downstream effect</strong>: The agent then understands "this is personal information — should I really dispatch it as part of the response?" → improving security, while the compute/understanding of the data is <strong>quickened</strong>.
+- <strong>Result</strong>: Token usage is reduced by roughly <strong>20–34%</strong> (stated as "almost 20 27 to 34%" in the captions — interpreted as the ~20–34% range; the "27" appears to be a caption artifact).</p>
+<h3 id="part-4-live-demo-banking-customer-support-scenario">Part 4 — Live Demo: Banking Customer Support Scenario</h3>
+<p><strong>Setup</strong>: You're a bank customer-support team. Case data currently lives in Elastic, while related data — policy documents, engineering issues — sits in other systems like <strong>GitHub</strong>. These systems don't communicate with each other. The demo shows Agent Builder bridging them in a super-easy conversational manner.</p>
+<p><strong>Step 1 — Simple query &amp; transparency</strong>
+- Prompt: <em>"How many interactions happen by channel — phone, email, or chat?"</em>
+- Agent Builder computes the response behind the scenes and is <strong>transparent about what it's computing</strong> — it shows which tools (and, in future, which skills/plugins) were called.
+- This removes the <strong>black-box tendency</strong> of some agents and gives transparent reasoning throughout the session.</p>
+<p><strong>Step 2 — Rich output, not just text</strong>
+- The response isn't limited to an AI-generated summary — it can also <strong>generate a dashboard you can save</strong>. This is the agent "in a nutshell" / bare-minimum capability.</p>
+<p><strong>Step 3 — Customize the agent with a custom Skill</strong>
+- Beyond custom instructions, you can add <strong>skills</strong>. Skills are building blocks that keep an agent in a <strong>"swim lane"</strong> — a specific set of instructions, a format to follow, and associated tools.
+- Elastic ships a comprehensive set of ready-to-use skills, but you can also create your own for domain/industry-specific needs.
+- <strong>Demo skill created</strong>: a <strong>"financial exposure report" skill</strong> that generates a financial summary on demand, with holistic instructions plus added tools.</p>
+<p><strong>Step 4 — Customize with custom Tools</strong>
+- Tools are described colorfully as "elves on the shelves" / "the actual soldiers on the ground" — the things that actually execute.
+- Elastic provides a comprehensive set of built-in tools, but you can create your own multiple ways:
+  - <strong>ESQL</strong> (Elastic's query language) — build a tool using the query language.
+  - <strong>Index</strong> — build a tool from your indexed data.
+  - <strong>Workflows</strong>
+  - <strong>MCP</strong>
+- <strong>Demo tool</strong>: a tool created from <strong>indexed data</strong> — data already in Elastic — to look up a <strong>financial policy</strong> simply by indexing it.</p>
+<p><strong>Step 5 — Break the silo with Connectors (federated search)</strong>
+- Up to this point everything was within Elastic. Connectors extend reach to external systems: <strong>SharePoint / SharePoint Server, Slack</strong>, etc.
+- Connectors primarily perform <strong>federated search</strong> across these systems to retrieve the most relevant data.</p>
+<p><strong>Step 6 — Complex query combining skill + custom data</strong>
+- Prompt: create a <strong>"dispute book"</strong> for all dispute-related customer issues raised in the past, based on the user's data.
+- The agent calls the <strong>custom skill just created</strong> and returns a comprehensive, reusable response.</p>
+<p><strong>Step 7 — Pull a specific policy from SharePoint</strong>
+- Follow-up: retrieve a specific policy located in a <strong>SharePoint document/folder</strong> and associate it with a specific <strong>case ID</strong>.
+- The agent surfaces the relevant policy tied to that case — all in the same conversation, without leaving the flow.</p>
+<p><strong>Step 8 — Check engineering dependencies via GitHub connector</strong>
+- Follow-up: <em>"Can you check if there are any GitHub dependencies or open engineering issues that impact the case resolution?"</em>
+- Using the designed skill and tools, the agent returns a <strong>ranked</strong> list of issues directly impacting the case.</p>
+<p><strong>Step 9 — Send summary to Slack with approval gate</strong>
+- The user likes the summary and wants to share it to stakeholders over a <strong>Slack channel</strong> (Deepthi notes <strong>Teams is already in preview</strong> for this too).
+- A <strong>workflow</strong> was created to send the summary to a specific Slack channel.
+- Crucially, the agent <strong>requests approval</strong> before executing — because write operations are complex and potentially risky, Agent Builder gates such write actions behind explicit user approval.
+- <strong>Result</strong>: A comprehensive summary of that same conversation thread is posted to the Slack channel and shared with the team.</p>
+<h3 id="closing">Closing</h3>
+<p>Deepthi frames the demo as one simplistic example of how Agent Builder <strong>minimizes the context gap</strong> and delivers the value of data sitting in silos — bringing it together into comprehensive responses that enable quick business decisions.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Elastic Agent Builder</strong> — Elastic's product for building, customizing, and running AI agents over your data (in and outside Elastic); the focus of the session.</li>
+<li><strong>Elastic Context Engine</strong> — maps/aligns siloed data and assigns metadata definitions so meaning isn't recomputed; drives token optimization and security decisions.</li>
+<li><strong>Elastic Cloud (Hosted &amp; Serverless)</strong> — Elastic's managed deployment offerings, both available on Azure.</li>
+<li><strong>Skills (Elastic)</strong> — building blocks that keep an agent in a "swim lane" with set instructions, format, and associated tools; built-in or custom.</li>
+<li><strong>Tools (Elastic)</strong> — executable units; built-in or custom-built via ESQL, index, workflows, or MCP.</li>
+<li><strong>Plugins (Elastic)</strong> — domain-specific skills and connectors adding deeper domain knowledge.</li>
+<li><strong>Attachments (Elastic)</strong> — dashboards or file uploads that add context to an agent.</li>
+<li><strong>Connectors (Elastic)</strong> — federated-search integrations to external systems (SharePoint, SharePoint Server, Slack, GitHub).</li>
+<li><strong>ESQL</strong> — Elastic's query language, usable to define custom tools.</li>
+<li><strong>MCP (Model Context Protocol)</strong> — one method to create custom tools / dispatch to endpoints (e.g. MCP on Copilot Studio).</li>
+<li><strong>Workflows (Elastic)</strong> — used to create custom tools and to define actions like sending a Slack message.</li>
+<li><strong>Elastic vector support</strong> — first-class vector capability for RAG/agentic apps.</li>
+<li><strong>Microsoft Azure</strong> — cloud platform Elastic runs on (~15 regions).</li>
+<li><strong>Azure Commitment / MACC dollars</strong> — committed Azure spend usable to purchase Elastic.</li>
+<li><strong>Microsoft Marketplace</strong> — alternate purchase path producing a single Azure bill.</li>
+<li><strong>Microsoft Entra ID</strong> — single identity for Microsoft and Elastic portals (SSO).</li>
+<li><strong>Azure Private Link</strong> — private connectivity making Elastic part of your VNet.</li>
+<li><strong>Microsoft Foundry</strong> — source of LLMs (Anthropic, OpenAI, etc.) reusable to power Elastic agents; also a dispatch endpoint.</li>
+<li><strong>PTUs (Provisioned Throughput Units)</strong> — reserved model capacity reusable with Elastic agents via Foundry.</li>
+<li><strong>Microsoft Copilot Studio</strong> — named as an MCP/agent endpoint.</li>
+<li><strong>GitHub</strong> — external system; source of policy/engineering data via the GitHub connector.</li>
+<li><strong>SharePoint / SharePoint Server</strong> — external content systems reachable via connectors.</li>
+<li><strong>Slack</strong> — destination for sending summaries (via workflow, with approval).</li>
+<li><strong>Microsoft Teams</strong> — Slack-equivalent destination, noted as already in preview.</li>
+<li><strong>Salesforce</strong> — example external CRM whose customer data is recognized as personal information via metadata.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Elastic Cloud serverless on Azure</strong> — highlighted as now available alongside the hosted offering.</li>
+<li><strong>Teams write/send action</strong> — noted as <strong>already in preview</strong> (Slack shown live in the demo).</li>
+<li><strong>Elastic credits offer</strong> — up to <strong>$1,000 in Elastic credits</strong> available to attendees via the Elastic booth (event-specific promotion).</li>
+<li>No formal GA/preview dates were given for Agent Builder itself in this session; the talk is primarily a capability + partnership demo rather than a launch keynote.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Banking customer-support agent (end-to-end, single conversation):</strong></li>
+<li><strong>Interaction-count query</strong> → proved transparent, traceable reasoning (shows which tools were called) and rich output (can generate a saveable dashboard, not just text).</li>
+<li><strong>Custom "financial exposure report" skill</strong> → proved agents can be constrained to a domain swim lane with custom instructions, format, and tools.</li>
+<li><strong>Custom index-based tool for financial policy lookup</strong> → proved tools can be built from indexed Elastic data (alongside ESQL/workflow/MCP options).</li>
+<li><strong>"Dispute book" complex query</strong> → proved the agent correctly invokes the user's custom skill to assemble a comprehensive, reusable result.</li>
+<li><strong>SharePoint policy retrieval tied to a case ID</strong> → proved federated connectors bring external documents into the same conversation and bind them to specific records.</li>
+<li><strong>GitHub dependency/issue check</strong> → proved cross-system retrieval can rank external engineering issues by impact on case resolution.</li>
+<li><strong>Slack summary send with approval prompt</strong> → proved write actions are gated behind explicit human approval before execution, then deliver the thread summary to a channel.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>~20–34% reduction in token usage</strong> from the context engine's pre-mapped metadata approach (stated as "almost 20 27 to 34%").</li>
+<li><strong>~15 Azure regions</strong> where Elastic is available today, with more being added.</li>
+<li><strong>Up to $1,000</strong> in Elastic credits offered at the booth.</li>
+<li><strong>Personal-information example</strong>: first name + last name + email + phone number → recognized once as PII metadata, then auto-recognized in Salesforce data.</li>
+<li>"Tools are nothing but <strong>elves on the shelves</strong>… the actual <strong>soldiers on the ground</strong>." — Deepthi, describing tools.</li>
+<li>Transparency removes the <strong>"black box tendency"</strong> some agents have, giving "transparent reasoning throughout the sessions."</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Spin up Elastic Cloud (serverless) on Azure in <code>australiaeast</code> and test Private Link into a VNet.</li>
+<li>Wire an Elastic agent to a Foundry-hosted model (reuse PTUs) and compare token usage with/without the context engine to sanity-check the 20–34% claim.</li>
+<li>Build a custom tool three ways (ESQL, index, MCP) and a custom skill (swim lane) to feel the customization workflow.</li>
+<li>Test the SharePoint + GitHub + Slack connectors end-to-end and confirm the write-approval gate.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>Is the 20–34% token saving measured against a baseline RAG pipeline, and under what query mix?</li>
+<li>How does the context engine's metadata/PII classification get configured or audited (and can it be governed centrally)?</li>
+<li>What's the current GA/preview status of Agent Builder, the connectors, and the Teams write action?</li>
+<li>Does Entra ID SSO + Private Link cover serverless as fully as hosted?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Enterprise agentic-search / RAG architectures on Azure where data is siloed across SharePoint, GitHub, CRM, and chat.</li>
+<li>Procurement/MACC-driven buying decisions where a single Azure bill matters.</li>
+<li>Governance scenarios needing PII-aware agent responses and human-in-the-loop approval for write actions.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><a class="wikilink wikilink--resolved" href="BRK240.html">BRK240 - Build context-aware agents</a> — Microsoft's own take on context-aware agents; compare context-engineering approaches.</li>
+<li><a class="wikilink wikilink--resolved" href="DEM331.html">DEM331 - Turn APIs tools and data into real agent velocity</a> — tools/data-to-agent theme overlap.</li>
+<li></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEMSP390.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEMSP390</span><span class="pager-title">Create multimodal AI agents with persistent memory</span></a>
+    <a class="pager pager-next" href="OD806.html"><span class="pager-dir">Next →</span><span class="pager-code">OD806</span><span class="pager-title">.NET 11 in depth: Runtime, libraries, and SDK for the AI era</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

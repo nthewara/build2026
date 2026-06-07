@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEM331 — Turn APIs, tools, and data into real agent velocity</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEM331</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=b23ZV37_9Hw" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Turn APIs, tools, and data into real agent velocity</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Azure AI Foundry Content Understanding team (presenter, name not stated in transcript)</span>
+      <span class="meta-item">⏱️ 22m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="azure-ai-foundry">Azure AI Foundry</span><span class="chip" data-tag="content-understanding">Content Understanding</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="multimodal">Multimodal</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Azure AI Foundry — Content Understanding team (live-demo presenter; specific name not stated in the captions)<br>
+<strong>Duration:</strong> ~22 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=b23ZV37_9Hw">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Agents break when they hit real-world content — scanned PDFs, long emails, complex tables, images, audio, and video — because they can reason but can't reliably <em>read</em>. Azure AI <strong>Content Understanding</strong> solves this by turning messy multimodal content into clean, structured, agent-ready Markdown + JSON through a single <strong>parse → classify → extract</strong> pipeline with built-in grounding, confidence scores, and governance. The session is a live demo of a telecom incident-response scenario (a 6:47 a.m. fiber-cut alert) where documents, audio, and video are converted into structured evidence, fed to an LLM to diagnose root cause, plan materials within budget, and dispatch a repair crew. It shows four integration "acts" — from manual SDK pipeline calls, the Foundry/CU Studio no-code playground, custom analyzers + classification/routing, all the way to seamless orchestration via the <strong>Content Understanding context provider in Microsoft Agent Framework</strong>, which adds auto-analysis of attachments and multi-turn caching. A standout claim: the SDK's <code>to_llm_input</code> formatter helper produced an <strong>85% token reduction</strong> in their scenario.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Agents can reason but can't read.</strong> Throwing raw, messy content directly at LLMs causes custom-code sprawl, misread tables, skipped figures, lower reliability, and higher token bills.</li>
+<li><strong>Content Understanding = one pipeline</strong> that <em>parses, classifies, and extracts</em> multimodal content into clean structured output (well-formatted <strong>Markdown</strong> + <strong>JSON</strong> key-value pairs) that is "agent ready-to-act."</li>
+<li><strong>Built-in grounding, confidence scores, and governance</strong> come with the output — not bolted on afterward.</li>
+<li><strong>Pre-built analyzers</strong> cover common needs out of the box: <code>document search</code>, <code>invoice</code>, <code>audio</code>, <code>video</code>, plus a long catalog spanning tax, legal, identity, payment, mortgage, etc.</li>
+<li><strong><code>document search</code></strong> extracts layout + embedded elements: tables (with row/column structure preserved), figures, selection marks (checkboxes), barcodes/QR codes, and signatures — ideal for feeding RAG / AI Search.</li>
+<li><strong>A local PDF parser loses structure</strong> (table layout, QR codes, selection marks) even on clean typed PDFs, forcing the agent to guess — Content Understanding preserves it as LLM-readable evidence.</li>
+<li><strong>Custom analyzers</strong> go beyond extraction: they can <strong>reason, infer, and generate</strong> new fields by calculating/reasoning (e.g., dispatch urgency, budget verdict) that aren't literally present in the document.</li>
+<li><strong>Classifier + routing</strong>: a <em>single call</em> classifies an unknown document, routes it to the right analyzer (pre-built or custom), and extracts — minimizing branching logic in app code. Recommended for production.</li>
+<li><strong><code>to_llm_input</code> SDK helper</strong> formats output as Markdown with YAML front matter, can send full doc <em>or</em> fields-only, and drove an <strong>85% token reduction</strong> in the demo scenario.</li>
+<li><strong>Microsoft Agent Framework integration</strong> via a <strong>context provider</strong> primitive that hooks the agent run loop: it sees/detects messages (e.g., attachments) <em>before they reach the LLM</em>, processes them, and returns structured output into the conversation loop.</li>
+<li><strong>Multi-turn caching</strong>: a follow-up question reused the context provider's cached Content Understanding results — no repeat analysis calls.</li>
+<li><strong>Same underlying service, different integration shapes</strong>: manual SDK pipeline vs. Agent Framework context provider (auto-analysis, auto-formatting, caching, one provider for any agent).</li>
+<li><strong>Initialization is simple</strong>: reuse your <strong>Azure AI Foundry resource endpoint</strong> + credentials with the SDK (Python shown).</li>
+<li><strong>No-code path</strong> exists in the <strong>Foundry portal → Content Understanding playground</strong> and <strong>CU Studio</strong> (Discover tab) for trying analyzers without writing code.</li>
+<li><strong>Direct integrations</strong> also provided for frameworks like <strong>LangChain</strong> (and raw Markdown), not only Agent Framework.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="the-problem-agents-meet-real-world-content">The Problem: agents meet real-world content</h3>
+<p>Tools and agents inevitably run into content that <em>doesn't</em> come from clean APIs and structured data: poor-quality scanned PDFs, long emails, office documents with complex tables, images, audio, and video files. This is where agents often break — <strong>they can reason, but they cannot really read.</strong> When raw content is thrown at the LLM, the agent scrambles: for every incoming file it writes custom code, uploads images to models, misreads tables, skips figures. The downstream result is dropping quality and reliability <em>and</em> a rising LLM bill.</p>
+<h3 id="the-solution-content-understanding">The Solution: Content Understanding</h3>
+<p>Content Understanding takes messy multimodal content and turns it into <strong>clean, structured, agent-ready output through a single pipeline</strong>: <strong>parse, classify, and extract</strong>, with built-in <strong>grounding, confidence scores, and governance</strong>. The output is <strong>well-formatted Markdown and JSON files with key-value pairs</strong> that give agents ready-to-act inputs.</p>
+<h3 id="the-demo-scenario-a-647-am-fiber-incident">The Demo Scenario: a 6:47 a.m. fiber incident</h3>
+<p>The narrative scenario: at <strong>6:47 a.m.</strong> an alert fires — <strong>signal degradation on the "Tower Ridge Corridor," 42 customers at risk.</strong> Today, an on-call engineer would have to search <strong>nine documents, media files, and attachments</strong>, then manually investigate and correlate everything. This is the exact workflow the demo automates.</p>
+<p>The plan for the demo:
+1. Use Content Understanding to turn each document pulled by the alert/incident into <strong>structured data</strong> — layout, tables, figures, barcodes, custom fields you define, plus classification and routing.
+2. Send that information to an agent — first via a <strong>direct call to GPT-4.1</strong> (auto-caption likely "GPT-4 1") — to <strong>diagnose, identify, and dispatch a plan.</strong>
+3. In the final act, show the whole thing integrated seamlessly with <strong>Microsoft Agent Framework.</strong></p>
+<h3 id="act-1-initialize-the-client-document-search-sdk">Act 1 — Initialize the client + <code>document search</code> (SDK)</h3>
+<ul>
+<li><strong>Initialization is intentionally simple</strong>: you use the <strong>same endpoint as your Azure AI Foundry resource</strong>, initiate with endpoint + credentials, then use the SDK (Python).</li>
+<li>Make a simple <strong>pre-built analyzer call with <code>document search</code></strong> — one of many pre-built analyzers.</li>
+<li><em>(Live hiccup: a presenter extension didn't load — "I think the extension did not work, but we'll do this together" — handled gracefully; they walked the flow and client-init code manually.)</em></li>
+<li><strong><code>document search</code> is optimized for extracting document layout and embedded elements</strong>: tables, figures, selection marks, barcodes, signatures, etc. It generates rich information you can send to downstream apps like <strong>RAG or AI Search.</strong></li>
+</ul>
+<p><strong>Running it on a site maintenance log:</strong>
+- The log has <strong>two embedded tables</strong>, lots of information formatted in a way that's <em>not</em> intuitive for an LLM agent to extract directly, plus selection marks and QR codes.
+- Within a few seconds, Content Understanding returns:
+  - <strong>Two tables</strong> with <strong>row and column structure preserved</strong>.
+  - <strong>One barcode / QR code decoded.</strong>
+  - <strong>Two checked and one unchecked selection marks.</strong>
+- That structured information is then sent to the LLM to reason and is tracked as a <strong>piece of evidence.</strong></p>
+<p><strong>Comparison vs. a local PDF parser:</strong>
+- The document is a <em>typed</em> PDF, so OCR isn't a big challenge — yet the <strong>local parser completely loses table structure</strong> (returns raw bytes) and <strong>misses the QR code and selection-mark information entirely.</strong>
+- Net effect: with a local parser the agent has <strong>incomplete information</strong> and must guess at element structure/meaning. Content Understanding instead produces an <strong>LLM-readable state</strong>, then sends it to the agent via a <strong><code>to_llm_input</code> formatting helper</strong> (detailed later).</p>
+<h3 id="act-2-multimodal-pre-built-analyzers-the-no-code-experience">Act 2 — Multimodal pre-built analyzers + the no-code experience</h3>
+<p>Before diving back into code, the presenter shows the <strong>no-code interface</strong>:
+- <strong>Foundry portal → Deployments and AI services → Content Understanding playgrounds</strong> (at the bottom).
+- A set of pre-built analyzers is available. Example: the <strong><code>invoice</code></strong> analyzer extracts critical fields/values; the JSON output includes, for every text piece and value, the <strong>offset and length</strong> plus <strong>bounding boxes</strong> of where it sits in the document, so you can <strong>trace back to a citation.</strong></p>
+<p><strong>Audio pre-built analyzer:</strong>
+- They feed an <strong>audio file</strong> (crew members inspecting fiber cuts in situ). The analyzer pulls out <strong>timestamps</strong> and transcribed speech to send to the LLM/agent.
+- <em>(Caption note: some sample audio snippets bleeding in — e.g., a banking "$1,000 certificate of deposit" line and "Approaching vault TV3… visuals on the conduit entry… the protective sleeve is completely off" — appear to be demo/sample clips. The relevant content: two crew members exchanging info about approaching </em><em>vault TV3</em><em>, the conduit entry, and a situation with a </em><em>crack and bent fiber</em><em>.)</em></p>
+<p><strong>CU Studio:</strong>
+- Reached via a button to <strong>CU Studio</strong>; the <strong>Discover tab</strong> lists pre-built models across <strong>tax, legal, identity, payment, mortgage, etc.</strong></p>
+<p><strong>Video search analyzer:</strong>
+- They analyze a <strong>short inspection video clip</strong> before sending it to the document analyzers.
+- <em>(Caption note: a neural TTS / Cognitive Services voice promo plays as a sample — "higher fidelity… sounded a lot more like an actual human voice.")</em>
+- The relevant clip: <em>"We've got a fiber strike in this excavation, but before the repair crew can work, we need to address the condition around the line first."</em> → the analyzer produces a <strong>summary that can be sent to the LLM for follow-up analysis.</strong></p>
+<p><strong>Bringing modalities together (document with embedded images):</strong>
+- They take transcripts from <strong>audio and video</strong> plus a <strong>document file containing six embedded images</strong>, and run it through the <strong><code>document search</code></strong> analyzer.
+- Result: it <strong>OCRs all detailed text</strong>, <strong>preserves location</strong>, captures <strong>text within images</strong>, and — importantly — <strong>generates a description of each image across all six photos</strong>, which is sent to the agent to reason over.
+- The LLM was then able to <strong>identify a "3 cm displacement"</strong> and, by correlating audio + document evidence, conclude the <strong>root cause is around "TV vault 3" (vault TV3).</strong></p>
+<h3 id="act-3-setup-custom-analyzers-classifierrouting">Act 3 (setup) — Custom analyzers + classifier/routing</h3>
+<p>Beyond pre-built analyzers, agents often benefit from <strong>decision-ready fields</strong>, and you may want to customize a field to extract insight specific to your business.
+- <strong>Custom analyzers don't only extract</strong> — they also <strong>reason, infer, and generate fields by calculating and reasoning.</strong>
+- Scenario: <strong>six different document input types</strong>; build an analyzer for each to extract only the fields of interest.
+- <strong>How to define a custom analyzer:</strong> identify your <strong>schema</strong>, and for each field provide a <strong>name</strong> and a <strong>definition</strong> including <strong>type, method, and a natural-language description.</strong> Deploy all custom analyzers via the <strong>SDK.</strong></p>
+<p><strong>Classifier (called out as very useful):</strong>
+- Similarly, you <strong>identify categories</strong> and what they're for, to handle any unknown document that arrives.
+- It can <strong>automatically route</strong> any unknown incoming document to an analyzer (pre-built or custom) to perform the purpose-designed extraction.
+- Demo: deploy <strong>six custom analyzers</strong> for the six document types, create a <strong>classifier for six categories</strong>, and send documents one at a time through the pipeline (takes ~a minute to process).</p>
+<p><strong>Pre-processed results shown:</strong>
+- For each document type, the <strong>custom analyzer returns the custom-defined fields</strong> — and some fields <strong>aren't literally found in the document</strong>; they require <strong>reasoning and collaboration</strong> for the LLM to generate.
+- The agent can additionally <strong>collect evidence and reason</strong> about the next action.
+- <strong>Classification:</strong> all <strong>six files correctly identified</strong> and routed to their respective analyzers.</p>
+<p><strong>Midpoint recap:</strong> Content Understanding takes multimodal content → text representations → classification/routing → pre-built or custom analyzers → extract fields <em>and</em> infer fields/insights unique to the scenario. The next two acts show how an <strong>agent leverages all that</strong> to diagnose root cause, identify a material plan within budget, and dispatch the next action.</p>
+<h3 id="act-3-four-step-agent-thinking-direct-sdk-llm">Act 3 — Four-step agent thinking (direct SDK → LLM)</h3>
+<p>A <strong>four-step agent reasoning</strong> flow:
+1. <strong>Assemble</strong> all Content Understanding output gathered so far.
+2. Use the <strong><code>to_llm_input</code></strong> formatter (from the SDK) to package it for the LLM.
+3. Send requests to: <strong>diagnose root cause → identify material &amp; build plan → dispatch an action</strong> to the repair crew.</p>
+<p><strong>Expected results:</strong>
+- <strong>Root cause analysis:</strong> identified <strong>mechanical failure of the shared underground conduit at vault TV3</strong>, caused by a <strong>micro-bend</strong>, with full details. An <strong>evidence chain</strong> is attached (based on all document evidence collected along the way) plus a <strong>final verdict.</strong>
+- <strong>Material plan:</strong> includes the <strong>budget cap</strong> (approved by named personnel) and a <strong>materials table</strong> to move forward with.
+- <strong>Dispatch email:</strong> identifies <strong>key personnel</strong> from the raw data-collection process and sends <strong>only the necessary information</strong> for them to act on next.</p>
+<h3 id="act-4-integration-with-microsoft-agent-framework">Act 4 — Integration with Microsoft Agent Framework</h3>
+<p>The entire process can be <strong>orchestrated using the Content Understanding context provider within Microsoft Agent Framework.</strong>
+- A <strong>context provider</strong> is a <strong>primitive in Agent Framework that hooks into the agent run loop.</strong> It can <strong>see/detect messages before they reach the LLM</strong> and act on them — e.g., detect attachments, process them, and send the structured output back into the conversation loop.</p>
+<p><strong>Setup:</strong>
+- Define the <strong>context provider</strong> with the <strong>content endpoint + credential</strong>, specifying the <strong>analyzer ID.</strong>
+- Use <strong>Agent Framework's Foundry chat client</strong> for this scenario.
+- For the agent run, construct the agent by providing <strong>instructions</strong> plus the <strong>context provider = Content Understanding.</strong>
+- Build a message using a <strong>simple prompt</strong> + <strong>attachments from PDFs.</strong></p>
+<p><strong>Follow-up / caching:</strong>
+- After the first diagnosis round, they ask a <strong>follow-up question</strong> and show that Agent Framework can <strong>reuse cached results</strong> from the Content Understanding context provider — <strong>without repeating</strong> the analysis.</p>
+<p><strong>Final output &amp; comparison:</strong>
+- The Agent Framework path yields <strong>very similar results to the manual SDK pipeline</strong>, but in essentially <strong>one step</strong>, and the follow-up answer used the <strong>same session + context provider with no new Content Understanding calls.</strong>
+- <strong>SDK pipeline (Acts 1–3) vs. Agent Framework (Act 4):</strong> <em>same underlying Content Understanding service, different integration shape.</em> Agent Framework adds:
+  - <strong>Auto-analysis on attachments</strong>
+  - <strong>Automated/included formatting code</strong>
+  - <strong>Multi-turn caching</strong>
+  - <strong>One provider for any type of agent</strong></p>
+<h3 id="closing-guidance-live-demo-takeaways">Closing guidance (live-demo takeaways)</h3>
+<ul>
+<li><strong>Start with pre-built <code>document search</code></strong> (or other pre-builds) when you <strong>don't know the document type</strong>, or when you need to send <strong>enriched information</strong> to your agent to reason through — e.g., <strong>RAG and AI Search</strong> scenarios.</li>
+<li><strong>Use custom analyzers</strong> to pull out <strong>specific fields</strong> that are better <em>reasoned through</em> (e.g., <strong>dispatch urgency, budget verdict</strong>).</li>
+<li><strong>In production</strong>, you'll often get payloads/documents of <strong>unknown type</strong> — use <strong>classification + routing</strong>: a <strong>single call</strong> classifies, routes, and extracts, minimizing branching logic in app code.</li>
+<li><strong><code>to_llm_input</code> helper</strong> formats output as <strong>Markdown with YAML front matter</strong>, supports <strong>full document or fields-only</strong>, and gave an <strong>~85% token reduction</strong> in their scenario.</li>
+<li><strong>Multiple ways to feed agents:</strong> Agent Framework simplifies it, and <strong>direct integrations with LangChain and Markdown</strong> are also provided.</li>
+</ul>
+<h3 id="resources-next-steps-mentioned">Resources &amp; next steps mentioned</h3>
+<ul>
+<li><strong>All code</strong> — the <strong>demo app</strong> and a <strong>detailed tutorial notebook</strong> — is available on <strong>GitHub</strong> for this demo session (a <strong>QR code</strong> was shown).</li>
+<li><strong>Attend breakout session 242</strong> at <strong>4:00 p.m.</strong> the same afternoon to learn what's coming in Content Understanding, including an <strong>"agentic mode"</strong> for <strong>even more complex document scenarios</strong> and how it works with <strong>toolboxes in Foundry.</strong></li>
+</ul>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Azure AI Content Understanding</strong> — single pipeline (parse, classify, extract) turning messy multimodal content into structured Markdown + JSON with grounding, confidence scores, and governance.</li>
+<li><strong><code>document search</code> (pre-built analyzer)</strong> — extracts document layout + embedded elements (tables, figures, selection marks, barcodes/QR codes, signatures); great for RAG / AI Search.</li>
+<li><strong><code>invoice</code> (pre-built analyzer)</strong> — extracts critical fields/values with offsets, lengths, and bounding boxes for citation traceability.</li>
+<li><strong>Audio (pre-built analyzer)</strong> — transcribes speech with timestamps for LLM/agent consumption.</li>
+<li><strong>Video / video search (pre-built analyzer)</strong> — analyzes video clips and produces summaries for downstream LLM analysis.</li>
+<li><strong>Custom analyzers</strong> — user-defined schema/fields; can extract <em>and</em> reason/infer/generate fields (e.g., dispatch urgency, budget verdict) via SDK deployment.</li>
+<li><strong>Classifier + routing</strong> — categorizes unknown documents and auto-routes to the right analyzer; single call classifies + routes + extracts.</li>
+<li><strong><code>to_llm_input</code> SDK helper</strong> — formats Content Understanding output as Markdown + YAML front matter; full-doc or fields-only; ~85% token reduction.</li>
+<li><strong>Azure AI Foundry portal</strong> — Deployments &amp; AI services; hosts the Content Understanding playground.</li>
+<li><strong>Content Understanding playground</strong> — no-code interface to try pre-built analyzers.</li>
+<li><strong>CU Studio</strong> — Discover tab listing pre-built models (tax, legal, identity, payment, mortgage, etc.).</li>
+<li><strong>Microsoft Agent Framework</strong> — agent orchestration; hosts the <strong>context provider</strong> primitive.</li>
+<li><strong>Content Understanding context provider</strong> — Agent Framework primitive that hooks the run loop, detects/processes attachments before the LLM, and returns structured output to the conversation; supports multi-turn caching.</li>
+<li><strong>Foundry chat client</strong> — Agent Framework chat client used in the demo.</li>
+<li><strong>GPT-4.1</strong> — LLM used for direct-call diagnosis/reasoning in the demo.</li>
+<li><strong>LangChain</strong> — direct integration target for Content Understanding output (alongside raw Markdown).</li>
+<li><strong>Local PDF parser</strong> — used as a baseline comparison (lost structure, QR codes, selection marks).</li>
+<li><strong>GitHub repo (demo)</strong> — demo app + tutorial notebook for the session (QR code shared).</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>No hard GA/preview status was explicitly stated</strong> in the transcript for Content Understanding features. Treat the following as <em>showcased capabilities / roadmap pointers</em> rather than confirmed release milestones:</li>
+<li><strong>Content Understanding context provider for Microsoft Agent Framework</strong> — demonstrated as a way to orchestrate the full pipeline with auto-analysis, auto-formatting, and multi-turn caching.</li>
+<li><strong>Custom analyzers that reason/infer/generate fields</strong> (not just extract) — demonstrated.</li>
+<li><strong>Classification + routing in a single call</strong> — positioned for production workloads.</li>
+<li><strong>Direct integrations</strong> with <strong>LangChain</strong> and <strong>Markdown</strong> — mentioned as available.</li>
+<li><strong>Roadmap teaser:</strong> an upcoming <strong>"agentic mode"</strong> for more complex document scenarios and <strong>integration with toolboxes in Foundry</strong> — to be covered in <strong>breakout session 242</strong> (4:00 p.m. same day).</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<blockquote>
+<p>Single continuous live demo built around the <strong>6:47 a.m. fiber-cut incident</strong> ("Tower Ridge Corridor," 42 customers at risk), structured as four "acts." One presenter extension failed to load mid-demo and was handled gracefully by walking the flow manually.</p>
+</blockquote>
+<ul>
+<li><strong>Act 1 — <code>document search</code> on a site maintenance log:</strong> Proved Content Understanding preserves <strong>two tables (row/column structure)</strong>, decodes a <strong>QR code</strong>, and reads <strong>selection marks (2 checked, 1 unchecked)</strong> — whereas a <strong>local PDF parser lost the tables, QR code, and selection marks</strong> entirely, forcing the agent to guess.</li>
+<li><strong>Act 2 — No-code playground + multimodal analyzers:</strong> Showed the <strong>Foundry Content Understanding playground / CU Studio</strong>, the <strong><code>invoice</code></strong> analyzer (fields + bounding boxes/citations), an <strong>audio</strong> analyzer (crew fiber-inspection clip), and a <strong>video</strong> analyzer (fiber-strike excavation clip). Proved breadth across modalities and the <strong>no-code on-ramp</strong>, plus that a <strong>document with six embedded images</strong> can be OCR'd, located, and <strong>image-described per photo</strong> — enabling the LLM to identify a <strong>3 cm displacement</strong> and correlate to <strong>vault TV3</strong>.</li>
+<li><strong>Act 3 — Custom analyzers + classifier/routing:</strong> Deployed <strong>six custom analyzers</strong> + a <strong>six-category classifier</strong>; proved custom analyzers return <strong>defined fields (including reasoned/inferred ones not literally in the document)</strong> and that the classifier <strong>correctly identified and routed all six files.</strong></li>
+<li><strong>Act 3 (reasoning) — Four-step agent via direct SDK → GPT-4.1:</strong> Produced a <strong>root-cause analysis</strong> (mechanical failure of shared underground conduit at vault TV3, micro-bend) with an <strong>evidence chain + verdict</strong>, a <strong>material plan within an approved budget cap</strong> (materials table), and a <strong>dispatch email</strong> to the right personnel with only necessary info. Proved end-to-end agent decision-making from structured evidence.</li>
+<li><strong>Act 4 — Microsoft Agent Framework context provider:</strong> Reproduced the same diagnosis/material/dispatch results in essentially <strong>one step</strong>, then answered a <strong>follow-up question using cached context</strong> with <strong>no new Content Understanding calls.</strong> Proved the simplified integration shape (auto-analysis, auto-formatting, multi-turn caching).</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>~85% token reduction</strong> in the demo scenario from using the <code>to_llm_input</code> helper (full-doc vs. fields-only formatting).</li>
+<li><strong>6:47 a.m.</strong> alert; <strong>signal degradation on "Tower Ridge Corridor"</strong>; <strong>42 customers at risk.</strong></li>
+<li>Manual baseline today: an on-call engineer must search <strong>nine documents, media files, and attachments</strong> and correlate everything by hand.</li>
+<li><strong>Six</strong> document types / <strong>six</strong> custom analyzers / <strong>six</strong> classifier categories — all correctly classified and routed.</li>
+<li>Site maintenance log results: <strong>2 tables, 1 QR/barcode decoded, 2 checked + 1 unchecked selection marks.</strong></li>
+<li>Document with <strong>six embedded images</strong> OCR'd + individually image-described; LLM identified a <strong>3 cm displacement</strong> and correlated root cause to <strong>vault TV3.</strong></li>
+<li>Diagnosed root cause: <strong>mechanical failure of the shared underground conduit at vault TV3, caused by a micro-bend.</strong></li>
+<li>Key paraphrased insight: <em>"They can reason, but they cannot really read"</em> — the core framing for why Content Understanding exists.</li>
+<li>Field-extraction caveat: some custom fields <strong>aren't found in the document</strong> and require the LLM to <strong>reason and collaborate</strong> to generate them.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li class="task-list-item"><input type="checkbox" disabled> Clone the <strong>session GitHub repo</strong> (demo app + tutorial notebook) and run the four-act pipeline end to end.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Spin up the <strong>Content Understanding playground / CU Studio</strong> in the Foundry portal and run the <code>invoice</code>, audio, and video pre-built analyzers.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Prototype a <strong>custom analyzer</strong> (schema: name + type/method/natural-language description) for a real document type and test the <strong>reason/infer/generate</strong> field capability.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Build a <strong>classifier + routing</strong> flow for mixed/unknown document payloads and measure the reduction in branching logic.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Wire the <strong>Content Understanding context provider into Microsoft Agent Framework</strong> (Foundry chat client) and verify <strong>multi-turn caching</strong> on a follow-up question.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Benchmark the <strong><code>to_llm_input</code></strong> helper (full-doc vs. fields-only) and confirm the token-reduction claim on our own data.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Compare Content Understanding output vs. our current <strong>local PDF parser</strong> on docs with tables, QR codes, and checkboxes.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li class="task-list-item"><input type="checkbox" disabled> What are the <strong>pricing / token-cost</strong> implications of Content Understanding calls vs. the LLM savings from the 85% token reduction?</li>
+<li class="task-list-item"><input type="checkbox" disabled> What are the <strong>confidence-score thresholds</strong> and how should agents act on low-confidence extractions?</li>
+<li class="task-list-item"><input type="checkbox" disabled> How does the <strong>context provider caching</strong> scope/expire across sessions, and is it per-conversation or shared?</li>
+<li class="task-list-item"><input type="checkbox" disabled> What's included in the upcoming <strong>"agentic mode"</strong> (breakout 242) and how does it differ from custom analyzers?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Which <strong>modalities/file types</strong> are GA vs. preview, and what are the size/page limits?</li>
+<li class="task-list-item"><input type="checkbox" disabled> How does <strong>governance/grounding</strong> surface in the output (citations, bounding boxes) for compliance/audit use cases?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li class="task-list-item"><input type="checkbox" disabled> Any RAG / AI Search ingestion pipeline handling messy enterprise documents.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Agent projects on <strong>Microsoft Agent Framework</strong> that must process attachments.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Incident-response / operations automation involving mixed media evidence.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Document-heavy verticals: tax, legal, identity, payment, mortgage, insurance.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li>[Microsoft Build 2026 session 242 — Content Understanding breakout (agentic mode + Foundry toolboxes)] — <em>follow-up session referenced; link TBD</em></li>
+<li><span class="wikilink wikilink--unresolved" title="Azure AI Foundry">Azure AI Foundry</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Agent Framework">Microsoft Agent Framework</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Azure AI Content Understanding">Azure AI Content Understanding</span></li>
+<li><span class="wikilink wikilink--unresolved" title="RAG">RAG</span> / <span class="wikilink wikilink--unresolved" title="Azure AI Search">Azure AI Search</span></li>
+<li><a href="https://www.youtube.com/watch?v=b23ZV37_9Hw">YouTube — DEM331 recording</a></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="BRK247.html"><span class="pager-dir">← Previous</span><span class="pager-code">BRK247</span><span class="pager-title">Scott and Mark learn...how agents reshape software engineering</span></a>
+    <a class="pager pager-next" href="DEM350.html"><span class="pager-dir">Next →</span><span class="pager-code">DEM350</span><span class="pager-title">GitHub Agentic Workflows: Automation That Actually Reads the Room</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

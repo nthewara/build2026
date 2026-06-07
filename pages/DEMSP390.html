@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEMSP390 — Create multimodal AI agents with persistent memory</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEMSP390</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=o_rcIQUU-k4" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Create multimodal AI agents with persistent memory</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Ido (Napster), Microsoft Azure partner team, Marius (PM), Igor (Lead Engineer)</span>
+      <span class="meta-item">⏱️ 20m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="multimodal">Multimodal</span><span class="chip" data-tag="memory">Memory</span><span class="chip" data-tag="azure">Azure</span><span class="chip" data-tag="mcp">MCP</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> <strong>Ido</strong> (Napster — founder/presenter, author), a <strong>Microsoft Azure partner-team colleague</strong> (announces the Azure native integration), <strong>Marius</strong> (Product Manager) and <strong>Igor</strong> (Lead Engineer) — Napster engineers who run the live demos<br>
+<strong>Duration:</strong> ~20 min (partner/ISV demo session)<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=o_rcIQUU-k4">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>A partner demo by <strong>Napster</strong> showing their <strong>Omni Agent API</strong> — a single API that turns any web app into a <strong>multimodal AI agent</strong> (video, audio, text, WhatsApp, phone) with a <strong>video avatar</strong> and <strong>persistent memory</strong>, so users interact with an agent "like a person" rather than a chatbot. The big reveal: Napster is now available as an <strong>Azure-native offering in public preview</strong>, with unified marketplace billing and SSO from the Azure portal into Napster, sitting as an <em>experience layer</em> on top of an <strong>Azure AI Foundry</strong> agent (the <em>intelligence layer</em>). The technical core is an <strong>"edge MCP" server compiled into the website's own JavaScript at author time</strong>, giving the agent local "hands" (capabilities) and "eyes" (state providers) via the DOM — no slow/expensive VLM screen-scraping. Pitch: a single developer can wire all this up from their existing Git repo with <strong>one prompt + an API key in a day</strong>, and video avatars now cost <strong>1¢/min vs ~20¢/min (a 20× reduction)</strong>, making production rollout viable.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Napster Omni Agent API</strong> = one API to make an agent "omni" / <strong>multimodal</strong>: video, audio, text, WhatsApp, or phone call — the <em>same</em> agent reachable across a call center, kiosk, or website.</li>
+<li><strong>Persistent memory is the headline feature</strong> — agents "remember you just like a person you have a relationship with." Ido frames <em>relationship</em> as the next interface surface (analogy: multi-touch was to the iPhone what relationship is to agents).</li>
+<li><strong>Azure-native public preview announced:</strong> Napster on Azure via Azure native integrations → <strong>unified billing through the Azure Marketplace</strong>, provisioned as an Azure resource using the Azure portal/native tooling.</li>
+<li><strong>Layered architecture:</strong> <strong>Napster (experience/face/avatar layer)</strong> sits on top of an <strong>Azure AI Foundry agent (intelligence/brain layer)</strong> — Foundry holds the memory, knowledge, and tools; Napster adds presence (see/hear/talk).</li>
+<li><strong>"Edge MCP" breakthrough:</strong> an MCP server is generated <strong>into the site's JavaScript at the source level / compile time</strong>, so the agent calls tools <strong>locally through the DOM</strong> instead of hitting remote endpoints — described as lightning-fast vs VLM-based browser agents.</li>
+<li><strong>Two skills do the wiring:</strong> an <strong>"identify" skill</strong> parses the web app's source code to build the edge-MCP controller; an <strong>"agent" skill</strong> creates/maintains the agent in Foundry.</li>
+<li><strong>One-developer, one-day, one-prompt</strong> workflow via "vibe coding" — point it at the Git repo on your laptop, supply the prompt + API key; it studies the codebase and augments the app with the agent. No big cross-org team, no separate knowledge base to maintain.</li>
+<li><strong>Cost breakthrough for video avatars: ~1¢/min vs ~20¢/min (≈20× cheaper)</strong> — the difference between "demo-only" and "ship it on your live site/app."</li>
+<li><strong>Auto-generated persona:</strong> the omni agent infers and creates a fitting avatar/persona from the site's domain (e.g. an electronics site gets a matching persona) from a "latent space of an endless universe of agents."</li>
+<li><strong>Minimal Azure permissions:</strong> the Foundry-based flow needs only <strong>two Entra ID roles — Cognitive Services User and Azure AI Foundry/Developer User</strong> — and exposes none of your other services.</li>
+<li><strong>Requires frontier models:</strong> the team says this was impossible 3 months earlier — only achievable with current frontier models (references the new OpenAI model and <strong>Opus 4.8</strong>) able to read an entire codebase and predict user intent to wire up the MCP interface.</li>
+<li><strong>Vision:</strong> the web is built for humans, so the human interface (a person you talk to) becomes the universal app interface — agents that <em>use</em> the apps you build, on the user's behalf.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-a-time-machine-to-build-2027">Framing — "a time machine to Build 2027"</h3>
+<p>Ido opens with a deliberately theatrical bit: "welcome to Build 2027… we're going to use a little time machine." The rhetorical point is that <strong>next year's agents won't be chatbots — they'll be "like people, exactly like people."</strong> He shows a video of a "crew of agents" (all AI-generated; "these people don't exist") branded as Napster, claiming you can go from setting up an agent to bringing it to life as a <strong>multimodal agent in a few clicks</strong> using <strong>Foundry</strong>.</p>
+<h3 id="napsters-stack-and-form-factors">Napster's stack and form factors</h3>
+<p>Napster positions itself as a <strong>complete stack including hardware</strong>:
+- <strong>"The View"</strong> — a holographic display that sits on top of your screen, giving an end user a crew of agent "crew members" available at all times.
+- <strong>A full kiosk</strong> — can be deployed in a store, designed to survive a very noisy environment (e.g. ordering at a fast-food joint). Both are shown at their Build booth "down the hall."</p>
+<h3 id="the-vibe-coding-pitch">The "vibe coding" pitch</h3>
+<p>Ido leans into the current developer moment — jokes about "losing a few hours to Claude code" and "walking around with a laptop open while the agent is doing stuff." He wrote a <strong>book</strong> (scan a QR code) about this moment of "us vs AI," the idea that we're all building <strong>"human emulators"</strong> — AI that can do everything we do — and what that means for our kids, companies, and how we "ascend" / do more.</p>
+<p><strong>Getting started is reduced to three things:</strong> a <strong>vibe-coding harness</strong>, an <strong>API key</strong> (scan a QR for a free token offer), and <strong>a prompt</strong>. That's all that's needed to reproduce what's demoed. The repeated theme: work that used to take <strong>"months or years with a big company rolling out an agent" now happens in one day, by one developer, with no team.</strong></p>
+<h3 id="the-omni-agent-api-what-omni-means">The Omni Agent API — what "omni" means</h3>
+<p>The <strong>Omni Agent API</strong> is a single API that makes an agent <strong>multimodal ("omni")</strong> across:
+- <strong>Modalities:</strong> video, audio, text.
+- <strong>Channels:</strong> WhatsApp, phone call (like a call center), or in-person at a kiosk.</p>
+<p>Crucially, it's the <strong>same agent</strong> across all surfaces, and it has <strong>persistent memory</strong> — "they remember you just like a person you have a relationship with." Ido argues the <strong>next surface of innovation is <em>relationship</em></strong>: just as the iPhone added multi-touch, agents add relationship — building an "emulator layer" so users have ongoing relationships with agents.</p>
+<h3 id="azure-native-integration-the-announcement">Azure-native integration (the announcement)</h3>
+<p>A <strong>Microsoft colleague</strong> joins to announce the <strong>public preview of Napster on Azure, powered through Azure native integrations.</strong> What it means for developers:
+- <strong>Unified billing through the Azure Marketplace</strong> + value-added benefits.
+- You <strong>provision Napster as an Azure resource</strong> using the <strong>Azure portal</strong> and native Azure tooling.
+- <strong>Flow:</strong> developer → Azure portal → provision Azure resource → click the <strong>single sign-on link</strong> → land in the <strong>Napster portal</strong> → use the <strong>Omni Agent</strong> → which talks to your <strong>Foundry agent</strong> (the underlying intelligence layer).
+- <strong>Mental model:</strong> <strong>Napster = experience layer on top; Foundry = intelligence layer below; all natively integrated within Azure.</strong></p>
+<p>Ido adds the enterprise angle: because it's in the <strong>marketplace</strong>, <strong>procurement is already solved</strong> — minimal friction to adopt.</p>
+<h3 id="building-an-omni-agent-the-developer-workflow-time-lapse-demo">Building an Omni Agent — the developer workflow (time-lapse demo)</h3>
+<p>Ido plays a time-lapse of building an omni agent for an e-commerce site ("Watson," the site for the provider):
+1. As a developer, go into your environment.
+2. Drop in <strong>the prompt + your API key</strong>.
+3. Come back after a few minutes → an agent exists that <strong>knows the site's content because it lives in the Git on your laptop and studies your website's code</strong>, producing an agent that can <em>use</em> your website.</p>
+<p><strong>Contrast with traditional agent setup:</strong> normally you stand up an agent, then separately wire up knowledge, tool-calling, and MCPs — which "suddenly involves a lot of people in your org," and when the knowledge changes you have "two parallel universes in your codebase." Napster collapses this: the <strong>individual developer who controls the front-end business logic</strong> runs one prompt against their Git repo and it's auto-augmented with an omni agent — <strong>"one omni universe"</strong> instead of two.</p>
+<p>The agent can then <strong>talk to the user and control the website the same way a vision model would have</strong> — but without the VLM.</p>
+<h3 id="the-technical-breakthrough-edge-mcp-mcp-in-the-javascript">The technical breakthrough — Edge MCP (MCP in the JavaScript)</h3>
+<p>The core innovation: an <strong>MCP server built into the JavaScript of the site at the source level.</strong>
+- Part of the prompt <strong>analyzes your website/code and creates a "virtual instance" of what they call an <em>edge MCP</em> that lives in the JavaScript.</strong>
+- When the agent is on the page and you ask a question, instead of calling tools from a remote endpoint, <strong>everything happens locally through the DOM by connecting to that MCP locally.</strong>
+- That MCP is a <strong>harness to your website</strong>: it does <strong>pre-processing at compile time</strong> and "knows everything about your website" — the user's intent, the steps they need to take, etc.</p>
+<p><strong>The two skills (architecture diagram):</strong>
+- <strong>Identify skill</strong> — takes the source code of your web app and <strong>creates the MCP server that controls it</strong> ("wiring up everything on your website").
+- <strong>Agent skill</strong> — <strong>creates the agent in Foundry</strong> so you can continue to maintain it.</p>
+<p>All of this happens in your code environment (any code harness — <strong>Visual Studio / VS Code</strong>) and, <strong>soon, on the Foundry playground.</strong></p>
+<h3 id="why-this-is-only-possible-now">Why this is only possible now</h3>
+<p>Igor (the engineer demoing) stresses: <strong>"We could not have done this three months ago."</strong> It depends on current <strong>frontier models</strong> — he cites the <strong>new OpenAI model</strong> and <strong>Opus 4.8</strong> — because the ability to <strong>read an entire codebase and predict what a user might do, then wire it up as an MCP interface,</strong> wasn't feasible before. He calls it a paradigm shift in how we "identify"/build experiences.</p>
+<h3 id="skills-copilot-one-liner-deployment">Skills + Copilot one-liner deployment</h3>
+<p>A new <strong>skill</strong> lets you deploy by simply prompting Copilot — e.g. <em>"create for me an Azure AI [agent]"</em> — and it will:
+1. <strong>Deploy an agent to Azure AI Foundry.</strong>
+2. <strong>Create the visual layer inside the Napster platform.</strong>
+3. Give you a <strong>URL</strong>; you provide the <strong>Microsoft Foundry key</strong> and with <strong>one click</strong> you can talk to your agent.</p>
+<p><strong>Everything is controlled inside Azure AI Foundry</strong> — you can use all the built-in Foundry tools and <strong>don't need to expose access to any of your services.</strong> The only Entra ID permissions required: <strong>Cognitive Services User</strong> and <strong>Azure AI Foundry/Developer User</strong> — "nothing else."</p>
+<h3 id="the-cost-story-making-video-avatars-shippable">The cost story — making video avatars shippable</h3>
+<p>Ido addresses the elephant in the room with video agents (referencing companies like <strong>HeyGen</strong> and <strong>Synthesia</strong>): the avatars are amazing but <strong>cost is prohibitive</strong> — fine for a demo, not for rollout. Napster's engineering team spent years optimizing this to offer it at <strong>~1¢/min vs ~20¢/min — a 20× pricing improvement.</strong> Practical impact: you can put <strong>fully-fledged talking video avatars</strong> on your website/app, solving users' problems, with <strong>one day of development</strong> — not "wasting time building a prototype."</p>
+<p>He also notes the omni agent <strong>auto-creates the persona</strong> (what the person looks like) to match the site's domain — e.g. an electronics site gets a fitting persona — drawn from a <strong>"latent space of an endless universe of agents."</strong></p>
+<h3 id="the-three-layer-model-marius">The three-layer model (Marius)</h3>
+<p>Marius reframes the architecture as <strong>three layers</strong>:
+1. <strong>Bottom — your app:</strong> the single source of truth.
+2. <strong>Top — the agent.</strong>
+3. <strong>Middle — the "agent bridge" / edge MCP server living in the browser</strong>, which lets the agent communicate with the app.</p>
+<p>The edge MCP exposes two things:
+- <strong>Capabilities = the "hands"</strong> — what the agent can <em>do</em> inside your app.
+- <strong>State providers = the "eyes"</strong> — what the agent can <em>see</em> on the screen.</p>
+<p>This makes the agent behave <strong>"exactly like a human, without a VLM."</strong> Typical agentic browser examples work through a <strong>VLM that takes a screenshot, uploads it, and analyzes it — slow and costly.</strong> Napster is <strong>"lightning fast"</strong> because the <strong>cognitive load of teaching the agent how to use the site is paid once at authoring time, on the developer's laptop.</strong></p>
+<h3 id="brain-face-composition-marius">Brain + Face composition (Marius)</h3>
+<p>If you <strong>already have an agent in Foundry</strong>, that's great — it already has the <strong>memory, knowledge, and tools configured; you don't have to change anything. That's the "brain."</strong> On top, you add the <strong>Napster Omni Agent API = the "face"/avatar</strong>, which provides <strong>presence</strong> (people can hear it, see it, talk with it). The result is a <strong>co-worker that gets real work done</strong> <em>inside your own application</em>, using the edge-MCP principle.</p>
+<h3 id="the-real-world-analogy-and-the-use-cases">The real-world analogy and the use cases</h3>
+<p>Ido's grounding example: you walk into a <strong>Best Buy</strong> and ask an associate "I'm looking for a GPU with 32 GB of VRAM" — what do they do? They walk to a monitor and <strong>use the Best Buy website to filter and find the product.</strong> That's literally what an omni agent does: a person-like agent that <strong>uses the systems you build, on the user's behalf.</strong> Other examples: <strong>booking a seat on a flight at the airport</strong>, or <strong>triage with a nurse at a counter.</strong> All of these — people using systems — can now be done by an omni agent, and <strong>implementing it takes one day, not months.</strong></p>
+<h3 id="final-live-demo-real-implementation">Final live demo (real implementation)</h3>
+<p>The team shows the <strong>real implementation</strong> (the earlier one was a time-lapse). The user asks the agent: <strong>"Show me OLED TVs under $2,000."</strong> On a <strong>left-hand debug panel</strong>, you can see:
+- The <strong>capabilities from the edge MCP server being called in real time.</strong>
+- <strong>State updates being sent from the web page to the agent.</strong></p>
+<p>This proves the agent, via the in-browser edge MCP, <strong>controls the website AND sees what the user is doing — full context all the time.</strong> Note: in this case the "add to cart" action is <strong>reversible</strong>. Ido adds you can ask it to <strong>"compare this screen to this screen"</strong> and it produces the comparison — doing things "you didn't even plan for," because it has strong intelligence baked in at author time. Compared to similar demos from <strong>OpenAI and Google</strong>, those require building a whole new system; <strong>this happens with one prompt.</strong></p>
+<h3 id="close">Close</h3>
+<p>Ido jokes the talk was scheduled for 25 minutes and he was "done 10 minutes ago." Wrap-up CTAs:
+- <strong>Scan the QR codes</strong> for tokens + the prompt.
+- Visit the <strong>booth down the hall</strong> ("fancy toys" — the View hardware, the kiosk).
+- A <strong>hackathon with over $2,000 in prizes</strong> is open now (run by Tanal/Tanya).
+- The QR gives you <strong>the View hardware device, the book (physical copy), and a lot of tokens.</strong>
+- Thanks to <strong>Marius (Product Manager)</strong>, <strong>Igor (Lead Engineer)</strong>, and Microsoft for support.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Napster</strong> — partner/ISV building a complete multimodal-agent stack (software + hardware); the experience/presence layer on top of Foundry.</li>
+<li><strong>Omni Agent API</strong> — single API that makes an agent multimodal (video/audio/text/WhatsApp/phone) with persistent memory; the core product.</li>
+<li><strong>Edge MCP (a.k.a. "agent bridge")</strong> — an MCP server generated into the site's JavaScript at compile/author time, running locally in the browser via the DOM; exposes capabilities ("hands") + state providers ("eyes").</li>
+<li><strong>Identify skill</strong> — analyzes web-app source code and builds the edge-MCP server that controls the site.</li>
+<li><strong>Agent skill</strong> — creates and maintains the agent in Azure AI Foundry.</li>
+<li><strong>Azure AI Foundry</strong> — Microsoft's agent platform; the "intelligence layer"/"brain" holding memory, knowledge, and tools; provides built-in tooling and the agent playground.</li>
+<li><strong>Azure native integrations / Azure Marketplace</strong> — delivery mechanism for Napster on Azure: provision as an Azure resource, unified billing, SSO into Napster.</li>
+<li><strong>Azure portal</strong> — where developers provision the Napster resource and click the SSO link.</li>
+<li><strong>Microsoft Entra ID</strong> — identity; only <strong>Cognitive Services User</strong> + <strong>Azure AI Foundry/Developer User</strong> roles needed.</li>
+<li><strong>"The View"</strong> — Napster hardware: a holographic display that sits on top of your screen showing the agent crew.</li>
+<li><strong>Napster kiosk</strong> — in-store hardware unit built to work in noisy environments (e.g. fast-food ordering).</li>
+<li><strong>Video avatars</strong> — talking, fully-rendered persona avatars driven by the agent; auto-generated to match the site's domain.</li>
+<li><strong>Visual Studio / VS Code</strong> — supported code harnesses for the dev workflow.</li>
+<li><strong>Foundry playground</strong> — where the wiring workflow will soon be available (roadmap).</li>
+<li><strong>GitHub Copilot</strong> (implied "Copilot") — prompt-driven deployment entry point.</li>
+<li><strong>Frontier models — new OpenAI model + Opus 4.8</strong> — the foundation models that make whole-codebase intent prediction possible.</li>
+<li><strong>HeyGen, Synthesia</strong> — named as existing video-agent vendors (cost-comparison context).</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Public preview: Napster on Azure via Azure native integrations</strong> — unified billing through the Azure Marketplace, provisioned as an Azure resource with SSO from the Azure portal into the Napster portal. <em>(Status: public preview, stated explicitly.)</em></li>
+<li><strong>New skills for one-prompt deployment</strong> — <code>identify</code> (build edge MCP from source) and <code>agent</code> (create/maintain Foundry agent); plus a Copilot-prompt flow that deploys an agent to Azure AI Foundry and spins up the Napster visual layer with a one-click "talk to your agent" URL. <em>(Status: shown/available in the demo workflow.)</em></li>
+<li><strong>Edge-MCP capability</strong> — MCP server compiled into site JavaScript for local, DOM-based tool calling (no VLM). <em>(Presented as a new breakthrough; "could not have done this three months ago.")</em></li>
+<li><strong>~1¢/min video-avatar pricing</strong> — ~20× cheaper than the ~20¢/min status quo. <em>(Pricing claim made on stage.)</em></li>
+<li><strong>Roadmap:</strong> the wiring workflow coming to the <strong>Foundry playground</strong>; minimal-permission Foundry-controlled deployment.</li>
+<li><strong>Hackathon</strong> — open now with <strong>$2,000+ in prizes</strong> (run on-site by Tanal/Tanya).</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Time-lapse build of an omni agent ("Watson" e-commerce site):</strong> drop a prompt + API key into your dev environment → after a few minutes an agent exists that knows the site (from the Git repo) and can control the website by talking. <strong>Proves:</strong> one developer can augment an existing web app with a multimodal agent from their codebase, no separate knowledge base/tool wiring.</li>
+<li><strong>Live "OLED TVs under $2,000" e-commerce demo:</strong> user asks the in-browser agent to show OLED TVs under $2,000; a left-side debug panel streams <strong>edge-MCP capability calls</strong> and <strong>state updates</strong> from the page to the agent in real time; add-to-cart is reversible. <strong>Proves:</strong> the edge MCP gives the agent both control ("hands") and live awareness ("eyes") of the page locally — fast, no VLM — and it can even do unplanned tasks like "compare this screen to that screen."</li>
+<li><strong>Opening "crew of agents" video:</strong> AI-generated multimodal agent personas ("these people don't exist"). <strong>Proves:</strong> the multimodal/persona vision and that personas can be conjured to fit a use case.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>~1¢/min vs ~20¢/min for video avatars → "a 20× factor of pricing."</strong></li>
+<li><strong>"$2,000+ in prizes"</strong> in the open hackathon.</li>
+<li><strong>"We could not have done this three months ago"</strong> — only possible with current frontier models (new OpenAI model + <strong>Opus 4.8</strong>).</li>
+<li><strong>"They remember you just like a person that you have a relationship with."</strong> — on persistent memory.</li>
+<li><strong>"The next surface is relationship"</strong> — analogy: multi-touch was to the iPhone what relationship is to agents.</li>
+<li><strong>"Now it's just one omni universe"</strong> — vs the "two parallel universes" of a separate agent knowledge base + codebase.</li>
+<li><strong>Best Buy GPU analogy:</strong> "I'm looking for a GPU that has 32 gig of VRAM" → the associate uses the website to filter; the omni agent does exactly that, on the user's behalf.</li>
+<li><strong>"Implementing that takes one day. It doesn't take months."</strong></li>
+<li>Required Entra roles: <strong>only Cognitive Services User + Azure AI Foundry/Developer User.</strong></li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Scan the Napster QR offer for free tokens + the prompt; try the one-prompt flow against a small e-commerce repo in VS Code and inspect the generated <strong>edge MCP</strong> in the site's JS. Stand up a minimal <strong>Azure AI Foundry</strong> agent and connect the Napster "face" via the Azure Marketplace preview.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: Is the "edge MCP in JavaScript" a true MCP-spec server or an MCP-shaped local shim? How does it handle SPA/dynamic DOM and auth-gated state? Where does <strong>persistent memory</strong> actually live — Foundry (brain) or Napster — and what's the data-residency/privacy story? How does the 1¢/min figure scale at concurrency? How is "Napster" (the agent ISV) related to / distinct from the music brand?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: any web app / e-commerce / kiosk / call-center scenario where a multimodal, memory-equipped agent should <em>use the UI</em> on the user's behalf; Azure AI Foundry agent projects; MCP tooling strategy; "agent as the new interface" experiments.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Azure AI Foundry">Azure AI Foundry</span> — the intelligence/brain layer this stack builds on</li>
+<li><span class="wikilink wikilink--unresolved" title="Model Context Protocol (MCP)">Model Context Protocol (MCP)</span> — the edge-MCP concept extends MCP into the browser/DOM</li>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Build 2026">Microsoft Build 2026</span> — event index</li>
+<li>Other Build 2026 multimodal / agent sessions in this folder</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEMSP388.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEMSP388</span><span class="pager-title">Ship faster with Claude Code and Cowork in Microsoft Foundry</span></a>
+    <a class="pager pager-next" href="DEMSP395.html"><span class="pager-dir">Next →</span><span class="pager-code">DEMSP395</span><span class="pager-title">Teach AI agents to manage context with Elastic Agent Builder</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

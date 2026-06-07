@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRK240 — Build context-aware agents: From data to decisions</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">BRK240</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=lekS6wuiHiM" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Build context-aware agents: From data to decisions</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Amanda Silver, Marco Casalaina</span>
+      <span class="meta-item">⏱️ 45m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="azure">Azure</span><span class="chip" data-tag="data">Data</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Amanda Silver (CVP, Developer Division / Microsoft Developer Tools &amp; Platforms — 2+ decades at Microsoft) and Marco Casalaina (VP, AI Products — demos)<br>
+<strong>Duration:</strong> ~45 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=lekS6wuiHiM">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>The central thesis: most agentic AI projects fail not because the models are weak, but because the agents lack <strong>context</strong> — a shared understanding of the people, data, policies, and business meaning around them. Microsoft's answer is <strong>Microsoft IQ</strong>, positioned as "the context layer for the agentic web," composed of four context sources: <strong>Work IQ</strong> (organizational/people context from M365), <strong>Fabric IQ</strong> (business knowledge — data, semantic models, ontologies), <strong>Foundry IQ</strong> (enterprise knowledge + governed agentic retrieval), and <strong>Web IQ</strong> (the world's real-time knowledge). Throughout, a single "refund processor" agent is built and grounded across all four IQs, demonstrating two recurring themes: <strong>reuse</strong> (define knowledge/context once, share across many agents) and <strong>context delegation</strong> (agents "phone a friend" sub-agent instead of cramming everything into a finite context window). The session closes on <strong>agent identity</strong> — turning the agent into an A365 template that any user can instantiate in Teams, giving it its own inbox, org-chart entry, and scoped permissions. Recurring message: intelligence (right context, not more context) makes agents <em>useful</em>; governance/trust makes them <em>deployable</em>.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>&gt;40% of agentic AI projects are expected to fail</strong> — root cause is missing context, not model capability.</li>
+<li>The hard part isn't giving agents <em>access</em> to information; it's giving them a <strong>shared understanding</strong> of people, data, policies, and business context.</li>
+<li><strong>Microsoft IQ = the context layer for the agentic web</strong>, unifying four sources: Work IQ, Fabric IQ, Foundry IQ, Web IQ.</li>
+<li>Analogy used throughout: infusing an agent with context is like onboarding a <strong>seasoned employee</strong> vs. a brand-new hire — you want every new agent to inherit institutional knowledge.</li>
+<li><strong>Web IQ</strong> is a <em>grounding platform</em> (not a search API wrapped in AI) for real-time, citation-ready, multimodal (web/news/images/video) grounding, with <strong>sub-200ms P95</strong> latency and <strong>passage-level ranking</strong> to save tokens.</li>
+<li><strong>Foundry IQ</strong> is a unified, governed <strong>enterprise knowledge layer</strong> that auto-ingests/enriches sources and does <strong>agentic retrieval</strong> (it's really a <em>sub-agent</em> that can retry and rerank), not just a static knowledge base.</li>
+<li><strong>Fabric IQ</strong> brings real-time business understanding via three layers on <strong>OneLake</strong>: unified data → <strong>semantic models</strong> (often reused straight from Power BI) → <strong>ontologies</strong> (business entities + relationships expressed as <em>verbs</em>, not tables).</li>
+<li><strong>Ontologies</strong> turn tables into business meaning ("a customer <em>sends/receives</em> a package"), support synonyms/metadata, and can be <strong>bootstrapped from existing semantic models</strong> or exposed directly as an <strong>MCP server</strong>.</li>
+<li><strong>Work IQ</strong> is the <em>people layer</em> — the agent-facing, "headless" version of Outlook/Teams/SharePoint/Word — built <strong>for agents, around organizational context, on top of (not a copy of) your existing M365 security model</strong>. Data stays in your tenant.</li>
+<li>Work IQ bundles four capabilities: <strong>Chat</strong> (agent↔people/agent), <strong>Context</strong> (grounded org understanding), <strong>Tools</strong> (governed retrieve + act as the user), and <strong>Workspaces</strong> (persistent state for long-running agents).</li>
+<li><strong>Two unifying patterns</strong>: <strong>reuse</strong> (don't redefine the same data sources/context for every agent) and <strong>context delegation</strong> (offload heavy structured-query context to a Fabric data agent so downstream agents stay lean).</li>
+<li><strong>Agent identity / A365</strong>: an agent definition becomes a <strong>blueprint → agent template</strong>; users <strong>instantiate</strong> it in Teams, giving <em>their</em> agent its own identity, inbox, Teams presence, an <strong>org-chart reporting line</strong>, and a <strong>scoped permission space</strong> (e.g. draft-but-not-send).</li>
+<li>On-behalf-of vs. own-identity: Work IQ acting "as me" inherits all my permissions; an instantiated agent gets its <strong>own, restrictable</strong> rights — a key governance lever.</li>
+<li>Closing principle: don't just stuff agents with more info (that's expensive) — give them the <strong>right</strong> context for the highest-confidence decision with minimal information. <strong>Intelligence makes agents useful; trust makes them deployable.</strong></li>
+<li>Every IQ layer is built on the <strong>same foundation of identity, governance, and security</strong>: agents are permission-aware by default, every action is traceable/explainable, policies applied consistently — because the real challenge is governing <strong>thousands</strong> of agents, not one.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="the-problem-software-is-shifting-from-apps-to-agents">The problem: software is shifting from apps to agents</h3>
+<p>Amanda Silver opens by framing this as the most profound shift she's seen in 20+ years on Microsoft developer tools/platforms: software is evolving <strong>from people-driven applications to agents defined by intent and measured by outcomes</strong>. Agents can reason, retrieve context, make decisions, and take action on a user's behalf — the long-promised "automated future."</p>
+<p>But there's a hard statistic: <strong>more than 40% of agentic AI projects are expected to fail</strong> — <em>not</em> because models aren't capable, but because <strong>agents lack the context they need to succeed</strong>. To compensate, developers today stitch together fragmented data sources, custom retrieval systems, permissions models, and orchestration logic just to make agents useful. Everyone is figuring out best practices simultaneously, so experiences end up <strong>brittle</strong>: agents hallucinate, miss policy boundaries, and break in production.</p>
+<p><strong>Reframing the challenge:</strong> it's <em>not</em> about giving agents access to information — it's about giving them a <strong>shared understanding</strong> of the people, data, policies, and business context surrounding their work. When organizations get this right, agents stop acting like isolated apps and start operating with an understanding of the enterprise around them (people, data, workflows, policies). The payoff: better accuracy, more reliable actions, <strong>dramatically less engineering</strong>, and <strong>no need to recreate context for every agent</strong>.</p>
+<p><strong>Core analogy (returns throughout the talk):</strong> it's the difference between welcoming a brand-new employee vs. having a seasoned employee on your team. The question driving the whole session: <em>how do you take the knowledge a seasoned employee has and infuse every new agent with that context as it executes?</em></p>
+<h3 id="microsoft-iq-the-context-layer-for-the-agentic-web">Microsoft IQ — the context layer for the agentic web</h3>
+<p>This is Microsoft's framing for the answer. <strong>Microsoft IQ</strong> is "the context layer for the agentic web," bringing together <strong>four sources of context</strong>:</p>
+<ul>
+<li><strong>Work IQ</strong> → organizational context (the people layer; M365).</li>
+<li><strong>Fabric IQ</strong> → business knowledge (data, metrics, semantic models, ontologies).</li>
+<li><strong>Foundry IQ</strong> → enterprise knowledge and policies (governed retrieval).</li>
+<li><strong>Web IQ</strong> → the world's knowledge (real-time, external).</li>
+</ul>
+<p>Together these give agents a shared understanding of the world, the business, and the work happening on teams — enough context to make the right decisions, take the right actions, achieve intended outcomes, and ultimately <strong>be trusted</strong>.</p>
+<h3 id="the-running-scenario-a-refund-agent-from-a-single-email">The running scenario: a refund agent from a single email</h3>
+<p>The demo's narrative device: a week earlier Amanda emailed Marco a "crazy idea" — <strong>no spec, no design doc, just an email</strong> — proposing an agent to handle an onerous refund process using all the IQs. Marco shows the journey from that email to a working agent.</p>
+<p>He starts in <strong>Copilot CLI</strong> (which has a voice mode), with <strong>Work IQ installed</strong>, and asks it to find Amanda's email and draft a <strong>spec/plan</strong> for the agent. (Live, this hits a transient error / network issues — see Demos — but the intent: Work IQ logs in <em>on your behalf</em> to retrieve the email, exactly like the "Work IQ" indicator you see at the top of M365 Copilot when it looks up your mail.) From the resulting spec they built the actual agent. The polished UI is the "fancy front end," but in <strong>Foundry</strong> the agent is shown grounded in <strong>all four IQs</strong>.</p>
+<h3 id="web-iq-grounding-agents-in-the-real-world">Web IQ — grounding agents in the real world</h3>
+<p>Amanda's deep dive. Agents don't just need to understand <em>your business</em> — often they need to understand the <strong>real world your business operates in</strong>. Example: someone delivering consumer goods needs to understand <strong>micro/local events</strong> to micro-target deliveries across markets.</p>
+<p><strong>What Web IQ is:</strong> it connects AI to <strong>authoritative real-world information</strong> — a <strong>structured, multimodal index across web, news, images, and video</strong> so agent responses are grounded in fresh, verifiable context. Crucially, it's <strong>not a traditional search API wrapped in AI</strong> — it's a <strong>grounding platform built specifically for modern agentic systems</strong>.</p>
+<p><strong>Three things that matter when building agents at scale:</strong>
+1. <strong>Quality</strong> — structured, <strong>citation-ready</strong> results across web/news/images/video so users can verify and trust answers.
+2. <strong>Speed</strong> — agent workflows are inherently multi-step (retrieval + reasoning + planning + action all add latency); <strong>sub-200ms P95 grounding</strong> keeps workflows responsive as agents chain operations.
+3. <strong>Efficiency</strong> — context windows are valuable real estate; Web IQ uses <strong>passage-level ranking</strong> to surface highest-signal info and filter noise, <strong>reducing token consumption and cost</strong> at scale.</p>
+<p><strong>Adoption:</strong> already used by <strong>frontier model providers</strong> and enterprises; <strong>available today to a few Azure customers</strong>. Customer example: <strong>NASDAQ</strong> built a solution called <strong>Board Vantage</strong>, helping boards/executives make real-time decisions where accuracy, timeliness, and trust are critical. With Web IQ, NASDAQ combines enterprise information with external web signals <strong>without compromising security or data boundaries</strong>, grounding AI in fresh authoritative info → faster external context, higher-quality responses, simpler architecture.</p>
+<h3 id="foundry-iq-your-enterprise-knowledge-governed">Foundry IQ — your enterprise knowledge, governed</h3>
+<p>"If Web IQ connects agents to the <em>world's</em> knowledge, Foundry IQ connects them to <em>your</em> knowledge." Enterprise knowledge is scattered across data platforms, content repositories, business systems, and custom apps. Today developers spend too much time stitching these together before an agent delivers value.</p>
+<p><strong>What Foundry IQ does:</strong> provides a <strong>unified knowledge layer</strong> that automatically <strong>ingests, enriches, and connects</strong> enterprise information, eliminating much of the retrieval logic/infrastructure you'd otherwise build. At runtime it <strong>intelligently retrieves the right information from the right sources</strong>, giving agents the context to answer accurately and act confidently → <strong>less infrastructure to manage, more intelligence per agent</strong>.</p>
+<p><strong>Mental model (three layers):</strong>
+- <strong>Foundation — knowledge sources:</strong> enterprise data, documents, applications, and the live web. They <em>store</em> information.
+- <strong>Context layer:</strong> memory, embeddings, and semantic models turn information into <em>understanding</em>.
+- <strong>Top — agents &amp; applications:</strong> what users interact with; they <em>retrieve, reason, and act</em>.</p>
+<p><strong>Key idea — delegation:</strong> every layer does one thing well. As a developer you <strong>don't rebuild that machinery in every agent</strong>; instead you define a <strong>knowledge base</strong> once and make it available to many agents, so you reach your solution faster.</p>
+<p><strong>Trust is built in, not bolted on:</strong> great grounding isn't only retrieval — <strong>security, governance, and policy enforcement are built directly into the platform</strong>.</p>
+<p><strong>Important nuance (revealed in Marco's demo):</strong> calling it a "knowledge base" is a bit of a <strong>misnomer</strong> — a Foundry IQ knowledge base is really a <strong>separate sub-agent doing agentic retrieval</strong>, meaning it can <strong>try and try again</strong> and <strong>rerank results</strong> before handing them to the downstream agent. This is what lets you <strong>reuse the same grounded context across many agents</strong>.</p>
+<p><strong>Customer example:</strong> <strong>Sitecore</strong> (digital experience / content management) uses Foundry IQ's reusable knowledge bases, agentic retrieval, and enterprise-grade security out of the box to make marketing/brand knowledge accessible to <strong>every agent across the org, every time, with the right permissions</strong>.</p>
+<h3 id="fabric-iq-understanding-the-business-in-real-time">Fabric IQ — understanding the business in real time</h3>
+<p>Where Foundry IQ unlocks what the org <em>knows</em>, <strong>Fabric IQ helps agents understand what's happening in real time</strong>. It connects agents to organizational data — metrics, semantic models, reports describing the current state of the business — so agents <strong>reason with the same context people use to make decisions</strong> daily.</p>
+<p><strong>Three outcomes Fabric IQ delivers:</strong> (1) a shared understanding of how the business operates, (2) insights turned into actions, (3) agents that reason over <strong>business context, not just raw data</strong>.</p>
+<p><strong>The three layers (all live in Fabric, co-located with the data they describe — not stitched together):</strong></p>
+<ol>
+<li>
+<p><strong>OneLake — unified data.</strong> A single unified data layer bringing together <strong>analytical and operational</strong> data across systems/clouds <strong>without constantly moving or duplicating it</strong>. Even non-Microsoft data can be brought into OneLake. Matters because <strong>agents are only as good as the data they can access</strong>; OneLake gives every team/app/agent the <strong>same source of truth</strong>, eliminating silos and re-authentication/auth errors → consistent, scalable, cost-effective AI.</p>
+</li>
+<li>
+<p><strong>Semantic models — data ↔ business meaning.</strong> Bridge the gap between raw data and business meaning, defining the <strong>metrics and concepts</strong> teams use to run the business. <strong>Most are already defined in Power BI</strong>, and Fabric IQ can <strong>pick them up directly</strong>. The win: when an agent asks "what happened?", it gets the <strong>same answer your Power BI dashboards give</strong>, what analysts see, and what you report to executives.</p>
+</li>
+<li>
+<p><strong>Ontologies — a live model of the business.</strong> Capture <strong>entities, relationships, rules, processes</strong> — so agents reason about <strong>customers and orders, not tables/schemas/rows</strong>. You can <strong>bootstrap an ontology from existing semantic models</strong> or build from scratch. This gives agents a <strong>native understanding of how the organization operates</strong>.</p>
+</li>
+</ol>
+<p><strong>Customer example:</strong> <strong>Q-Cells</strong> (rendered "Guano Q cells" by captions) manages energy for <strong>AI data centers</strong>, a problem too dynamic/complex for humans to reason about alone. Using Fabric IQ they built an <strong>operational model of the data center</strong> understood by people, applications, <em>and</em> AI agents — letting agents reason about the business, recommend actions, and continuously optimize operations <strong>while keeping human operators in control</strong> (augmenting, not replacing, human judgment).</p>
+<h3 id="ontologies-in-depth-marcos-walkthrough">Ontologies in depth (Marco's walkthrough)</h3>
+<p>Marco contrasts how <em>humans</em> vs. <em>agents</em> should consume Fabric data. Humans use <strong>Power BI reports</strong> built on a <strong>semantic model</strong> that defines table relationships (e.g. <strong>packages ↔ drivers</strong>, one-to-many). But you wouldn't hand Power BI reports to an agent — and a semantic model alone tells the agent the <em>relationships</em> but <strong>not what the data <em>means</em></strong>.</p>
+<p>Enter the <strong>"Generate ontology"</strong> button in Fabric. The generated ontology <em>looks</em> like a semantic model but is fundamentally different:
+- Its nodes are <strong>business entities</strong> (things that matter to the business), <strong>not tables</strong>.
+- Its edges are <strong>verbs / business relationships</strong>, <strong>not table joins</strong> — e.g. <em>"a customer can </em><em>send</em><em> or </em><em>receive</em><em> a package; a package can be </em><em>sent to</em><em> a customer."</em>
+- You can enrich entities with <strong>metadata and additional semantics</strong>, including <strong>synonyms</strong> — e.g. a "package" might be called a <em>box, case, or shipment</em>. The ontology <strong>maps those natural-language words to the underlying query</strong>, so an agent can translate human terms into correct queries.</p>
+<p><strong>Consuming an ontology two ways:</strong>
+1. <strong>Directly as an MCP server</strong> — defining an ontology automatically exposes an <strong>MCP server</strong> your agents can connect to and use.
+2. <strong>Via Foundry IQ</strong> — connect Foundry IQ to a Fabric ontology (which under the hood <strong>also connects to that MCP server</strong>, using the ontology as a data source).</p>
+<h3 id="context-delegation-the-fabric-data-agent">Context delegation &amp; the Fabric data agent</h3>
+<p>A central design insight Marco names <strong>"context delegation."</strong> Every agent sits on a model with a <strong>finite context window</strong> — "only so much you can put in your agent's head." Querying any <strong>structured data source</strong> (e.g. a lakehouse) requires <em>tons</em> of context: what each data source is, its <strong>data dictionary</strong>, <strong>example queries</strong>, and <strong>ancillary instructions</strong> — including <strong>tribal knowledge</strong> in your head. His example: the acronym <strong>SRC = "Shipping Refund Concession,"</strong> specific to this business, that no model would know unless explicitly told.</p>
+<p>Rather than connect the refund agent <em>directly</em> to the ontology, Marco connected it to a <strong>Fabric data agent</strong> — a separate agent that itself connects to <strong>multiple data sources</strong> (the ontology, a <strong>lakehouse</strong>, and others) and <strong>holds all that heavy context</strong> (descriptions, data dictionary, example queries, ancillary instructions like the SRC definition). The downstream agent then <strong>doesn't keep that context in its head</strong> — it <strong>"phones a friend,"</strong> calling the Fabric data agent to fetch structured data on demand. This <strong>exports</strong> specialized knowledge so it doesn't have to be redefined in every agent — the same <strong>reuse</strong> theme.</p>
+<p>(In Marco's environment he noted ~<strong>35 agents, 31 running</strong>, many sharing the same grounded data sources — the concrete motivation for not redefining context per agent.)</p>
+<h3 id="work-iq-the-people-layer-of-microsoft-iq">Work IQ — the people layer of Microsoft IQ</h3>
+<p>Back to Work IQ (which, in Act 1, was meant to turn Amanda's email into the plan that became the app). Think of it as the <strong>people layer</strong>: it captures <strong>what your organization knows</strong> — what people discuss over <strong>email and Teams</strong>, the data living in <strong>M365</strong> — and <strong>imbues agents with that knowledge</strong> so they understand business processes, collaboration, who's involved in a project, what's important, what decisions are already made, and what needs attention next. <em>The most valuable context isn't just data — it's the </em><em>people</em><em> collaborating to get work over the finish line.</em></p>
+<p><strong>What makes Work IQ different from the Graph / traditional APIs — three things:</strong>
+1. <strong>Built for agents, not users.</strong> Traditional API/Graph access was scaled to <strong>human interactivity</strong>; Work IQ is designed for the <strong>speed an agentic process needs</strong>.
+2. <strong>Built around organizational context, not raw data.</strong>
+3. <strong>Built on top of your existing security model — not a copy of it.</strong> Work IQ data <strong>stays in your M365 tenant</strong>. Developers <strong>don't</strong> build their own indexing systems, extract M365 data, build retrieval pipelines, or build a governance layer — Work IQ provides that foundation <strong>out of the box</strong>, so agents just get the work done.</p>
+<p><strong>Four capabilities Work IQ unifies into a single intelligence layer:</strong>
+- <strong>Chat</strong> — agents interact with people <em>and other agents</em> (the conversational, agent-to-agent collaboration you'd get in Microsoft Copilot).
+- <strong>Context</strong> — grounded understanding of what's happening across the org, drawn from <strong>emails, meetings, Teams chats, documents, conversations, workflows</strong> — without developers building their own retrieval/orchestration/index.
+- <strong>Tools</strong> — a simplified, <strong>governed</strong> way for agents to <strong>retrieve</strong> information <em>and</em> <strong>take action as the user would</strong> in M365 (send an email, send a message), usable via any agent-friendly service.
+- <strong>Workspaces</strong> — a <strong>persistent place for agents to work</strong> and store <strong>intermediate work product</strong>. As agents take on <strong>longer-running tasks</strong>, they must maintain <strong>state</strong> and share progress across phases with other agents or with humans.</p>
+<p>Together these give agents the <strong>same organizational context an employee has</strong>.</p>
+<p><strong>Partner example:</strong> <strong>Mural</strong> (captions: "Maro") integrates Work IQ so M365 context flows <strong>directly into its collaborative canvas</strong> — no copy/paste, no disconnected tools, no stale snapshots; documents, conversations, people, and decisions are shared seamlessly <strong>from M365 into Mural and back</strong>.</p>
+<h3 id="agent-identity-a365-instantiating-my-agent">Agent identity &amp; A365 — instantiating "my agent"</h3>
+<p>The finale (once the network returned). The standalone, anonymous refund agent from the start <strong>isn't how it ended up</strong>. The agent definition became a <strong>blueprint in A365</strong>, which in turn became an <strong>agent template</strong>.</p>
+<p><strong>What an agent template is:</strong> a template <strong>by itself is not an agent</strong>. Any user can go into <strong>Teams</strong> and <strong>create an instance</strong> of the template — and instantiation is what creates <em>an</em> agent. Marco emphasizes: he didn't just create <em>an</em> agent, he created <strong>"my agent."</strong> Each instance gets:
+- Its <strong>own identity</strong>.
+- An entry in the <strong>org chart</strong>, with a <strong>reporting line</strong> (Marco's refund-processor agent <strong>reports to Marco</strong>, who reports to Amanda Silver).
+- Its <strong>own Teams presence</strong> and <strong>own inbox</strong>.</p>
+<p><strong>It works end-to-end:</strong> Marco had forwarded the agent an email from <strong>"Maria Garcia"</strong> about a package that hadn't arrived — delegating that work. The agent <strong>checked its own inbox</strong>, and <strong>emailed Maria back (cc'ing Marco)</strong> — apologizing it couldn't locate the package (network gremlins) but proving it could <strong>read and send email under its own identity</strong>. The mechanism: <strong>Work IQ as the agent-facing, "headless" version of Outlook, Teams, SharePoint, and Word.</strong></p>
+<p><strong>On-behalf-of vs. own-identity (a key governance point):</strong>
+- When Work IQ acts <strong>"as me"</strong> (e.g. Copilot CLI checking my email), it <strong>inherits all my rights and permissions</strong> — it can do anything I can.
+- When you create an <strong>agent instance</strong> ("autopilot agent"), you give it its <strong>own security/permission space</strong> — e.g. <em>can send/receive email but can't write Word docs</em>, or <em>can only draft emails, not send them</em>. You can grant a <strong>different, narrower</strong> set of permissions than your own, <strong>limiting what the agent can do</strong>. Either way, it interacts with the world <strong>via Work IQ</strong>.</p>
+<h3 id="closing-synthesis">Closing synthesis</h3>
+<p>Once back online, they replayed the highlights as a synopsis:
+- <strong>Web IQ</strong> finally answered the <strong>Sandy Fire</strong> query (a real event burning ~400 miles south, near Simi Valley) in a couple of seconds — grounding the agent in <strong>real-time world data</strong>.
+- <strong>Foundry IQ</strong> provided governed enterprise knowledge retrieval.
+- <strong>Fabric data agent</strong> held all the structured-query context (data sources, descriptions, data dictionary, example queries, ancillary instructions, the <strong>SRC</strong> acronym) so downstream agents didn't have to.
+- <strong>Work IQ</strong> let the agent <strong>read and send its own email</strong>.
+- The agent was given an <strong>addressable org-chart identity</strong> so people could <strong>email it and interact in Teams</strong> — critical because end users live in M365/Teams, not technical UIs.</p>
+<p><strong>The thesis restated:</strong> the future isn't filling agents with <em>more</em> information (that makes them <strong>expensive</strong> to operate) — it's giving them the <strong>right context</strong> to make the <strong>best decision with the minimum information at the highest confidence</strong>. <strong>Intelligence makes agents useful; trust makes them deployable.</strong> Every layer of Microsoft IQ is built on the <strong>same foundation of identity, governance, and security</strong> — agents are <strong>permission-aware by default</strong>, every action is <strong>traceable and explainable</strong>, and policies are <strong>applied consistently</strong> across the ecosystem. The real challenge isn't one agent in a smart environment — it's <strong>building and governing thousands</strong>, in a unified (not bespoke) way, so you can trust and deploy them without monitoring each one individually.</p>
+<h3 id="getting-started-call-to-action">Getting started (call to action)</h3>
+<ul>
+<li>Everything shown is <strong>available to start building now</strong>.</li>
+<li><strong>Hands-on lab</strong> going deep on all the IQs.</li>
+<li>Visit the <strong>booth</strong>; join the discussion on <strong>GitHub</strong>.</li>
+<li><strong>Agents League hackathon</strong> — a chance to build with everything shown, from creative applications to autonomous agents to enterprise-grade systems. ("Don't just imagine what's possible — go build it.")</li>
+<li>Both speakers stress they deliberately do <strong>live demos</strong> (not canned screenshots) for developers — and ask forgiveness for the rough network ride.</li>
+</ul>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Microsoft IQ</strong> — umbrella "context layer for the agentic web"; unifies four context sources (Work/Fabric/Foundry/Web IQ) on a shared identity/governance/security foundation.</li>
+<li><strong>Work IQ</strong> — the <em>people layer</em>; agent-facing "headless" version of Outlook/Teams/SharePoint/Word that gives agents M365 organizational context and the ability to act as the user. Capabilities: Chat, Context, Tools, Workspaces.</li>
+<li><strong>Fabric IQ</strong> — real-time <em>business knowledge</em> layer (OneLake + semantic models + ontologies) so agents reason over business context, not raw data.</li>
+<li><strong>Foundry IQ</strong> — unified, governed <em>enterprise knowledge</em> layer doing <strong>agentic retrieval</strong> (really a retry/rerank sub-agent), reusable across agents.</li>
+<li><strong>Web IQ</strong> — real-time, multimodal (web/news/images/video) <strong>grounding platform</strong> (not a search API) with citation-ready results, sub-200ms P95 latency, passage-level ranking.</li>
+<li><strong>Azure AI Foundry</strong> ("Foundry") — where the refund agent is defined/inspected and grounded in all four IQs.</li>
+<li><strong>Copilot CLI</strong> — command-line Copilot (with a voice mode) used with Work IQ installed to find the email and draft the agent spec; also referenced as "GitHub CLI" in the closing retry.</li>
+<li><strong>Microsoft 365 Copilot (M365 Copilot)</strong> — shows a "Work IQ" indicator when looking up your email; the consumer-facing parallel to what the agent does.</li>
+<li><strong>OneLake</strong> — single unified analytical + operational data layer (Fabric) across systems/clouds without moving/duplicating data; the source of truth for agents.</li>
+<li><strong>Semantic models</strong> — define business metrics/relationships; reusable straight from <strong>Power BI</strong>; give agents the same answers as dashboards.</li>
+<li><strong>Ontologies</strong> — live model of the business (entities + verb relationships + rules/synonyms/metadata); bootstrap-able from semantic models; map natural language to queries.</li>
+<li><strong>"Generate ontology"</strong> — Fabric feature/button that scaffolds an ontology from a semantic model.</li>
+<li><strong>Fabric data agent</strong> — a separate agent connecting to multiple sources (ontology, lakehouse, etc.) that holds heavy structured-query context for <strong>context delegation</strong>.</li>
+<li><strong>Lakehouse</strong> — a structured data source the Fabric data agent connects to (requires data dictionary, example queries, etc.).</li>
+<li><strong>MCP (Model Context Protocol) server</strong> — every defined ontology is automatically exposed as an MCP server agents can connect to; Foundry IQ connects to ontologies via this.</li>
+<li><strong>Power BI</strong> — where most teams already define semantic models/reports; Fabric IQ picks these up directly.</li>
+<li><strong>A365 (Agent 365)</strong> — platform where an agent definition becomes a <strong>blueprint → agent template</strong> that users instantiate in Teams with identity, inbox, org-chart entry, and scoped permissions.</li>
+<li><strong>Microsoft Teams</strong> — where users instantiate agent templates and interact with their agent (each instance gets its own Teams presence).</li>
+<li><strong>Foundry IQ serverless developer tier</strong> — new low-friction entry point to start building (see Announcements).</li>
+<li><strong>Agents League hackathon</strong> — Build hackathon to build with the IQs.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Foundry IQ serverless developer tier</strong> — <em>introduced in this session</em> ("today we're actually introducing"); an easy, low-friction way for every developer to start building with Foundry IQ and <strong>scale to production</strong> when ready.</li>
+<li><strong>Web IQ availability</strong> — described as <strong>available today to a few Azure customers</strong> (limited availability), already used by frontier model providers and enterprises (e.g. NASDAQ Board Vantage).</li>
+<li><strong>Microsoft IQ / Work IQ / Fabric IQ / Foundry IQ</strong> — presented as the unified context layer; speakers state <strong>"everything you saw today is available for you to start building now"</strong> (specific GA/preview status per component not individually called out beyond Web IQ's limited availability and the new Foundry IQ serverless tier).</li>
+<li><strong>A365 agent identity / agent templates</strong> — agents getting their own identity, inbox, org-chart reporting line, and scoped permissions, instantiable from Teams, shown as a current capability.</li>
+<li><strong>Agents League hackathon</strong> — promoted as the venue to build everything shown.</li>
+<li><em>(No explicit dated GA milestones or version numbers were stated beyond the above.)</em></li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<p>The entire session is one continuous <strong>"refund processor" agent</strong> built from a single email, grounded across all four IQs. Notably, the <strong>network failed catastrophically mid-session</strong> (later traced to <strong>GlobalProtect VPN</strong> silently blocking traffic — "it was globally protecting you all from seeing my demos"; an audience member tipped Marco off). Marco had pre-loaded/cached fallbacks; most live pieces eventually worked once the VPN was disabled.</p>
+<ul>
+<li><strong>Email → spec in Copilot CLI (Work IQ).</strong> Asked Copilot CLI (Work IQ installed, voice mode) to find Amanda's email and draft a plan/spec for the refund agent. <em>Point:</em> Work IQ logs in <strong>on your behalf</strong> to retrieve M365 content; an email with no spec/design doc can become a buildable plan. (Hit a transient/network error live; later <strong>retried successfully</strong> at the very end and <em>did</em> find the email.)</li>
+<li><strong>The built agent in Foundry.</strong> Showed the polished front end and the same agent in <strong>Azure AI Foundry</strong>, grounded in <strong>all four IQs</strong>. <em>Point:</em> one agent, unified context.</li>
+<li><strong>Web IQ grounding (Sandy Fire).</strong> Asked the package/refund agent about the <strong>Sandy Fire</strong> (real event ~400 mi south near Simi Valley). <em>Point:</em> ground agents in <strong>real-time world data</strong> in a couple of seconds (succeeded once the network returned).</li>
+<li><strong>Foundry IQ reuse.</strong> Showed Foundry IQ connected to many data sources across ~<strong>35 agents (31 running)</strong>. <em>Point:</em> a Foundry IQ "knowledge base" is really an <strong>agentic-retrieval sub-agent</strong> (retry + rerank); define grounding once, <strong>reuse across many agents</strong> instead of redefining per agent.</li>
+<li><strong>Fabric: semantic model → ontology.</strong> Showed packages↔drivers semantic model (one-to-many), the <strong>"Generate ontology"</strong> button, and a built ontology where nodes are <strong>business entities</strong> and edges are <strong>verbs</strong> (customer <em>sends/receives</em> package), plus <strong>synonyms</strong> (box/case/shipment). <em>Point:</em> ontologies give agents <strong>meaning</strong>, not just table relationships; expose as <strong>MCP server</strong>.</li>
+<li><strong>Fabric data agent / context delegation.</strong> Showed (conceptually, network-permitting) a Fabric data agent connected to the ontology + a lakehouse holding rich context — data dictionary, example queries, ancillary instructions, and the business acronym <strong>SRC = Shipping Refund Concession</strong>. <em>Point:</em> <strong>"phone a friend"</strong> — offload heavy structured-query context to one data agent so downstream agents stay lean.</li>
+<li><strong>Agent identity (A365).</strong> Fired up the <strong>refund processor agent instance</strong>: its <strong>own identity</strong>, <strong>org-chart entry reporting to Marco</strong> (→ Amanda), <strong>own inbox + Teams box</strong>. It had been forwarded an email from <strong>Maria Garcia</strong> (missing package), <strong>checked its own inbox</strong>, and <strong>emailed Maria back, cc'ing Marco</strong>. <em>Point:</em> agents become addressable "employees" with <strong>scoped permissions</strong> (e.g. draft-not-send), interacting with the world via <strong>Work IQ</strong>.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>"&gt;40% of agentic AI projects are expected to fail"</strong> — and the cause is missing context, not model capability.</li>
+<li><strong>Sub-200ms P95 grounding</strong> latency for Web IQ.</li>
+<li><strong>Passage-level ranking</strong> in Web IQ to cut token consumption/cost.</li>
+<li>Marco's environment: <strong>~35 agents, 31 currently running</strong>, many sharing the same grounded data sources (the motivation for reuse).</li>
+<li><strong>SRC = "Shipping Refund Concession"</strong> — example of business-specific tribal knowledge a model can't know unless told.</li>
+<li><strong>Sandy Fire</strong> burning <strong>~400 miles south</strong>, near <strong>Simi Valley</strong> — the real-time Web IQ grounding example.</li>
+<li><em>"The difference between welcoming a brand-new employee to the team versus somebody who's actually a seasoned employee."</em> — the recurring analogy for infusing agents with context.</li>
+<li><em>"It's not a traditional search API … it's actually a grounding platform built specifically for the needs of modern agentic systems."</em> — on Web IQ.</li>
+<li><em>"It calls the fabric data agent to get that data."</em> — on context delegation ("phones a friend").</li>
+<li><em>"This intelligence is what makes the agents useful, and it's the trust that makes them deployable."</em> — the closing thesis.</li>
+<li><em>"It was globally protecting you all from seeing my demos."</em> — Marco, on the GlobalProtect VPN that killed the live network (the catastrophic-demo moment).</li>
+<li><em>"The challenge isn't really just building a single agent … it's actually building thousands of them"</em> — why governance/consistency matters.</li>
+<li>Customers named: <strong>NASDAQ</strong> (Board Vantage), <strong>Sitecore</strong>, <strong>Q-Cells</strong> (AI data-center energy management), <strong>Mural</strong> (Work IQ canvas integration).</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Spin up a <strong>Foundry IQ serverless developer tier</strong> knowledge base and connect it to a couple of agents to see the reuse/agentic-retrieval pattern firsthand.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: In Fabric, take an existing <strong>Power BI semantic model</strong> and hit <strong>"Generate ontology"</strong> — inspect the entity/verb model and add synonyms/metadata; expose it as an <strong>MCP server</strong> and connect an agent.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Prototype <strong>context delegation</strong> — a single <strong>Fabric data agent</strong> fronting a lakehouse (with data dictionary + example queries + business acronyms) that downstream agents call, vs. cramming context into each agent.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Test <strong>Work IQ</strong> on-behalf-of vs. an <strong>A365 agent instance</strong> with <strong>scoped permissions</strong> (e.g. draft-but-not-send) and an org-chart identity.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: What's the actual GA/preview status and pricing of each IQ (esp. Web IQ limited availability and the Foundry IQ serverless tier)? Which regions?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: How does Work IQ's permission/identity model for autopilot agents map to existing Entra/M365 governance and audit?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: How do ontologies handle drift when underlying semantic models/schemas change? Re-generate, or incremental?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: What are the cost implications of agentic retrieval (retry/rerank sub-agents) at scale vs. plain RAG?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: Azure AI Foundry agent builds; Fabric/OneLake data-grounding work; any internal "agent that needs enterprise + real-time + people context" scenario; MCP-based tool/data integrations.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+<li>Microsoft Build 2026 — Azure AI Foundry / Microsoft IQ sessions</li>
+<li>Topics: Fabric IQ · Foundry IQ · Work IQ · Web IQ · OneLake · ontologies · MCP · A365 agent identity</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="BRK227.html"><span class="pager-dir">← Previous</span><span class="pager-code">BRK227</span><span class="pager-title">Distributed systems to AI platforms with Mark Russinovich &amp; Ion Stoica</span></a>
+    <a class="pager pager-next" href="BRK247.html"><span class="pager-dir">Next →</span><span class="pager-code">BRK247</span><span class="pager-title">Scott and Mark learn...how agents reshape software engineering</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

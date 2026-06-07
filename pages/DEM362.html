@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEM362 — Building a Multi-Agent Workflow in Microsoft Fabric</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEM362</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=px76jA-Vdmw" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Building a Multi-Agent Workflow in Microsoft Fabric</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Alex (Foundry / agents &amp; orchestration), Hannah (Microsoft Fabric / data), Raphael (Copilot &amp; Agent 365 / governance &amp; compliance)</span>
+      <span class="meta-item">⏱️ 28m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="fabric">Fabric</span><span class="chip" data-tag="data">Data</span><span class="chip" data-tag="governance">Governance</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Alex (Azure AI Foundry — agents &amp; orchestration), Hannah (Microsoft Fabric — data engineering &amp; notebooks), Raphael (Microsoft 365 Copilot &amp; Agent 365 — governance, compliance &amp; data privacy, based in Germany)<br>
+<strong>Duration:</strong> ~28 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=px76jA-Vdmw">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>This demo-heavy session shows how to stand up a <strong>multi-agent, data-grounded workflow inside Microsoft Fabric</strong> using the <strong>three Microsoft "IQs"</strong> — <strong>Work IQ</strong> (your daily M365 business data: mail, Teams, calendar, files), <strong>Fabric IQ</strong> (your enterprise/business data modelled as ontologies on top of a lakehouse), and <strong>Foundry IQ</strong> (a unified knowledge base spanning multiple sources). The narrative is framed around three personas — Alex (builds agents on Foundry), Hannah (engineers the Fabric data), and Raphael (owns governance/compliance) — to make the point that a production-ready AI solution needs all three: <strong>intelligence, data, AND trust</strong>. The core technical message is that <strong>ontologies (graphs) in Fabric IQ</strong> are the fastest, most accurate way to ground a <strong>Fabric data agent</strong>, that those agents can be consumed both <em>inside</em> Fabric (internal connection) and <em>outside</em> (published to M365 Copilot, Foundry, or Copilot Studio via MCP), and that <strong>Agent 365 + Microsoft Purview</strong> finally close the trust gap by giving full observability over every agent interaction. The earlier "black box" agents (Azure OpenAI Studio era, 3–4 years ago) failed to reach production because customers couldn't see or control them; the new stack fixes that.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Three IQs = three context layers.</strong> Work IQ (M365 daily/business data), Fabric IQ (modelled business data via ontologies), Foundry IQ (a single knowledge base over many sources). They give agents <em>grounded</em> context instead of relying on the LLM's stale training data.</li>
+<li><strong>The "broken chatbot" problem is the motivation.</strong> A bespoke knowledge base (the speaker's PhD chatbot 10 years ago) works great for in-scope questions but fails instantly the moment a question falls outside it — grounding across real enterprise sources is the fix.</li>
+<li><strong>Trust was the production blocker, not intelligence.</strong> Agents built ~3–4 years ago on Azure OpenAI Studio (rigged to SharePoint Online + Blob Storage) demoed well but stayed in POC because they were black boxes — customers wouldn't put critical company data into something they couldn't see or control.</li>
+<li><strong>Work IQ is exposed as MCP servers.</strong> Inside M365 Copilot it's used implicitly; from <em>outside</em> (Foundry, Copilot Studio, other resources) you connect to Work IQ MCP servers — Copilot, Teams, Calendar, <strong>Email/Mail</strong>, Word, Dataverse, etc.</li>
+<li><strong>Human-in-the-loop differs by surface.</strong> From Foundry you must <strong>explicitly approve</strong> an agent connecting to your Work IQ Mail (it's outside M365); inside M365 Copilot the same access is pre-authorised and answers come back directly.</li>
+<li><strong>Ontologies (graphs) beat SQL for grounding.</strong> A Fabric IQ ontology (nodes + relationships) lets the agent reason about how entities relate, retrieves more grounded context, and is faster than the older path of translating the query to SQL against the lakehouse.</li>
+<li><strong>Fabric data agents work two ways.</strong> <em>Internal</em> — the data agent is part of Fabric, so querying from within Fabric is a direct internal connection. <em>External</em> — publish the agent (e.g. to <strong>M365 Copilot</strong>) and consume it elsewhere using its <strong>workspace ID + artifact/data-agent ID</strong>.</li>
+<li><strong>"Chat with your data" + auto-visualisation.</strong> Once published, non-Fabric users can ask natural-language questions, convert time-zones, compute revenue, and even ask for a plot — Copilot generated <strong>Python (matplotlib)</strong> code and rendered the chart inline in M365 Copilot.</li>
+<li><strong>Fabric IQ data agents need SDK-based config, testing &amp; evaluation.</strong> You can't fully configure/test/evaluate a Fabric data agent in the portal — use the <strong>Fabric data agent SDK</strong> (set workspace ID, Azure OpenAI URL, temporary test token) to query, then run <strong>agent evaluation</strong> on critical prompts before production.</li>
+<li><strong>Fabric has no native agent orchestration — so use Microsoft Agent Framework or pipelines.</strong> Orchestration can be done via <strong>Copilot Studio</strong> or <strong>Microsoft Agent Framework</strong> (code agent → agent calls), but to stay <em>natively on Fabric</em> the speaker orchestrates a <strong>multi-agent workflow via Fabric pipelines + notebooks</strong> (prep data → query data agent → enrich from Foundry IQ → send email via Foundry agent + Work IQ Mail MCP).</li>
+<li><strong>Agent 365 + Purview = the trust/observability layer.</strong> Agents created on Foundry, Copilot Studio, Fabric, or Copilot all surface in <strong>Agent 365</strong>; agent activity flows into <strong>Microsoft Purview</strong>, where you see every interaction, <strong>sensitive info types</strong>, and alarms (e.g. someone querying invoice data they're not allowed to) and can hunt the user.</li>
+<li><strong>Everything ships as reusable templates.</strong> All the demo code (data-agent notebooks, evaluation notebooks, orchestration) will be published to a <strong>repo after Build</strong>, anonymised, so attendees can run it on their own data.</li>
+<li><strong>Medallion architecture still underpins it.</strong> Spark/Spark Express ingestion → <strong>bronze/silver/gold lakehouse</strong> → semantic model → <strong>generate ontology</strong> → feed the data agent.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-agents-fabric-and-the-three-iqs">Framing: agents, Fabric, and the three IQs</h3>
+<p>The session is explicitly about <strong>agents + Fabric + the three IQs</strong>. The speaker stresses these are three distinct context systems and uses a <strong>three-person team metaphor</strong> to map them:
+- <strong>Alex (the speaker on Foundry):</strong> builds the agent, handles orchestration, coding.
+- <strong>Hannah (the middle / Fabric):</strong> provides the data, runs the notebooks, prepares data for different use cases.
+- <strong>Raphael (Germany / governance):</strong> owns <strong>Copilot + Agent 365</strong>, data privacy and compliance. The blunt point: <em>"You can create your data, but if the compliance guy is not on your side, you're done."</em> In Germany especially, data-privacy concerns can kill the whole project — so governance is a first-class pillar, not an afterthought.</p>
+<p>The deeper message tying it together is Satya's framing of <strong>intelligence + trust</strong>: the intelligence has been available for years, but <strong>trust</strong> was missing, which is why earlier agents never went to production.</p>
+<h3 id="the-broken-chatbot-problem-why-grounding-matters">The "broken chatbot" problem (why grounding matters)</h3>
+<p>Drawing on his <strong>PhD ~10 years ago</strong>, the speaker built a custom database/knowledge base for a chatbot. Users were initially happy — but the moment they asked something <em>outside</em> the knowledge base, it <strong>failed instantly</strong>. This is the classic "broken chatbot": great inside its scope, useless outside it. The whole modern stack exists to ground agents across <strong>real, live enterprise data</strong> so they don't fall off a cliff at the edge of a static KB.</p>
+<h3 id="work-iq-your-dailybusiness-m365-data-as-context-and-as-mcp">Work IQ — your daily/business M365 data, as context (and as MCP)</h3>
+<p><strong>Work IQ</strong> surfaces the <strong>daily business data in your tenant</strong>: emails, meetings, files, chats — whatever lives in M365. Two consumption modes:
+- <strong>Inside M365 Copilot:</strong> Work IQ is used implicitly/underneath; access to your data is already authorised, so answers come back directly.
+- <strong>Outside (Foundry, Copilot Studio, other resources):</strong> Work IQ is exposed as <strong>MCP servers</strong> that can be requested from elsewhere. There are several (Work IQ <strong>Copilot, Teams, Calendar, Email/Mail, Word, Dataverse</strong>, …).</p>
+<p><strong>Demo — Foundry IQ agent + Work IQ Mail (MCP):</strong>
+- The speaker created an <strong>"IQ agent"</strong> on Foundry running <strong>GPT-5</strong> (referred to as "GPT-5 for" in the captions — the chat model grounding the agent). Without a tool, it can only answer from the model's training knowledge; enabling <strong>web search</strong> adds current web data beyond the LLM's training cutoff.
+- He connects <strong>Work IQ Mail as an MCP</strong> tool. Now the agent can query his mailbox from <em>Foundry</em> (which is <strong>outside M365</strong>).
+- Asking it to summarise mail triggers a <strong>human-in-the-loop approval</strong> — because this is Foundry, not M365, you must explicitly approve the agent connecting to your work mail. (On the corporate/M365 side the same request just answers, because Copilot is pre-authorised to use your data, with Work IQ underneath.) He approves, and email summaries come back. He notes he can filter to e.g. <em>security emails only</em>.</p>
+<h3 id="copilot-studio-for-visibility-into-the-agents-steps">Copilot Studio for visibility into the agent's steps</h3>
+<p>The speaker switches to <strong>Copilot Studio</strong> (another place, like Foundry, where you author agents) because it gives <strong>more insight into what's happening behind the scenes</strong>. He can connect the same tools — <strong>Work IQ Mail</strong>, <strong>Foundry agents</strong>, <strong>Fabric data agents</strong> — and watch the orchestration trace:
+- <strong>Sequence observed:</strong> Work IQ Mail initialised → <strong>data agent</strong> initialised → agent decides which to call.
+- For <em>"show me, for each store, any freezer operated… and create a draft mail"</em>, the <strong>freezer data lives in Fabric</strong>. Copilot Studio shows: it searches email (Work IQ Mail MCP) → passes the data question to the <strong>Fabric data agent (MCP)</strong> → the data agent returns rows (raw output shows <strong>Paris</strong> and <strong>Berlin</strong>) → it then calls MCP to <strong>create a draft email</strong> ("Dear team, please…").
+- <strong>Point proven:</strong> a single agent in Copilot Studio <strong>combines data from multiple sources</strong> — Work IQ Mail MCP + Fabric data agent MCP — and returns a synthesised result (here, a drafted email grounded in store/freezer data).</p>
+<h3 id="foundry-iq-one-knowledge-base-over-many-sources">Foundry IQ — one knowledge base over many sources</h3>
+<p><strong>Foundry IQ</strong> is a <strong>knowledge base</strong> you build over multiple connection types: <strong>Azure AI Search, web, SharePoint, Fabric IQ, Azure Blob Storage</strong>. You then query the knowledge base ("I don't know where this data lives — please find it") and the agent goes and retrieves it. So far this is all achievable in a <strong>single agent</strong> (Work IQ + Fabric data agent + knowledge base all via MCP) — the multi-agent orchestration comes later.</p>
+<h3 id="fabric-iq-and-ontologies-the-heart-of-the-talk">Fabric IQ and ontologies — the heart of the talk</h3>
+<p>The "new thing" the speaker is most excited about is <strong>Fabric IQ</strong> and its support for <strong>ontologies</strong>. Echoing his PhD work, he argues an <strong>ontology (a graph of nodes + relationships)</strong> is <strong>the quickest, most accurate way to provide knowledge to an agent</strong>:
+- A graph lets the agent figure out that, e.g., a <strong>sales</strong> node relates to other nodes, so when you ask a question it can traverse those relationships instead of guessing table joins.
+- <strong>Pipeline / medallion flow:</strong> ingest data via pipelines (<strong>Spark / "Spark Express"</strong>) → store on <strong>lakehouse</strong> → <strong>silver</strong> (enrich + clean) → <strong>gold</strong> → expose as <strong>semantic model</strong> or <strong>ontology</strong> to the data agents.
+- <strong>Real-world example — Swiss Airlines:</strong> moved from on-prem to Fabric using <strong>source-domain-aligned data products</strong> on bronze/silver, <strong>shortcut</strong> them, built <strong>customer-aligned data products</strong>, then a <strong>semantic model</strong>, ready to feed data agents.</p>
+<p><strong>Demo — Fabric data agent over an ontology (internal):</strong>
+- The ontology contains <strong>freezers, products, sales</strong> data. Asking <em>"which store is lower than 46%"</em> returns <strong>Berlin and Paris</strong> — the same answer seen earlier from Foundry, but here it's <strong>easier/faster because the data agent is part of Fabric (internal connection)</strong>.
+- Looking at the completion trace: the query was <strong>grounded</strong> — it expanded into a richer, more contextual question (listing each store's freezers and recorded values) before running, giving the agent better information.
+- <strong>Ontology vs SQL:</strong> previously (going straight to the lakehouse) the agent <strong>translated to SQL</strong>, which works but <strong>takes more time</strong>. The speaker's long-held view (from the 10-year-old chatbots that never used SQL) is that a <strong>graph/ontology underneath</strong> is the better path. ("HANA"/"Hana" in the captions is a caption garble — read it as the data-agent answer/engine, not SAP HANA.)</p>
+<h3 id="publishing-a-fabric-data-agent-for-external-use">Publishing a Fabric data agent for external use</h3>
+<p>To use the data agent <strong>outside</strong> Fabric you must <strong>publish</strong> it:
+- Publish target includes <strong>Microsoft 365 Copilot</strong> (must be explicitly selected — it isn't auto-selected). Click next, and the data agent shows up in M365 Copilot.
+- <strong>"Chat with your data" in M365 Copilot:</strong> someone <em>not</em> familiar with Fabric (Raphael, or Alex from Foundry) can now query it naturally — "give me the second [value] per store" (Paris, Berlin), <strong>convert timestamps to my time zone</strong>, <strong>revenue per store</strong>, <em>"tell me about the data stored"</em> (it surfaces telemetry data, storing data, etc.).
+- <strong>Inline visualisation:</strong> ask it to <strong>define a window and plot</strong> the data — Copilot <strong>wrote Python (matplotlib) code</strong> and rendered the chart <strong>directly inside M365 Copilot</strong>, turning bare numbers into a picture on demand.
+- <strong>Publishing to Foundry:</strong> alternatively publish to get the <strong>workspace ID + data agent (artifact) ID</strong>, then in Foundry add it as a <strong>data agent</strong> using a new or existing connection + workspace ID + artifact ID — then you can query the data agent's data from Foundry.</p>
+<h3 id="enabling-and-building-ontologies">Enabling and building ontologies</h3>
+<ul>
+<li><strong>Admin prerequisite:</strong> in the <strong>admin portal</strong> you must enable two items — the <strong>ontology items</strong> and the <strong>graph preview</strong> — before you can create ontologies.</li>
+<li><strong>Build path:</strong> from the <strong>lakehouse → create the semantic model → confirm it → "generate ontology"</strong>. After a few minutes the ontology exists.</li>
+<li>In the ontology view, for e.g. <strong>products</strong> you see <strong>properties</strong> and <strong>connections/relationships</strong>. Unlike raw SQL (where you might see a 1-to-many FK but not know what it <em>means</em>), you can <strong>specify the semantic relationship</strong> — his memorable example: <em>"Alex is speaking right now at the conference; there are many speakers but only one conference,"</em> i.e. you can name the relation explicitly so agents reason correctly. You can also add new entities and even attach <strong>another model to predict from stocks</strong>.</li>
+</ul>
+<h3 id="fabric-iq-data-agents-sdk-config-testing-evaluation">Fabric IQ data agents: SDK config, testing &amp; evaluation</h3>
+<p>A key limitation: a <strong>data agent in the cells/portal</strong> can be created but <strong>not fully configured, tested, or evaluated in the portal</strong>. To close that gap, use the <strong>Fabric data agent SDK</strong>:
+- Configure: <strong>workspace ID</strong>, <strong>Azure OpenAI URL</strong>, <strong>temporary test token</strong>; set up Azure OpenAI; then <strong>query the data agent from notebooks</strong> in code.
+- After SDK setup, <strong>connect and run evaluation</strong> — <em>the data agent should be evaluated by you, not by end users in production</em>. Create an evaluation <strong>run on evaluation data</strong>, define <strong>critical prompts</strong>, run <strong>agent evaluation</strong>, retrieve the summary, store, and <strong>visualise</strong> results.
+- Rationale: in production you <strong>must know what your data agent is doing</strong> — you can't just deploy and wait for end users to report "it doesn't work."
+- <strong>All this code (data-agent notebooks + evaluation notebooks) ships to a public repo after Build</strong>, anonymised, runnable on your own data.</p>
+<h3 id="multi-agent-orchestration-on-fabric-the-title-payoff">Multi-agent orchestration on Fabric (the title payoff)</h3>
+<p>Crucial caveat: <strong>Fabric has no native agent orchestration</strong>. Your options:
+- <strong>Copilot Studio</strong> — create the orchestration there, or
+- <strong>Microsoft Agent Framework</strong> — code the agents and orchestrate (agent A finishes → calls agent B → workflow), but that's <em>off</em> Fabric.
+- <strong>To stay natively on Fabric</strong>, the speaker orchestrates via <strong>Fabric pipelines + a chain of notebooks</strong> (all to be in the repo). The notebooks: <strong>prepare the data → produce a summary → ask the data agents for information → call Foundry IQ to enrich the data</strong> (you can call out to whatever you need). This mirrors Microsoft Agent Framework's pattern (one agent triggers the next) but <strong>keeps the whole workflow inside Fabric</strong>.
+- <strong>Closing the loop / output:</strong> at the end it can pull from <strong>Blob Storage</strong> (or another source), then <strong>connect to Foundry agents</strong> and use the <strong>Work IQ Mail MCP</strong> to <strong>send the result as an email</strong>. So the multi-agent workflow combines and enriches data across sources and finishes with an action (email).
+- The notebooks are delivered <strong>as templates</strong> — e.g. for calling <strong>Azure data agents</strong> you set the <strong>payload</strong>, handle the <strong>run authorization</strong>, then call the data agent from a notebook in code, and feed results into <strong>evaluation/running on Foundry</strong>.</p>
+<h3 id="agent-365-purview-the-trust-observability-finale">Agent 365 + Purview — the trust &amp; observability finale</h3>
+<p>The last pillar — and the answer to the old "black box" failure — is <strong>Agent 365</strong>:
+- Agents authored on <strong>Foundry, Copilot Studio, Fabric, and Microsoft Copilot</strong> all become <strong>visible in Agent 365</strong>, including <strong>data agents</strong>. You can see what information each agent produces and which user triggered it.
+- <strong>Agent activity flows into Microsoft Purview.</strong> From an agent's activity you drill into Purview and see <strong>all interactions</strong> across <strong>different apps</strong> (data agent, M365 Copilot, M365 app, …).
+- Critically, Purview surfaces <strong>sensitive info types</strong> and <strong>alarms</strong>: if something goes wrong — e.g. someone asks a data agent about an <strong>invoice they're not allowed to see</strong> — it shows up as an <strong>alarm</strong>, and you can <strong>hunt that user</strong> and investigate.
+- This is the trust layer that makes the difference between a slick POC and a <strong>production</strong> deployment: full insight into "what is happening on your side."</p>
+<h3 id="throughline">Throughline</h3>
+<p>The recurring theme: agents have been intelligent for years, but <strong>production requires trust = visibility + control + governance + evaluation</strong>. The 2026 stack (three IQs for grounding, ontologies for accurate/fast knowledge, SDK-based evaluation, pipeline/Agent-Framework orchestration, and Agent 365/Purview for observability) is the speaker's argument that the "puzzle is now complete."</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Microsoft Fabric</strong> — the unified data platform that is the home base for the whole workflow; data agents run as part of Fabric (internal connections).</li>
+<li><strong>Fabric IQ</strong> — Fabric's intelligence/knowledge layer; introduces <strong>ontologies (graphs)</strong> over business data to ground agents.</li>
+<li><strong>Ontology / graph (in Fabric IQ)</strong> — nodes + named relationships modelling business data; fastest/most accurate grounding for agents vs SQL.</li>
+<li><strong>Fabric data agent</strong> — agent that answers questions over Fabric data (ontology or lakehouse); usable internally or published externally.</li>
+<li><strong>Fabric data agent SDK</strong> — programmatic config/query/test of data agents from notebooks (workspace ID, Azure OpenAI URL, test token); enables agent evaluation.</li>
+<li><strong>Lakehouse / medallion (bronze → silver → gold)</strong> — storage + refinement layers feeding semantic models/ontologies.</li>
+<li><strong>Spark / "Spark Express"</strong> — ingestion/compute for pipelines in Fabric (caption term — read as Fabric Spark).</li>
+<li><strong>Semantic model</strong> — built from the lakehouse; the basis from which an ontology is "generated."</li>
+<li><strong>Fabric pipelines + notebooks</strong> — used to orchestrate the multi-agent workflow natively on Fabric.</li>
+<li><strong>Work IQ</strong> — context layer over M365 daily/business data (mail, meetings, files, chats); exposed as MCP servers externally.</li>
+<li><strong>Work IQ MCP servers</strong> — Copilot, Teams, Calendar, <strong>Email/Mail</strong>, Word, Dataverse, etc. — connect to your M365 data from outside M365.</li>
+<li><strong>Foundry IQ</strong> — a single knowledge base over many sources (Azure AI Search, web, SharePoint, Fabric IQ, Azure Blob Storage).</li>
+<li><strong>Azure AI Foundry ("Foundry")</strong> — where Alex builds/orchestrates agents; can consume Work IQ Mail (MCP) and Fabric data agents.</li>
+<li><strong>Microsoft Copilot Studio</strong> — alternative agent-authoring + <strong>orchestration</strong> surface; gives step-by-step visibility into tool calls.</li>
+<li><strong>Microsoft 365 Copilot</strong> — consumes published Fabric data agents; "chat with your data," timezone conversion, revenue queries, inline plotting.</li>
+<li><strong>GPT-5</strong> — the chat model grounding the demo Foundry agent ("GPT-5 for" in captions).</li>
+<li><strong>Web search (agent tool)</strong> — adds current web data beyond the LLM's training cutoff.</li>
+<li><strong>Microsoft Agent Framework</strong> — code-first multi-agent orchestration (agent → agent calls); alternative to Fabric pipelines/Copilot Studio.</li>
+<li><strong>Microsoft Agent Framework agent evaluation</strong> — running critical prompts against the agent to validate before production.</li>
+<li><strong>Agent 365</strong> — single pane showing all agents (Foundry/Copilot Studio/Fabric/Copilot) and their activity; the production governance gateway.</li>
+<li><strong>Microsoft Purview</strong> — receives agent activity; shows interactions, <strong>sensitive info types</strong>, alarms, and user hunting.</li>
+<li><strong>Azure OpenAI</strong> — used in SDK config (Azure OpenAI URL + token) to power data-agent queries.</li>
+<li><strong>Azure Blob Storage</strong> — a data source (and example output source) in the workflow.</li>
+<li><strong>Azure AI Search</strong> — a Foundry IQ knowledge-base connection type.</li>
+<li><strong>SharePoint Online</strong> — a knowledge/data source (also used in the older Azure OpenAI Studio agents).</li>
+<li><strong>Dataverse / Teams / Calendar / Word</strong> — additional Work IQ MCP-connectable data surfaces.</li>
+<li><strong>matplotlib (Python)</strong> — the library Copilot auto-generated code with to plot data inline in M365 Copilot.</li>
+<li><strong>Azure OpenAI Studio (formerly Azure AI / "Azure Open AI Studio")</strong> — the ~3–4-years-ago tooling where the speaker built the earlier "black box" agents (historical contrast).</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Work IQ surfaced as MCP and live in the demo tenant</strong> — the speaker repeatedly notes the green "new" Work IQ status he'd "never seen until today," up and running. Presented as new/emerging functionality (preview-stage feel; **explicit GA/preview status not st</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEM351.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEM351</span><span class="pager-title">AI Skills Navigator: Accelerate tech skills with personalized learning</span></a>
+    <a class="pager pager-next" href="DEM367.html"><span class="pager-dir">Next →</span><span class="pager-code">DEM367</span><span class="pager-title">Onboarding a Developer with AI: A Better First-Day Experience</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

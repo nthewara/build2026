@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRK223 — From rows to reasoning: Designing databases for AI apps and agents</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">BRK223</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=E5PHOR7cz2w" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">From rows to reasoning: Designing databases for AI apps and agents</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Charles Federson</span>
+      <span class="meta-item">⏱️ 45m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="azure">Azure</span><span class="chip" data-tag="databases">Databases</span><span class="chip" data-tag="ai">AI</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Charles Federson (Lead PM, Postgres @ Microsoft, host) · James (Cosmos DB expert) · Bob (SQL expert) · Abe (Postgres / Horizon DB expert)<br>
+<strong>Duration:</strong> ~45 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=E5PHOR7cz2w">YouTube</a><br>
+<strong>Code:</strong> GitHub repo <code>aka.ms/build26/BRK223</code> (all demos + more)</p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>A fast, demo-heavy tour of how Microsoft's three flagship database engines — <strong>Cosmos DB</strong>, <strong>Azure SQL</strong>, and <strong>PostgreSQL</strong> — are evolving to natively power AI apps and agents, so application logic (memory, embeddings, search, orchestration) can live <em>inside</em> the database rather than in external Python services. The headline announcement is <strong>Azure Horizon DB</strong>, a brand-new Postgres service that <strong>separates compute from storage</strong> (true open-source Postgres on top of a new log/page-server storage engine on Azure Storage), delivering <strong>~3× transactional throughput</strong> (~11.5–12K TPS vs ~4K for self-managed Postgres) and AI features baked in (AI model management, AI pipelines via the new <strong>PG durable</strong> extension, DiskANN vector search). Cosmos DB gains an <strong>Agent Memory Toolkit</strong> for agent short-/long-term memory, and Azure SQL gains a new <strong>Azure SQL container</strong> (private preview) for offline-first local dev that moves to Azure SQL Hyperscale unchanged. The throughline: <strong>bring AI into the database</strong> and keep the same code from laptop to cloud.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Three engines, one theme:</strong> Cosmos DB (planet-scale NoSQL), Azure SQL (30+ yr relational engine), and PostgreSQL are all being re-engineered so AI workloads (memory, embeddings, vector/hybrid search, agent orchestration) run <em>natively in the database</em>.</li>
+<li><strong>Cosmos DB → Agent Memory Toolkit:</strong> A new Python SDK + accelerator that generates, processes, stores, and retrieves agentic memories. Uses Cosmos DB <strong>change feed</strong> + <strong>Azure Durable Functions</strong> + <strong>Microsoft Foundry</strong> models to turn short-term memories into long-term (episodic/procedural/fact) memories automatically.</li>
+<li><strong>Azure SQL → Azure SQL container (private preview):</strong> A <em>versionless</em> SQL Server that runs locally on your laptop but <strong>behaves like Azure SQL</strong>, including local AI models for embedding + inference. Build AI apps offline-first, then move to Azure SQL Database / Hyperscale with <strong>identical T-SQL</strong>.</li>
+<li><strong>Azure SQL → AI inside the engine:</strong> Demonstrated regex parsing of unstructured text into JSON, <strong>vector hybrid search</strong> (new <code>vector search</code> T-SQL with <code>TOP ... APPROXIMATE</code>, <code>vector_distance</code>, vector index seek + JSON index seek), and an in-DB agent that mitigates incidents — all on a laptop.</li>
+<li><strong>Horizon DB is the big announcement:</strong> A new Azure Postgres service that <strong>separates compute and storage</strong>. Above the line = <strong>true open-source Postgres</strong> (not a derivative); below = a new storage engine (log/WAL server + page servers, backed by Azure Storage, striped across availability zones).</li>
+<li><strong>Horizon DB performance:</strong> Up to <strong>3× faster</strong> transactional processing and vector search. Live TPC benchmark: self-managed Postgres on VMs ≈ <strong>4,000 TPS</strong> vs Horizon DB ≈ <strong>11,500–12,000 TPS</strong>, same region/hardware/AZs.</li>
+<li><strong>Horizon DB scale &amp; resilience:</strong> Storage <strong>autoscales to 128 TB</strong>, zone-redundant ("zone-resilient") with cross-zone failover; scale out across read replicas "with a couple of clicks" — <strong>no re-architecture, no downtime</strong>.</li>
+<li><strong>AI Model Management (Horizon DB):</strong> Pre-register Foundry models (e.g. embedding, chat, <strong>Cohere rerank</strong>) at provisioning time, then invoke them directly via <strong>SQL AI functions</strong> (embedding generation, re-ranking) — no separate Foundry plumbing needed.</li>
+<li><strong>AI Pipelines via PG durable:</strong> New <strong>open-source</strong> extension (<code>Microsoft/PG durable</code>) that implements <strong>durable functions natively in Postgres</strong>. Lets you create RAG pipelines (chunk → embed → store) in <strong>~8 lines of SQL</strong>, running asynchronously in the background so OLTP write latency (milliseconds) is unaffected.</li>
+<li><strong>Postgres community investment is huge:</strong> Microsoft made <strong>~11% of all commits</strong> to Postgres 19 (~<strong>64,000 lines changed</strong>, ~<strong>8% of all changes</strong>), including async I/O in the query engine and observability work. Postgres 19 ships ~<strong>end of September</strong>.</li>
+<li><strong>Zero cloud lag for major versions:</strong> Microsoft lit up <strong>Postgres 18</strong> in the managed service on the <strong>same day</strong> as community GA (vs a 6-month wait for PG 15/16 a few years ago).</li>
+<li><strong>Deep VS Code tooling:</strong> Object explorer, GitHub Copilot authoring SQL, redesigned <strong>visual query plans</strong> (tree + table view) with a <strong>Copilot icon on every operator</strong> for AI-assisted query debugging in agent mode, real-time live monitoring dashboards, and visual pipeline debugging. <strong>Works against any Postgres</strong> (local or any cloud).</li>
+<li><strong>"In the database" philosophy:</strong> Charles repeatedly argues for putting application/AI logic <em>in</em> the database — the point is <strong>choice</strong>, and Horizon makes the in-DB path first-class.</li>
+<li><strong>Demo honesty:</strong> The live Horizon DB RAG ingestion demo failed twice on stage ("praying to the demo gods"); the presenter fell back to a pre-run backup cluster — a real-world reminder that the pipeline is async and depends on correct DB/table targeting.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-scope">Framing &amp; scope</h3>
+<ul>
+<li>Charles Federson leads product management for <strong>Postgres at Microsoft</strong> and hosts the session. He's joined by three deep database experts who drive the demos: <strong>James</strong> (Cosmos DB), <strong>Bob</strong> (SQL), and <strong>Abe</strong> (Postgres / Horizon DB).</li>
+<li>Four laptops on the podium → this is a <strong>very demo-heavy</strong> session. Plan: <strong>Cosmos DB → Azure SQL → Horizon DB</strong> (the bulk of time on Horizon, the morning's big Postgres announcement).</li>
+<li>The three engines positioned:</li>
+<li><strong>Cosmos DB</strong> — Microsoft's <strong>planet-scale NoSQL</strong> platform; powers some of the biggest apps on the planet, <strong>including OpenAI</strong>.</li>
+<li><strong>Azure SQL</strong> — long-standing enterprise relational engine, <strong>30+ years</strong> of shipping, extremely performant, and on Azure with <strong>Hyperscale</strong> extremely scalable.</li>
+<li><strong>PostgreSQL</strong> — the engine <strong>a lot of AI apps are being built on today</strong>.</li>
+<li>Many announcements were made at Build beyond the keynote. There are dedicated <strong>aka.ms blog links</strong> per database for the full announcement detail, and <strong>all demo code is already in a GitHub repo</strong> (<code>aka.ms/build26/BRK223</code>).</li>
+</ul>
+<h3 id="cosmos-db-agent-memory-toolkit">Cosmos DB — Agent Memory Toolkit</h3>
+<ul>
+<li><strong>Why memory matters:</strong> Agents need to remember past events and context to make the best future actions. The <strong>Agent Memory Toolkit</strong> makes this easy to do at scale on Cosmos DB.</li>
+<li><strong>What it is:</strong> Shipped as a <strong>Python SDK</strong> <em>and</em> an <strong>accelerator</strong> for generating, processing, storing, and retrieving agentic memories in Cosmos DB.</li>
+<li><strong>How it works under the hood:</strong></li>
+<li>Uses <strong>Cosmos DB change feed</strong> to automatically process memories.</li>
+<li>Processing runs in an <strong>Azure Durable Function</strong>.</li>
+<li>Enrichment/embeddings use models deployed in <strong>Microsoft Foundry</strong> (an LLM + an embedding model).</li>
+<li><strong>Short-term (local) memory:</strong> While a conversational thread is open, you keep <strong>short-term memories in client memory</strong> for instant, low-latency reads. SDK methods: <code>add_local</code> (write) and <code>get_local</code> (read) on the memory collection.</li>
+<li><strong>Persisting to long-term memory:</strong> Use <code>push_to_cosmos</code> to commit/persist short-term memories into Cosmos DB. Benefits:</li>
+<li><strong>Rehydrate agentic threads</strong> later.</li>
+<li>Trigger the <strong>change-feed processor</strong> to transform short-term memories into long-term forms: <strong>summarizations</strong> of long-running threads, and <strong>episodic / procedural / fact</strong> memories.</li>
+<li><strong>Processing modes:</strong> You can orchestrate memory processing <strong>client-side</strong> directly from the SDK (it talks to Cosmos DB to retrieve memories and to Foundry models — LLM + embedding — to process/enrich them) <strong>or offload it to the Azure Durable Function</strong> so it happens automatically with no orchestration after provisioning.</li>
+<li><strong>Capabilities demonstrated:</strong></li>
+<li>Generate a <strong>thread summary</strong> (example: "user asked for a quick account read on Northwind Analytics…").</li>
+<li><strong>Memory extraction</strong> — pull out key facts and attributes for the agent to use.</li>
+<li>Surface <strong>risks + reasoning</strong> behind why those risks matter to the customer.</li>
+<li><strong>Net:</strong> An SDK for <strong>CRUD + semantic search</strong> over memories; persist short-term in Cosmos DB; auto-process into long-term via Durable Functions + Foundry; then <strong>point reads</strong> plus <strong>semantic and hybrid search</strong> to retrieve the most relevant data.</li>
+</ul>
+<h3 id="azure-sql-ai-apps-in-the-engine-offline-first-dev">Azure SQL — AI apps in the engine, offline-first dev</h3>
+<ul>
+<li><strong>Scenario (Bob's demo):</strong> Build a <strong>live-site support system</strong> entirely with SQL — support transactions, search incidents and <strong>run books</strong> (troubleshooting guides), inspect the live state of the system, and use AI, <strong>all inside the database</strong>. Constraint: build it on a laptop first, then move to Azure unchanged.</li>
+<li><strong>Architecture (local):</strong></li>
+<li>A <strong>Blazor app</strong> (Aspire) running on the laptop.</li>
+<li>A <strong>Copilot agent</strong> that uses an <strong>MCP endpoint</strong>.</li>
+<li><strong>Data API Builder (DAB)</strong> — zero-code exposure of the database as both a <strong>REST endpoint</strong> and an <strong>MCP server</strong>.</li>
+<li><strong>Azure SQL container (brand new):</strong> behaves like a SQL Server but "behaves like Azure," running entirely on the laptop. <strong>All AI models live in the container</strong> — <strong>local models for both embedding and inferencing</strong>. The <em>entire</em> stack is local.</li>
+<li><strong>Schema &amp; tooling:</strong> In <strong>VS Code</strong> with the SQL extension you can browse the schema in a <strong>designer</strong>, and there's a new <strong>"chat with your schema"</strong> feature. Tables include incidents, archives, <strong>vector embeddings</strong>, <strong>JSON</strong>, and run books.</li>
+<li><strong>Ingesting unstructured text → JSON:</strong> Take an engineer's freeform note about a live-site problem and use <strong>regular expressions built into T-SQL</strong> to parse out the error message, build type, wait types, etc., storing the result as <strong>JSON inside the incident</strong> row. The new incident then appears in the Blazor website.</li>
+<li><strong>Vector hybrid search (T-SQL):</strong> A stored procedure combines:</li>
+<li>New <strong><code>vector search</code> T-SQL with <code>TOP ... APPROXIMATE</code></strong> over incident history.</li>
+<li><strong><code>vector_distance</code></strong> to search run books, <strong>combined with a JSON index seek</strong>.</li>
+<li>Result: similar past incidents <strong>plus</strong> matching troubleshooting guides. Execution plan shows a <strong>vector index seek</strong> + a <strong>JSON index seek</strong> combined into the hybrid search.</li>
+<li><strong>In-DB agent ("mitigate incident 512"):</strong></li>
+<li>An <strong>agent markdown file</strong> declares the tools (from <strong>Data API Builder</strong>).</li>
+<li>A <strong>skill file</strong> defines the <em>protocol</em> for using those tools (e.g. don't build indexes when the system is busy).</li>
+<li>The agent uses DAB tools to inspect the system, find incidents, read run books, and run <strong>diagnostic procedures</strong> (do indexes exist? is the system busy?), then calls a <strong>stored procedure</strong> that invokes <strong>local AI models in the container</strong> to generate a <strong>mitigation plan</strong>.</li>
+<li>Output: a concrete plan (e.g. <strong>create an index</strong>, <strong>lower transaction scope</strong>) with a <strong>confidence level</strong> and <strong>verification steps</strong> to confirm the fix works — all produced on the laptop.</li>
+<li><strong>Moving to Azure (the payoff):</strong></li>
+<li>Blazor app → <strong>Azure Static Web App</strong>.</li>
+<li>Copilot agent → unchanged.</li>
+<li>Data API Builder → runs as a <strong>container in Azure</strong>.</li>
+<li>Database → <strong>Azure SQL Database</strong> (Hyperscale).</li>
+<li>AI → <strong>Azure OpenAI</strong> (since all AI access is via <strong>URLs</strong>, embeddings + chat just point at Azure).</li>
+<li>The <strong>T-SQL is identical</strong>; switching from the Azure SQL container to Azure SQL Database is "really simple."</li>
+<li><strong>Mental model:</strong> Think of a <strong>versionless SQL Server locally</strong> that <strong>behaves like Azure SQL</strong> but with the full power of SQL Server — build powerful AI apps <strong>offline-first</strong>, then easily move to Azure.</li>
+</ul>
+<h3 id="postgresql-at-microsoft-community-managed-service">PostgreSQL at Microsoft — community + managed service</h3>
+<ul>
+<li>Microsoft is <strong>deeply invested in Postgres</strong> across Azure <em>and</em> the community. Postgres is described as one of the most successful open-source engineering projects Charles has seen.</li>
+<li><strong>Community footprint:</strong> hosts/runs the <strong>largest virtual Postgres community conference in the world</strong>, runs a <strong>podcast</strong> and a <strong>blog</strong>, and is <strong>one of the most prolific committers</strong> to upstream Postgres.</li>
+<li><strong>Postgres 19 (ships ~end of September):</strong> Microsoft contributed <strong>~11% of total commits</strong>, <strong>~64,000 lines changed</strong> (~<strong>8% of all changes</strong> in the major version) — non-trivial work directly in the <strong>query engine</strong>, including major <strong>asynchronous I/O</strong> work and a lot of <strong>observability</strong> work.</li>
+<li><strong>Azure Database for PostgreSQL (Flexible Server):</strong> managed open-source Postgres focused on enterprise requirements — <strong>security, high availability, disaster recovery</strong> — while staying <strong>compatible with upstream</strong> (reflected in the large number of supported <strong>extensions</strong>). Ships <strong>almost every month</strong> (skips one for holidays, banks one for conferences); heavy, continuous investment over 3–4 years.</li>
+<li><strong>Zero cloud lag:</strong> A few years ago there was a <strong>6+ month wait</strong> to get Postgres 15/16 in the managed service. With <strong>Postgres 18</strong>, Microsoft lit it up in the managed service <strong>on the same day as community GA</strong> — aiming to repeat for the next version.</li>
+</ul>
+<h3 id="azure-horizon-db-architecture">Azure Horizon DB — architecture</h3>
+<ul>
+<li><strong>Positioning:</strong> Microsoft's <strong>new Postgres service</strong>, enterprise-ready and engineered for developers, announced in the morning keynote. Takes the managed service "up a level" by <strong>separating compute and storage</strong>.</li>
+<li><strong>The key architectural line:</strong> Imagine a thick <strong>white dotted line</strong> across the middle of the architecture:</li>
+<li><strong>Above the line = compute = true open-source Postgres.</strong> Not an "almost-compatible derivative" — it <strong>is</strong> Postgres. <strong>Apps that run on Postgres today just drop on top of Horizon DB and run.</strong></li>
+<li><strong>Below the line = an entirely new storage engine</strong>, comprised of a new <strong>log server (WAL server in Postgres terms)</strong> and <strong>page servers</strong>, everything <strong>backended by Azure Storage</strong>.</li>
+<li><strong>What the storage engine provides:</strong></li>
+<li>A <strong>shared storage platform striped across availability zones by default</strong>.</li>
+<li>A <strong>highly optimized log service</strong> that delivers the platform's transactional performance.</li>
+<li><strong>Autoscaling storage to 128 TB</strong>, <strong>zone-resilient</strong> with cross-zone failover.</li>
+<li><strong>Performance proof (live split-screen demo):</strong> Same Postgres version, same region, same hardware, same AZs.</li>
+<li><strong>Left:</strong> self-managed Postgres on Azure VMs using <strong>Patroni</strong> (HA across zones) → <strong>~4,000 TPS</strong>.</li>
+<li><strong>Right:</strong> <strong>Horizon DB</strong> → <strong>~11,500 TPS</strong> (one row capped out ~<strong>12,000</strong>).</li>
+<li>Both configured for <strong>HA across zones</strong> as any production workload should be. The gap comes from the <strong>massively optimized storage engine</strong>. Expectation: lift an app from Postgres-on-VMs-across-AZs onto Horizon and see these characteristics.</li>
+<li><strong>Design tenet:</strong> highly performant for <strong>larger, more demanding apps</strong>, while still allowing <strong>incredibly small form factors</strong>.</li>
+<li><strong>Form-factor / DX features (from the product video):</strong> powerful <strong>AMD EPYC</strong> processors, <strong>zone-redundant HA</strong>, <strong>Entra ID authentication</strong>, <strong>Private Link</strong> networking, enterprise security by default; provision from the <strong>portal or directly from VS Code</strong>.</li>
+</ul>
+<h3 id="horizon-db-ai-capabilities-in-the-database">Horizon DB — AI capabilities in the database</h3>
+<ul>
+<li><strong>Why:</strong> Postgres became a preferred engine for new AI apps because when ChatGPT hit and everyone needed embeddings/vectors/similarity search, <strong><code>pgvector</code> was already there</strong>. Microsoft has since learned that <strong>stitching models together is tricky</strong>, and built features to fix that.</li>
+<li><strong>AI Model Management:</strong></li>
+<li>Enable it at <strong>provisioning time</strong>; Horizon <strong>pre-registers a few models</strong> directly out of <strong>Microsoft Foundry</strong>.</li>
+<li>Invoke them <strong>directly from SQL via AI functions</strong> — e.g. <strong>embedding generation</strong> and <strong>re-ranking</strong> — without separately spinning up Foundry.</li>
+<li>In Abe's demo the registry exposed <strong>three models</strong>: a <strong>Cohere rerank</strong> model, a <strong>GPT chat</strong> model, and an <strong>embedding</strong> model (<code>text-embedding-3-small</code>).</li>
+<li><strong>AI Pipelines (the feature Charles is "incredibly excited about"):</strong></li>
+<li>Built on a <strong>new extension: PG durable</strong> — implements <strong>durable functions natively in Postgres</strong> as an <strong>asynchronous background job</strong> that watches for data changes.</li>
+<li><strong>The problem it solves:</strong> Inserting a row should take <strong>milliseconds</strong>. But if that row contains text you want to embed, embedding is slow — you <strong>don't</strong> want embedding in the <strong>commit path</strong> of the write.</li>
+<li><strong>The pattern:</strong> Set up a <strong>watcher</strong> on the table. The app writes/modifies rows in <strong>milliseconds</strong>; in an <strong>async background task</strong>, once <strong>change thresholds</strong> are hit, the durable pipeline <strong>invokes the embedding model, chunks the data, creates embeddings, and stores them back</strong>. The app only notices that similarity search has a <strong>slight lag</strong> while embeddings build.</li>
+<li><strong>Code shape:</strong> <code>AI create pipeline</code> (like an extension call) → handles <strong>chunking</strong>, specifies the <strong>embedding model</strong> and number of <strong>dimensions</strong>, and a <strong>batch size</strong> (e.g. <code>10</code>) so the pipeline waits for 10 table changes before invoking the batch — a performance optimization vs invoking on every transaction.</li>
+<li><strong>PG durable is fully open source</strong> at <code>Microsoft/PG durable</code> — you can build your own durable functions directly in Postgres.</li>
+</ul>
+<h3 id="horizon-db-tooling-vs-code">Horizon DB — tooling (VS Code)</h3>
+<ul>
+<li>Goal: bring a <strong>full database management experience into VS Code</strong> for Postgres, where developers already build.</li>
+<li><strong>Pipeline visualization/debugging:</strong> A visual UX for the AI pipelines — <strong>debug pipelines visually</strong>, watch numbers churn and the pipeline run in real time.</li>
+<li><strong>Query plans (a favorite):</strong> Entirely <strong>redesigned</strong> query plans (design team involved) with a <strong>tree view</strong> and a <strong>table view</strong>.</li>
+<li>A <strong>Copilot icon sits next to every operator</strong> and at the <strong>top of the plan</strong>.</li>
+<li>Clicking an operator <strong>auto-generates a prompt</strong> telling Copilot what to find; it <strong>runs in agent mode</strong>, and you can <strong>choose the model</strong>. A far more efficient way to debug slow queries than hand-rolling diagnostic queries.</li>
+<li><strong>Live monitoring:</strong> Launch a dashboard, watch <strong>CPU charts</strong> in real time; hit the <strong>Copilot icon</strong> when something goes wrong. Live-monitoring + pipeline visualization are being unified.</li>
+<li><strong>Portability:</strong> The tooling <strong>works with any Postgres</strong> — local machine or any cloud — not just Horizon DB.</li>
+</ul>
+<h3 id="horizon-db-end-to-end-rag-demo-abe">Horizon DB — end-to-end RAG demo (Abe)</h3>
+<ul>
+<li><strong>Goal:</strong> Build a <strong>"Zava room designer" agent</strong> end-to-end in Postgres: <strong>create an AI pipeline → ingest data → retrieve data → wire into an agent</strong>, all live.</li>
+<li><strong>Data:</strong> An <strong>e-commerce furniture</strong> dataset; a <strong>product sample table (~60 rows)</strong> for the demo.</li>
+<li><strong>AI Model Management registry:</strong> three models available in the Horizon DB database — <strong>Cohere rerank</strong>, <strong>GPT chat</strong> (referred to as "GBT 5.4"), and an <strong>embedding</strong> model.</li>
+<li><strong>Pipeline (≈8 lines of SQL, no external Python orchestrator/service):</strong>
+  1. <strong>Name</strong> the pipeline.
+  2. Set the <strong>source</strong> (product sample table).
+  3. <strong>Chunk</strong> the data (so the right content is found in the right place).
+  4. <strong>Embed</strong> the chunks.
+  5. The backend <strong>auto-creates an output table</strong> containing chunk text + embeddings (with product IDs).</li>
+<li><strong>Async behavior highlighted:</strong> When a new row is inserted, it lands in <strong>milliseconds</strong>; the embedding work runs <strong>after the fact</strong> in the background (job seen "kicked off 49 seconds ago"), so <strong>OLTP throughput is sustained</strong> and the model/API latency is hidden — all powered by <strong>PG durable</strong>.</li>
+<li><strong>Live demo reality:</strong> Ingestion <strong>failed twice</strong> on stage; Abe fell back to a <strong>pre-run backup cluster</strong> that had completed successfully, attributing the failure to a <strong>conflict / wrong DB/table targeting</strong> while running live.</li>
+<li><strong>Retrieval on the output table:</strong></li>
+<li>Create a <strong>full-text search index</strong> (<code>PG FTS</code> — Postgres full-text search).</li>
+<li>Create a <strong>DiskANN index</strong> over the embedding column for faster vector search.</li>
+<li>Use a new feature, <strong>AI search</strong> (<strong>ships in June</strong>) — here hand-rolled as a custom function — to run a <strong>hybrid search</strong> (vector + full text) over the chunk-text column.</li>
+<li>Example query: <em>"I want mid-century furniture for my Brooklyn apartment with dark wood tones"</em> / <em>"comfortable chairs"</em> → returns relevant items (comfortable stylish chair, recliner, massage chair, etc.).</li>
+<li><strong>Query plan:</strong> Run the AI search and inspect the redesigned <strong>query plan</strong> — see the <strong>full-text search</strong> node and the <strong>sequential scan</strong>, and <strong>debug each node</strong> of the hybrid search.</li>
+<li><strong>Agent integration (final step):</strong> Ask the agent to <strong>design a room</strong>. The agent talks to <strong>Horizon DB tools</strong> to: run the <strong>hybrid/AI search</strong>, <strong>analyze the room</strong> with the GPT model, <strong>curate picks</strong> via hybrid search, have the model <strong>re-rank</strong> results, and return furniture matching the room's style — which the user can then buy. <strong>Every part of the AI stack runs in Postgres</strong>, with a final <strong>graph to connect everything</strong>, and all models living in <strong>AI Model Management</strong>.</li>
+</ul>
+<h3 id="wrap-up">Wrap-up</h3>
+<ul>
+<li>In ~45 minutes the session covered: <strong>Cosmos DB + the agent memory toolkit</strong> (easier to build that class of app), <strong>Azure SQL</strong>'s new <strong>local dev container</strong> (build locally, move to <strong>SQL Hyperscale</strong> in the cloud), and an <strong>end-to-end Horizon DB</strong> flow using AI for both <strong>ingestion and search</strong>.</li>
+<li>All code is in <strong>GitHub</strong> (<code>aka.ms/build26/BRK223</code>). There are <strong>additional Build talks on Horizon DB</strong>; it's heading into <strong>public preview</strong>.</li>
+</ul>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Azure Cosmos DB</strong> — Microsoft's planet-scale NoSQL platform; powers huge apps including OpenAI. Focus of the memory demo.</li>
+<li><strong>Agent Memory Toolkit (Cosmos DB)</strong> — new Python SDK + accelerator to generate/process/store/retrieve agentic short- and long-term memories.</li>
+<li><strong>Cosmos DB change feed</strong> — triggers automatic processing of short-term memories into long-term memories.</li>
+<li><strong>Azure Durable Functions</strong> — used by the memory toolkit (and conceptually mirrored by PG durable) to run background memory/pipeline processing.</li>
+<li><strong>Microsoft Foundry</strong> — hosts the LLM + embedding (and rerank) models invoked for memory enrichment and Horizon DB AI functions.</li>
+<li><strong>Azure SQL Database / SQL Server</strong> — 30+ yr relational engine; the in-DB AI support-system demo target.</li>
+<li><strong>Azure SQL Hyperscale</strong> — the scalable Azure SQL tier the local container app moves to.</li>
+<li><strong>Azure SQL container (private preview)</strong> — versionless SQL Server that runs locally and behaves like Azure SQL, with <strong>local embedding + inference models</strong> in the container.</li>
+<li><strong>Data API Builder (DAB)</strong> — zero-code exposure of a database as a <strong>REST endpoint</strong> and an <strong>MCP server</strong>; provides agent tools.</li>
+<li><strong>MCP (Model Context Protocol) endpoint</strong> — how the Copilot agent connects to the database/tools.</li>
+<li><strong>Blazor + Aspire</strong> — front-end app framework used in the SQL demo (→ Azure Static Web App in the cloud).</li>
+<li><strong>GitHub Copilot agent / agent mode</strong> — drives incident mitigation in SQL and query-plan debugging in Postgres tooling; authors SQL in VS Code.</li>
+<li><strong>Agent markdown file + skill file</strong> — declare available tools and the protocol/rules for using them (e.g. don't build indexes when busy).</li>
+<li><strong>T-SQL vector search</strong> — new <code>vector search ... TOP ... APPROXIMATE</code>, <code>vector_distance</code>, <strong>vector index seek</strong>, combined with <strong>JSON index seek</strong> for hybrid search.</li>
+<li><strong>PostgreSQL (open source)</strong> — engine many AI apps build on; Microsoft is a top-tier upstream committer.</li>
+<li><strong><code>pgvector</code></strong> — the extension that made Postgres an early home for embeddings/vectors/similarity search.</li>
+<li><strong>Azure Database for PostgreSQL – Flexible Server</strong> — managed open-source Postgres (security/HA/DR, extension-compatible, monthly releases).</li>
+<li><strong>Azure Horizon DB</strong> — NEW Postgres service separating compute &amp; storage; true OSS Postgres on a new Azure-Storage-backed engine.</li>
+<li><strong>Horizon DB storage engine</strong> — new <strong>log/WAL server</strong> + <strong>page servers</strong>, striped across AZs, autoscaling to <strong>128 TB</strong>, zone-resilient.</li>
+<li><strong>AI Model Management (Horizon DB)</strong> — pre-register Foundry models at provisioning; invoke via SQL AI functions (embedding, rerank).</li>
+<li><strong>AI Pipelines (Horizon DB)</strong> — declarative RAG (chunk → embed → store) in ~8 lines of SQL, run asynchronously.</li>
+<li><strong>PG durable</strong> — NEW <strong>open-source</strong> extension (<code>Microsoft/PG durable</code>) implementing <strong>durable functions natively in Postgres</strong>; powers AI pipelines.</li>
+<li><strong>DiskANN vector indexing</strong> — Microsoft's high-performance approximate vector index used for semantic search in Horizon DB (and SQL).</li>
+<li><strong>Postgres full-text search (<code>PG FTS</code>)</strong> — full-text index used alongside vectors for hybrid search.</li>
+<li><strong>AI search (Horizon DB)</strong> — new hybrid (vector + full-text) search capability, <strong>ships in June</strong>.</li>
+<li><strong>Cohere rerank model</strong> — reranks hybrid-search results to match style/intent.</li>
+<li><strong><code>text-embedding-3-small</code></strong> — embedding model surfaced via AI Model Management.</li>
+<li><strong>VS Code extension for Postgres/Horizon</strong> — object explorer, schema chat, <strong>redesigned visual query plans</strong> (tree + table) with per-operator Copilot, live CPU monitoring, pipeline debugging; works with <strong>any Postgres</strong>.</li>
+<li><strong>Patroni</strong> — used for the self-managed Postgres HA baseline in the benchmark comparison.</li>
+<li><strong>Entra ID auth + Private Link</strong> — Horizon DB enterprise security defaults.</li>
+<li><strong>AMD EPYC processors</strong> — compute powering Horizon DB.</li>
+<li><strong>Zava</strong> — sample/fictional company/app used across the SQL and Postgres demos.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Azure Horizon DB</strong> — NEW Postgres service (announced in the morning keynote); separates compute/storage, ~3× transactional + vector performance, 128 TB autoscaling storage, AI built in. <strong>Heading into public preview.</strong></li>
+<li><strong>Cosmos DB Agent Memory Toolkit</strong> — NEW Python SDK + accelerator for agentic memory on Cosmos DB.</li>
+<li><strong>Azure SQL container</strong> — NEW, in <strong>private preview</strong> (sign-up page shown in session); versionless local SQL Server that behaves like Azure SQL with local AI models.</li>
+<li><strong>PG durable</strong> — NEW open-source Postgres extension for durable functions / AI pipelines (<code>Microsoft/PG durable</code>).</li>
+<li><strong>AI Model Management, AI Pipelines, and AI functions in Horizon DB</strong> — invoke Foundry models (embedding/rerank) directly from SQL; declarative RAG pipelines.</li>
+<li><strong>AI search (Horizon DB)</strong> — hybrid vector + full-text search, <strong>GA/ships in June</strong>.</li>
+<li><strong>T-SQL vector search enhancements</strong> — <code>vector search ... TOP ... APPROXIMATE</code> + <code>vector_distance</code> enabling vector + JSON hybrid search in Azure SQL.</li>
+<li><strong>Postgres 18 same-day support</strong> (recap) and <strong>Postgres 19</strong> (~end of September) with ~11% of commits from Microsoft.</li>
+<li><strong>Status note:</strong> Horizon DB = public preview; Azure SQL container = private preview; Horizon AI search = June. Detailed per-database announcements live at the <code>aka.ms</code> blogs referenced in the deck.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Cosmos DB — Agent memory (James):</strong> Jupyter notebook. Set up async Cosmos memory client; add/get <strong>short-term local</strong> memories; <strong>push to Cosmos</strong> for long-term; <strong>change-feed + Durable Function</strong> processing into summaries/episodic/procedural/fact memories; <strong>memory extraction</strong> of facts/attributes; surfaced <strong>risks + reasoning</strong>; <strong>semantic/hybrid</strong> retrieval. <em>Point proven:</em> full memory lifecycle (CRUD + semantic search) with automatic background enrichment, minimal orchestration.</li>
+<li><strong>Azure SQL — Live-site support system (Bob), fully on a laptop:</strong> Blazor/Aspire app + Copilot agent + Data API Builder (REST + MCP) + <strong>Azure SQL container with local embedding/inference models</strong>. Showed <strong>"chat with your schema\,"</strong> <strong>regex-in-T-SQL</strong> parsing unstructured notes into <strong>JSON</strong> incidents, <strong>vector hybrid search</strong> (vector index seek + JSON index seek), and an <strong>in-DB agent</strong> ("mitigate incident 512") that produced a mitigation plan with <strong>confidence level + verification steps</strong>. Then showed the <strong>identical T-SQL</strong> moving to Azure (Static Web App + DAB container + Azure SQL + Azure OpenAI). <em>Point proven:</em> build AI apps offline-first and move to Azure unchanged.</li>
+<li><strong>Horizon DB — Benchmark (Charles):</strong> Split-screen live <strong>TPC</strong> run, same region/hardware/AZs, both HA across zones: self-managed Postgres (Patroni) <strong>~4,000 TPS</strong> vs Horizon DB <strong>~11.5–12K TPS</strong>. <em>Point proven:</em> the optimized storage engine delivers ~3× throughput for lift-and-shift Postgres apps.</li>
+<li><strong>Horizon DB — End-to-end RAG "Zava room designer" (Abe):</strong> Create an <strong>AI pipeline</strong> (~8 lines SQL) to chunk + embed furniture data into an auto-created output table; <strong>async</strong> ingestion (insert in ms, embeddings after the fact via PG durable). <strong>Live ingestion failed twice</strong> → fell back to a <strong>pre-run backup cluster</strong>. Then <strong>DiskANN + PG FTS</strong> indexes, <strong>AI search / hybrid</strong> retrieval ("mid-century furniture… dark wood tones"), <strong>redesigned query plans</strong>, and an <strong>agent</strong> that searches, analyzes the room, reranks (Cohere), and curates furniture. <em>Point proven:</em> an entire AI-native app — ingestion, retrieval, rerank, orchestration — runs <strong>inside Postgres</strong>.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>~4,000 TPS</strong> (self-managed Postgres on VMs, Patroni, HA across zones) vs <strong>~11,500–12,000 TPS</strong> (Horizon DB) — same region/hardware/AZs → <strong>~3× transactional throughput</strong>.</li>
+<li><strong>Up to 3×</strong> faster transactional processing and vector search in Horizon DB (uses Microsoft's <strong>DiskANN</strong> vector tech).</li>
+<li><strong>128 TB</strong> — Horizon DB autoscaling, zone-resilient storage ceiling.</li>
+<li><strong>~11%</strong> of total commits to <strong>Postgres 19</strong> from Microsoft; <strong>~64,000 lines</strong> changed (~<strong>8%</strong> of all changes in the major version).</li>
+<li><strong>Postgres 18</strong> lit up in the managed service on the <strong>same day</strong> as community GA (vs <strong>6+ months</strong> lag for PG 15/16 previously).</li>
+<li><strong>~8 lines of SQL</strong> to build a RAG pipeline in Horizon DB (vs an external Python orchestrator/service).</li>
+<li><strong>Batch size 10</strong> — pipeline waits for 10 table changes before invoking an embedding batch (perf optimization).</li>
+<li><strong>~60 rows</strong> product sample table; embedding job seen <strong>"49 seconds ago"</strong> running async after a millisecond insert.</li>
+<li>Postgres 19 expected <strong>~end of September</strong>; Horizon <strong>AI search ships in June</strong>.</li>
+<li><em>"Everything above the white dotted line is compute. It is true Postgres… not an almost-compatible derivative — it is Postgres."</em></li>
+<li><em>"I like it in the database… the point is you've got choice on how you build these applications."</em> — Charles, on putting AI logic in the DB.</li>
+<li><em>"If anything goes wrong, we're praying to the demo gods here."</em> — Abe, before the live RAG demo (which then failed twice).</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: spin up <strong>Horizon DB</strong> (public preview) in <code>australiaeast</code> and benchmark vs Flexible Server; clone the <code>aka.ms/build26/BRK223</code> repo and run the <strong>AI pipelines</strong> sample.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: How does <strong>PG durable</strong> behave under failure/retry, and what are the cost implications of background embedding at scale? When is <strong>Horizon DB GA</strong> and how is it priced vs Flexible Server?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: customer AI-app modernization conversations (RAG-in-DB vs external orchestrators), Postgres migration pitches, and the "AI logic in vs out of the database" architecture debate.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<h2 id="-3202-content">- <span class="wikilink wikilink--unresolved" title="32.02 Content">32.02 Content</span></h2>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="BRK220.html"><span class="pager-dir">← Previous</span><span class="pager-code">BRK220</span><span class="pager-title">Using AI tools to teach old apps new tricks</span></a>
+    <a class="pager pager-next" href="BRK227.html"><span class="pager-dir">Next →</span><span class="pager-code">BRK227</span><span class="pager-title">Distributed systems to AI platforms with Mark Russinovich &amp; Ion Stoica</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

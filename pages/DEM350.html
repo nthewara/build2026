@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEM350 — GitHub Agentic Workflows: Automation That Actually Reads the Room</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEM350</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=0XTyicuhdKE" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">GitHub Agentic Workflows: Automation That Actually Reads the Room</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Ari Lovignee, Alejandro Menocal</span>
+      <span class="meta-item">⏱️ 17m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="github">GitHub</span><span class="chip" data-tag="github-copilot">GitHub Copilot</span><span class="chip" data-tag="automation">Automation</span><span class="chip" data-tag="devops">DevOps</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Ari Lovignee (Senior Learning Advocate, GitHub) · Alejandro Menocal (Senior Service Delivery Engineer, GitHub)<br>
+<strong>Duration:</strong> ~17 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=0XTyicuhdKE">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>GitHub Agentic Workflows let you define repository automation in <strong>Markdown instead of YAML</strong>, then compile it into a runnable GitHub Actions workflow. Instead of brittle, syntax-heavy CI/CD, you describe what you want in natural language — and an AI agent (Copilot, Claude, Codex, or Gemini) executes the toil: triaging test failures, opening PRs, generating daily reports, or keeping content up to date. Security is enforced by giving the agent <strong>read-only</strong> access and routing all write actions through a separate post-run step called <strong>"safe outputs,"</strong> so the agent can never directly mutate your repo. The feature ships in <strong>public preview the week after Build</strong>, with a hands-on <strong>GitHub Skills exercise</strong> (a fictitious "Mona" Astro website kept current from GitHub blogs/changelogs) that anyone can run on their own handle.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Workflows-as-Markdown:</strong> Author automation in <code>.md</code> files rather than learning Actions YAML; Copilot can even generate the Markdown for you.</li>
+<li><strong>Compile step → lock file:</strong> The Markdown is <em>compiled</em> into a YAML <strong>lock file</strong>, which is the actual GitHub Actions workflow that runs. Markdown = human-controlled source; lock file = generated runtime artifact (both checked into the repo).</li>
+<li><strong>Model-agnostic agents:</strong> The agent behind a workflow can be <strong>Copilot, Claude, Codex, or Gemini</strong> — pick the model that suits the task.</li>
+<li><strong>Security via least privilege + "safe outputs":</strong> The agent gets only <strong>read</strong> access. Any write action (create issue, open PR) is performed by a <em>separate</em> post-agent step, segregating responsibilities so the agent can't hallucinate, delete code, or remove files.</li>
+<li><strong>Human stays in control:</strong> Output lands as a <strong>PR you review</strong> (ideally peer-reviewed) before merge — you decide whether generated changes are useful or thrown away.</li>
+<li><strong>Self-scaffolding install:</strong> Installing agentic workflows creates a PR that drops in the needed files under <code>.github/</code> — an <strong>agent file</strong> (defines the installed agent), a <strong>skill</strong>, and even an <strong>MCP server</strong> — so you start from a working framework, not from scratch.</li>
+<li><strong>Two-agent pattern:</strong> There's a meta "agentic-workflows agent" whose job is to <em>help you build other agentic workflows</em> — it scaffolds new workflows using the bundled skill.</li>
+<li><strong>Familiar runtime:</strong> Compiled workflows are "GitHub Actions on steroids" — run on a <strong>schedule</strong> or <strong>on demand</strong>, exactly like any Actions workflow.</li>
+<li><strong>Iterate like Copilot Chat:</strong> You can refine the agent and the workflow over time (e.g. add directives such as "don't auto-compile," or business logic), and the step-by-step execution view mirrors Copilot Chat in the IDE.</li>
+<li><strong>Public preview ships the week after Build</strong>, plus a deep existing <strong>ecosystem</strong> of prebuilt agentic workflows on a dedicated website.</li>
+<li><strong>Real use cases:</strong> auto-fix CI/CD, triage/diagnose test failures, daily repo reports, dependency/stack version updates, and keeping a website current from upstream sources.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="the-problem-cicd-is-rigid-and-full-of-toil">The problem: CI/CD is rigid and full of toil</h3>
+<p>Traditional automation/CI is <strong>very rigid</strong> — it depends on exact YAML syntax, and when there are syntax errors they're hard to identify. Day-to-day, developers shoulder a lot of <strong>mundane, repetitive toil</strong> on their repos. The pitch for agentic workflows is to <em>automate that toil</em> (test-failure triage, issue creation, daily repo reports, opening PRs) while making the authoring experience far more forgiving.</p>
+<h3 id="what-agentic-workflows-are">What Agentic Workflows are</h3>
+<ul>
+<li>You <strong>define workflows in Markdown</strong> rather than Actions YAML. You can even use <strong>Copilot to generate the Markdown</strong> files.</li>
+<li>Those Markdown files are <strong>compiled into an agentic workflow</strong>.</li>
+<li>Behind each workflow sits an <strong>AI agent + model</strong>. Supported models called out: <strong>Copilot, Claude, Codex, Gemini</strong> (and "any of the models").</li>
+<li>The agent can <strong>dynamically diagnose test failures</strong>, <strong>open PRs</strong> to make changes, or <strong>update your stack</strong> and give recommendations.</li>
+<li>There is already a <strong>deep ecosystem</strong> of different agentic-workflow types, with a <strong>dedicated website</strong> to browse them.</li>
+</ul>
+<h3 id="security-model-least-privilege-safe-outputs">Security model — least privilege + "safe outputs"</h3>
+<p>This was emphasised as the core differentiator:
+- For agentic workflows to be secure, the <strong>agent itself is given only read access</strong> to the repository.
+- All <strong>write actions</strong> are handled by a mechanism called <strong>"safe output"</strong> — a step that runs <strong>after the agent finishes</strong>. That post-run step is what actually holds the permission to perform the action (create an issue, create a pull request, etc.).
+- This <strong>segregates responsibilities</strong>: the agent never has broad write access, so it "can't hallucinate or delete your code base or remove files."
+- Net effect: the automation does the heavy lifting, but <strong>you remain in control</strong> — you decide whether the generated result is useful or discard it. When compiling, write permissions on <code>contents</code> are explicitly rejected ("write is not allowed… use safe output create-issue to perform write"), forcing the safe-output pattern.</p>
+<h3 id="the-skills-exercise-keeping-the-mona-website-current">The Skills exercise: keeping the "Mona" website current</h3>
+<p>The demo is delivered as a <strong>GitHub Skills exercise</strong> you can take on your own handle:
+- A <strong>fictitious "Mona" website</strong> (a basic <strong>Astro</strong> site) is tasked with surfacing the latest GitHub updates.
+- Sources it watches: GitHub <strong>blogs</strong>, <strong>changelogs</strong>, and <strong>notes written in the repo</strong> itself.
+- On a chosen <strong>frequency</strong>, the workflow pulls updates and produces a <strong>PR</strong> showing proposed changes. You can merge directly, but ideally <strong>peer-review</strong> with teammates first, then merge.
+- The static site initially showed a date of <strong>March 17th</strong> (when the exercise was first built) — the whole point of the agentic workflow is to keep that content fresh automatically as new announcements land (e.g. the GitHub Copilot features/agents announced at Build would be pulled from the blog/changelog). The same pattern applies to <strong>out-of-date stack versions</strong> in your repo → auto-PR with updates.</p>
+<h3 id="install-scaffold-what-gets-created">Install → scaffold (what gets created)</h3>
+<p>Because a full run takes longer than the session slot, the presenters had <strong>pre-started</strong> the process. Installation flow:
+- Running an install command <strong>creates a PR</strong> that initializes the repo and sets up completions.
+- The PR drops files under the <strong><code>.github/</code> directory</strong>, including:
+  - the <strong>Markdown</strong> workflow file,
+  - an <strong>agent file</strong> (labeled "agentic workflows") that <strong>describes the installed agent</strong> — analogous to a custom agent / cloud agent that normally lives in your repo,
+  - a <strong>skill</strong> installed as part of agentic workflows,
+  - an <strong>MCP server</strong> (installed as part of the package).
+- It also pre-populates things like the <strong>Copilot setup steps</strong> automatically, so you don't start from scratch — you get a framework to <strong>build business value on top of</strong> (e.g. auto-fix CI/CD, auto-update your website). The setup is "self-contained, already ready to go" scaffolding.</p>
+<h3 id="using-the-agent-to-author-a-new-workflow">Using the agent to author a new workflow</h3>
+<ul>
+<li>They <strong>merge the install PR</strong> to see it in action, then <strong>pick the "agentic-workflow agent"</strong> and give it directions to create the workflow.</li>
+<li>Directions given to the agent (natural language):</li>
+<li>ensure you're on the <strong>latest <code>main</code></strong> branch,</li>
+<li><strong>create a new branch</strong>,</li>
+<li><strong>update the info file</strong> used by the website so it pulls the latest GitHub updates from the <strong>blog, changelog, etc.</strong>,</li>
+<li>then <strong>create the workflow file</strong> — and <strong>compile</strong> it.</li>
+<li>Key nuance: the agent <strong>sometimes auto-compiles</strong>, but the team deliberately added an instruction to <strong>show the compile step explicitly</strong>. You can also add standing directives to the agent (e.g. compile behavior) so it always does specific things for your workflows.</li>
+<li>The execution view shows each step (prepare → generate file), and <strong>looks just like Copilot Chat in the IDE</strong>.</li>
+<li>Conceptually: this <strong>meta-agent's job is to help create other agentic workflows</strong> — it uses the <strong>bundled skill</strong> (from the scaffold) to generate the <em>new</em> workflow that updates the website.</li>
+</ul>
+<h3 id="anatomy-of-the-generated-workflow-file">Anatomy of the generated workflow file</h3>
+<ul>
+<li>The produced file (e.g. <code>update-github-info.md</code>) is the <strong>agentic workflow</strong>, and it's <strong>very basic</strong>.</li>
+<li>It has <strong>front matter</strong> at the top: this is the compiled-down, structured form of the <strong>natural-language directions</strong> you gave (when it runs, what access is granted, tools allowed, safe-output target, etc.).</li>
+<li>Front-matter fields seen/edited during the demo included: <strong>schedule</strong>, <strong><code>tools</code> allowed</strong>, <strong><code>site-contents</code></strong>, <strong><code>safe-output</code> → assigned to user</strong>, <strong><code>web-fetch</code>/<code>edit</code></strong>, and <strong>permissions on <code>contents</code></strong>.</li>
+</ul>
+<h3 id="the-compile-step-and-the-lock-file">The compile step and the lock file</h3>
+<ul>
+<li>Because the source is "just a Markdown file," you must <strong>compile</strong> it so it <strong>generates a YAML file — called a lock file</strong> — that tells Actions exactly what to do.</li>
+<li><strong>Lock file = the actual Actions workflow that runs.</strong> The <strong><code>.md</code> file = the natural-language, human-controlled, checked-in source.</strong> The lock file is <strong>generated as part of compilation.</strong></li>
+<li>Compilation enforces the <strong>security guardrails</strong>: the demo hit errors where the compiler <strong>rejected <code>contents: write</code></strong> ("write is not allowed for secret… use safe output create-issue to perform write"), and flagged the word <strong>"allowed"</strong>. Fix was to change <strong><code>contents</code> to <code>read</code></strong> and keep <strong>write only where legitimately needed</strong> (e.g. pull-request permission), then <strong>re-compile</strong>. After tweaking the front matter, the file submits and the lock file is generated.</li>
+</ul>
+<h3 id="runtime-iteration">Runtime &amp; iteration</h3>
+<ul>
+<li>Once compiled, it runs like <strong>any GitHub Actions workflow</strong> — on a <strong>schedule</strong> <em>and</em> <strong>on demand</strong> (they asked it to support both). "GitHub Actions kind of on steroids."</li>
+<li>Just like anything with Copilot/agents, you can <strong>iterate</strong>: add comments/directives (e.g. a "complete" comment telling it <strong>not</strong> to compile), modify the agent to work better for you, or modify other pieces of the workflow you've created.</li>
+</ul>
+<h3 id="try-it-yourself">Try it yourself</h3>
+<ul>
+<li>A <strong>QR code / link</strong> points to the <strong>GitHub Skills exercise</strong> so attendees can run it on their own GitHub handle, modify it, and learn the mechanics firsthand. The team will keep <strong>iterating and improving</strong> the exercise.</li>
+</ul>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>GitHub Agentic Workflows</strong> — define repo automation in Markdown; compiled into runnable Actions workflows driven by an AI agent. (Core subject of the talk.)</li>
+<li><strong>GitHub Actions</strong> — the underlying CI/CD runtime; compiled lock files are standard Actions workflows.</li>
+<li><strong>GitHub Copilot</strong> — AI agent option; also used to generate the Markdown workflow files; setup steps auto-scaffolded.</li>
+<li><strong>Claude / Codex / Gemini</strong> — alternative model/agent options selectable behind an agentic workflow.</li>
+<li><strong>"Safe outputs"</strong> — post-agent step that holds write permissions and performs actions (create issue, create PR), enforcing least-privilege security.</li>
+<li><strong>Lock file</strong> — the YAML Actions workflow generated by compiling the Markdown source.</li>
+<li><strong>Agent file</strong> — file under <code>.github/</code> describing the installed agent (custom/cloud-agent style).</li>
+<li><strong>Skill (bundled)</strong> — installed with agentic workflows; the meta-agent uses it to author new workflows.</li>
+<li><strong>MCP server</strong> — installed as part of the agentic-workflows package.</li>
+<li><strong>GitHub Skills</strong> — the interactive, exercise-based learning platform delivering the hands-on lab.</li>
+<li><strong>Astro</strong> — static-site framework used for the demo "Mona" website.</li>
+<li><strong>GitHub Blog / Changelog</strong> — upstream content sources the workflow pulls from to keep the site current.</li>
+<li><strong>Markdown front matter</strong> — structured config block at the top of the workflow file (schedule, tools allowed, permissions, safe-output target, etc.).</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Public preview the week after Build</strong> — GitHub Agentic Workflows will be released in <strong>public preview "next week,"</strong> so attendees can use it themselves.</li>
+<li><strong>GitHub Skills exercise available</strong> — a self-serve, hands-on exercise (the "Mona"/Astro website use case) reachable via a session QR code/link; the team will keep iterating on it.</li>
+<li><strong>Existing ecosystem</strong> — a dedicated <strong>website</strong> already catalogs many prebuilt agentic-workflow types to browse and adopt.</li>
+<li><em>(Status note: this was a demo/enablement session — preview was the explicit release milestone called out; no GA date was given.)</em></li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Install &amp; scaffold:</strong> Ran the install command → it created a PR initializing the repo and adding the Markdown workflow, an <strong>agent file</strong>, a <strong>skill</strong>, an <strong>MCP server</strong>, and pre-built <strong>Copilot setup steps</strong> under <code>.github/</code>. <strong>Proved:</strong> installation is self-contained scaffolding — you start from a working framework, not a blank page.</li>
+<li><strong>Authoring a workflow with the agent:</strong> Selected the <strong>agentic-workflow agent</strong> and gave natural-language directions (use latest <code>main</code>, new branch, update the website info file from blog/changelog, create + compile the workflow). It generated <code>update-github-info.md</code>, with execution steps mirroring Copilot Chat. <strong>Proved:</strong> you can build automation in plain language; an agent scaffolds and writes the workflow for you.</li>
+<li><strong>The website target:</strong> Showed the basic <strong>Astro</strong> "Mona" site displaying a static <strong>March 17th</strong> date. <strong>Proved:</strong> the workflow's job is to keep such content auto-updated from upstream GitHub sources via a reviewable PR.</li>
+<li><strong>Compile → lock file + security guardrails (live troubleshooting):</strong> Compiling the Markdown surfaced errors — the compiler <strong>rejected <code>contents: write</code></strong> and the word "allowed," instructing the use of <strong>safe-output create-issue</strong>. They fixed the front matter (<code>contents</code> → <code>read</code>, keep write only where appropriate) and re-compiled to generate the <strong>lock file</strong>. <strong>Proved:</strong> (1) the Markdown→YAML lock-file compile step is real and required; (2) the <strong>least-privilege / safe-output security model is enforced at compile time</strong>, not just advisory.</li>
+<li><em>(Candid note: the live demo was time-pressured and bumpy — a window was accidentally closed and front matter needed several tweaks — but the end-to-end flow and guardrails were demonstrated.)</em></li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>"GitHub Actions kind of on steroids with the agentic workflows."</strong> — on how compiled workflows relate to plain Actions.</li>
+<li><strong>"So it can't hallucinate or delete your code base or remove files from your repository. It's always going to be where you're in control."</strong> — on the safe-outputs / least-privilege security model.</li>
+<li><strong>"This is where you add basically the business value of what you want to build."</strong> — the scaffold handles boilerplate; you supply the intent.</li>
+<li>Compiler guardrail message paraphrased live: <strong>"write is not allowed for [contents]… use safe output create-issue to perform write."</strong></li>
+<li>Website static date stamp: <strong>March 17th</strong> (date the exercise was first authored), illustrating the staleness the workflow fixes.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Run the <strong>GitHub Skills "agentic workflows" exercise</strong> on my own handle (Mona/Astro site) once public preview lands the week after Build; inspect the generated <code>.github/</code> files (agent file, skill, MCP server, <code>.md</code> + lock file).</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Build a real agentic workflow for one of my repos — e.g. <strong>auto-PR for out-of-date dependency/stack versions</strong>, or <strong>daily repo report / test-failure triage</strong>.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Experiment with swapping the backing model (<strong>Copilot vs Claude vs Codex vs Gemini</strong>) for the same workflow and compare results.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: What exact <strong>safe-output action types</strong> are supported (create-issue, create-PR — others)? Where's the canonical docs/website for the agentic-workflow ecosystem and front-matter schema?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: How does the <strong>compile/lock-file</strong> step fit into branch protection and PR review — is the lock file regenerated on every change, and how are drifts between <code>.md</code> and lock file handled?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: How are <strong>secrets and tool allow-lists</strong> scoped per workflow, and what's the blast-radius if an MCP server is added?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: Automating repo toil across my Azure/GitHub projects; CI/CD modernization; reducing manual changelog/dependency upkeep.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEM331.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEM331</span><span class="pager-title">Turn APIs, tools, and data into real agent velocity</span></a>
+    <a class="pager pager-next" href="DEM351.html"><span class="pager-dir">Next →</span><span class="pager-code">DEM351</span><span class="pager-title">AI Skills Navigator: Accelerate tech skills with personalized learning</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

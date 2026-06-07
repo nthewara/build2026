@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OD870 — Azure Storage for AI workloads</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">OD870</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=0aBr_9Unpco" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Azure Storage for AI workloads</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Saurabh Sen Sharma, Saloni Sonpal, Vishnu Charan</span>
+      <span class="meta-item">⏱️ 32m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="azure">Azure</span><span class="chip" data-tag="storage">Storage</span><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="inference">Inference</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Saurabh Sen Sharma (PM, Azure Storage — AI workloads), Saloni Sonpal (PM, Azure OpenAI / Microsoft Foundry), Vishnu Charan (PM, Azure Storage — AI workloads)<br>
+<strong>Duration:</strong> ~32 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=0aBr_9Unpco">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>This session reframes Azure Storage as a first-class performance and security layer for <strong>agentic AI inference</strong> — not just durable bulk storage. The team distills the storage problem for inference into three pillars: (1) bring enterprise data to agents as governed knowledge, (2) distribute/load models fast enough to keep expensive GPUs busy, and (3) optimize infrastructure utilization to maximize tokens-per-watt-per-dollar. The centerpiece is a three-tier <strong>prompt caching</strong> strategy in Microsoft Foundry — implicit (GPU memory) → extended (local SSD) → explicit <strong>Azure Context Cache</strong> (durable Azure Blob in the customer's tenant) — delivering up to 90% inference cost savings and dramatic TTFT reductions by reusing the KV cache of repeated prompt context. Live demos showed KV-cache offload to Blob via NVIDIA NIXL + LMCache (52s → 8s cold start, ~6× faster) and fast model-weight loading via the Run:AI Model Streamer (3–6× faster) plus a new Azure Container Storage distributed cache for AKS (2.5× faster at fleet scale). It closes by showing how Azure Files → Azure AI Search, Foundry IQ, and the new <strong>Storage Center</strong> hub turn raw enterprise data into agent-ready knowledge.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Storage is now a critical lever across the entire AI lifecycle</strong> — training, fine-tuning, and (today's focus) agentic inference — wherever speed, scale, and security must converge.</li>
+<li>Two framings of storage + AI: <strong>"storage for AI"</strong> (storage powering AI workloads — this talk) vs <strong>"AI for storage"</strong> (AI making storage itself smarter, e.g. classification/ops). The session covers the former.</li>
+<li><strong>Inference is the dominant AI workload today</strong>, and agentic inference multiplies storage load on every turn of the agent loop (more retrievals, more test-time compute, exponential growth of logs/conversation state/tool outputs/traces).</li>
+<li><strong>The static, unchanged portion of a prompt is &gt;60% of inference cost</strong> in most production agents — the GPU re-reads the same system prompt, tool definitions, and prior turns on every turn, driving up TTFT and end-to-end latency.</li>
+<li><strong>Prompt caching</strong> caches the KV (key-value) attention state of repeated context tokens and reuses it, cutting GPU compute per turn dramatically — <strong>up to 90% inference cost savings</strong> with significantly lower time-to-first-token (TTFT).</li>
+<li>Microsoft Foundry offers <strong>three tiers of prompt caching</strong>: implicit (GPU memory, KB–low MB, 5–10 min to ~1 hr TTL), extended (GPU node local SSD, hundreds of GB, up to 24 hr TTL), and explicit (Azure Context Cache on durable Blob, days/weeks/months TTL).</li>
+<li><strong>Implicit and extended caching are node-bound</strong> — cache is lost if the request routes to a different node/cluster/region or the TTL expires, forcing full prefill recompute. <strong>Explicit caching (Azure Context Cache) solves this</strong> by being node-independent and working across sessions, deployments, and regions.</li>
+<li><strong>Azure Context Cache</strong> is a first-class Azure resource built on Azure Blob, living in the customer's own tenant, with a split-endpoint design: a <strong>provider-only</strong> endpoint writes encrypted KV state (model IP never exposed in clear text) and a <strong>customer-only</strong> endpoint controls TTL, retention, invalidation, and metrics.</li>
+<li>For OSS/BYO stacks, Microsoft contributed a <strong>first-class Azure Blob backend to NVIDIA NIXL</strong> (the inference transfer library), so any NIXL-speaking framework (vLLM, Dynamo, TensorRT-LLM, Ray) can read/write KV blocks to Blob with zero custom adapter code; <strong>LMCache</strong> offloads KV blocks straight to Blob via a plugin.</li>
+<li><strong>Model loading is the other half of cold-start cost</strong> — beyond KV cache, every cold start must load model weights from storage to GPU (minutes for large models). The <strong>Run:AI Model Streamer</strong> with an Azure Blob plugin gives <strong>3–6× faster cold starts</strong> by chunking, parallel reads, CPU staging, and overlapping concurrent GPU copies that saturate the NIC.</li>
+<li><strong>Azure Container Storage distributed cache</strong> (in early access) solves AKS fleet-scale cold starts: every GPU node is both cache and client (local NVMe RAID + zero-copy sendfile), so the first pod warms the cache and the rest read from inside the cluster — <strong>2.5× faster model loading</strong>, hitting Blob exactly once instead of 100 pods pulling 14TB simultaneously.</li>
+<li><strong>Bring enterprise data to agents</strong> via native integrations: BlobFuse (POSIX mount), ADLFS (fsspec for Dask/Pandas/Ray), PyTorch connector, LangChain Azure Blob loader (5–10× faster), plus Azure Files as a data source for Azure AI Search (Logic Apps connector + native indexer), and <strong>Foundry IQ</strong> as Microsoft's unified governed knowledge layer with Blob as a first-class source.</li>
+<li><strong>Storage Center</strong> — a new centralized hub (limited preview) for file, block, and object storage giving a unified view + a launchpad into the storage-for-AI experiences.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-storage-for-ai-vs-ai-for-storage">Framing: Storage for AI vs AI for Storage</h3>
+<p>The session opens by framing the storage/AI relationship in two categories:
+- <strong>Storage for AI</strong> — storage as a foundational element of every AI workload, from training and fine-tuning to agentic inference (the focus of this talk). This is where <strong>speed, scale, and security</strong> must come together.
+- <strong>AI for storage</strong> — using AI to make storage itself smarter: better data management, classification, and day-to-day operations.</p>
+<p>This talk is exclusively about the first category, and specifically about <strong>inference</strong>, described as "the dominant AI workload today." The promise is making <strong>agentic inference faster, cheaper, and more secure</strong>, including turning enterprise data into agent-ready knowledge. The content applies whether you build on <strong>Microsoft Foundry</strong>, <strong>AKS</strong>, or <strong>directly on Azure IaaS</strong>.</p>
+<h3 id="how-azure-storage-plugs-into-the-ai-stack">How Azure Storage plugs into the AI stack</h3>
+<p>At the <strong>infrastructure layer</strong>, the AI workload stack looks familiar: physical infrastructure (GPUs, NICs, local NVMe), then virtualization (VMs and Kubernetes nodes). The <strong>differences emerge in storage</strong>, because AI workloads demand high throughput and low latency at massive distributed scale across <strong>three patterns</strong>:
+1. <strong>Data prep</strong> (ingestion/processing)
+2. <strong>High-throughput checkpointing</strong> during training
+3. <strong>Model and data retrieval</strong> during inference</p>
+<p>The foundation is <strong>Azure Blob</strong> as the durable backing store, accessed through <strong>purpose-built storage clients</strong>:
+- <strong>BlobFuse</strong> — POSIX-like file access
+- <strong>ADLFS</strong> — for fsspec workflows
+- <strong>PyTorch connector</strong> — high-throughput data loading
+- <strong>Azure Managed Lustre (AMLFS)</strong> with its POSIX client — for HPC-class throughput
+- <strong>Azure Container Storage</strong> — presents local NVMe as persistent volumes for stateful Kubernetes workloads (with Azure Files, Disks, and Elastic SAN support on the roadmap)</p>
+<p>All of this is orchestrated across <strong>VMSS and AKS</strong>. The clients are optimized to plug into the AI runtimes/orchestrators the developer community uses today: <strong>Ray, PyTorch, TensorFlow, vLLM, SGLang, Triton, and ONNX</strong>. This same foundation powers <strong>Microsoft Foundry</strong>, the <strong>AKS Kubernetes AI Toolchain Operator (KAITO)</strong>, and the broader Azure AI infrastructure.</p>
+<h3 id="three-intentional-paths-to-run-ai-workloads">Three intentional paths to run AI workloads</h3>
+<p>Azure deliberately offers <strong>three paths</strong>, with storage critical across all of them ("freedom of choice"):
+- <strong>Managed (Microsoft Foundry)</strong> — the managed AI platform with access to Microsoft, partner, and open models. Great for teams who want abstraction.
+- <strong>Managed Kubernetes (AKS)</strong> — for teams who want more control: bring your own models, frameworks, and orchestration, still deeply integrated with Azure infra.
+- <strong>Direct IaaS</strong> — VMs, storage, networking, and AI-optimized silicon directly. This is where <strong>hyperscale and megascale</strong> AI customers operate.</p>
+<p>Across all three, storage delivers the same outcomes: bringing enterprise data into the agent stack and powering fast, cost-effective, governable inference.</p>
+<h3 id="agentic-inference-from-a-storage-centric-view">Agentic inference from a storage-centric view</h3>
+<p>Any agent that leverages enterprise data is built on a <strong>data pipeline anchored in object storage (Azure Blob)</strong>, with two stages:</p>
+<p><strong>Stage one — bringing enterprise data to AI services/agents (the data preparation pipeline):</strong> ingestion → cleaning → chunking → embedding → indexing into a <strong>vector database</strong>, so the agent can do grounded retrieval with the right context. The <strong>intermediate representations</strong> — embeddings, indexes, processed chunks — are stored on <strong>Azure Blob</strong> so they can be retrieved with <strong>milliseconds latency at query time</strong> without rerunning the entire pipeline.</p>
+<p><strong>Stage two — retrieve, store, and manage AI data at runtime:</strong> every turn of the agent loop multiplies load on storage — more retrievals from Blob and the vector index, more test-time compute, and an <strong>exponential explosion of logs, conversation state, tool outputs, and agent traces</strong> that must all be persisted for fast downstream retrieval. At scale, distributed inference also <strong>swaps models in and out across GPUs</strong>.</p>
+<p>This yields <strong>three critical storage requirements for agentic inference</strong> (the spine of the whole talk):
+1. <strong>Bring enterprise data securely to agents</strong> and convert it into agent-accessible knowledge.
+2. <strong>Distribute and load models</strong> onto AI compute fast enough to keep expensive GPUs busy.
+3. <strong>Optimize infrastructure utilization</strong> to drive up <strong>tokens per watt per dollar</strong>.</p>
+<h3 id="pillar-optimizing-inference-with-prompt-caching">Pillar: Optimizing inference with prompt caching</h3>
+<p>The biggest lever for optimizing inference right now is <strong>prompt caching</strong>, because the way prompt tokens flow through the GPU is becoming one of the largest drivers of inference cost and latency as enterprises move from single-turn chat to long multi-turn agentic workflows.</p>
+<p><strong>Inference today without caching:</strong> Modern agents run on long, static enterprise context — system instructions, tool definitions, retrieval context — invoked across millions of invocations. In most production agents the <strong>static unchanged portion of the prompt is &gt;60% of inference cost</strong>. On every turn the GPU recomputes model attention over the entire prefix (static system prompt + tool definitions + all prior turns). Turn two adds more history; turn three adds even more. A few turns in, the GPU is "burning expensive cycles re-reading the same tokens it has already seen." That recompute drives up <strong>TTFT (time to first token)</strong> and end-to-end latency, making long-context agents expensive to operate.</p>
+<p><strong>With prompt caching:</strong> Instead of recomputing attention every turn, <strong>cache the KV state</strong> of the repeated context tokens and reuse it. On turn one the GPU still processes the full prefix once, but as it does, it <strong>writes the attention state out as a context-cached object</strong>. Turn two loads the cached state and only computes attention on the new tokens; every subsequent turn is the same. Result: <strong>dramatic reduction in GPU compute per turn → up to 90% inference cost savings</strong> plus significantly lower TTFT. This is so impactful that providers like <strong>OpenAI already offer implicit prompt caching APIs out of the box</strong> — a great starting point, but <strong>implicit caching alone is not enough</strong> for enterprise scenarios.</p>
+<h3 id="the-three-tiers-of-prompt-caching-in-microsoft-foundry">The three tiers of prompt caching in Microsoft Foundry</h3>
+<p>Foundry treats prompt caching as an <strong>evolution across three tiers</strong>, each for a different workload scale:</p>
+<p><strong>1. Implicit prompt caching — "fast by default."</strong> The KV cache sits <strong>directly in GPU memory</strong> alongside the inference engine. Ideal for real-time agents, multi-turn conversations, and short-lived workloads. Supports <strong>KB to low MB</strong>, with <strong>TTLs typically 5–10 minutes, up to ~1 hour</strong>. Advantage: speed + simplicity — the <strong>model provider owns the cache and API</strong>; the customer benefits from improved performance with <strong>zero application changes</strong>. <em>Already supported in Foundry.</em></p>
+<p><strong>2. Extended prompt caching — the cost-efficient scale tier.</strong> As workloads scale (longer conversations, richer media, larger datasets), GPU memory limits appear. Extended caching <strong>moves the cache onto the GPU node's local SSD</strong>, enabling <strong>hundreds of GB</strong> of capacity and <strong>TTL up to 24 hours</strong>. Still managed by the model provider, but lets customers retain context much longer. <em>Generally available in Foundry starting May 2026.</em> Customers can set the prompt cache retention option to 24 hours, or leverage it by default on <strong>GPT-5.5 or newer</strong> model deployments.</p>
+<p><strong>The node-bound limitation:</strong> Both implicit and extended caching are <strong>node-bound</strong>. If a request routes to a <strong>different node, cluster, or region</strong>, or if the <strong>TTL expires</strong>, the cache is lost and the <strong>full prefill compute cost is incurred again</strong>. This is a problem for long-running agents, global workloads, and scenarios where context must be reused across the enterprise.</p>
+<p><strong>3. Explicit prompt caching — Azure Context Cache.</strong> Foundry addresses the node-bound gap with <strong>Azure Context Cache</strong>, a first-class Azure resource purpose-built to store preprocessed context in <strong>durable storage within the customer's own tenant</strong>. Built on <strong>Azure Blob Storage</strong>, it removes size constraints, extends <strong>TTL to days/weeks/months</strong>, and <strong>operates independently of nodes</strong> — working seamlessly across sessions, deployments, and regions. The <strong>API is owned by the inference layer</strong>, making it portable across models and frameworks. The vision: "prompt caching as a core system capability of the AI platform, not tied to where your request lands," delivering consistent, guaranteed savings wherever reusable context exists.</p>
+<h3 id="inside-azure-context-cache-enterprise-ready-design">Inside Azure Context Cache (enterprise-ready design)</h3>
+<p>At its core, Azure Context Cache is <strong>durable storage of model KV prompt objects inside the enterprise's own Azure tenant</strong>, with three properties that make it enterprise-ready:
+1. <strong>Provider-only write endpoint</strong> — writes the <strong>encrypted KV state</strong> into the cache. The model's IP (the attention representation) is <strong>never exposed to the customer in clear text</strong>.
+2. <strong>Customer/developer-only endpoint</strong> — gives the enterprise full control over <strong>TTL, retention, invalidation, and metrics</strong>. As the AI developer, "you own the lifecycle of your own cache."
+3. <strong>Low-latency and highly performant</strong> — milliseconds latency and <strong>several tens of millions of tokens per minute</strong> of throughput at global scale, with a <strong>neutral API</strong> that integrates cleanly with <strong>Microsoft Foundry</strong> today, and in future with <strong>AKS</strong> and <strong>third-party frameworks</strong>.</p>
+<h3 id="outcomes-that-matter-developer-benefits-of-explicit-caching">Outcomes that matter (developer benefits of explicit caching)</h3>
+<p>Saloni summarized five outcomes:
+1. <strong>Cost &amp; efficiency</strong> — explicit prompt caching improves <strong>cache hit rates</strong> and delivers durable cost savings on the cached portion of the prompt; for <strong>GPT-5 class models</strong> this lets inference scale economically.
+2. <strong>Throughput</strong> — supports <strong>multi-million tokens-per-minute</strong> throughput for GPT-5 class models, providing headroom for high-concurrency agent workloads without bottlenecks.
+3. <strong>Latency</strong> — retrieving from context cache is <strong>orders of magnitude faster</strong> than recomputing full prefill → a <strong>step-function reduction in TTFT</strong>; in multi-turn scenarios it also improves observed end-to-end latency across concurrent users.
+4. <strong>Security &amp; control</strong> — a <strong>bring-your-own-resource</strong> model with purpose-built protection for model IP and secure access, all running in the customer's own Azure tenant, preserving enterprise-level access controls.
+5. <strong>Observability</strong> — rich cache diagnostics and fine-grained TTL control to tune cache behavior per workload and understand its impact.</p>
+<h3 id="oss-path-kv-caching-to-blob-via-nvidia-nixl-lmcache">OSS path: KV caching to Blob via NVIDIA NIXL + LMCache</h3>
+<p>For customers building agents with <strong>their own open-source toolchains/models</strong>, the reason explicit caching works is that <strong>the cache no longer lives on the GPU node — it lives on durable Azure storage</strong>, unlocking the full scale of Azure Blob behind the KV cache: effectively <strong>unlimited capacity, configurable retention, multi-region reach</strong>.</p>
+<p><strong>NIXL (NVIDIA Inference Xfer Library)</strong> is NVIDIA's unified API for moving model weights and KV blocks across memory tiers, with a <strong>pluggable backend</strong> underneath. Microsoft <strong>contributed a first-class Azure Blob backend</strong> into NIXL, so any NIXL-speaking framework — <strong>vLLM, Dynamo, TensorRT-LLM, Ray</strong> — can read/write KV blocks to Azure Blob with <strong>zero custom adapter code</strong>.</p>
+<p>The most immediate payoff is <strong>LMCache</strong>, the open-source KV-cache layer widely used with vLLM. Through Microsoft's plugin, <strong>LMCache offloads KV blocks straight to Blob</strong>. So the picture is consistent across the stack:
+- <strong>Managed customers</strong> land on <strong>Azure Context Cache</strong>.
+- <strong>OSS developers</strong> land on <strong>Azure Blob via NIXL + LMCache</strong>.</p>
+<p>Both paths put KV cache on <strong>durable Azure storage that travels with the workload, not the node</strong>.</p>
+<h3 id="pillar-fast-model-loading-and-distribution">Pillar: Fast model loading and distribution</h3>
+<p>KV cache is only <strong>half</strong> of the cold-start story — every cold start must also <strong>load the model weights</strong> from storage onto the GPU. For small models that's seconds; for large ones it's <strong>minutes</strong>. Same problem, same fix: <strong>saturate the NIC straight out of Blob</strong>.</p>
+<p><strong>Run:AI Model Streamer</strong> is an open-source loader for large model weights that plugs straight into the engines people run in production (<strong>vLLM and SGLang</strong>). Drop it in, point it at a storage account, and it replaces the default loader. Cold starts are "the tax every GPU pays when it comes up" — auto-scaling out, recovering a failed node, rotating a model, or loading a fine-tune on demand. The default loader makes that tax <strong>unpredictable and minutes long</strong> on big models, so the bigger the fleet, the more capacity is burned waiting for weights.</p>
+<p><strong>How the streamer differs:</strong> it <strong>splits the model file into chunks</strong>, pulls them from object storage <strong>in parallel</strong>, stages them in CPU, and pushes chunks to GPU memory <strong>concurrently</strong>. The reads and copies <strong>overlap</strong>, so the NIC stays saturated and the GPU is fed as fast as the network allows. Microsoft built the <strong>Azure Blob plugin for the Run:AI streamer</strong> — weights flow straight out of Blob through CPU into the GPU; the Blob container is the source of truth and the NIC is the only bottleneck. Result: <strong>3–6× faster cold starts than the default loader, consistently</strong>.</p>
+<h3 id="pillar-aks-scale-azure-container-storage-distributed-cache">Pillar (AKS scale): Azure Container Storage distributed cache</h3>
+<p>Everything demoed up to this point was a single pod / single GPU box. But <strong>production isn't one pod — it's a hundred</strong>, and each must pull the model down before serving a token. Doing the math: a <strong>70B model is ~140GB</strong>; <strong>100 pods coming up together = ~14TB out of Blob all at once</strong> → throttling, NIC saturation, and <strong>cold starts stretching to ~10 minutes</strong> — every minute being GPU you pay for and get nothing back.</p>
+<p>The fix: a <strong>distributed cache inside the AKS cluster itself</strong>, with <strong>zero changes to the workflow on top</strong> (Hugging Face loader, BlobFuse, Run:AI streamer all sit on top unchanged). Underneath, <strong>every GPU node is both a cache and a client</strong>: local <strong>NVMe RAID</strong> holds the hot data, served at NVMe speed with <strong>zero-copy sendfile</strong>; anything missing comes in over the network from a peer with <strong>ingress acceleration</strong> on the fabric inside. The <strong>first pod warms the cache; the next 99 read from inside the cluster</strong> → <strong>2.5× faster model loading on AKS</strong>, with <strong>Blob hit exactly once</strong>.</p>
+<p>This is <strong>Azure Container Storage's new distributed cache</strong>, built for AI on AKS: NVMe-class latency, throughput to local network saturation, Kubernetes-native, minimum-to-zero changes on the customer side. <strong>In early access</strong> — sign up via the on-screen QR code.</p>
+<h3 id="pillar-bringing-enterprise-data-to-ai-inference-native-ecosystem-integrations">Pillar: Bringing enterprise data to AI inference (native ecosystem integrations)</h3>
+<p>None of the compute story runs without data — the model, the cache, the context windows, the retrieved documents all live in storage. For inference, the bottleneck isn't <em>whether</em> you have the data, it's <strong>how fast you can feed it into the GPU</strong>. The guiding principle: <strong>"meet developers where they are"</strong> with native integrations across the entire AI ecosystem so that whatever stack you're on (Python, Spark, Ray, PyTorch, or an agent framework) you reach Blob without friction.</p>
+<p>Key integrations called out:
+- <strong>BlobFuse</strong> — POSIX-like mount; treat object storage like a local file system, same experience across VMs, containers, and AKS.
+- <strong>AzCopy</strong> — data movement.
+- <strong>ADLFS</strong> — Python-native, fsspec-compatible interface; makes Blob instantly usable from <strong>Dask, Pandas, and Ray</strong>.
+- <strong>PyTorch connector</strong> — plugs directly into dataset, dataloader, and checkpoint APIs; no custom code, <strong>zero-config auth with Azure Identity</strong>.
+- <strong>Run:AI Model Streamer</strong> — cuts cold-start times, loading models from Blob <strong>6× faster</strong> (as demoed).
+- <strong>NVIDIA NeMo / NIXL</strong> — drops into NVIDIA's data movement stack with <strong>KV cache offload</strong> and high-performance model transfers across Dynamo, vLLM, Ray, etc.
+- <strong>LangChain Azure Blob loader</strong> — faster ingestion and lower memory footprint for large document corpora: <strong>5–9× faster lazy load, 7–10× faster non-lazy load</strong> vs the community loader.</p>
+<p>The summary: Blob "isn't just scalable infrastructure underneath — it's deeply integrated into the AI developer ecosystem with high-performance, secure, seamless access across training, inference, and agent workflows."</p>
+<h3 id="closing-the-loop-enterprise-data-agent-ready-knowledge">Closing the loop: enterprise data → agent-ready knowledge</h3>
+<p>Returning to the <strong>knowledge</strong> half of agentic inference (turning enterprise data into agent knowledge): in the past Microsoft has shown how Blob storage plugs directly into AI services like <strong>Azure AI Search</strong> and <strong>Microsoft Foundry</strong> to turn enterprise data into agent-ready knowledge with just a few API calls. But many customers have <strong>unstructured enterprise data on Azure Files</strong> too — file shares, SMB workloads, lift-and-shift estates — and need the same ease of getting that data into AI.</p>
+<p><strong>Azure Files is now a data source for Azure AI Search</strong>, with two ways in:
+1. <strong>Azure Files Logic Apps connector</strong> — a low-code path to connect a file share and create a vector or hybrid index; it also handles <strong>re-indexing</strong> as data changes.
+2. <strong>Native Azure Files indexer in Azure AI Search</strong> — for teams that want <strong>finer control</strong> over enrichment and indexing.</p>
+<p>Either way, the path from a file share to a <strong>RAG (retrieval-augmented generation)-ready index</strong> is now only a few clicks or a few lines of code.</p>
+<p><strong>Foundry IQ</strong> takes this further: it's <strong>Microsoft's unified knowledge layer for agents</strong>. Instead of every agent reinventing its own retrieval stack, Foundry IQ gives a <strong>single governed knowledge layer</strong> that any agent in Microsoft Foundry can ground against. <strong>Azure Blob is a first-class knowledge source</strong> for Foundry IQ — just point it at a Blob container and enterprise data becomes agent-accessible knowledge with the <strong>security, lineage, and governance</strong> of Azure storage already in place and <strong>no glue code</strong>. Foundry IQ also supports <strong>Azure AI Search indexes</strong> built on Azure Blob or Azure Files data. This closes the loop between the <strong>data plane</strong> (Azure storage) and the <strong>agent plane</strong> (Microsoft Foundry) — from raw enterprise data to grounded, governed agents in a few steps.</p>
+<h3 id="storage-center-the-unified-entry-point">Storage Center — the unified entry point</h3>
+<p>To give AI developers and storage admins a single place to discover Azure Storage's AI capabilities and wire data into agent inference fast, the team introduced <strong>Storage Center</strong>: a <strong>centralized hub for file, block, and object storage</strong>, all in one place. It provides a <strong>unified view</strong> of the storage landscape (usage, performance, redundancy tiers) plus tools like <strong>lifecycle management</strong> and <strong>Storage Mover</strong> with rich visualizations. The message from customers/partners/developers was that this is the <strong>best place for both admins and developers to land their data</strong> (starting with Blob) and then connect it to AI. From Storage Center you can <strong>launch into the storage-for-AI experiences</strong> covered in the session. <strong>Announced as a limited preview</strong> — sign up via the on-screen QR code.</p>
+<h3 id="session-recap">Session recap</h3>
+<p>The talk opened with three storage requirements and showed how Azure storage delivers on all three:
+1. <strong>Bringing enterprise data to agents as knowledge</strong> — Azure Files → Azure AI Search, Foundry IQ with Blob as a first-class source.
+2. <strong>Distributing and loading models fast enough to keep GPUs busy</strong> — Run:AI Model Streamer + Azure Container Storage distributed cache.
+3. <strong>Optimizing infrastructure utilization for better tokens-per-watt-per-dollar</strong> — Azure Context Cache for explicit prompt caching (Foundry) + the NIXL plugin for OSS runtimes.
+And <strong>Storage Center</strong> as the unified entry point to leverage storage for AI applications.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Azure Blob Storage</strong> — the durable object-storage foundation underpinning every pattern (data, KV cache, model weights, knowledge sources).</li>
+<li><strong>Azure Context Cache</strong> — first-class Azure resource for <strong>explicit prompt caching</strong>; stores encrypted model KV prompt objects on durable Blob in the customer's tenant, node-independent, days/weeks/months TTL.</li>
+<li><strong>Microsoft Foundry</strong> — Microsoft's managed AI platform; host for the three-tier prompt caching strategy and Foundry IQ.</li>
+<li><strong>Azure OpenAI</strong> — model provider side (Saloni's team); owns implicit/extended cache + API.</li>
+<li><strong>Implicit prompt caching</strong> — KV cache in GPU memory; fast-by-default, KB–low MB, 5–10 min–~1 hr TTL; provider-owned, zero app changes.</li>
+<li><strong>Extended prompt caching</strong> — KV cache on GPU node local SSD; hundreds of GB, up to 24 hr TTL; cost-efficient scale tier.</li>
+<li><strong>BlobFuse</strong> — POSIX-like mount over Blob; same experience across VMs, containers, AKS.</li>
+<li><strong>ADLFS</strong> — Python-native, fsspec-compatible interface to Blob (Dask/Pandas/Ray).</li>
+<li><strong>AzCopy</strong> — high-performance data movement to/from Blob.</li>
+<li><strong>PyTorch connector</strong> — plugs Blob into dataset/dataloader/checkpoint APIs; zero-config auth via Azure Identity.</li>
+<li><strong>Azure Managed Lustre (AMLFS)</strong> — HPC-class throughput with a POSIX client.</li>
+<li><strong>Azure Container Storage</strong> — presents local NVMe as persistent volumes for stateful K8s workloads; home of the new distributed cache (Azure Files/Disks/Elastic SAN on roadmap).</li>
+<li><strong>Azure Container Storage distributed cache</strong> — in-cluster AKS cache; every GPU node is cache+client (NVMe RAID, zero-copy sendfile, peer fetch with ingress acceleration).</li>
+<li><strong>NVIDIA NIXL (NVIDIA Inference Xfer Library)</strong> — unified API for moving model weights/KV blocks across memory tiers with pluggable backends; Microsoft contributed an Azure Blob backend.</li>
+<li><strong>LMCache</strong> — open-source KV-cache layer widely used with vLLM; Microsoft plugin offloads KV blocks to Blob.</li>
+<li><strong>Run:AI Model Streamer</strong> — open-source large-model-weight loader for vLLM/SGLang; Azure Blob plugin gives 3–6× faster cold starts via chunked parallel reads + overlapping GPU copies.</li>
+<li><strong>NVIDIA NeMo</strong> — NVIDIA's data movement stack; integration brings KV cache offload + high-perf transfers across Dynamo/vLLM/Ray.</li>
+<li><strong>LangChain Azure Blob loader</strong> — faster, lower-memory document ingestion for large corpora (5–10× faster than community loader).</li>
+<li><strong>Azure AI Search</strong> — retrieval/index service; now supports Azure Files as a data source (Logic Apps connector + native indexer) for RAG-ready indexes.</li>
+<li><strong>Foundry IQ</strong> — Microsoft's unified, governed knowledge layer for agents; Blob is a first-class knowledge source.</li>
+<li><strong>Storage Center</strong> — centralized hub for file/block/object storage; unified view + launchpad into storage-for-AI experiences (includes Storage Mover, lifecycle management).</li>
+<li><strong>AI runtimes/orchestrators integrated:</strong> Ray, PyTorch, TensorFlow, <strong>vLLM, SGLang, Triton, ONNX</strong>, Dynamo, TensorRT-LLM.</li>
+<li><strong>KAITO (Kubernetes AI Toolchain Operator)</strong> — AKS AI toolchain operator powered by the same storage foundation.</li>
+<li><strong>VMSS / AKS</strong> — orchestration substrate for the storage clients.</li>
+<li><strong>GPT-5 / GPT-5.5 class models</strong> — referenced as the models benefiting from explicit caching and default extended caching.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Azure Context Cache (explicit prompt caching)</strong> — in <strong>gated/limited preview</strong> at Build 2026, integrated with Microsoft Foundry (future: AKS + third-party frameworks).</li>
+<li><strong>Extended prompt caching in Foundry</strong> — <strong>Generally Available starting May 2026</strong>; settable to 24 hr retention, or <strong>on by default for GPT-5.5+ deployments</strong>.</li>
+<li><strong>Implicit prompt caching in Foundry</strong> — <strong>already supported</strong> (GA-level, fast-by-default).</li>
+<li><strong>Azure Blob backend contributed to NVIDIA NIXL</strong> — enables attaching Blob storage to OSS model runtimes (vLLM, Dynamo, TensorRT-LLM, Ray) for prompt caching with zero adapter code.</li>
+<li><strong>Azure Blob plugin for LMCache</strong> — offloads KV blocks from vLLM straight to Blob.</li>
+<li><strong>Azure Blob plugin for Run:AI Model Streamer</strong> — 3–6× faster model cold starts (IaaS).</li>
+<li><strong>Azure Container Storage distributed cache for AKS</strong> — in <strong>early access</strong> (sign up via QR); 2.5× faster model loading at fleet scale.</li>
+<li><strong>Azure Files as a data source for Azure AI Search</strong> — via Logic Apps connector + native Azure Files indexer.</li>
+<li><strong>Foundry IQ</strong> — unified knowledge layer with Azure Blob as a first-class knowledge source.</li>
+<li><strong>Storage Center</strong> — <strong>limited preview</strong> (sign up via QR) as the unified storage hub / entry point to storage-for-AI.</li>
+<li><strong>LangChain Azure Blob loader</strong> — high-performance document loader for AI ingestion.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ol>
+<li><strong>KV-cache offload to Blob via NIXL + LMCache (single VM, 4 GPUs).</strong> An inference app on <strong>vLLM serving Llama 3.3 70B</strong>, tensor-parallel across all four GPUs on the VM, loading the model from a Blob container, with <strong>LMCache</strong> alongside building the KV cache. A simple Python client posted an OpenAI-compatible request with a <strong>~100,000-token</strong> context.
+   - <em>Cold start, no NIXL:</em> <strong>52 seconds to first token</strong> (GPUs doing full prefill from scratch — the familiar long-context cold start).
+   - <em>With NIXL wired in:</em> config set chunk size 256, local CPU tier off, NIXL storage on, backend = Azure Blob, <strong>async puts</strong> (writes never block inference). On the next run, NIXL wrote KV chunks to Blob in the background — the portal showed <strong>~1,500 chunks, ~20MB each (~30GB total)</strong> persisted durably.
+   - <em>Genuine cold start (vLLM restarted, GPU+CPU memory wiped):</em> NIXL <strong>streamed KV chunks directly from Blob into GPU memory</strong>, nearly saturating the <strong>80Gb NIC</strong> — the bottleneck moved from GPU compute to network bandwidth. <strong>~8 seconds to first token</strong> — <strong>~6× faster</strong> (52s → 8s). <em>Point proved:</em> don't pay prefill twice; stream the KV out of Blob.</li>
+<li><strong>Fast model-weight loading via Run:AI Model Streamer (single VM, 8× H100).</strong> Same <strong>ND96 H100</strong> VM (eight H100s, 80Gb NIC). Model = <strong>GPT-OSS-120B (~60GB of weights)</strong> pre-staged as safetensor shards in a Blob container. Started the vLLM serve command with one switch — <strong>load format = Run:AI streamer</strong> (the entire integration). Streamer did chunked parallel reads from Blob, CPU staging, and concurrent overlapping CPU→GPU copies. The NIC hit <strong>~86 Gbps on the 80Gb link (fully saturated)</strong>, and <strong>60GB of weights loaded into eight H100s in roughly the time it took to say the sentence</strong> — all 8 GPUs loaded, app startup complete. <em>Point proved:</em> loading is bounded only by network speed, not the default loader's slow path.</li>
+<li><strong>AKS-scale distributed cache (Azure Container Storage).</strong> Live comparison loading <strong>12GB of LLM weights</strong> on a real cluster: <strong>direct from Blob → ~1,500 MB/s, ~8 seconds</strong>; <strong>with the distributed cache → ~4,000 MB/s, ~3 seconds (2.5× faster)</strong>. When <strong>100 pods come up together, they all read from the cache and Blob gets hit exactly once</strong>. <em>Point proved:</em> fleet cold starts collapse from a thundering-herd Blob hit to a single warm-once read.</li>
+</ol>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>&gt;60%</strong> of inference cost in most production agents is the <strong>static unchanged portion</strong> of the prompt.</li>
+<li><strong>Up to 90%</strong> inference cost savings from prompt caching (reusing KV state instead of recomputing attention).</li>
+<li><strong>Implicit cache:</strong> KB–low MB, <strong>5–10 min</strong> (up to ~1 hr) TTL. <strong>Extended cache:</strong> hundreds of GB, <strong>up to 24 hr</strong> TTL. <strong>Explicit (Context Cache):</strong> <strong>days/weeks/months</strong> TTL.</li>
+<li>Azure Context Cache: <strong>several tens of millions of tokens per minute</strong> throughput at global scale, <strong>milliseconds</strong> latency.</li>
+<li><strong>Multi-million tokens-per-minute</strong> throughput for GPT-5 class models.</li>
+<li><strong>NIXL demo:</strong> 100k-token cold start <strong>52s → 8s (~6× faster)</strong>; ~1,500 KV chunks of ~20MB each persisted to Blob; 80Gb NIC near line rate.</li>
+<li><strong>Run:AI streamer:</strong> <strong>3–6× faster cold starts</strong>; ~60GB (GPT-OSS-120B) into 8× H100 with NIC at <strong>~86 Gbps</strong>.</li>
+<li><strong>AKS scale math:</strong> 70B model = <strong>~140GB</strong>; <strong>100 pods = ~14TB</strong> out of Blob at once → throttling + <strong>~10-min</strong> cold starts.</li>
+<li><strong>Distributed cache:</strong> <strong>~1,500 MB/s → ~4,000 MB/s</strong>, <strong>8s → 3s (2.5× faster)</strong>; Blob hit <strong>exactly once</strong> for 100 pods.</li>
+<li><strong>LangChain Azure Blob loader:</strong> <strong>5–9× faster lazy load, 7–10× faster non-lazy load</strong> vs community loader.</li>
+<li>
+<blockquote>
+<p>"By the time you're a few turns in, the GPU is burning expensive cycles re-reading the same tokens it has already seen before." — Saurabh, on uncached recompute.</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>"prompt caching as a core system capability of the AI platform, not tied to where your request lands." — Saloni, on the vision for explicit caching.</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>"Both paths put KV cache on durable Azure storage that travels with the workload, not the node." — Vishnu, on Context Cache vs NIXL+LMCache.</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: stand up <strong>Azure Context Cache</strong> (gated preview) against a GPT-5.5 Foundry deployment and measure TTFT delta on a long multi-turn agent; benchmark the <strong>Run:AI Model Streamer + Azure Blob plugin</strong> vs default loader on a real model; sign up (QR) for <strong>Azure Container Storage distributed cache</strong> early access on AKS; try the <strong>NIXL Azure Blob backend + LMCache</strong> with vLLM for KV offload; wire <strong>Azure Files → Azure AI Search</strong> (Logic Apps connector) for a lift-and-shift file share; point <strong>Foundry IQ</strong> at a Blob container; sign up for the <strong>Storage Center</strong> limited preview.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: What are the exact <strong>pricing/billing</strong> semantics for the cached prompt portion with Azure Context Cache? Which <strong>regions</strong> are in the gated preview? How does Context Cache handle <strong>cache invalidation</strong> when underlying context changes? What's the <strong>GA timeline</strong> for Context Cache and the AKS distributed cache? Any model-family restrictions beyond GPT-5 class for explicit caching?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: cost optimization for long-context/agentic workloads; GPU utilization &amp; cold-start reduction on AKS/IaaS; RAG/knowledge grounding from existing Azure Files + Blob estates; any Foundry-based agent platform work.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+<li>Topics: Azure Storage · Azure Blob · Microsoft Foundry · Foundry IQ · Azure AI Search · prompt caching / KV cache · AKS · vLLM · NVIDIA NIXL · agentic inference</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="OD806.html"><span class="pager-dir">← Previous</span><span class="pager-code">OD806</span><span class="pager-title">.NET 11 in depth: Runtime, libraries, and SDK for the AI era</span></a>
+    <span class="pager pager-empty"></span>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

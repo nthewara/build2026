@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRK210 — Future of Developer Productivity: Microsoft&#x27;s EngThrive Framework in Practice</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">BRK210</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=wDqipcHkaEM" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Future of Developer Productivity: Microsoft&#x27;s EngThrive Framework in Practice</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Microsoft engineering leader (EngThrive program lead; works with Satya + SLT; prev. Google, Netflix)</span>
+      <span class="meta-item">⏱️ 48m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="developer-productivity">Developer Productivity</span><span class="chip" data-tag="engineering-culture">Engineering Culture</span><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="metrics">Metrics</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Senior Microsoft engineering leader who owns the <strong>EngThrive</strong> function (drives developer-productivity transformation with Satya &amp; the SLT; references J. Patrick's <strong>Core AI</strong> org; previously ran platform/infrastructure at Netflix and productivity work at Google) — name not stated on the recording<br>
+<strong>Duration:</strong> ~48 min (~28 min talk + ~20 min Q&amp;A)<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=wDqipcHkaEM">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>This talk is about using AI to change <strong>how we work, not what we build</strong> — i.e. transforming engineering productivity rather than shipping AI features. The speaker argues that simplistic activity metrics (lines of code, PR counts, tokens consumed) are not just useless but <em>actively harmful</em>, and introduces <strong>EngThrive</strong>, Microsoft's framework for making it "fast and easy to build great work," measured across three categories: <strong>speed, ease, and quality</strong>. The single most important idea is <strong>outcomes over activity</strong> ("progress over motion") — measure systems, not individuals, and target durable outcome metrics like <em>idea-to-customer time</em>, <em>innovation-time ratio</em>, and <em>time-to-first-PR</em>. Two real ~8-week case studies (recovering focus time; cutting time-to-first-PR) show small focused teams (5 and 8 people) driving company-wide impact by building a business rhythm (ROBs) around one outcome metric and applying AI to break old bottlenecks.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Two AI value propositions:</strong> (1) AI to make <em>products</em> better, (2) AI to make <em>ourselves</em> better. This talk is entirely about #2 — transforming how engineers work.</li>
+<li><strong>Reductive productivity metrics are harmful.</strong> "Lines of code" and "PR counts" were debunked as performance metrics 10–15 years ago, yet the AI news cycle made the industry forget it. Don't.</li>
+<li><strong>Where engineering time actually goes (industry P50):</strong> ~40% innovation, ~45% keeping-the-lights-on, ~15% org responsibilities. Actual <em>active coding</em> is only <strong>~10–15% of a developer's week</strong>.</li>
+<li><strong>The objective is simple to say, hard to do:</strong> <em>create more value, faster.</em></li>
+<li><strong>The SDLC is shifting.</strong> For teams in the "third wave," time/energy is moving heavily toward <strong>plan</strong> and <strong>validate</strong>; <strong>create</strong> (coding) is trending asymptotically toward zero; deploy/operate lag but also shrink. <strong>Code is becoming an <em>output</em> of the system, not an input.</strong></li>
+<li><strong>Model capability is uneven across the stack:</strong> code generation is near-elite; system design/architecture, verification, operations are progressively weaker; <strong>taste</strong> is something models won't reach — it stays a human contribution.</li>
+<li><strong>AI doesn't change the <em>definition</em> of productivity.</strong> Productivity = ability to create outcomes; that's durable regardless of tools.</li>
+<li><strong>EngThrive mission:</strong> "make it <strong>fast and easy</strong> to build <strong>great work</strong>." <em>Fast + easy</em> = the engineering experience/system; <em>great work</em> = what you make. All three (speed, ease, quality) must move together — no teeter-totter.</li>
+<li><strong>Measure systems, not individuals.</strong> "Idea to production" or "build completion time" describe the <em>system</em> you operate in, not personal performance. Individual performance is a separate, more nuanced conversation.</li>
+<li><strong>The three flagship outcome metrics:</strong> <strong>Idea-to-customer</strong> (calendar time idea → in customer hands), <strong>Innovation-time ratio</strong> (drive from ~39% toward 80–90%), and <strong>Quality</strong> (defect-escape / incidents-per-PR, mean-time-to-mitigate, customer-love).</li>
+<li><strong>Activity metrics are useful for understanding behaviour change — but never <em>target</em> them.</strong> Targeting an activity metric destroys its fidelity (e.g. "token maxing").</li>
+<li><strong>Gaming an <em>outcome</em> metric is fine — you create the success you sought.</strong> A no-op first PR still proves your machine/infra/deploy/review loop all work. "Game an outcome metric → you get promoted."</li>
+<li><strong>Operating principles:</strong> create space to find/fix bottlenecks; <strong>leadership accountability at the highest level</strong> (started with Satya + SLT 3 yrs ago); <strong>continuous improvement, not hitting a fixed benchmark.</strong></li>
+<li><strong>Consistent company-wide metrics matter enormously</strong> — fragmented metrics prevent system optimization.</li>
+<li><strong>It's always the right time to start</strong> — early wins are low-hanging fruit; AI now lets small teams break decades-old bottlenecks fast.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-two-ways-ai-creates-value">Framing: two ways AI creates value</h3>
+<p>There are two AI value propositions: using AI to make our <strong>products</strong> better (integrate into experiences, change customer experiences) and using AI to make <strong>ourselves</strong> better (change <em>how</em> we work, not <em>what</em> we build). The entire talk is about the second — transforming the way we work. The speaker keeps a large chunk (~20 min) for open Q&amp;A.</p>
+<h3 id="productivity-in-the-ai-era-the-question-everyone-asked">"Productivity in the AI era" — the question everyone asked</h3>
+<p>Everyone has heard some version of <em>"are engineers more productive with AI?"</em> It was asked for the right reasons: software engineering is fundamentally changing, and when the way you develop changes, you need insight or it's scary. That fear makes <strong>overly simplified, reductive metrics attractive — but they're not helpful, and they go from not-helpful to <em>actively harmful</em></strong> when you're trying to drive transformation. The industry already learned (10–15 years ago) that "lines of code per engineer" or "PR counts" are meaningless as performance metrics — yet pop culture and the news cycle caused a collective amnesia in the last few months.</p>
+<h3 id="where-developer-time-actually-goes-longitudinal-studies">Where developer time actually goes (longitudinal studies)</h3>
+<p>Microsoft runs longitudinal studies across the industry and internally and publishes papers (one at the start of this year). The foundational model splits developer time into <strong>three buckets</strong>:
+- <strong>Innovation</strong> — ~40% (P50; sometimes cited as ~39%)
+- <strong>Running the business / keeping the lights on</strong> — ~45%
+- <strong>Organizational responsibilities</strong> (meetings, trainings, "citizen of the business" work) — ~15%</p>
+<p>Drilling in: time actually <em>interacting with code/technical systems</em> is only about a quarter of that, and <strong>active coding is somewhere between 10–15% of an engineer's week</strong> in functioning, mature businesses. Everyone wishes for more, but that's the common pattern — which is exactly why reducing "productivity" to "how much code / how fast" is wrong. The real goal: <strong>create more value, faster.</strong></p>
+<h3 id="how-work-is-changing-the-three-waves-of-ai-interaction">How work is changing — the three "waves" of AI interaction</h3>
+<p>A frame Microsoft uses internally and externally for how AI has changed work:
+1. <strong>Wave 1 — Transactional / direct interaction</strong> (ChatGPT era, ~3.5 years ago): ask the model a question, get a back-and-forth answer.
+2. <strong>Wave 2 — Asynchronous agents</strong> (became real ~Aug / mid-last-year): give an agent a task, it works asynchronously and can use tools.
+3. <strong>Wave 3 — Agents on complex goals</strong> (emerging now): agents have <strong>tools, memory, entitlements</strong> and pursue rich, complex goal-seeking. Still "frothy" — open questions about responsibilities and how to empower agents — but maturing day by day.</p>
+<h3 id="the-sdlc-is-being-reshaped-the-identity-crisis">The SDLC is being reshaped (the "identity crisis")</h3>
+<p>Classic SDLC: <strong>plan → create → validate → deploy → operate.</strong> Historically (industry averages):
+- <strong>Operate</strong> ≈ 75–80% of time
+- <strong>Create</strong> (active coding) ≈ 10–15%
+- <strong>Plan / validate / deploy</strong> ≈ the remainder</p>
+<p>For teams moving into the third wave, this is <strong>fundamentally different</strong>: time/energy concentrates on <strong>plan</strong> and <strong>validate</strong>, while <strong>create</strong> "rapidly, asymptotically moves toward zero." Deploy and operate also shrink but lag behind coding's collapse. The profound shift: <strong>code is becoming an <em>output</em> of the system rather than an <em>input</em>.</strong> Code is still (today) the source of truth, but <em>how</em> and the <em>nuance</em> by which it's written is changing shape.</p>
+<h3 id="model-capability-is-not-uniform-across-the-stack">Model capability is <em>not</em> uniform across the stack</h3>
+<p>The transition from input→output isn't happening evenly:
+- <strong>Code generation:</strong> frontier/foundational LLMs can write a single line of code "as good as any of us."
+- <strong>System design / architecture / sustainability understanding:</strong> not there yet; improving, but slower than raw code quality.
+- <strong>Verification:</strong> some recent gains (things possible now that weren't 6 months ago) but <strong>sublinear</strong>.
+- <strong>Operations:</strong> improving much more slowly.
+- <strong>Taste:</strong> models "are not there at all," and the speaker doesn't expect that to change — <strong>taste is what great engineers bring and will keep bringing.</strong></p>
+<p>The reason for showing this: the nature of the highest-performing teams, <em>where the bottlenecks are</em>, and how to enable teams to do more are all continuously changing.</p>
+<h3 id="productivity-itself-is-durable">Productivity itself is durable</h3>
+<p>AI changes much about how we work, <strong>but it does not change the fundamental concept of productivity or how you measure it.</strong> Productivity = the ability to create outcomes; the way you think about, measure, and understand outcomes is the same regardless of tools. (AI does help us <em>understand</em> outcomes in new, powerful ways — a Q&amp;A thread.)</p>
+<h3 id="engthrive-the-mission-and-the-triad">EngThrive — the mission and the triad</h3>
+<p><strong>EngThrive</strong> is Microsoft's name for understanding, shaping, and building programs around using AI to help engineers be more successful. Mission: <strong>"make it fast and easy to build great work."</strong>
+- <strong>Fast + easy</strong> describe <em>how</em> we work — the engineering experience, the system, the whole SDLC life cycle.
+- <strong>Great work</strong> describes <em>what</em> we make.</p>
+<p>This <strong>triad is non-negotiable</strong> — you can't have just one or two. There's <strong>no teeter-totter</strong>: improving speed must not sacrifice ease or quality; you can't crank a "quality dial" while dialing down speed/ease. All metrics are organized into <strong>three categories: speed, ease, and quality.</strong></p>
+<h3 id="activity-vs-outcome-the-single-most-important-idea">Activity vs Outcome — the single most important idea</h3>
+<blockquote>
+<p><em>"Progress over motion. Activity describes motion. Outcomes describe progress."</em></p>
+</blockquote>
+<p>If you take away one thing: <strong>measure and target changes in <em>outcome</em>, not <em>activity</em>.</strong> "How much more code did our engineers produce?" is an activity metric.
+- <strong>Activity metrics</strong> come in two flavours: metrics describing <em>how we work</em> (AI adoption/usage, tokens consumed, agent-based PR counts) and metrics describing <em>what we did</em> (PR counts). These are <strong>interesting and genuinely useful</strong> for understanding how behaviours are changing — <strong>but they are not metrics you target.</strong>
+- <strong>Outcome metrics</strong> describe <em>what you achieve</em>.</p>
+<p><strong>Side effect of targeting activity — "token maxing":</strong> people grind tokens for no real value because they've heard they're "expected" to be AI-active. The speaker's vivid illustration: any of us could become the company's largest token consumer / code producer overnight — spin up a junk repo, open a bunch of terminals, have them spew non-functional Python in 150–300-line chunks, commit and push endlessly ("burn burn burn"). Lots of energy, <strong>zero value.</strong> That's the inevitable failure mode of activity targets. Target outcomes instead and you create outcomes that matter.</p>
+<h3 id="accelerate-measure-systems-not-individuals">"Accelerate" — measure systems, not individuals</h3>
+<p>A fundamental principle (referred to as <strong>"accelerate"</strong>): it is <strong>not focused on measuring individuals — it measures systems.</strong> "How fast can I go from idea to production?" or "how long does my build take?" are <strong>system</strong> measures (the life cycle you operate in), not individual performance metrics. Distilling productivity into an individual metric is non-functional. <strong>Employee performance is a separate, much more nuanced conversation.</strong> Productivity is measured at the <strong>system level</strong> and by how that system impacts individuals.</p>
+<h3 id="the-three-flagship-outcome-metrics">The three flagship outcome metrics</h3>
+<ol>
+<li><strong>Speed → "Idea to customer."</strong> Calendar days/hours from an idea's origination (a PRD taking shape, a ticket with an idea but no design doc, maybe no engineer yet involved) all the way to value in the customer's hands (through experimentation/treatments/canaries). Powerful because you can drill in to find bottlenecks across the life cycle.</li>
+<li><strong>Ease → "Innovation time" (innovation-time ratio).</strong> The ~39% innovation slice from the time-allocation donut. <strong>Drive it as high as possible — 80–90% is a great target.</strong> Be highly attentive to what's <em>sucking up</em> engineering time and minimize it; AI is now breaking decades-old bottlenecks here.</li>
+<li><strong>Quality.</strong> Fairly well understood industry-wide: <strong>defect-escape rate</strong> (a.k.a. <strong>incidents per PR</strong>), <strong>mean-time-to-mitigate</strong> (responsiveness), plus a <strong>customer-experience / product-love</strong> measure. Also framed as measures of <em>defect escape, resilience, and experience</em>.</li>
+</ol>
+<p>There's also a dense <strong>"eye chart"</strong> of the full metric set — shown for reference only — representing Microsoft's state-of-the-art, driven to be <strong>as consistent as possible across the entire business</strong>. The importance of <strong>company-wide consistent metrics can't be overstated</strong>: you need a common frame to optimize systems. Microsoft worked backwards toward this maturity over several years; starting from such a complete position is uncommon.</p>
+<h3 id="from-metrics-to-action-good-old-fashioned-program-management">From metrics to action — "good old-fashioned program management"</h3>
+<p>Once you have good outcome metrics, the next step is just disciplined program management driven by directional metrics. <strong>Key operational principles of EngThrive:</strong>
+1. <strong>Create space to identify, understand, and execute on bottlenecks</strong> in the SDLC (use the measures to find them).
+2. <strong>Leadership accountability for developer experience at the absolute highest level</strong> — started with <strong>Satya and the SLT ~3 years ago</strong>, when metrics were far less mature (began with a couple, then iterated and grew).
+3. <strong>Focus on continuous improvement, not hitting a particular benchmark.</strong> This was the #1 question/fear leaders raised: <em>"a reorg happened, another team merged in, my benchmark will move and I'll be punished."</em> That's explicitly <strong>not</strong> the point — the goal is constantly asking <em>what can we do to improve developer experience / make it faster &amp; easier to build great products.</em></p>
+<p><strong>Things to work backwards toward (practical North Star):</strong>
+- <strong>Consistent company-wide metrics</strong> — avoid fragmentation at all costs.
+- <strong>Leverage existing tooling:</strong> e.g. <strong>focus time</strong> (a component of innovation time) comes <strong>straight out of Viva Insights</strong> out of the box.
+- <strong>Real-time dashboards</strong> so people can self-serve and take action.
+- <strong>Business processes that drive accountability</strong> — run <strong>ROBs</strong> (rhythm-of-business reviews).
+- <strong>Gather and share reusable patterns</strong> — especially now that AI plays such a big role in transformation.</p>
+<p><strong>Encouragement:</strong> it's always the right time to start, because early on the <strong>big wins are low-hanging fruit.</strong></p>
+<h3 id="case-study-1-recovering-focus-time-8-weeks-5-person-driving-team">Case Study 1 — Recovering Focus Time (~8 weeks, ~5-person driving team)</h3>
+<p><strong>What focus time is:</strong> uninterrupted hours per work week not broken up by meetings (and other interrupters). It's the <strong>key to getting into flow.</strong> Microsoft has extensive longitudinal/internal research showing <strong>profoundly better outcomes on nearly every dimension</strong> for developers with more focus time. (Done within <strong>Core AI</strong>, J. Patrick's organization.)</p>
+<p><strong>How they started the flywheel (process, not heavy tech):</strong>
+1. <strong>At senior-leadership level, picked ONE metric</strong> to focus on — rather than telling the whole org to go find the "optimal" metric. They used <strong>developer surveys</strong> to find top pain points; "<strong>feeling fragmented / not enough time to focus</strong>" rose to the top.
+2. <strong>Defined roles with clear accountability</strong> — every engineering leader at the highest level was responsible for moving the metric, with clear intention/focus.
+3. <strong>Bi-weekly reviews</strong> — every 2 weeks leaders convened; each got ~5 minutes within an hour to present: current data, what they're digging into, the changes they're making, and report-back in 2 weeks (decide to double-down, pivot, or evolve). <strong>Every conversation grounded in the data.</strong>
+4. <strong>Data source:</strong> Viva Insights focus time, enriched with additional developer instrumentation/telemetry.</p>
+<p><strong>Outcomes (in 8 weeks):</strong>
+- <strong>+2.1 hours of focus time recovered per engineer per week (P50).</strong>
+- <strong>+13% PR velocity</strong> — noted as an <em>activity</em> change (a behavioral indicator that developers got back into flow), not the outcome target.
+- <strong>−25% in "bad developer day" telemetry</strong> (a recently published EngThrive paper dives deeper into "bad developer days").
+- Decrease in several <strong>wasteful meeting patterns</strong> across the org.
+- Net <strong>≈ 55,000 hours of engineering time recovered</strong> through "good hygiene and cleanup."</p>
+<p><strong>Why this example matters:</strong> done <strong>fast</strong>, and <strong>mostly <em>not</em> built on AI directly</strong> — it used information <em>derived from</em> AI. Manifesting this data is only possible now because AI can analyze it into a great outcome metric you can act on. Part of the fragmentation came from <strong>operational toil (keeping the lights on)</strong> — which is exactly where AI was then applied. <strong>This was the origin of the SRE agent</strong>: it handles many SRE/operational/system-health tasks "no one wants to do," freeing SREs to do richer, deeper SRE work (building deeper understanding of system shapes). Lesson: huge progress comes fast when you <strong>build a business rhythm around one piece of outcome data.</strong></p>
+<h3 id="case-study-2-time-to-first-pr-8-weeks-8-person-driving-team-ai-centric">Case Study 2 — Time to First PR (~8 weeks, ~8-person driving team; AI-centric)</h3>
+<p><strong>The metric (speed):</strong> <strong>time to first PR</strong> — how long for a new hire (or someone changing teams) to submit their first PR on that team. <strong>Target: &lt; 1 week.</strong> At the start, company-wide it was <strong>more than a week</strong> (a decent amount more), affecting tens of thousands of technical staff.</p>
+<p><strong>Why it matters:</strong> getting into the real development experience fast <strong>changes multi-year trajectories</strong> — strong empirical correlations with long-term engineer success, not just intuition.</p>
+<p><strong>Four major interventions (over 8 weeks):</strong>
+1. <strong>Built "First Mate" agent</strong> — present on <strong>day zero</strong>; the moment a person is online they're attached to it. It has info about their team/destination and helps them begin engineering work, land their <strong>first PR</strong>, then progress toward their <strong>10th PR</strong>. (They track <strong>time-to-first-PR, time-to-10th-PR, and time-to-30th-PR.</strong>)
+2. <strong>Improved pull-request-workflow documentation</strong> — surprisingly, far more valuable <strong>for consumption by the First Mate agent</strong> than by humans, creating a flywheel of fast agent self-improvement.
+3. <strong>Created video exercises</strong> — visual walkthroughs of creating a PR. Sounds trivial, but Microsoft's <strong>internal first-party systems differ</strong> from external Azure tooling, so visuals were <strong>astonishingly effective.</strong> They hadn't done this before simply because there was <strong>no impetus</strong> — the outcome-metric focus created the impetus to do the previously deprioritized thing.
+4. <strong>Communicated to managers org-wide</strong> (via a company all-hands leadership forum) to <strong>raise expectations</strong> for how fast new/transferring engineers onboard.</p>
+<p><strong>The "isn't this gameable?" objection:</strong> Yes — and <strong>it doesn't matter.</strong> Even a <strong>no-op first commit to production</strong> proves your machine works, you're attached to the infra, you understand the deployment cycle, code presence, and the code-review loop. <strong>"When you game an outcome metric, you create the success you sought to create."</strong> → <em>"Game an outcome metric → you get promoted. Game an activity metric → welcome to the game (anybody can do that)."</em></p>
+<p><strong>Outcomes &amp; downstream effects:</strong> hit the <strong>&lt;1-week target.</strong> Time-to-first-PR is a powerful leading indicator: <strong>by a person's 10th PR they can predict with high precision</strong> that person's future coding activity and innovation time. Compressing/accelerating these produced <strong>massive positive changes in developer behaviour</strong>, correlating to faster <strong>idea-to-production</strong> and <strong>more time creating new value / less toil.</strong> AI made it possible to tackle a previously unreasonable problem (endless reading and maintaining of always-out-of-date documentation).</p>
+<h3 id="closing-takeaway">Closing takeaway</h3>
+<p>Of everything: <strong>outcomes over activity is the most important thing right now</strong>, and it stays <strong>durable</strong> as AI keeps changing the tools in our hands. <em>Outcomes are everything; activities are constantly changing.</em></p>
+<h3 id="qa-highlights">Q&amp;A highlights</h3>
+<ul>
+<li><strong>Q: Daily stand-ups and Teams messages — don't those kill focus time?</strong></li>
+<li><strong>Teams messages are NOT counted</strong> as focus-breakers — for remote teams they're the equivalent of work conversation. (Caveat: some message classes <em>are</em> distracting; teams share best practices on notification setup to minimize distraction.)</li>
+<li><strong>Stand-ups / certain meeting classes are excluded.</strong> Viva can detect meeting type (attendee count, rhythm, titles) to identify genuine working meetings. They also <strong>compressed meetings into blocks</strong> — guidance that ICs shouldn't be booked into meetings after ~1pm / in the afternoon.</li>
+<li><strong>Every meeting must have an agenda, purpose, and clear outcome.</strong> The org set the <strong>expectation to decline/cancel</strong> meetings lacking these — not just permission, an expectation.</li>
+<li><strong>Q: How did you measure "outcome" — just number/size of PRs? And is there a minimum focus-time block?</strong></li>
+<li><strong>Flow block:</strong> industry converges on <strong>60 / 90 / 120 minutes</strong>; Microsoft subscribes to <strong>120 minutes</strong> of contiguous uninterrupted time. (Speaker personally was in the 60–90 camp from Google/Netflix days but moved to 120 after seeing objective outcomes.)</li>
+<li><strong>Outcomes are <em>not</em> PR volume.</strong> PRs feature in some metrics (idea-to-customer relates to PRs; time-to-nth-PR uses a PR as a point in time) but <strong>throughput/volume/flow is deliberately <em>not</em> a metric.</strong> Reiterated: activity metrics show how behaviours change, but <strong>the moment you set an incentive around an activity metric it loses all fidelity and becomes meaningless.</strong></li>
+<li><strong>Q: How do you understand "more" / change over time?</strong></li>
+<li>They categorize change as <strong>features, bugs/fixes, enhancements, reductions in operational burden, migrations, security/dependency work</strong> (tied to the <strong>Secure Future Initiative</strong>). For heavy-coding teams they separate <strong>new features vs. work needed just to keep systems alive</strong>, so idea-to-customer can be understood as <strong>throughput/volume</strong> as well as calendar time.</li>
+<li><strong>Q: How do you get executive buy-in to care about outcome metrics?</strong></li>
+<li>No easy answer — the answer is <strong>speak up.</strong> <em>"We have way more power than we think."</em> ICs and first/second-line managers can say <em>"it is impossible / too hard for me to do the right thing — here's an idea to improve our speed/ease/quality."</em> It doesn't mean stop all work. <strong>AI now lets small, focused, ambitious teams (5 and 8 people, &lt;2 months) drive company-wide change</strong> by tackling classic bottlenecks fast. And the <strong>common language of outcomes-over-activity is itself one of the most effective change levers</strong> — even execs rooted in decades-old ways need that understanding built. The fruit is <strong>incredibly low-hanging.</strong></li>
+</ul>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>EngThrive</strong> — Microsoft's framework/function for using AI to make engineers more successful; mission "make it fast and easy to build great work," measured via speed/ease/quality.</li>
+<li><strong>"Accelerate"</strong> — the underlying measurement philosophy/approach: measure <em>systems</em>, not individuals.</li>
+<li><strong>First Mate (agent)</strong> — onboarding agent attached to new/transferring engineers on day zero; helps them land their first PR and progress to their 10th; central to the time-to-first-PR case study.</li>
+<li><strong>SRE agent</strong> — Microsoft agent that handles SRE/operational/system-health tasks no one wants to do; originated from the focus-time case study, freeing SREs for deeper SRE work.</li>
+<li><strong>Viva Insights</strong> — Microsoft 365 analytics tool that provides <strong>focus time</strong> out of the box; the primary data source (enriched with extra telemetry) for the focus-time case study, and can classify meeting types.</li>
+<li><strong>Microsoft Teams</strong> — messaging/collaboration; deliberately <em>not</em> counted as a focus-time interrupter.</li>
+<li><strong>"Bad developer day" telemetry</strong> — an EngThrive signal/metric (decreased 25% in case study 1); covered further in a recently published EngThrive paper.</li>
+<li><strong>ROBs (Rhythm of Business reviews)</strong> — the recurring business-process cadence used to drive accountability and change.</li>
+<li><strong>Secure Future Initiative (SFI)</strong> — Microsoft's security program; used as an example of separable work categories (security updates, dependency management, migrations) when analyzing throughput.</li>
+<li><strong>Developer surveys</strong> — qualitative data source used to pick which metric to target (surfaced "feeling fragmented").</li>
+<li><strong>Frontier / foundational LLMs</strong> — referenced for their strong single-line code generation vs. weaker design/verification/operations capability.</li>
+<li><strong>Real-time dashboards</strong> — recommended tooling so teams self-serve and act on the metrics.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p>None explicitly announced as product releases/previews/GA — this is a framework/practices talk. Items referenced as existing or recently published:
+- A <strong>recently published EngThrive paper</strong> (within the last couple of weeks) covering <strong>"bad developer days"</strong> in more depth.
+- An earlier <strong>longitudinal developer-time study/paper</strong> published at the start of the year.
+- <strong>First Mate</strong> and the <strong>SRE agent</strong> are described as in-use internal Microsoft agents (not framed as new Build announcements).</p>
+<h2 id="demos">💡 Demos</h2>
+<p>No live software demos. The talk was delivered via slides and <strong>two real internal case studies</strong> (focus time; time-to-first-PR), described above rather than demonstrated live.</p>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<p><strong>Stats:</strong>
+- Industry P50 time split: <strong>~40% innovation / ~45% keeping-the-lights-on / ~15% org responsibilities</strong>; innovation slice cited as <strong>~39%</strong>.
+- <strong>Active coding ≈ 10–15% of an engineer's week.</strong>
+- Historical SDLC time: <strong>operate ≈ 75–80%</strong>, create ≈ 10–15%.
+- Innovation-time target: <strong>drive toward 80–90%.</strong>
+- ChatGPT era began <strong>~3.5 years ago</strong>; Wave-2 agents became real <strong>~August / mid-last-year.</strong>
+- Flow blocks debated at <strong>60 / 90 / 120 min</strong> — Microsoft uses <strong>120 min.</strong>
+- <strong>Case study 1 (8 weeks):</strong> +<strong>2.1 hrs</strong> focus time / engineer / week (P50); +<strong>13%</strong> PR velocity; −<strong>25%</strong> bad-developer-day telemetry; <strong>≈55,000 hours</strong> of engineering time recovered.
+- <strong>Case study 2 (8 weeks):</strong> time-to-first-PR cut from <strong>&gt;1 week</strong> to the <strong>&lt;1 week</strong> target.
+- Case-study driving teams were <strong>5 people</strong> and <strong>8 people</strong>; both done in <strong>&lt;2 months.</strong>
+- The two flagship case studies ran in <strong>8–12-week</strong> windows.</p>
+<p><strong>Quotes:</strong>
+- <em>"Progress over motion. Activity describes motion. Outcomes describe progress."</em>
+- <em>"Code is rapidly becoming output of a system rather than input of the system."</em>
+- <em>"Taste is definitely one of the aspects that we bring to the table … and will continue bringing to the table."</em>
+- <em>"When you game an outcome metric, you create the success that you sought to create."</em>
+- <em>"If you can game an outcome metric, you get promoted. If you can game an activity metric — welcome to the game."</em>
+- <em>"We have way more power than we think."</em> (on IC/manager agency to push for change)
+- <em>"It's always the right time to get started because … the big wins are low-hanging fruit."</em></p>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Adopt <strong>outcomes-over-activity</strong> language in your own team; pick <strong>one</strong> outcome metric (e.g. idea-to-customer or focus time) and run <strong>bi-weekly data-grounded reviews</strong>. Pull <strong>focus time from Viva Insights</strong> if available. Consider a lightweight onboarding agent / better PR-workflow docs + short videos to cut time-to-first-PR.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: Which <strong>"bad developer day"</strong> signals does the new EngThrive paper define, and can they be reproduced outside Microsoft? How is <strong>idea-to-customer</strong> instrumented end-to-end (ticket → canary)? How do you keep <strong>company-wide metric consistency</strong> without it becoming bureaucratic?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: Engineering leadership / DevEx programs; DORA / SPACE / "Accelerate" metric discussions; AI-transformation strategy; onboarding &amp; SRE-agent automation.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+<li>DORA / "Accelerate" (Forsgren et al.) metrics; SPACE framework for developer productivity</li>
+<li>Microsoft EngThrive / "bad developer days" research paper (2026)</li>
+<li></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="BRK203.html"><span class="pager-dir">← Previous</span><span class="pager-code">BRK203</span><span class="pager-title">From CLI to PR: Automating the path to merged code</span></a>
+    <a class="pager pager-next" href="BRK220.html"><span class="pager-dir">Next →</span><span class="pager-code">BRK220</span><span class="pager-title">Using AI tools to teach old apps new tricks</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

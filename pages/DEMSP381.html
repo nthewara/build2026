@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEMSP381 — Scale agentic AI cost-efficiently on Azure with Arm Cobalt VMs</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEMSP381</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=MGCfkPbRMzU" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Scale agentic AI cost-efficiently on Azure with Arm Cobalt VMs</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Samir Nori (Arm), Goa (Microsoft Azure Arm product team), demo presenter (Arm)</span>
+      <span class="meta-item">⏱️ 17m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="azure">Azure</span><span class="chip" data-tag="arm">Arm</span><span class="chip" data-tag="cobalt">Cobalt</span><span class="chip" data-tag="infrastructure">Infrastructure</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Samir Nori (Software &amp; Ecosystem team, Arm) · "Goa" (Arm product team, Microsoft Azure) · Demo presenter (Arm)<br>
+<strong>Duration:</strong> ~17 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=MGCfkPbRMzU">YouTube</a></p>
+  </div>
+</div>
+
+<div class="callout callout-note">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">📝</span><span class="callout-title-text">Transcript caveat</span></div>
+  <div class="callout-body">
+<p>This is a short partner/sponsor demo session and the auto-captions garbled several speaker names and a few product terms. The second presenter is introduced as "Goa" (likely a phonetic spelling), and the demo presenter's name was inconsistently captioned ("Renee"/"Kren"). Product names were corrected to their plausible real forms (e.g. "five model" → <strong>Phi model</strong>, "onx" → <strong>ONNX</strong>, "R 64"/"64" → <strong>Arm64 / Aarch64</strong>, "coord/cobwalt" → <strong>Cobalt</strong>). Nothing was invented beyond these corrections.</p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Arm and Microsoft used this session to spotlight the newly previewed <strong>Azure Cobalt 200 VMs</strong> — Microsoft's second-generation in-house, custom-built Arm-based server processor — and position them as the cost-efficient compute platform for cloud-native and <strong>agentic AI</strong> workloads. The headline is <strong>~50% better per-core price/performance over Cobalt 100</strong> (which itself was ~50% better than the prior generation), built on <strong>3nm</strong> on the latest Arm architecture with <strong>Azure Boost</strong> built in. Microsoft's own first-party services (Teams, Defender) already run on Cobalt 100 in production, and the new lineup adds memory-optimized and storage-dense VM families aimed squarely at AI sandboxes and microservices. The closing live demo ran an agentic shopping-cart application <strong>entirely on CPU, locally and privately</strong> (no external LLM call), using a <strong>Phi model + ONNX runtime</strong> across a mixed Cobalt 100/200 cluster to prove agentic workloads scale cost-efficiently on Arm without GPUs.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Cobalt 200 VMs are in preview</strong> (announced by Satya in the Build keynote), the second generation of Microsoft's custom-built, purpose-built-for-server Arm processor.</li>
+<li><strong>~50% better per-core performance vs Cobalt 100</strong> — and Cobalt 100 was already ~50% better than the generation before it, so two consecutive ~50% per-core leaps.</li>
+<li>Built on <strong>3nm process technology</strong> on the <strong>latest Arm architecture</strong>, and the VMs come <strong>innately supported with Azure Boost</strong> (offloaded networking/storage).</li>
+<li>The processors are <strong>in-house designed by Microsoft</strong>, optimized first for Microsoft's own first-party workloads and a broad set of third-party workloads.</li>
+<li><strong>Production proof from first-party Microsoft services</strong>: <strong>Microsoft Teams</strong> runs on Azure Cobalt 100, and <strong>Microsoft Defender</strong> uses Cobalt as its default processor for its workloads.</li>
+<li><strong>Expanded VM families</strong> beyond Cobalt 100's D / Dp / E series: now also a <strong>memory-optimized</strong> family (~<strong>16 GB memory per core</strong>) and an <strong>L-series dense local-storage</strong> family targeted at agentic AI and cloud-native workloads.</li>
+<li><strong>Agentic AI is the strategic narrative</strong> — Cobalt 200 is pitched as ideal for sandbox creation, full agent request loops, and packing many sandboxed agents densely into a single VM.</li>
+<li><strong>Preview is in 8 regions today</strong>, with more regions planned at <strong>GA</strong>.</li>
+<li><strong>Arm scale/ecosystem credentials:</strong> ~30 years old, ~<strong>350 billion chips</strong> shipped, ~<strong>22 million</strong> Arm developers, ~15 years building the server ecosystem, and <strong>~95% of CNCF projects support Arm</strong>.</li>
+<li><strong>Demo punchline:</strong> an agentic shopping app ran <strong>100% on CPU, fully local and private</strong> (data never leaves the cluster, no third-party LLM) using a <strong>Phi model via ONNX</strong>, including context retention (table/KV-style cache) across prompts.</li>
+<li>Arm offers a <strong>migration program</strong> (resources, a "CP/Copilot-style" assistant, and engineering expertise) to help customers/partners port workloads to <strong>Arm64</strong>.</li>
+<li>Hands-on <strong>labs</strong> were offered (sign-up, sessions the next day) for attendees to try the demos themselves.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-the-arm-microsoft-partnership">Framing: the Arm ↔ Microsoft partnership</h3>
+<p>Samir Nori (Arm Software &amp; Ecosystem team) opened by setting context for the partnership and Arm's role. Arm has been around ~30 years and has shipped close to <strong>350 billion chips</strong>, positioning itself as "the computing platform for all devices — from cloud to edge." For this session the focus is specifically <strong>data center and cloud</strong>, and the collaboration with Microsoft/Azure.</p>
+<p>He framed the Microsoft partnership as resting on <strong>two pillars</strong>:</p>
+<ol>
+<li><strong>Silicon innovation</strong> — Arm works with Microsoft's hardware and systems teams on designing, developing, and deploying the <strong>Cobalt</strong> chip. There are now <strong>two generations</strong>: the prior gen launched with ~<strong>50% better price/performance</strong> than what came before it, and <strong>Cobalt 200 is now ~50% better again than Cobalt 100</strong>.</li>
+<li><strong>Software enablement</strong> — making the broad software ecosystem run well on Arm. Arm cites ~<strong>22 million developers</strong>, ~<strong>15 years</strong> building this ecosystem, and <strong>~95% of CNCF projects supporting Arm</strong>. Support spans Linux, cloud-native (CNCF), AI/ML, and a wide range of SaaS/enterprise and ISV packages.</li>
+</ol>
+<p>The takeaway of the intro: there is broad, mature software support on Arm, so moving workloads to Arm-based Azure VMs is low-friction.</p>
+<h3 id="cobalt-100-success-story-the-baseline">Cobalt 100 success story (the baseline)</h3>
+<p>The second presenter ("Goa," from the Arm product team at Microsoft) grounded the new announcement in Cobalt 100's track record. <strong>Cobalt 100 launched in 2024</strong> and the response has been "tremendous":</p>
+<ul>
+<li>Strong adoption across <strong>both enterprise and cloud-native</strong> customers, many already onboarded and seeing significant price/performance benefits.</li>
+<li>Crucially, <strong>first-party Microsoft proof points</strong>: <strong>Microsoft Teams runs on Azure Cobalt 100</strong>, and <strong>Microsoft Defender</strong> has made <strong>Cobalt its default processor</strong> for driving its workloads.</li>
+<li>The argument: these first-party deployments are a testament that the <strong>price/performance is "immense and unmatched"</strong> versus other offerings.</li>
+</ul>
+<h3 id="cobalt-200-whats-new-the-core-announcement">Cobalt 200: what's new (the core announcement)</h3>
+<p><strong>"Yesterday's story was Cobalt 100; today Satya announced Cobalt 200 VMs."</strong> Key technical points:</p>
+<ul>
+<li><strong>In-house, custom/purpose-built for the server space by Microsoft</strong> — optimized for Microsoft's first-party workloads and a variety of third-party workloads. (Both Cobalt 100 and 200 are Microsoft-designed silicon.)</li>
+<li><strong>Azure Boost built in</strong> — Cobalt 200 VMs come innately supported with Azure Boost (Azure's hardware offload for networking/storage performance).</li>
+<li><strong>~50% better per-core VM performance</strong> vs the previous (Cobalt 100) generation.</li>
+<li><strong>3nm process technology</strong> on the <strong>latest Arm architecture</strong> — the source of the per-core gains.</li>
+</ul>
+<p>The framing emphasizes translating the per-core silicon gains into customer value via the VM offerings.</p>
+<h3 id="expanded-vm-families">Expanded VM families</h3>
+<p>Cobalt 100 shipped <strong>D, Dp, and E</strong> series. Cobalt 200 extends the lineup to fit essentially any workload:</p>
+<ul>
+<li><strong>D / Dp / E series</strong> — general-purpose (carried forward).</li>
+<li><strong>Memory-optimized family</strong> — roughly <strong>16 GB of memory per core</strong>, for memory-hungry workloads.</li>
+<li><strong>L-series, dense local-storage optimized</strong> — explicitly targeted at <strong>agentic AI and cloud-native workloads</strong> (lots of fast local storage per VM).</li>
+</ul>
+<p>Goal: with this breadth, any enterprise or cloud-native workload can find a fitting Cobalt 200 VM size.</p>
+<h3 id="benchmarks-the-developer-slide">Benchmarks (the developer slide)</h3>
+<p>The presenter walked a benchmark slide aimed at developers:</p>
+<ul>
+<li><strong>Left side: industry-standard benchmarks</strong> — notably <strong>SPECrate</strong> — compared against the previous generation on a <strong>per-vCPU performance basis</strong>.</li>
+<li><strong>Right side: Microsoft's own benchmarks and Microsoft products.</strong></li>
+<li>The claim: <strong>industry benchmarks and Microsoft benchmarks tell the same story</strong> — substantially higher performance than the previous generation, with Microsoft's own first-party products serving as additional real-world evidence (alongside third-party customer results).</li>
+</ul>
+<p>(No specific benchmark numbers beyond the recurring "~50% per-core" improvement were stated verbally in the transcript.)</p>
+<h3 id="why-cobalt-200-agentic-ai">Why Cobalt 200 + agentic AI</h3>
+<p>The forward-looking thesis: <strong>"the future is about agentic AI."</strong> Cobalt 200, being strong in the <strong>cloud-native</strong> space, is positioned to excel at agentic patterns:</p>
+<ul>
+<li><strong>Sandbox creation</strong> for agents.</li>
+<li>Running the <strong>full agent loop</strong> (creating a request and executing the entire loop).</li>
+<li><strong>Density</strong> — fitting as many sandboxed agents as possible into a single VM.</li>
+</ul>
+<p>The promise across all of these is <strong>unmatched price/performance</strong>.</p>
+<h3 id="availability">Availability</h3>
+<ul>
+<li><strong>Preview today in 8 regions.</strong></li>
+<li><strong>More regions to be added at GA.</strong></li>
+<li>The presenter offered to take questions afterward and handed off to the demo.</li>
+</ul>
+<h3 id="demo-agentic-cpu-only-local-private-the-centerpiece">Demo: agentic, CPU-only, local &amp; private (the centerpiece)</h3>
+<p>The demo presenter (Arm) reframed the industry shift first: traditional cloud-native and classic apps had <strong>fixed workflows</strong> (get from point A to B, run a few tasks, done). The industry is now moving toward <strong>AI-first / AI-native / agentic</strong> applications, where existing apps gain agentic capabilities. Cobalt VMs support <strong>both families</strong> — fixed/traditional workflows on Cobalt 100 and the newer agentic-capable workloads on Cobalt 200 — and the point of distributed microservices is scaling an app across <strong>hundreds of nodes</strong>.</p>
+<p>What the live demo showed (a "busy slide" with a three-tier architecture):</p>
+<ul>
+<li><strong>Tier 1 — microservices app:</strong> a <strong>polyglot microservices "shopping cart" application</strong>, with its microservices running on <strong>Cobalt 100</strong> VMs.</li>
+<li><strong>Tier 2 — orchestration:</strong> running on the newer <strong>Cobalt 200</strong> VMs, which are capable enough to execute <strong>CPU inference</strong> without needing any external accelerator/service.</li>
+<li><strong>Tier 3 — serving:</strong> provisioning <strong>multiple pods</strong> to serve the intensive (inference) requests generated by the application.</li>
+</ul>
+<p><strong>The critical property:</strong> <em>everything runs on CPU, inside the cluster.</em> <strong>Data never leaves</strong> — no third-party LLM call — so it is <strong>fully local and private</strong>. The presenter added agentic agents that manage the workflow, all running locally within the cluster with no external dependency.</p>
+<p>Live interaction shown via the app's web UI:
+- The presenter prompted the agent with a <strong>budget of ~$2,000</strong> and asked it to add items; the agent tracked spend (e.g., <strong>"~$700 left"</strong> after some items), demonstrating a budget-aware scanning/selection service.
+- Asked for <strong>shoes</strong>, the agent returned a single relevant suggestion (not a generic list), and critically <strong>maintained conversational context across turns</strong> — described as using a <strong>table/KV-style cache</strong> so prior context (the budget, prior items) carried over rather than re-querying from scratch.
+- The agent added the selected items to the cart, all computed <strong>on CPU and locally</strong>.</p>
+<p><strong>Implementation details called out:</strong> the demo used a <strong>Phi model</strong> with the <strong>ONNX runtime</strong> to do the inference on CPU, inside the cluster. (Process counts were referenced for the different node tiers — e.g., the Cobalt 200 tier handling the heavier 200+ process load — though the exact figures were partly garbled in captions.)</p>
+<p>The point proved: <strong>agentic AI workloads — including model inference with context/memory — can run cost-efficiently on Arm-based Azure CPUs, entirely local and private, with no GPUs and no external LLM dependency.</strong></p>
+<h3 id="closing-labs-migration-program">Closing: labs + migration program</h3>
+<ul>
+<li><strong>Hands-on labs</strong> were offered — a lab the next day (sign-ups; times mentioned around <strong>6:30 / 9:00</strong>) for attendees to run the demos themselves and talk to the team.</li>
+<li><strong>Migration program:</strong> Arm helps customers and partners on their journey to <strong>Arm64</strong>. Whether just starting or already underway and wanting <strong>performance analysis on CPU</strong>, customers can reach out to get a <strong>migration resource/assistant</strong> plus <strong>engineering expertise</strong> from Arm.</li>
+</ul>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Azure Cobalt 200 VMs</strong> — Microsoft's 2nd-gen, in-house custom Arm-based server CPU; ~50% better per-core vs Cobalt 100; 3nm; latest Arm architecture; the session's focus. <em>(Preview.)</em></li>
+<li><strong>Azure Cobalt 100 VMs</strong> — 1st-gen Microsoft Arm server CPU (launched 2024); the production baseline running first-party workloads.</li>
+<li><strong>Azure Boost</strong> — Azure's hardware offload (networking/storage acceleration) innately supported on Cobalt 200 VMs.</li>
+<li><strong>Cobalt VM families</strong> — <strong>D / Dp / E</strong> (general purpose), a <strong>memory-optimized</strong> family (~16 GB/core), and an <strong>L-series</strong> dense local-storage family for agentic AI / cloud-native.</li>
+<li><strong>Arm / Arm64 (Aarch64)</strong> — the underlying CPU architecture; the migration target.</li>
+<li><strong>Microsoft Teams</strong> — first-party Microsoft service cited as running on Cobalt 100.</li>
+<li><strong>Microsoft Defender</strong> — first-party Microsoft service using Cobalt as its default processor.</li>
+<li><strong>Phi model</strong> — the small language model used in the demo to run inference on CPU. <em>(Caption said "five model"; corrected to Phi.)</em></li>
+<li><strong>ONNX (ONNX Runtime)</strong> — used to run/interface the Phi model for CPU inference. <em>(Caption said "onx".)</em></li>
+<li><strong>SPECrate</strong> — industry-standard benchmark used for per-vCPU performance comparisons.</li>
+<li><strong>CNCF projects / cloud-native ecosystem</strong> — ~95% of CNCF projects support Arm; basis of the cloud-native readiness claim.</li>
+<li><strong>Polyglot microservices "shopping cart" app</strong> — the demo application spanning the multi-tier Cobalt cluster.</li>
+<li><strong>Pods / cluster (Kubernetes-style)</strong> — used to scale and serve inference requests inside the cluster.</li>
+<li><strong>Table/KV-style cache</strong> — mechanism cited for retaining agent conversational context across prompts.</li>
+<li><strong>Arm migration program</strong> — assistance (resources + assistant + engineering expertise) to port workloads to Arm64.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Azure Cobalt 200 VMs — PREVIEW.</strong> Announced by Satya in the Build 2026 keynote; this session expanded on it. ~50% better per-core performance than Cobalt 100, 3nm, latest Arm architecture, Azure Boost built in.</li>
+<li><strong>Preview footprint: 8 regions today</strong>, with <strong>more regions at GA</strong> (GA date not stated).</li>
+<li><strong>New VM families on Cobalt 200:</strong> memory-optimized (~16 GB/core) and L-series dense local-storage (for agentic AI / cloud-native) — in addition to D/Dp/E.</li>
+<li>(Context, not new) <strong>Cobalt 100</strong> general availability and production first-party adoption (Teams, Defender) referenced as the proven baseline.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Agentic shopping-cart app, CPU-only and fully local/private.</strong> A polyglot microservices shopping app ran across a mixed cluster — microservices on <strong>Cobalt 100</strong>, orchestration on <strong>Cobalt 200</strong> doing CPU inference, and pods serving intensive requests. Using a <strong>Phi model via ONNX</strong>, the agent handled a budget-aware shopping task (~$2,000 budget, tracked remaining spend, returned a targeted shoe suggestion) and <strong>retained context across prompts</strong> via a table/KV-style cache.<br>
+<strong>Point proved:</strong> agentic AI — including model inference <em>with</em> memory/context — runs cost-efficiently on Arm-based Azure CPUs, entirely inside the cluster with <strong>no external LLM and no data leaving the environment</strong> (private by design), and <strong>no GPUs required</strong>.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>~50% better per-core performance, Cobalt 200 vs Cobalt 100</strong> — and Cobalt 100 was likewise <strong>~50% better</strong> than the generation before it.</li>
+<li><strong>3nm</strong> process technology, <strong>latest Arm architecture</strong> (Cobalt 200).</li>
+<li><strong>~16 GB memory per core</strong> on the memory-optimized Cobalt 200 family.</li>
+<li><strong>8 regions</strong> in preview at launch; <strong>more at GA</strong>.</li>
+<li><strong>Cobalt 100 launched in 2024.</strong></li>
+<li>Arm scale: <strong>~30 years</strong>, <strong>~350 billion chips shipped</strong>, <strong>~22 million developers</strong>, <strong>~15 years</strong> building the server ecosystem, <strong>~95% of CNCF projects support Arm</strong>.</li>
+<li>Demo: <strong>~$2,000 budget</strong>, <strong>~$700 remaining</strong> after items — illustrating budget-aware agent behavior.</li>
+<li><strong>"Cobalt is their default processor"</strong> — on Microsoft Defender's use of Cobalt.</li>
+<li><strong>"All of this is happening on a CPU and inside that cluster. So your data is not going outside. You're not talking to a third-party LLM and everything is local and private."</strong> — demo presenter (paraphrased from captions).</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Spin up a <strong>Cobalt 200</strong> VM (preview, one of the 8 regions) and benchmark a representative .NET/Linux workload vs an equivalent x86 D-series; compare price/perf.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Reproduce the demo pattern — run a <strong>Phi model via ONNX Runtime on Arm64 CPU</strong> for a small agent loop; measure latency/throughput and whether CPU-only inference is viable for the use case.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Evaluate the <strong>L-series (dense local storage)</strong> and <strong>memory-optimized (~16 GB/core)</strong> families for agent-sandbox density.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: What are the <strong>actual SPECrate numbers</strong> and real-world price/perf deltas (the talk only said "~50% per-core")? Which <strong>8 regions</strong> are in preview, and is <strong>australiaeast</strong> among them?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: What model sizes/quantizations of <strong>Phi</strong> are practical CPU-only on Cobalt 200, and at what concurrency? How does the table/KV cache work in their agent stack?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: Migration program specifics — what is the "migration resource + assistant" they offer, and is there tooling to flag Arm64 incompatibilities?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: Cost-optimization of Azure compute; agentic/AI-native app architecture; private/local inference (data-residency-sensitive workloads); cloud-native/Kubernetes platform decisions; Arm64 migration planning.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Build2026">Build2026</span></li>
+<li>Topic: Azure Cobalt 100 / Cobalt 200, Arm64 on Azure, Azure Boost</li>
+<li>Topic: Agentic AI, CPU inference, Phi models, ONNX Runtime</li>
+<li>Microsoft Build 2026 keynote (Satya — Cobalt 200 preview announcement)</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEM369.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEM369</span><span class="pager-title">Responsible AI in Action: From Principles to Real-World Engineering</span></a>
+    <a class="pager pager-next" href="DEMSP388.html"><span class="pager-dir">Next →</span><span class="pager-code">DEMSP388</span><span class="pager-title">Ship faster with Claude Code and Cowork in Microsoft Foundry</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

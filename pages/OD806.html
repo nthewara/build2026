@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OD806 — .NET 11 in depth: Runtime, libraries, and SDK for the AI era</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">OD806</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=dgPJwHXDj0o" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">.NET 11 in depth: Runtime, libraries, and SDK for the AI era</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Chet Husk, Rich Lander</span>
+      <span class="meta-item">⏱️ 44m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="dotnet">.NET</span><span class="chip" data-tag="runtime">Runtime</span><span class="chip" data-tag="sdk">SDK</span><span class="chip" data-tag="performance">Performance</span><span class="chip" data-tag="ai">AI</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Chet Husk (Product Manager, .NET SDK &amp; MSBuild teams) · Rich Lander (Product Manager, .NET runtime &amp; libraries team)<br>
+<strong>Duration:</strong> ~44 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=dgPJwHXDj0o">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>A two-part survey of what's coming in <strong>.NET 11</strong>, framed around the AI/agent era. Chet Husk covers the <strong>SDK &amp; tooling</strong> side: three workstreams — new capabilities/UX, end-to-end performance, and lighter acquisition. Headliners include first-class <code>dotnet run</code> device deployment for MAUI, making the CLI <strong>agent/LLM-aware</strong>, an ambitious push to make the <strong>entire .NET CLI native AOT</strong> (with bundled tools like user-secrets already AOT in preview 6), <strong>multi-threaded MSBuild</strong>, a new cross-platform install tool <strong><code>dotnet up</code></strong>, and ~80 MB shaved off SDK payloads via tarball hard-link deduplication. Rich Lander then goes lower in the stack: a redesigned <strong>Process API</strong> (deadlock-free convenience methods), Unicode/text-processing improvements, System.Text.Json policies + JSON Lines, integrated <strong>Zstandard</strong> compression, and two enormous multi-release runtime projects — <strong>runtime async</strong> (state-machine-free async, opt-in in .NET 11, default likely in .NET 12) and <strong>memory safety</strong> (redesigning <code>unsafe</code> into a reviewable contract, JIT bounds-check/inlining wins, and memory-safe SIMD). The overarching message: install the previews and give feedback on GitHub before the <strong>GA this fall</strong>.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>.NET SDK has three .NET 11 workstreams:</strong> new capabilities/UX, performance throughout the stack, and lightening acquisition/management of tools — all heavily motivated by the rise of agents and fast multi-agent inner loops.</li>
+<li><strong><code>dotnet run</code> now deploys to devices</strong> (MAUI contribution): pick a target framework, pick a valid device, build the install payload, push, and launch on a simulator — all from <code>run</code>. The protocol is <strong>extensible</strong> beyond MAUI (Uno, Avalonia, etc.).</li>
+<li><strong>The CLI is now agent/LLM-aware</strong> (heuristic-based). It changes output rendering (e.g. disables the terminal logger's token-noisy live-updating section under an LLM) and adapts internal behavior to who's driving it.</li>
+<li><strong>Build resource contention</strong> from agent-spawned git worktrees is being addressed via a proposed <strong>central MSBuild "gatekeeper"</strong> that routes all builds and delegates resources so the machine stays responsive.</li>
+<li><strong>Native AOT for the entire .NET CLI is the North Star.</strong> Bundled tools (<code>user-secrets</code>, <code>dev-certs</code>, <code>user-jwts</code>) are native AOT as of preview 6. Example: <code>dotnet user-secrets</code> ran in ~54 ms total, only ~14 ms of which was the app itself (rest is managed CLI overhead).</li>
+<li><strong>AOT is also an ecosystem play:</strong> the effort forced core libraries (templating, NuGet, parts of MSBuild) to become more trim-friendly, unblocking the whole ecosystem to build trimmed/AOT apps.</li>
+<li><strong>The CLI now emits OpenTelemetry (OTEL)</strong> — you can trace CLI commands in the <strong>Aspire dashboard</strong>. Telemetry was migrated to OpenTelemetry and old COM patterns made trim-friendly as part of the AOT migration.</li>
+<li><strong>Multi-threaded MSBuild</strong> is coming in .NET 11 (threads, not just the current multi-process model) to cut IPC and CoreCLR JIT-loading overhead. Not usable today but will be by launch; task authors should read <code>aka.ms/msbuild/mttasks</code>.</li>
+<li><strong><code>dotnet up</code></strong> — a new native-AOT tool to acquire/manage .NET toolchains consistently across platforms, supports nightlies, reads <code>global.json</code>, user-level installs (no admin). Previews "coming soon."</li>
+<li><strong>SDK download size cut ~80 MB+</strong> per platform by deduplicating identical files into tarball <strong>hard links</strong> — big win for the many SDK downloads, especially container image builds.</li>
+<li><strong>New Process API</strong> eliminates a classic deadlock and adds correct, fast convenience methods: <code>RunAndCaptureTextAsync</code>, <code>ReadAllLinesAsync</code>, <code>CreateAnonymousPipe</code> (for piping), fire-and-forget, plus a trim-friendly <code>SafeProcessHandle</code>.</li>
+<li><strong>Text/Unicode improvements:</strong> <code>IsValid</code> + <code>IndexOfInvalidSubsequence</code> for UTF-8/UTF-16, a new <code>RegexOptions.AnyNewLine</code>, and <strong>rune-aware</strong> string methods (correct for multi-<code>char</code> code points like emoji).</li>
+<li><strong>System.Text.Json:</strong> per-type and per-property naming/null-handling policies (e.g. type-wide "ignore nulls" + PascalCase default with a camelCase override on one property), and <strong>JSON Lines</strong> async writing from <code>IAsyncEnumerable</code> via top-level-values.</li>
+<li><strong>Compression:</strong> <strong>Zstandard</strong> APIs are now integrated into the product; improvements across multiple algorithms. (In one text-only sample, Brotli edged out a very-close Zstandard.)</li>
+<li><strong>Runtime async:</strong> a new async <strong>optimization</strong> (not a new model) — no new keywords, no source changes, fully compatible both directions. Opt in with <code>&lt;Features&gt;runtime-async=on&lt;/Features&gt;</code>. New code has <strong>no state machines</strong> (the runtime owns suspension/resumption). Opt-in in .NET 11, likely default in .NET 12; benefits = cleaner stack frames, smaller binaries, and faster async.</li>
+<li><strong>Memory safety:</strong> a two-release (.NET 11 + 12) project redefining <code>unsafe</code> as a <strong>reviewable contract</strong> rather than an unsafe context; JIT bounds-check elimination &amp; inlining improvements that remove the need for hand-written unsafe code, culminating in <strong>memory-safe SIMD</strong>.</li>
+<li><strong>Call to action:</strong> install .NET 11 previews, try the features, file feedback on GitHub discussions/issues and blog posts ahead of <strong>GA this fall</strong>; some features land in <strong>.NET 12</strong>.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="session-framing-net-11-for-the-ai-era">Session framing — .NET 11 for the AI era</h3>
+<p>Chet Husk (SDK/MSBuild PM) and Rich Lander (runtime/libraries PM) split the talk: SDK/tooling first, then the runtime/libraries the tooling builds on. The SDK has <strong>three major .NET 11 workstreams</strong>:
+1. <strong>New capabilities &amp; user experiences</strong> — net-new CLI features plus reworking well-used features to be more workable/efficient in an <strong>LLM context</strong>.
+2. <strong>Performance through the whole stack</strong> — driven by agents and the accelerated, repeated inner loops of multi-agent scenarios; the goal is for <em>every</em> command to be as fast as possible.
+3. <strong>Lightening acquisition &amp; management</strong> of the tools.</p>
+<h3 id="sdk-tooling-ux-improvements">SDK / tooling — UX improvements</h3>
+<p><strong><code>dotnet run</code> → first-class device deployment.</strong> <code>dotnet run</code> has long been the inner-loop backbone. .NET 10 added ways for projects to <strong>hook how they run</strong> (e.g. Azure Functions in the emulator). One gap was <strong>MAUI / device-specific</strong> running: normally you must build the product <em>and</em> an install payload, push it to a device, and run it there. In .NET 11 the <strong>MAUI team contributed</strong> enhancements so device flows are first-class in <code>dotnet run</code>, expanding the MAUI targets so <code>run</code> handles device deployment end-to-end:
+- Pick the <strong>target framework</strong> to deploy to.
+- Pick a <strong>device valid</strong> for that TFM.
+- Upload the device payload and <strong>launch on the simulator</strong>.
+- <code>run</code> now also knows how to <strong>query available devices</strong>, and the whole protocol is <strong>extensible</strong> — not MAUI-only; it could support Uno, Avalonia, or any UI framework.</p>
+<p><strong>Making the CLI agent/LLM-aware.</strong> The CLI now detects (heuristically) when it's being run <strong>under an agent</strong>. That knowledge enables two categories of work: (a) change how output is rendered to available streams, and (b) understand who's driving and adapt internal behavior. Concrete example: the <strong>terminal logger</strong> (default build display since .NET 10) has a static section for project output plus a <strong>dynamic, constantly-updating</strong> section showing per-project targets. LLMs read that live region as a <strong>token-inefficient stream of constant changes</strong>, so when run in an LLM context the CLI now <strong>disables the live update</strong>. The simple example illustrates a broader principle being applied across the CLI.</p>
+<p><strong>Build resource contention from agents.</strong> Agents increasingly spawn <strong>git worktrees</strong> (shallow clones at different branches) to work in parallel. But <code>dotnet build</code> isn't normally aware of other concurrent builds, causing resource <strong>contention</strong> that hurts machine responsiveness. The team is exploring a <strong>central MSBuild gatekeeper</strong> that all builds route through and that <strong>delegates resources</strong> to each build. Historically the tooling was "one-shot" focused; parallel agent work makes this necessary. Expect more of this category in the CLI.</p>
+<h3 id="sdk-tooling-performance-native-aot">SDK / tooling — Performance &amp; native AOT</h3>
+<p><strong>The CLI's AOT journey.</strong> Because the CLI runs so often, performance multiplies. Status:
+- <strong>Bundled standalone tools</strong> — <code>user-secrets</code>, <code>dev-certs</code>, and <code>user-jwts</code> (user JSON Web Token) — are <strong>native AOT</strong> as of ~2 weeks before the talk, shipping in <strong>preview 6</strong>, with improved responsiveness.
+- <strong>Benchmark (Damian Edwards' Windows machine, ~1 week prior):</strong> AOT <code>dotnet user-secrets</code> averaged <strong>~54 ms total</strong>, of which only <strong>~14 ms</strong> was the actual app; the rest was managed <strong>.NET CLI overhead</strong> (which the AOT effort is attacking).
+- Even shaving <strong>~100 ms</strong> off each command yields real gains given command frequency.</p>
+<p><strong>Why AOT — also an ecosystem play.</strong> Many Microsoft tools depend on Microsoft libraries that weren't AOT/trim-friendly. Setting "the CLI must be AOT" as a milestone forced those blockers down. Over the .NET 11 cycle, <strong>templating, NuGet, and parts of MSBuild</strong> became more trim-friendly. Unblocking these core libraries makes trimmed/AOT apps more feasible for the <strong>entire ecosystem</strong> (NuGet libraries especially).</p>
+<p><strong>The whole CLI is on an AOT arc.</strong> Some blockers were <strong>complete replacements</strong> — e.g. migrating telemetry to <strong>OpenTelemetry</strong>, and making old <strong>COM patterns</strong> trim-friendly (much of which the runtime already provided; the CLI just hadn't adopted it).</p>
+<p><strong>Observability win — OTEL + Aspire.</strong> Now that the CLI <strong>emits OTEL</strong>, you can trace it in the <strong>Aspire dashboard</strong> with familiar Aspire tools. In an example trace, the <strong>top five spans</strong> came from the <strong>native</strong> portion of the CLI and the <strong>bottom five</strong> from the <strong>managed</strong> portion. Commands move into native space as their blockers clear; the team prioritizes commands that are <strong>relatively dependency-free</strong> and <strong>frequently used</strong>. Current focus: <strong>solution management</strong> commands; next on Chet's list: <strong>template-related</strong> and <strong>tool-management</strong> commands. This even opens the door to things like the <strong><code>dnx</code></strong> command being a standalone native-AOT app.</p>
+<p><strong>Multi-threaded MSBuild.</strong> Today's MSBuild is <strong>multi-process</strong> — great for isolation/safety but with high <strong>inter-process communication</strong> overhead and <strong>CoreCLR JIT-loading</strong> costs. A <strong>multi-threaded mode</strong> (worked on for a while) is <strong>not ready today but will be by .NET 11 launch</strong>. It's promising for performance and enables further optimizations layered on top. <strong>Task authors:</strong> see <code>aka.ms/msbuild/mttasks</code> for the changes needed to adopt it. More announcements + measurement numbers to come.</p>
+<h3 id="sdk-tooling-acquisition">SDK / tooling — Acquisition</h3>
+<p><strong><code>dotnet up</code>.</strong> A new <strong>native-AOT tool</strong> to give a <strong>consistent way to acquire &amp; manage .NET toolchains</strong> across platforms / across team members on different platforms. It supports <strong>nightlies</strong>, uses <strong><code>global.json</code></strong> if present, and does <strong>user-level installs</strong> (no admin). <strong>Previews coming soon</strong> ("Blizzard-style soon"). Chet recorded a <strong>dedicated deep-dive for Build</strong> on it.</p>
+<p><strong>Smaller SDK downloads via tarball hard links.</strong> The SDK is downloaded constantly — not just by end users but heavily for <strong>containers</strong> (a primary build path). The team found that <strong>tarballs support hard links</strong> (like symlinks: multiple identical-content files point to one canonical resource). By <strong>inspecting the SDK layout</strong> at packaging time and doing <strong>automated unification/deduplication</strong>, they've shaved roughly <strong>80-ish MB per platform</strong> (and more) off SDK payloads across the .NET 11 previews. Smaller payloads = faster delivery + less network I/O (big for SDK containers). This built on the runtime's improved <strong>tarball support since .NET 7</strong>, confidence gained via the <strong>SDK containerization</strong> feature, then applied to their own packaging.</p>
+<hr>
+<p><em>(Handoff to Rich Lander for runtime &amp; libraries — "everything I just showed you wouldn't be possible without the runtime work.")</em></p>
+<h3 id="libraries-the-new-process-api-process-v2">Libraries — the new Process API (Process v2)</h3>
+<p>Announced in <strong>preview 4</strong>, a major update to the <strong>Process API</strong> (used to start a process, capture results, etc.). The old API is <strong>difficult and a long-standing source of bugs</strong>, so new <strong>convenience APIs</strong> do the common things <strong>correctly and fast</strong>.</p>
+<ul>
+<li><strong>The "bad case" (deadlock demo).</strong> Running <code>dotnet build</code> with full diagnostics produces both <strong>stdout and stderr</strong>. Code that calls <code>ReadToEnd</code> on <strong>stdout first</strong>, then stderr, deadlocks: the <strong>stderr buffer fills up</strong>, so the writer (<code>dotnet build</code>) <strong>blocks</strong> because it can't write more — while the reader is still waiting on stdout. Classic deadlock; the old fix was to restructure the code.</li>
+<li><strong><code>RunAndCaptureTextAsync</code></strong> — returns a <strong><code>ProcessTextOutput</code></strong> object with everything you'd want: <strong>all stdout, all stderr, and exit code</strong>, ready to use.</li>
+<li><strong><code>ReadAllLinesAsync</code></strong> — similar but a <strong>streaming</strong> model: <code>foreach</code> over lines and ask <strong>each line whether it's stderr</strong> (or stdout) and act accordingly.</li>
+<li><strong><code>CreateAnonymousPipe</code></strong> — to replicate shell piping (e.g. <code>dotnet help | grep ...</code>) in C#: it gives <strong>read &amp; write sides</strong>; pass the <strong>write</strong> side to the first command's stdout and the <strong>read</strong> side to the second command's stdin, start both processes, and <strong>wait on the second</strong> to exit — resources are released correctly. This is the whole program.</li>
+<li><strong>Fire-and-forget</strong> — start a process, let it run, release resources correctly, and <strong>don't collect results</strong>. Optionally <strong>kill the process on parent exit</strong> (or not), per your use case.</li>
+<li><strong><code>SafeProcessHandle</code></strong> — a separate type that <strong>trims better</strong> than <code>Process</code>; use it when trimming/AOT is a concern.</li>
+</ul>
+<h3 id="libraries-text-processing-unicode">Libraries — text processing &amp; Unicode</h3>
+<p>Mostly <strong>Unicode conformance</strong>:
+- <strong><code>IsValid</code></strong> and <strong><code>IndexOfInvalidSubsequence</code></strong> — two pairs for <strong>UTF-8</strong> and <strong>UTF-16</strong>. Validate text coming from a file/over the wire, and if invalid, learn <strong>exactly where the bad code starts</strong> (great for diagnostics/error messages).
+- <strong><code>RegexOptions.AnyNewLine</code></strong> — handles the cross-OS pain of newline management (<code>\r</code>, <code>\n</code>, <code>\r\n</code>, and other newline variants).
+- <strong>Rune-aware string methods.</strong> UTF-16 <code>char</code> can't hold every Unicode "character": many code points (notably <strong>emoji</strong>) need <strong>two or more</strong> <code>char</code>s (surrogate pairs). A <strong>rune</strong> describes a <strong>Unicode code point</strong> (letter, number, or emoji), and these string methods now work <strong>correctly</strong> with them.
+- <strong>Demo:</strong> analyze Chet's GitHub review comments — split text by newline (<code>AnyNewLine</code> regex), iterate lines, detect "ship it"–style approvals (including <strong>emoji</strong> ones), and print surrounding context. Rich's aside: in real code he'd likely reach for the <strong><code>SearchValues</code></strong> APIs instead (he's a big fan), but the demo showcased the new rune/newline APIs.</p>
+<h3 id="libraries-systemtextjson">Libraries — System.Text.Json</h3>
+<p>Rich has worked on System.Text.Json for ~6–7 years; continued investment.
+- <strong>Naming / null policies</strong> (also useful with agents): set policy for what to serialize and how.
+  - For a whole type (e.g. <code>EventData</code>): <strong>don't write properties when null</strong> for the entire type.
+  - <code>JsonSerializerOptions</code> set to <strong>PascalCase</strong> as the default; serialization uses that option.
+  - <strong>Per-property override:</strong> e.g. <code>EventName</code> overridden to <strong>camelCase</strong> — finer control while keeping the convenience.
+- <strong>JSON Lines</strong> (one JSON document per line; the very-similar variant is <strong>NDJSON</strong>). Used by some <strong>AI agent conversation logs</strong>. You can <strong>async-write</strong> the set of JSON documents produced by an <strong><code>IAsyncEnumerable</code></strong> method; opt in with <strong>top-level-values = true</strong>.</p>
+<h3 id="libraries-compression">Libraries — compression</h3>
+<p>A batch of compression work. The <strong>biggest change: Zstandard (Zstd) APIs are now integrated</strong> into the product, plus improvements across <strong>several algorithms</strong>. In a <strong>single, text-only sample</strong> (compressing the System.IO.Compression C# files from the runtime repo — "a bit meta"), tested at both <strong>optimal</strong> and <strong>smaller-size</strong> settings: <strong>Brotli came out best, with Zstandard very close and competitive.</strong> (Heavy caveat: one body of text only; source size uncertain, "maybe ~15 MB" — they weren't sure.)</p>
+<h3 id="runtime-project-1-runtime-async">Runtime project #1 — Runtime async</h3>
+<p>Two "enormous" runtime projects follow. <strong>Runtime async</strong> is a <strong>new optimization for async code — not a new model</strong>:
+- <strong>No new keywords, no source changes.</strong> It's a <strong>fast path decided at compile time</strong> when you build (e.g. <code>dotnet build</code>).
+- <strong>Fully compatible both directions:</strong> new can call old, old can call new — <strong>no compatibility break ever</strong>.
+- <strong>No state machines</strong> in your output. With the traditional model ("<strong>compiler async</strong>"), the <strong>C# compiler owns the state machine</strong> — each async method is rewritten into a state machine. With <strong>runtime async</strong>, the code is <strong>not rewritten</strong>; the <strong>runtime owns</strong> suspension/resumption, so <strong>N source-level state machines collapse to one runtime-managed system</strong>. (Wry note: runtime async is "almost all implemented in the <strong>JIT</strong>," which is itself a compiler — so both are "compiler async" of a kind; the naming is imperfect.)
+- <strong>Opt-in</strong> in .NET 11; <strong>likely the default / new normal in .NET 12</strong> — but even when default, you can keep doing what you did before (no break).
+- <strong>How to opt in:</strong> the <code>&lt;Features&gt;</code> property → set <strong><code>runtime-async=on</code></strong>. That's it.</p>
+<p><strong>Benefits (why do it):</strong>
+- <strong>Cleaner stack frames</strong>, mainly for <strong>production diagnostics</strong>.
+- <strong>Small binary size</strong> win.
+- <strong>Performance</strong> was a large motivation — async can be faster, <strong>especially when the whole stack is runtime async</strong> (turn it on for all projects).
+- <strong>Improvement without recompiling:</strong> since the async machinery lives in the <strong>runtime</strong>, upgrading the runtime (e.g. to .NET 13) could make your already-runtime-async code <strong>faster without rebuilding</strong> it.</p>
+<p><strong>Evidence — preview 4 size win.</strong> Runtime async was turned on for the product in <strong>preview 4</strong> (released <strong>May</strong>; off in preview 3). Several heavy-hitter libraries got <strong>smaller</strong> in preview 4, largely from <strong>removing state machines</strong> they previously contained.</p>
+<p><strong>Stack-frame demo.</strong> A sample app nests <code>OuterAsync → MiddleAsync → InnerAsync</code>. Rich deliberately used <code>Task.CompletedTask</code> so the stack frames are <strong>purely the async machinery</strong>, not app logic. <code>InnerAsync</code> writes <code>Environment.StackTrace</code>; <code>MiddleAsync</code> throws an exception (to land in a different frame).
+- <strong>.NET 10:</strong> the <code>Environment.StackTrace</code> output <strong>shows the state-machine frames</strong> — messy but <strong>perfectly accurate</strong>. (<code>Exception.ToString()</code> was already cleaned up to convey <strong>intent</strong>, whereas <code>Environment.StackTrace</code> is meant to be <strong>perfectly accurate</strong>.)
+- <strong>.NET 11:</strong> <code>Environment.StackTrace</code> is <strong>just as accurate but the state-machine frames are gone</strong> — it now matches the cleaned-up form. Overlaying the two slides shows exactly which frames were removed (you enter <code>InnerAsync</code>, start the state machine, return to <code>InnerAsync</code> — and with state machines you'd re-enter <strong>multiple times</strong> if there were multiple awaits).</p>
+<p><strong>Native AOT compatibility.</strong> Runtime async <strong>works perfectly with native AOT</strong>. Native AOT has no traditional runtime but uses <strong>RyuJIT</strong> as its code generator, so the whole system "just works" with AOT by architecture — nothing special to do.</p>
+<h3 id="runtime-project-2-memory-safety">Runtime project #2 — Memory safety</h3>
+<p>A <strong>massive, two-release project (.NET 11 + .NET 12)</strong>, somewhat like runtime async (though runtime async is <em>supported</em> in .NET 11, just not default; <strong>memory safety is in preview</strong> in .NET 11). Rich wrote a <strong>blog post (~a week prior)</strong> with much more detail.
+- <strong>This release</strong> (.NET 11): define a set of <strong>language changes</strong>, apply them to <strong><code>System.Private.CoreLib</code></strong> (the bottom-most managed library), and make changes so the team — <strong>and everyone else</strong> — needs <code>unsafe</code> <strong>less</strong>.
+- <strong>.NET 12:</strong> finish it off.
+- <strong>Core idea:</strong> redesign the <strong><code>unsafe</code></strong> keyword to mean a <strong>reviewable contract</strong> (a "color" contract) rather than establishing an <strong>unsafe context</strong>. APIs like <code>Unsafe</code> and <code>MemoryMarshal</code> will be <strong>marked with this contract</strong> when done.</p>
+<p><strong>JIT improvements that remove the need for <code>unsafe</code></strong> (bounds-check elimination + better inlining — places people wrote unsafe code because the JIT couldn't reason well):
+- <strong>Bounds-check (related-index) example:</strong> a guard like <code>if (i + 2 &lt; length)</code> proves the next two indexes are safe. In <strong>.NET 10 and earlier</strong>, the JIT only matched the check to the <strong>exact</strong> index (<code>i + 2</code>) and would <strong>still bounds-check <code>i + 1</code></strong>. Now it recognizes <code>i + 1</code> falls within the <code>i + 2</code> guard, so <strong><code>i + 1</code> gets faster</strong>.
+- <strong>Tail-slice example:</strong> a check like "is the span at least 4 bytes (past the size of an <code>int</code>)?" followed by a <code>span.Slice(...)</code> of the same size <strong>from the end</strong>. The JIT previously handled this <strong>tail-slice pattern</strong> poorly; now it works.
+- <strong>Inlining example:</strong> previously, inlining <code>GetLength</code> into a method left <strong>two null checks</strong> on <code>s</code> (both run), and an inline <strong><code>throw new ArgumentNullException</code></strong> could <strong>pessimize</strong> the surrounding code (having an actual <code>throw</code> in the stack frame). Now, after inlining, you're left with just the single <strong><code>s is null → return -1</code></strong> path: cleaner, less code.</p>
+<p><strong>Memory-safe SIMD (the payoff).</strong> These wins are nice but don't "change the game" alone — so they were applied to <strong>SIMD</strong> (Single Instruction, Multiple Data — vector instructions), which is used <strong>pervasively</strong> across the product and relies on <strong>lots of unsafe code</strong>. Making SIMD memory-safe <strong>removes a whole category of unsafe code</strong> from the product. The "before" code is full of <strong><code>MemoryMarshal</code> and <code>Unsafe</code> calls</strong> (clearly not safe); in the "after," <strong>all those API calls are gone</strong> — the JIT does the right thing, partly by leaning on the bounds-check/inlining improvements above. This memory-safe code can now be <strong>deployed across the product</strong>, and it's better.</p>
+<h3 id="closing-call-to-action">Closing / call to action</h3>
+<p>Install the <strong>.NET 11 previews</strong>, try the new features, and <strong>file feedback on GitHub</strong> (discussions and issues) and on the blog posts — the team watches these constantly. <strong>The earlier you get hands-on, the better the GA this fall will be</strong>, and the better the features still landing in <strong>.NET 12</strong>.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>.NET 11</strong> — the release this whole session previews (SDK, runtime, libraries); GA targeted for <strong>fall</strong>.</li>
+<li><strong>.NET 12</strong> — next release; destination for runtime-async-by-default and the completion of memory safety.</li>
+<li><strong>.NET SDK</strong> — the toolchain; three .NET 11 workstreams (capabilities/UX, performance, acquisition).</li>
+<li><strong>.NET CLI (<code>dotnet</code>)</strong> — the command-line driver being made agent-aware and native AOT.</li>
+<li><strong><code>dotnet run</code></strong> — inner-loop run command; now does first-class MAUI/device deployment.</li>
+<li><strong>.NET MAUI</strong> — UI framework whose team contributed the <code>dotnet run</code> device-deployment flow.</li>
+<li><strong>Uno / Avalonia</strong> — other UI frameworks the extensible device-run protocol could support.</li>
+<li><strong>Azure Functions emulator</strong> — example of a .NET 10 <code>dotnet run</code> hook.</li>
+<li><strong>Terminal logger</strong> — default build display (since .NET 10); its live region is disabled under LLMs.</li>
+<li><strong>MSBuild</strong> — the build engine; gaining a resource gatekeeper and a multi-threaded mode.</li>
+<li><strong>Git worktrees</strong> — shallow per-branch clones agents use for parallel work (source of build contention).</li>
+<li><strong>Native AOT</strong> — ahead-of-time compilation; target for the CLI, bundled tools, <code>dotnet up</code>.</li>
+<li><strong>Trimming</strong> — removing unused IL; core libraries made more trim-friendly for the AOT effort.</li>
+<li><strong><code>dotnet user-secrets</code> / <code>dev-certs</code> / <code>user-jwts</code></strong> — bundled CLI tools, now native AOT (preview 6).</li>
+<li><strong>OpenTelemetry (OTEL)</strong> — telemetry standard the CLI migrated to and now emits.</li>
+<li><strong>Aspire dashboard</strong> — used to trace the CLI's OTEL spans (native vs managed portions).</li>
+<li><strong>CoreCLR / RyuJIT</strong> — the runtime and its JIT/code generator (RyuJIT also powers native AOT).</li>
+<li><strong><code>dnx</code></strong> — a command that could become a standalone native-AOT app.</li>
+<li><strong><code>dotnet up</code></strong> — new native-AOT tool to acquire/manage .NET toolchains (nightlies, <code>global.json</code>, user-level, no admin).</li>
+<li><strong><code>global.json</code></strong> — pins SDK version; respected by <code>dotnet up</code>.</li>
+<li><strong>Tarballs + hard links</strong> — packaging format/technique used to dedupe SDK files (~80 MB+ saved).</li>
+<li><strong>SDK containers / containerization feature</strong> — major SDK download consumer; benefits from smaller payloads.</li>
+<li><strong><code>Process</code> API / <code>ProcessTextOutput</code></strong> — redesigned process-launching API and its result type.</li>
+<li><strong><code>RunAndCaptureTextAsync</code> / <code>ReadAllLinesAsync</code> / <code>CreateAnonymousPipe</code></strong> — new process convenience APIs.</li>
+<li><strong><code>SafeProcessHandle</code></strong> — trim-friendlier alternative to <code>Process</code>.</li>
+<li><strong><code>IsValid</code> / <code>IndexOfInvalidSubsequence</code></strong> — UTF-8/UTF-16 validation APIs.</li>
+<li><strong><code>RegexOptions.AnyNewLine</code></strong> — regex option handling all newline variants.</li>
+<li><strong>Rune (<code>System.Text.Rune</code>)</strong> — Unicode code point abstraction; string methods now rune-aware.</li>
+<li><strong><code>SearchValues</code></strong> — efficient multi-value search APIs (Rich's preferred real-world choice).</li>
+<li><strong>System.Text.Json / <code>JsonSerializerOptions</code></strong> — JSON serializer with new per-type/per-property naming &amp; null policies.</li>
+<li><strong>JSON Lines / NDJSON</strong> — one-JSON-doc-per-line formats; async write from <code>IAsyncEnumerable</code> via top-level-values.</li>
+<li><strong><code>IAsyncEnumerable</code></strong> — async stream source for JSON Lines writing.</li>
+<li><strong>Compression: Zstandard (Zstd), Brotli</strong> — Zstd APIs now integrated; improvements across algorithms.</li>
+<li><strong>Runtime async</strong> — JIT-based async optimization removing state machines; opt in via <code>&lt;Features&gt;runtime-async=on</code>.</li>
+<li><strong>Compiler async</strong> — the traditional compiler-owned state-machine async model (contrast term).</li>
+<li><strong><code>Environment.StackTrace</code> / <code>Exception.ToString()</code></strong> — used to demo cleaner runtime-async stack frames.</li>
+<li><strong>Memory safety project</strong> — redesign of <code>unsafe</code> into a reviewable contract; memory-safe SIMD.</li>
+<li><strong><code>Unsafe</code> / <code>MemoryMarshal</code></strong> — low-level APIs to be marked with the new reviewable <code>unsafe</code> contract.</li>
+<li><strong><code>System.Private.CoreLib</code></strong> — bottom-most managed library where memory-safety changes are first applied.</li>
+<li><strong>SIMD</strong> — vector instructions; target of memory-safe rewrites removing unsafe code.</li>
+<li><strong><code>aka.ms/msbuild/mttasks</code></strong> — docs link for adapting MSBuild tasks to multi-threaded mode.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong><code>dotnet run</code> device deployment for MAUI</strong> — first-class device build/push/launch via <code>run</code>; extensible protocol. (.NET 11)</li>
+<li><strong>Agent/LLM-aware .NET CLI</strong> — detects agent context; disables terminal-logger live updates under LLMs; adapts behavior. (.NET 11, ongoing)</li>
+<li><strong>MSBuild resource gatekeeper</strong> — proposed central broker to manage cross-build resource contention. (exploratory)</li>
+<li><strong>Native-AOT bundled CLI tools</strong> — <code>user-secrets</code>, <code>dev-certs</code>, <code>user-jwts</code> are native AOT in <strong>preview 6</strong>.</li>
+<li><strong>Whole-CLI native AOT</strong> — in progress; solution-management commands first, then templates &amp; tool management; emits OTEL now.</li>
+<li><strong>Multi-threaded MSBuild</strong> — coming in .NET 11; <strong>not usable today, ready by launch</strong>; task-author guidance at <code>aka.ms/msbuild/mttasks</code>.</li>
+<li><strong><code>dotnet up</code></strong> — new cross-platform native-AOT acquisition tool; <strong>previews "coming soon."</strong> A dedicated Build deep-dive recording exists.</li>
+<li><strong>SDK payload size reduction</strong> — ~<strong>80 MB+ per platform</strong> via tarball hard-link dedup, across the .NET 11 previews.</li>
+<li><strong>Process API v2</strong> — announced in <strong>preview 4</strong>; deadlock-free convenience methods + <code>SafeProcessHandle</code>.</li>
+<li><strong>Unicode/text APIs</strong> — <code>IsValid</code>, <code>IndexOfInvalidSubsequence</code>, <code>RegexOptions.AnyNewLine</code>, rune-aware string methods. (.NET 11)</li>
+<li><strong>System.Text.Json policies + JSON Lines</strong> — per-type/per-property naming &amp; null handling; JSON Lines async writing. (.NET 11)</li>
+<li><strong>Zstandard integrated</strong> into the product, plus broader compression improvements. (.NET 11)</li>
+<li><strong>Runtime async</strong> — <strong>opt-in in .NET 11</strong>, on by default in the product since <strong>preview 4</strong>; <strong>likely default in .NET 12</strong>; AOT-compatible.</li>
+<li><strong>Memory safety</strong> — <strong>in preview in .NET 11</strong>, completing in .NET 12; redesigns <code>unsafe</code> as a reviewable contract; memory-safe SIMD; accompanying blog post.</li>
+<li><strong>GA timing</strong> — .NET 11 <strong>GA this fall</strong>; some features deferred to <strong>.NET 12</strong>.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong><code>dotnet run</code> MAUI device flow (slide/image):</strong> picks a TFM, picks a valid device, uploads the payload, and launches on a simulator — proving device deployment is now first-class and extensible in <code>run</code>.</li>
+<li><strong>Aspire dashboard CLI trace:</strong> top five spans from the native CLI portion, bottom five from the managed portion — proving the CLI now emits OTEL and is observable like any Aspire app, and showing the native/managed split.</li>
+<li><strong>Process deadlock "bad case":</strong> <code>dotnet build</code> with full diagnostics, reading stdout <code>ReadToEnd</code> before stderr → stderr buffer fills → writer blocks → deadlock; motivates the new APIs.</li>
+<li><strong>Anonymous pipe in C#:</strong> replicating <code>dotnet help | grep</code> with <code>CreateAnonymousPipe</code> (wire write→stdout, read→stdin, wait on second process) — the entire program, with correct resource cleanup.</li>
+<li><strong>Rune / AnyNewLine GitHub-review analysis:</strong> split Chet's review comments by <code>AnyNewLine</code>, detect emoji "ship it" approvals with rune-aware handling, print surrounding context — proves correct multi-<code>char</code>/emoji handling (though <code>SearchValues</code> would be the real-world pick).</li>
+<li><strong>System.Text.Json policy code:</strong> type-wide ignore-nulls + PascalCase default with a camelCase override on <code>EventName</code> — proves fine-grained naming/null control.</li>
+<li><strong>JSON Lines async write:</strong> stream JSON docs from an <code>IAsyncEnumerable</code> via top-level-values — proves first-class JSON Lines support.</li>
+<li><strong>Compression benchmark (one text sample):</strong> compressing the runtime's System.IO.Compression C# files at optimal vs smaller-size settings — Brotli best, Zstandard a very close second.</li>
+<li><strong>Runtime async stack-frame comparison:</strong> nested Outer/Middle/Inner async (using <code>Task.CompletedTask</code>) printing <code>Environment.StackTrace</code> and throwing — .NET 10 shows messy-but-accurate state-machine frames; .NET 11 is equally accurate but <strong>frames removed</strong>; an overlay slide shows exactly which frames disappeared.</li>
+<li><strong>Memory-safe SIMD before/after:</strong> a SIMD block full of <code>MemoryMarshal</code>/<code>Unsafe</code> calls → an "after" with all those calls gone — proves the JIT can now make SIMD memory-safe.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong><code>dotnet user-secrets</code> (AOT) ≈ 54 ms total</strong>, of which only <strong>~14 ms</strong> is the actual app — the rest is managed CLI overhead (Damian Edwards' Windows machine).</li>
+<li><strong>"Even shaving 100 ms off every command"</strong> translates to real benefits given how often developers run commands — the rationale for the AOT push.</li>
+<li><strong>~80-ish MB</strong> shaved off SDK payloads <strong>per platform</strong> via tarball hard-link deduplication.</li>
+<li><strong>Tarball support landed in .NET 7</strong> (the runtime knowledge this SDK win builds on).</li>
+<li><strong>Runtime async turned on for the product in preview 4</strong> (released <strong>May</strong>); measurable <strong>binary size reductions</strong> from removed state machines.</li>
+<li><strong>Compression sample:</strong> <strong>Brotli best, Zstandard very close/competitive</strong> (one text-only body; source size uncertain — "maybe ~15 MB").</li>
+<li><strong>Memory safety = a two-release project</strong> spanning <strong>.NET 11 and .NET 12</strong>.</li>
+<li><strong>"There's no compatibility break in any direction"</strong> — recurring promise for runtime async (old↔new interop, even when it becomes default).</li>
+<li><strong>Previews "coming soon"</strong> for <code>dotnet up</code> — "the Blizzard-style soon, if you're a gamer."</li>
+<li><strong>GA this fall</strong>; get hands-on early so the team can "ship the right thing."</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: enable <code>&lt;Features&gt;runtime-async=on&lt;/Features&gt;</code> on a sample async-heavy project and compare stack traces / binary size between .NET 10 and .NET 11; try the new <code>Process</code> convenience APIs (<code>RunAndCaptureTextAsync</code>, <code>CreateAnonymousPipe</code>) to replace hand-rolled process wrappers; install preview 6 and benchmark native-AOT <code>user-secrets</code>/<code>dev-certs</code>; trial <code>dotnet up</code> once previews drop; measure SDK container image size delta on .NET 11.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: When exactly does multi-threaded MSBuild flip on by default, and what's the task-migration effort (<code>aka.ms/msbuild/mttasks</code>)? What's the perf delta from runtime async in real workloads (not just size)? How does the new <code>unsafe</code> reviewable-contract surface in analyzers/code review? Which CLI commands are native AOT by GA?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: anyone building .NET in CI/containers (SDK size + CLI speed), agent/LLM tooling authors (agent-aware CLI, JSON Lines logs), MAUI/cross-platform device devs, perf-sensitive library authors (runtime async, memory-safe SIMD), and MSBuild task authors.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+<li>Rich Lander's <strong>memory safety</strong> blog post (referenced, ~1 week before the talk) — redesigning <code>unsafe</code>.</li>
+<li>Chet Husk's dedicated <strong><code>dotnet up</code></strong> Build recording.</li>
+<li><code>aka.ms/msbuild/mttasks</code> — multi-threaded MSBuild task migration guide.</li>
+<li></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEMSP395.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEMSP395</span><span class="pager-title">Teach AI agents to manage context with Elastic Agent Builder</span></a>
+    <a class="pager pager-next" href="OD870.html"><span class="pager-dir">Next →</span><span class="pager-code">OD870</span><span class="pager-title">Azure Storage for AI workloads</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

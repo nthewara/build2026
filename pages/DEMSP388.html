@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEMSP388 — Ship faster with Claude Code and Cowork in Microsoft Foundry</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEMSP388</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=1NBzjJom-mI" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Ship faster with Claude Code and Cowork in Microsoft Foundry</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Carolyn Matthews (Applied AI Architect, Anthropic)</span>
+      <span class="meta-item">⏱️ 21m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="claude">Claude</span><span class="chip" data-tag="foundry">Foundry</span><span class="chip" data-tag="coding-agents">Coding Agents</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Carolyn Matthews — Applied AI Architect, Anthropic<br>
+<strong>Duration:</strong> ~21 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=1NBzjJom-mI">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Anthropic's Carolyn Matthews walks through how agentic coding has matured — from autocomplete to agents that write entire codebases — and why running Claude models on <strong>Microsoft Foundry</strong> gives you frontier intelligence plus enterprise governance, privacy, and compliance. She frames the talk around <strong>four frontiers</strong> of agentic coding (what agents can touch, how they know they're right, what they can perceive, and when/where they run) and demos each live. Key reveals include <strong>Opus 4.8</strong> (released the prior week, the most capable frontier model), <strong>auto mode</strong> (a safety classifier that replaces "dangerously skip permissions"), the <strong>Oracle/evaluator</strong> pattern for self-reviewing code, high-resolution image perception, and <strong>dynamic workflows</strong> for orchestrating sub-agents. The recurring theme: keep humans in the loop only for the high-value, high-risk decisions while agents safely run on their own for hours.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li>Software development is shifting from writing/autocompleting code to <strong>agents writing all the code for you</strong> — and the pace is rapid (6 frontier model generations in 18 months).</li>
+<li>On the <strong>SWE-bench Verified</strong> coding benchmark, Anthropic models jumped from <strong>49 → 87.6</strong>, effectively saturating/"solving" coding by that metric.</li>
+<li>Agents can now run <strong>autonomously for hours</strong> — a cited benchmark hit <strong>14.5 hours</strong> of sustained accuracy, pointing toward hours-to-days of unattended agentic work.</li>
+<li><strong>Opus 4.8</strong> (released ~1 week prior) is the new frontier model for hard, accuracy-critical, long-horizon problems; <strong>Sonnet 4.6</strong> is the recommended cost-effective starting point (great at coding); <strong>Haiku</strong> is the fast, low-latency model for summarization/classification at high volume.</li>
+<li>All three models share the <strong>same prompting strategy, safety, and Constitutional AI guardrails</strong> — you can freely redirect between them to manage cost.</li>
+<li>Running Claude on <strong>Microsoft Foundry</strong> combines frontier intelligence with built-in safety/governance, enterprise back-end privacy/compliance, and native Microsoft-stack integration — accelerating pilot-to-production.</li>
+<li><strong>Auto mode</strong> (research preview) puts a <strong>classifier between your request and the model</strong>: it auto-approves low-risk actions (reading files, running tests) and only interrupts for risky/destructive ones — reported <strong>0.4% false positive rate</strong>. It replaces the unsafe "dangerously skip permissions" approach.</li>
+<li>The <strong>Oracle / evaluator pattern</strong> is central: use a <em>separate</em> judge agent (not the one that wrote the code) to adversarially review output. Architecture = <strong>planner (decomposes) → generator (writes) → evaluator (judges)</strong>.</li>
+<li><strong>Build the evaluator/tests FIRST</strong> — investing time, effort, and research into a strong judge is the top priority before generating code, because it's what safely unlocks generating more code.</li>
+<li>Agents can now <strong>perceive visually</strong>: Claude in Chrome (real browser, not headless), computer use (drive the machine/iOS simulators), and <strong>high-resolution image</strong> support in Opus 4.8.</li>
+<li>High-res visual acuity is a big deal: a pen-testing example (Expo/"Expo") improved from <strong>~58% (Opus 4.6) to ~98% (Opus 4.8)</strong> success on agentic penetration testing.</li>
+<li><strong>Dynamic workflows</strong> (new with Opus 4.8) provide a clean way to orchestrate sub-agents — demoed by spinning up multiple design agents + a "picker" judge + test agents to build an arcade game hands-off.</li>
+<li>Multi-surface, always-on operation: kick off on terminal, approve prompts on your phone, use <strong>scheduled tasks/loops</strong>, run agents in <strong>parallel</strong>, deep "Ultra Plan" planning, and even <strong>voice</strong> interaction.</li>
+<li>Guiding principle: <strong>don't remove humans entirely</strong> — keep them on the risky, high-value reviews while agents handle the rest safely.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="how-we-got-here-the-trajectory-of-agentic-coding">How we got here — the trajectory of agentic coding</h3>
+<p>Carolyn opens by framing the industry shift: software development has moved from manually writing code (or relying on autocomplete) to <strong>agents that write all of your code</strong>. She presents it as "a history lesson" because things are moving so fast. Over the <strong>last 18 months</strong>, Anthropic has shipped <strong>six generations</strong> of frontier models. Measured on <strong>SWE-bench Verified</strong> — a coding benchmark built from ~500 real GitHub issues/requests, where the model must produce production-ready fixes — scores climbed from <strong>49 to 87.6</strong>. By this metric, coding is essentially "solved"/saturated.</p>
+<p>Two other dimensions matter beyond raw accuracy:
+- <strong>Long-running autonomy:</strong> one of the longest recorded sessions sustained good accuracy for <strong>14.5 hours</strong>. The point isn't the benchmark itself — it's that agents can run for <strong>hours or even days</strong>, not just the 5–30 minute sessions everyone is used to.
+- <strong>Tool use:</strong> models are getting "very clever" about <em>which</em> tools to use and <em>how</em> to use them (largely model-driven, not hand-engineered).</p>
+<h3 id="why-foundry">Why Foundry</h3>
+<p>All of this is available on <strong>Microsoft Foundry</strong>. The value proposition:
+- <strong>Frontier intelligence</strong> from Anthropic models.
+- <strong>Built-in safety and governance</strong> that ships with the models.
+- <strong>Enterprise back-end privacy and compliance.</strong>
+- <strong>Native integration with the Microsoft stack.</strong>
+- Net effect: <strong>get from pilot to production faster.</strong></p>
+<h3 id="the-model-catalog-pick-the-right-tool">The model catalog (pick the right tool)</h3>
+<ul>
+<li><strong>Opus 4.8</strong> — released ~a week before the talk. The <strong>most capable / frontier</strong> model. Use for <strong>truly challenging problems</strong>, where <strong>accuracy is critical</strong>, and <strong>long-horizon / long-running</strong> tasks.</li>
+<li><strong>Sonnet 4.6</strong> — very capable and the <strong>better cost alternative</strong>, especially strong at <strong>coding tasks</strong>. Recommendation: <strong>start with Sonnet</strong>, then move up to Opus only if needed — a great cost-management strategy.</li>
+<li><strong>Haiku</strong> — the <strong>fast</strong> model. Excellent for <strong>summarization and classification</strong> and any <strong>high-volume, low-latency</strong> workload. "Don't count it out."</li>
+<li>Consistency across all three: <strong>same prompting strategy, same safety, same Constitutional AI</strong> baked in — so you can <strong>redirect freely between models</strong> without re-engineering.</li>
+</ul>
+<h3 id="the-four-frontiers-of-agentic-coding">The four frontiers of agentic coding</h3>
+<p>Carolyn structures the rest of the talk around four "edges" that currently hold agentic coding back. Pushing each edge outward unlocks more value. Each has a live demo.</p>
+<ol>
+<li><strong>What agents are allowed to touch</strong> — how often must a human be present directing it?</li>
+<li><strong>How will the agent know when it's right?</strong> — we can't review every line/PR ourselves; agents must check themselves.</li>
+<li><strong>What agents can perceive</strong> — text/diffs are great, but agents need richer perception (vision) to work the way humans do.</li>
+<li><strong>When and where agents run</strong> — can it keep running and continue on its own?</li>
+</ol>
+<p>She kicks off the <strong>fourth frontier's demo first</strong> (a long-running task) so it can execute in the background while she talks: using <strong>Corgi Code</strong> (auto-caption garble; this is Claude Code / Cowork-style coding agent tooling), she tells an agent to <strong>build an arcade game</strong> using <strong>dynamic workflows</strong> (new with Opus 4.8, for working with sub-agents), then leaves it running.</p>
+<h3 id="frontier-1-what-agents-can-touch-auto-mode">Frontier 1 — What agents can touch (Auto mode)</h3>
+<p>The problem: you kick off a task, go get coffee, and come back to find the agent <strong>asked permission repeatedly</strong> while you were away (edit this file? update the README? run this test?). The old workaround was <strong>"dangerously skip permissions"</strong> — which is "about as comfortable as that sounds. It's very creepy." Everyone advises against it.</p>
+<p>The new answer is <strong>auto mode</strong>:
+- A <strong>classifier sits between your requests and the model</strong>.
+- It lets the agent run but is <strong>smart about what it allows</strong>: low-risk actions (reading a file, running a test case) proceed automatically; <strong>risky/destructive</strong> actions (e.g. running a random bash command) still prompt you.
+- Reported <strong>0.4% false positive rate</strong> — much less annoying than before.
+- "Overeager actions" = cases where it allowed something you'd have preferred it ask about — still being tuned.
+- Status: <strong>research preview</strong>, but a huge step up.</p>
+<p><strong>Demo (before/after):</strong> In regular Claude Code (no special config), she asks it to <strong>add an endpoint to a FastAPI app</strong>. As predicted, it interrupts to ask permission to edit the file (even though the prompt told it to), then to update the README, then to run a test — making the <strong>human the bottleneck</strong> on trivial tasks. She then uses <strong>rewind</strong> (a Claude Code feature) to reset files back to the original prompt, switches on <strong>auto mode</strong> (yellow indicator), and re-runs. Same result — but this time <strong>zero interaction needed</strong>; she walks away. The payoff: leave your desk, go to a meeting, come back to <strong>completed work</strong>, within safe bounds.</p>
+<h3 id="frontier-2-how-the-agent-knows-its-right-the-oracle-evaluator">Frontier 2 — How the agent knows it's right (the Oracle / evaluator)</h3>
+<p>Quality control is critical: to scale, we want <strong>AI agents reviewing AI-generated code</strong>, but safely and trustworthily.</p>
+<p><strong>Case study:</strong> <strong>16 parallel agents</strong> across <strong>100,000 lines of code</strong> building a <strong>C compiler</strong>. It cost a lot, took a ton of sessions, and was "a bit of a failure." The lesson: you need a <strong>separate agent to judge</strong> — <em>not</em> the agent that wrote the code.</p>
+<p><strong>The recommended architecture:</strong>
+- <strong>Planner</strong> — decomposes the task.
+- <strong>Generator</strong> — writes all the code.
+- <strong>Evaluator</strong> — reviews what was generated and checks whether it truly fits the need.</p>
+<p>In the compiler case, <strong>GCC</strong> provided a clean oracle (compiled code either matches or it doesn't). Not every use case has such a clean signal, but the strong recommendation is to <strong>invest heavily in building the evaluator</strong> — that's where time/effort/research should go, because it's what unlocks generating more and more code. <strong>Build the tests / evaluation harness first</strong>, before you start coding.</p>
+<p><strong>Demo (the Oracle):</strong> Using a split terminal — left = generator, right = reviewer/evaluator ("the Oracle"). She asks for a simple <strong>bill-split function</strong> ("friends went to dinner, split the bill"). In auto mode it builds an initial version that knowingly <strong>drops the cents</strong> (not ideal). The <strong>separate reviewer agent</strong> is told to be <strong>adversarial / as tough as possible</strong>, looks at the generated code, <strong>writes its own test case</strong>, and the test <strong>fails</strong> — surfacing that the basic approach works but could be handled better. The advice flows back to the writer agent, which <strong>updates its code</strong>. Takeaway reinforced: build the judge first; it's your "safety blanket" that code is already ready to be tested.</p>
+<h3 id="frontier-3-what-agents-can-perceive-vision">Frontier 3 — What agents can perceive (vision)</h3>
+<p>Reading a diff/code is powerful, but <strong>seeing what you see</strong> is critical. Recent Claude capabilities:
+- <strong>Claude in Chrome</strong> — works in a <strong>real Chrome browser</strong> (not a headless scrape), so it can walk through and <em>see</em> the rendered UI while working with code.
+- <strong>Computer use</strong> — go out into the machine itself; e.g. spin up an <strong>iOS simulator</strong>, run the app, see what's happening, and make adjustments.
+- <strong>High-resolution images</strong> — a very recent <strong>Opus 4.8</strong> capability: it can handle <strong>much larger image resolutions</strong> than before.</p>
+<p><strong>Why it matters (stat):</strong> <strong>Expo</strong> (penetration-testing example) went from <strong>~58% success (Opus 4.6)</strong> to <strong>~98% (Opus 4.8)</strong> on agentic pen testing, driven by the <strong>visual acuity</strong> from high-res image support.</p>
+<p><strong>Demo (pen test in Foundry):</strong> She runs <strong>Claude Opus 4.8 in Azure Foundry</strong> (same model, hosted in Foundry) with a <strong>security-engineer</strong> system prompt, asking it to evaluate a <strong>suspicious-looking screen</strong>. She shows the audience the screenshot for <strong>~5 seconds</strong> and asks who can spot risks — only <strong>one person</strong> could. She then feeds the same screenshot to the Claude model in Foundry; in <strong>~3.4 seconds</strong> it reasons over the image and identifies <strong>multiple security risks</strong> that were <strong>not obvious</strong> (no "password here" or "secrets" labels). The point: visual perception + reasoning lets the model ingest an image, understand it, and apply security knowledge to find non-obvious issues — a key lever for pushing agentic frameworks.</p>
+<h3 id="frontier-4-when-and-where-agents-run-multi-surface-always-on">Frontier 4 — When and where agents run (multi-surface, always-on)</h3>
+<p>Agents are expanding from minutes to <strong>long-running</strong> operation, and can run on <strong>whatever surface you want</strong>:
+- Kick off on the <strong>terminal</strong>, go to a meeting, <strong>approve a prompt on your phone</strong> (some prompts still need human approval), then return to your desktop with work complete.
+- <strong>Loops</strong> and <strong>scheduled tasks</strong> — hands-off; agents pick up tasks and run as needed.
+- <strong>Parallel</strong> execution.
+- <strong>Ultra Plan</strong> — go deep and produce a significant plan.
+- <strong>Voice</strong> — speak to it; makes interaction faster.</p>
+<p><strong>Payoff demo (the arcade game finishes):</strong> Returning to the task kicked off at the start, it's <strong>done</strong>. The highlight is <strong>dynamic workflows</strong> — a clever way to manage sub-agents, surfaced via a new <strong><code>/workflows</code></strong> command. What happened automatically:
+- <strong>Three design agents</strong> each proposed an arcade game: <strong>"Neon Drift"</strong>, <strong>"Pulse Runner"</strong> (which one agent found already existed), and <strong>"Neon Ascent."</strong>
+- A <strong>"picker" judge agent</strong> chose <strong>Neon Ascent</strong> to move forward with, then built it.
+- <strong>Four test agents</strong> were spun up to test it — including <strong>opening it in a real browser</strong> and checking <strong>visual polish</strong> (she had told it the game would be shown on a <strong>projector</strong>, so it accounted for that).
+- It <strong>found a couple of issues and fixed them</strong> — all in <strong>~15 minutes</strong> with <strong>almost no interaction</strong> ("build an arcade game and don't talk to me about it very much, I'm busy").</p>
+<p>She then shows the finished, playable game (with visuals and some sound), built from just a couple of lines of instruction via dynamic workflows.</p>
+<h3 id="wrap-up">Wrap-up</h3>
+<p>The goal is <strong>not to remove humans entirely</strong> — it's to keep humans focused on the <strong>most important, risky, high-value</strong> decisions while agentic coding handles the rest in safe bounds. The four frontiers — touch, correctness, perception, and runtime — are all being pushed to make agentic coding more capable and "a little bit more human."</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Microsoft Foundry / Azure Foundry</strong> — Microsoft's platform for hosting Anthropic/Claude models with enterprise safety, governance, privacy, compliance, and Microsoft-stack integration.</li>
+<li><strong>Claude Opus 4.8</strong> — Anthropic's most capable frontier model (released ~1 week prior); accuracy-critical, long-horizon work; adds high-res image perception and dynamic workflows.</li>
+<li><strong>Claude Sonnet 4.6</strong> — capable, cost-effective model; strong at coding; recommended starting point.</li>
+<li><strong>Claude Haiku</strong> — fast, low-latency model for summarization, classification, high-volume tasks.</li>
+<li><strong>Claude Code</strong> — Anthropic's agentic coding tool (referred to in captions as "Corgi Code"/"Cloud Code"/"Claude code"); used for the live demos.</li>
+<li><strong>Cowork</strong> — Microsoft Foundry agentic coding experience (per session title).</li>
+<li><strong>SWE-bench Verified</strong> — coding benchmark (~500 GitHub issues) used to measure production-ready code generation.</li>
+<li><strong>Auto mode</strong> — research-preview classifier between request and model that auto-approves low-risk actions and prompts only for risky ones (replaces "dangerously skip permissions").</li>
+<li><strong>Rewind</strong> — Claude Code feature to reset/return to an earlier state (files reset to a prior prompt).</li>
+<li><strong>Dynamic workflows</strong> (<code>/workflows</code>) — new orchestration mechanism (with Opus 4.8) for managing sub-agents (planner/generator/picker/test agents).</li>
+<li><strong>The Oracle (evaluator/judge agent)</strong> — a separate adversarial reviewer agent that writes its own tests and critiques generated code.</li>
+<li><strong>Claude in Chrome</strong> — runs in a real Chrome browser (not headless) so the agent can see rendered UI.</li>
+<li><strong>Computer use</strong> — lets the agent operate the machine (e.g. iOS simulators) and see results.</li>
+<li><strong>Ultra Plan</strong> — deep planning mode for significant plans.</li>
+<li><strong>Voice</strong> — speak-to-agent interaction for faster input.</li>
+<li><strong>Loops / scheduled tasks / parallel agents</strong> — mechanisms for hands-off, always-on, concurrent agent operation.</li>
+<li><strong>Constitutional AI</strong> — Anthropic's safety approach baked into all models.</li>
+<li><strong>FastAPI</strong> — Python web framework used in the auto-mode endpoint demo.</li>
+<li><strong>GCC</strong> — used as the "oracle" ground truth in the C-compiler case study.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Claude Opus 4.8 — released ~1 week before the session</strong> as Anthropic's most capable frontier model (accuracy-critical, long-horizon, long-running tasks). <em>(Available on Foundry.)</em></li>
+<li><strong>High-resolution image support in Opus 4.8</strong> — handles much larger image resolutions than prior models; cited as driving the pen-testing jump from ~58% (Opus 4.6) to ~98%.</li>
+<li><strong>Dynamic workflows</strong> — new with Opus 4.8; a way to orchestrate/manage sub-agents (surfaced via <code>/workflows</code>). Described as not yet fully in the presentation but called out as new.</li>
+<li><strong>Auto mode</strong> — <strong>research preview</strong>; classifier-gated permissioning replacing "dangerously skip permissions" (reported 0.4% false positive rate).</li>
+<li><strong>Claude models on Microsoft/Azure Foundry</strong> — frontier Claude (incl. Opus 4.8) available in Foundry with enterprise governance/privacy/compliance and Microsoft-stack integration.</li>
+<li><em>(Status note: auto mode is explicitly research preview; Opus 4.8 is GA/available; dynamic workflows tied to the Opus 4.8 release.)</em></li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Long-running arcade game (dynamic workflows)</strong> — Kicked off at the start ("build an arcade game, don't talk to me much"), ran ~15 min in the background. Showed sub-agent orchestration: 3 design agents (Neon Drift, Pulse Runner, Neon Ascent), a "picker" judge selecting Neon Ascent, and 4 test agents (including real-browser testing + visual-polish checks for a projector). It found and fixed issues, then produced a playable game with visuals/sound. <strong>Proves:</strong> agents can run autonomously, orchestrate sub-agents, self-test visually, and ship a working artifact with minimal human input.</li>
+<li><strong>Auto mode (FastAPI endpoint, before/after)</strong> — Regular Claude Code repeatedly asks permission (edit file, update README, run test), making the human a bottleneck. After <strong>rewind</strong> + enabling <strong>auto mode</strong>, the same task completes with zero interruptions. <strong>Proves:</strong> classifier-gated permissions let agents safely run unattended on low-risk work.</li>
+<li><strong>The Oracle (bill-split function)</strong> — Generator writes a bill-split function that drops cents; a separate adversarial reviewer agent writes its own test, it fails, advice flows back, generator updates the code. <strong>Proves:</strong> a separate evaluator/judge (build it first) scales safe AI-on-AI code review.</li>
+<li><strong>Pen-test image reasoning (Foundry, Opus 4.8)</strong> — Audience sees a suspicious screenshot for ~5s (only 1 person spots a risk); Claude Opus 4.8 in Foundry analyzes the same image in ~3.4s and surfaces multiple non-obvious security risks. <strong>Proves:</strong> high-res visual perception + reasoning finds issues humans miss with no explicit labels.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>49 → 87.6</strong> on SWE-bench Verified across 6 model generations in 18 months — "We've pretty well solved coding when you look at it from this metric's perspective."</li>
+<li><strong>14.5 hours</strong> — one of the longest recorded agentic sessions sustaining good accuracy ("think about that… letting it run for hours or even days").</li>
+<li><strong>0.4% false positive rate</strong> for auto mode's permission classifier ("so we're less annoying").</li>
+<li>C-compiler case study: <strong>16 parallel agents</strong> across <strong>100,000 lines of code</strong> — "a bit of a failure," which motivated the planner → generator → evaluator pattern.</li>
+<li>Pen testing (Expo): <strong>~58% (Opus 4.6) → ~98% (Opus 4.8)</strong> success, attributed to high-resolution visual acuity.</li>
+<li><strong>~3.4 seconds</strong> for Opus 4.8 in Foundry to analyze the screenshot and find security risks; only <strong>1 audience member</strong> spotted any risk by eye.</li>
+<li>On "dangerously skip permissions": <em>"It's about as comfortable as that sounds. It's very creepy. You don't want to do that."</em></li>
+<li><em>"That evaluator, the judge, that's very important. Do that first, and then you can do whatever you want with your code."</em></li>
+<li><em>"We don't want to remove humans entirely… the goal is to have humans evaluating and looking at the things that are most important."</em></li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Stand up <strong>Claude Opus 4.8 / Sonnet 4.6 in Azure Foundry</strong> and benchmark a real coding task (start Sonnet, escalate to Opus only if needed).</li>
+<li>Pilot <strong>auto mode</strong> on a low-risk repo to evaluate the false-positive/overeager behavior in practice.</li>
+<li>Build a <strong>planner → generator → evaluator (Oracle)</strong> loop with an adversarial reviewer + auto-generated tests <em>before</em> generating production code.</li>
+<li>Experiment with <strong>dynamic workflows / <code>/workflows</code></strong> + sub-agents (designer → picker → tester pattern) on a self-contained task.</li>
+<li>Test <strong>high-res image perception</strong> for a visual QA or security-review use case (screenshot → risk analysis).</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What are the exact Foundry SKUs, region availability, and pricing for Opus 4.8 vs Sonnet 4.6 vs Haiku?</li>
+<li>Is <strong>auto mode</strong> available through Foundry-hosted Claude or only Claude Code? How configurable is the risk classifier?</li>
+<li>How do <strong>dynamic workflows</strong> map to existing sub-agent / orchestration features — any API surface vs CLI-only (<code>/workflows</code>)?</li>
+<li>How does the <strong>Cowork</strong> experience differ from raw Claude Code on Foundry (per the session title)?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Internal coding-agent / dev-productivity initiatives on Azure.</li>
+<li>Security/pen-testing automation</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEMSP381.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEMSP381</span><span class="pager-title">Scale agentic AI cost-efficiently on Azure with Arm Cobalt VMs</span></a>
+    <a class="pager pager-next" href="DEMSP390.html"><span class="pager-dir">Next →</span><span class="pager-code">DEMSP390</span><span class="pager-title">Create multimodal AI agents with persistent memory</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>
