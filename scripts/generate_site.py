@@ -259,8 +259,12 @@ def replace_wikilinks(text: str, resolver) -> str:
         href = resolver(target)
         esc_label = html.escape(label)
         if href:
+            # Links only to another session page that exists in THIS repo.
             return f'<a class="wikilink wikilink--resolved" href="{href}">{esc_label}</a>'
-        return f'<span class="wikilink wikilink--unresolved" title="{html.escape(target)}">{esc_label}</span>'
+        # Target is a vault concept/MOC note that is NOT part of this repo.
+        # Render as plain text so nothing points to (or implies) an external
+        # Obsidian note. No link, no broken-reference styling, no tooltip.
+        return esc_label
 
     return WIKILINK_RE.sub(_sub, text)
 
