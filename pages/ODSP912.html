@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ODSP912 — Build agentic testing systems to validate AI generated code</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">ODSP912</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=NXodiipqNco" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Build agentic testing systems to validate AI generated code</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Suresh Kesri (Developer Relations Manager, Testim AI)</span>
+      <span class="meta-item">⏱️ 13m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="testing">Testing</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="code-validation">Code Validation</span><span class="chip" data-tag="ai">AI</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Suresh Kesri — Developer Relations Manager, Testim AI<br>
+<strong>Duration:</strong> ~13 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=NXodiipqNco">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Agents can now write, run, break, and patch code — but they still can't <em>test</em> it in a way you'd trust before shipping to production. The hard part of the agentic era isn't build speed, it's <strong>trust</strong>: did the agent test the right thing, and can you believe it when it says "everything passed"? Testim AI's answer is <strong>Keen CLI</strong> (the "K and CLI" the captions garble), a new command-line <strong>deterministic validation layer</strong> that sits between development and shipping. You describe an end-to-end objective in plain natural language; Keen CLI opens a local (or cloud cross-browser) browser, completes the workflow with vision-based waiting, auto-discovers bugs, and emits trustworthy, shareable evidence (video, traces, agent-native ND-JSON) plus generated Playwright code. It works for humans at the CLI, as an importable SDK in CI/CD, and natively <em>inside</em> coding agents (Claude, Codex, Copilot, Gemini) via an <code>agent.md</code> file — giving those agents the "hands and eyes" to validate their own generated code.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>The blind spot is validation, not generation.</strong> "Everyone is focused on how fast we are building, but very few are asking the real question: how fast are we <em>validating</em>?" An agent can produce hundreds of lines of code in seconds — speed isn't the bottleneck, <strong>trust</strong> is.</li>
+<li><strong>The fix is a deterministic validation layer</strong>, not just "more/smarter agents." You insert a reliable checking step between autonomous development and deployment so you can trust features built by one set of agents and deployed by another — without human intervention.</li>
+<li><strong>Keen CLI is intent-based.</strong> You give a natural-language objective; there are <strong>no brittle test scripts, locators, selectors, or XPaths</strong>.</li>
+<li><strong>Vision-based waiting</strong> replaces arbitrary <code>sleep</code>/time waits — it waits for the page/feature to actually render before acting, making runs resilient on complex, multi-step journeys.</li>
+<li><strong>Playwright code falls out for free.</strong> Every natural-language run generates a Playwright test case you can keep, replay, and wire into CI/CD.</li>
+<li><strong>Auto-healing tests.</strong> When the UI changes, Keen CLI automatically heals the affected test cases and returns updated test code.</li>
+<li><strong>Trustworthy, shareable evidence by default:</strong> video logs, trace runs, and a shareable proof link per run — "shareable proof" you can review <em>before</em> merging a feature.</li>
+<li><strong>Bugs are surfaced automatically</strong> during execution: if it hits a failure or finds a bug, it flags it to the user.</li>
+<li><strong>Three ways to consume it:</strong> (1) the <strong>CLI</strong> directly, (2) an importable <strong>SDK</strong> (<code>import Keen</code>) for CI pipelines / custom agents / existing test suites, and (3) <strong>agent-native</strong> integration by pointing your coding agent at an <code>agent.md</code> file.</li>
+<li><strong>Agent-native output format:</strong> results come back as structured <strong>ND-JSON</strong> that any agent can parse, plus an "agent rating" of the run.</li>
+<li><strong>Cross-browser / cross-device / cross-environment cloud validation</strong> is an option on top of local-browser testing, so you can release with confidence beyond your own machine.</li>
+<li><strong>A Testim-style markdown test framework</strong> stores written test cases as markdown that can be auto-played anytime or triggered from a CI/CD pipeline.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="the-problem-agents-can-build-but-cant-be-trusted-to-test">The problem: agents can build, but can't be trusted to test</h3>
+<p>The session opens by framing the current state of AI coding agents: they can <strong>write code, run it, break it, and patch it</strong>. The one thing they <em>haven't</em> genuinely been able to do is <strong>test</strong> it — at least not in the trustworthy way a careful engineer would before shipping to production. This is "the gap."</p>
+<p>The core argument: an agent can generate hundreds of lines of code in seconds, <strong>but the speed isn't the hard part — the trust is.</strong> Two trust questions matter:
+1. Did the agent test the <em>right</em> thing?
+2. Can you actually rely on it when it reports that everything passed?</p>
+<p>Suresh reframes the industry's obsession ("how fast are we building?") into the real, under-asked question: <strong>"How fast are we validating?"</strong> In a world where one set of autonomous agents develops a feature/page and <em>another</em> set deploys it, how do you trust — without human intervention — that the feature does what it's supposed to do? That is the exact blind spot the talk targets.</p>
+<h3 id="the-thesis-add-a-deterministic-validation-layer">The thesis: add a deterministic validation layer</h3>
+<p>The proposed fix is explicitly <strong>not</strong> "just add more intelligent / smarter systems." Instead, it's to insert a <strong>deterministic validation layer between development and shipping.</strong> Determinism is the point: the value of the layer is that its verdicts are reliable and repeatable, so a "passed" result actually means something. This is the conceptual heart of "agentic testing."</p>
+<h3 id="introducing-keen-cli">Introducing Keen CLI</h3>
+<blockquote>
+<p>Caption note: the transcript repeatedly renders this as "K and CLI" / "Keen CLI" / "key in CLI" / "KCLI." These are the same product — <strong>Keen CLI</strong> — Testim AI's newest product, launched (per the talk) to help ship end-to-end products in the agentic era.</p>
+</blockquote>
+<p>Keen CLI is a <strong>command-line validation layer</strong> that lets you test any feature or application on a <strong>local browser</strong>. Key design properties:
+- Usable <strong>by humans</strong> and <strong>directly by agents</strong>.
+- <strong>Natively integrates with all your agents</strong> — examples given: Claude/Cloud, Codex, Gemini, Copilot.
+- You <strong>describe what you want in natural-language prompts</strong>; Keen CLI opens a local browser and tests the feature.
+- Optional <strong>cloud validation</strong> across <strong>different browsers, devices, and environments</strong> (cross-browser / cross-device / cross-environment).
+- Goal: <strong>release features and products with confidence.</strong></p>
+<h3 id="what-you-get-out-of-the-box">What you get "out of the box"</h3>
+<p>The talk enumerates Keen CLI's built-in capabilities:</p>
+<ul>
+<li><strong>Intent-based control</strong> — describe the objective in natural language. <strong>No brittle test scripts, no locators, no selectors, no XPaths.</strong></li>
+<li><strong>Resilient runs</strong> — stays on task even through complex, multi-step user journeys; <strong>automatically discovers bugs</strong> while executing and on failures.</li>
+<li><strong>Vision-based waiting</strong> — waits on the <em>actually rendered</em> page/feature instead of inserting arbitrary time waits.</li>
+<li><strong>Playwright code generation (default)</strong> — natural-language prompt in → Playwright test case out.</li>
+<li><strong>Testim-style (markdown) framework</strong> — all written test cases are stored as markdown; you can <strong>auto-play</strong> them anytime and <strong>trigger them from your CI/CD pipeline.</strong></li>
+<li><strong>Auto-heal</strong> — on any UI change, Keen CLI heals the test cases and returns the new test code.</li>
+<li><strong>Shareable evidence</strong> — <strong>video logs</strong> plus <strong>trace runs</strong> for each run.</li>
+<li><strong>Agent-native ND-JSON output</strong> — structured output understandable by all agents.</li>
+</ul>
+<h3 id="three-ways-to-use-keen-cli">Three ways to use Keen CLI</h3>
+<ol>
+<li><strong>CLI directly</strong> — run the provided command in your terminal, add a natural-language prompt, and Keen CLI starts automating it.</li>
+<li><strong>SDK</strong> — <code>import Keen</code> from the SDK; usable inside a <strong>CI pipeline</strong>, a <strong>custom agent</strong>, or an existing <strong>test suite</strong>.</li>
+<li><strong>Agent-native</strong> — point your coding agent at the Keen CLI <strong><code>agent.md</code></strong> file; the agent then "understands how to use Keen CLI effectively" while building applications. The mental model: the coding agent decides <em>what</em> end-to-end tests are needed for the feature it's building, and <strong>Keen CLI gives it "hands and eyes"</strong> to actually perform those end-to-end workflows.</li>
+</ol>
+<h3 id="getting-started-install">Getting started (install)</h3>
+<ul>
+<li><strong>Download the NPM module</strong> — copy the provided command, paste it into the terminal, let Keen CLI download.</li>
+<li>Once installed, open any terminal and <strong>call Keen CLI</strong> to start running test cases.</li>
+<li>It can be launched in an <strong>interactive mode</strong>, where the session initializes and prompts you to <strong>paste your objective</strong>; whatever objective you write, Keen CLI begins completing that workflow.</li>
+</ul>
+<h3 id="how-the-agent-native-flow-works-conceptual">How the agent-native flow works (conceptual)</h3>
+<p>While you build with <strong>any</strong> AI agent (Claude, Codex, Copilot, …), the agent defines the end-to-end test cases appropriate to the feature/product being developed, and Keen CLI executes them — acting as the agent's hands and eyes. <strong>By default the agent-driven run executes in headless mode</strong>, with results surfaced once the step completes. The run returns rich stats (pass/fail, objective completion) plus an <strong>agent rating</strong> and a <strong>shareable proof</strong> link.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Keen CLI</strong> — Testim AI's new command-line, deterministic end-to-end <strong>validation layer</strong> for the agentic era (the talk's central product; captions garble it as "K and CLI" / "KCLI" / "key in CLI").</li>
+<li><strong>Testim AI</strong> — the company / partner presenting (ODSP = open-source/partner theater session at Build).</li>
+<li><strong>Keen SDK</strong> — importable SDK (<code>import Keen</code>) for CI pipelines, custom agents, and test suites.</li>
+<li><strong><code>agent.md</code> file</strong> — the integration manifest you point a coding agent at so it learns to drive Keen CLI.</li>
+<li><strong>Playwright</strong> — auto-generated test code output format.</li>
+<li><strong>ND-JSON</strong> — agent-native structured output format for run results.</li>
+<li><strong>NPM</strong> — distribution channel (install via the NPM module).</li>
+<li><strong>Coding agents referenced for integration:</strong> Claude, OpenAI Codex, GitHub Copilot, Google Gemini.</li>
+<li><strong>Testim-style markdown test framework</strong> — stores test cases as markdown; auto-playable and CI/CD-triggerable.</li>
+<li><strong>Cloud cross-browser / cross-device / cross-environment grid</strong> — optional cloud validation tier.</li>
+<li><strong>Auto-heal engine</strong> — repairs tests after UI changes.</li>
+<li><strong>Vision-based waiting</strong> — render-aware waiting mechanism.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Keen CLI is positioned as "the newest product launched by Testim AI."</strong> The session functions as a launch/introduction of Keen CLI to help "ship end-to-end products in an agentic era." Treat this as the headline news of the talk: a brand-new, agent-native, deterministic end-to-end testing CLI from Testim AI, distributed via NPM and integrating with mainstream coding agents.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<p>The talk runs <strong>two parallel demos</strong> to contrast human-driven (GUI) and agent-driven (headless) usage:</p>
+<p><strong>Demo A — Interactive CLI / GUI mode (multi-session checkout + clipboard-style hand-off):</strong>
+- Objective pasted in natural language: <strong>complete a checkout flow</strong> on a sample website, then <strong>copy the resulting order ID</strong> and <strong>paste it into Google in a second session.</strong>
+- Keen CLI <strong>bifurcates the objective into two workflows</strong>: (1) complete checkout, (2) copy the order ID and paste it elsewhere.
+- It <strong>opens a local browser</strong>, navigates the sample site, and reasons step-by-step; <strong>every identified step is visible in the terminal.</strong>
+- It <strong>auto-generates sample/test card data</strong> to complete the card checkout, <strong>places the order</strong>, then <strong>extracts and saves the order ID</strong> from the confirmation (end of flow 1).
+- Flow 2: it <strong>opens google.com</strong> and <strong>pastes the saved order ID</strong>, then <strong>passes the test case</strong> (workflow completed successfully).
+- On <strong>exit</strong>, it <strong>saves the session</strong> to the chosen folder, <strong>generates a Playwright script</strong> of the completed test, and <strong>produces a shareable link</strong>. Opening that link shows <strong>all step logs</strong>, an <strong>auto-play</strong> replay (you can watch the cursor and the decisions it made), and it serves as <strong>shareable proof</strong> to validate before merging. Any bugs found are <strong>automatically marked to the user.</strong></p>
+<p><strong>Demo B — Agent-native mode (inside Claude, headless):</strong>
+- Paste the <strong><code>agent.md</code></strong> file to the agent so it understands how to use Keen CLI while building a feature.
+- Invoke Keen CLI inside the agent by typing <strong><code>/</code></strong> then <strong>"keen CLI"</strong>; the session initializes within the agent environment, <strong>identifies the user ID</strong>, and is ready.
+- The agent surfaces the <strong>action types</strong> Keen CLI can perform: <strong>actions, assertions, extracting/top results, and running an existing test suite</strong> in the project.
+- Simple example objective: <strong>"Go to testmu.ai and validate if the page opens."</strong> (Caption renders it "testmu.ai.com"/"testmu.ai.com".) Keen CLI interacts directly with the AI agent, reasons about next steps, and — running in <strong>headless mode by default</strong> — returns stats: <strong>test case passed, objective completed,</strong> plus an <strong>agent rating</strong> and a <strong>shareable proof</strong> link to view in the browser.</p>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><em>"Agents can write code now. They can also run it, break it and patch it. What they haven't really been able to do is test it — not in the way that you would trust before shipping an application to production. And that's the gap."</em></li>
+<li><em>"An agent can generate hundreds of [lines of] code in seconds, but the speed isn't the hard part. The hard part is trust."</em></li>
+<li><em>"Everyone is focused on how fast we are building, but very few are asking the real question: how fast are we validating?"</em></li>
+<li><em>"The fix is … to add a deterministic validation layer between shipping and development."</em></li>
+<li><em>"No brittle test scripts, no locators, no selectors, no XPaths."</em></li>
+<li><em>"Your agent can directly define what kind of end-to-end test cases it wants to write … and Keen CLI will provide them hands and eyes to perform those end-to-end workflows."</em></li>
+<li><em>Note:</em> No quantitative benchmarks (latency, accuracy %, coverage numbers) were given — the "stats" referenced in the demo are the per-run pass/fail status, objective-completion status, and an <strong>agent rating</strong>.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Install Keen CLI from NPM and run it in interactive mode against a throwaway sample app (e.g. a checkout flow) to see the natural-language → Playwright output.</li>
+<li>Wire the generated Playwright tests into a CI/CD pipeline and test the <strong>auto-heal</strong> behaviour by deliberately changing a UI element.</li>
+<li>Drop the <code>agent.md</code> into a Claude/Copilot/Codex project and try the <code>/keen</code> (slash) invocation to validate an agent-built feature headlessly.</li>
+<li>Inspect the <strong>ND-JSON</strong> output and the <strong>shareable proof</strong> link to evaluate how usable the "evidence" really is for PR review gates.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>How "deterministic" is it really, given it's vision/LLM-driven under the hood? What makes a pass repeatable run-to-run?</li>
+<li>Pricing/licensing, and what's local-free vs. cloud (cross-browser grid) paid?</li>
+<li>How does it relate to legacy <strong>Testim</strong> (the established Tricentis-owned codeless testing product) — same lineage/branding?</li>
+<li>Security model: it drives a real browser with credentials/test data — how is auth handled and isolated?</li>
+<li>What's the exact product name spelling (Keen CLI vs. Kane CLI) and the real domain (<code>testmu.ai</code> vs <code>testim.ai</code>)? Verify before citing externally.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Anyone building <strong>autonomous coding-agent pipelines</strong> who needs a trustworthy validation gate before merge/deploy.</li>
+<li>QA / SDET teams evaluating <strong>AI-native, locator-free E2E testing</strong> to replace brittle Selenium/Playwright selector suites.</li>
+<li>Platform/DevEx teams designing <strong>agent ↔ tool</strong> integrations (<code>agent.md</code> pattern, ND-JSON, slash-command invocation).</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Build2026">Build2026</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Build 2026">Microsoft Build 2026</span></li>
+<li>Topics: <span class="wikilink wikilink--unresolved" title="Agentic Testing">Agentic Testing</span> · <span class="wikilink wikilink--unresolved" title="AI Code Validation">AI Code Validation</span> · <span class="wikilink wikilink--unresolved" title="Playwright">Playwright</span> · <span class="wikilink wikilink--unresolved" title="CI-CD">CI-CD</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="ODSP911.html"><span class="pager-dir">← Previous</span><span class="pager-code">ODSP911</span><span class="pager-title">Build AI-first business apps that turn dashboards into actions</span></a>
+    <a class="pager pager-next" href="ODSP914.html"><span class="pager-dir">Next →</span><span class="pager-code">ODSP914</span><span class="pager-title">Run AI at scale with Ray + Kubernetes using Anyscale on Azure</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

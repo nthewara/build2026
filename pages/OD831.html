@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OD831 — Govern AI models, tools, and agents with Azure API Management</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">OD831</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=EZLAjW0xPxM" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Govern AI models, tools, and agents with Azure API Management</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Anish (APIM team), Mike Bzinski (APIM team), Shriant (APIM team)</span>
+      <span class="meta-item">⏱️ 39m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="api-management">Api Management</span><span class="chip" data-tag="ai-gateway">Ai Gateway</span><span class="chip" data-tag="governance">Governance</span><span class="chip" data-tag="mcp">MCP</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="azure">Azure</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Anish, Mike Bzinski, and Shriant — all from the Azure API Management product team<br>
+<strong>Duration:</strong> ~39 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=EZLAjW0xPxM">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Azure API Management (APIM) is being repositioned from a traditional API gateway into a <strong>universal gateway</strong> that governs APIs, AI models, MCP tools, and agents through one consistent control plane. The session frames AI as no longer a pilot (Gartner: 95%+ of enterprises using LLMs/GenAI in production by 2028) and argues that the same governance, security, observability, and velocity problems enterprises solved for APIs are now magnified for AI. The <strong>AI Gateway</strong> capabilities inside APIM act as the bridge mediating client→model, client→tool, and client→agent access, layering token rate limiting, content safety, semantic caching, model routing/fallback, PII protection, and end-to-end tracing on top. <strong>API Center</strong> is the companion enterprise catalog (system of record) for all AI assets — REST APIs, MCP tools, skills, plugins, models, and agents — with Git-sync registration and LLM-as-a-judge quality scoring. Several launches landed: Anthropic + Vertex model policy support (this June), GA of expanded token metrics, the new <strong>Unified Model API</strong> (preview) with model aliases and cross-provider failover, GA of <strong>Bring Your Own Model</strong> in Microsoft Foundry, and <strong>GA of Agent-to-Agent (A2A) governance</strong> in APIM.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li>APIM is evolving into a <strong>universal gateway</strong>: one governance lens for traditional APIs, model APIs, tools/MCP, and agents — so enterprises don't piecemeal multiple gateway/governance solutions.</li>
+<li>The <strong>API Management platform = two products</strong>: API Management (the managed + self-hosted gateway) and <strong>API Center</strong> (the catalog to track, discover, and govern assets regardless of type or location).</li>
+<li>"AI Gateway" is shorthand for the AI-specific capabilities inside APIM; it mediates all AI usage across five pillars: <strong>governance, scalability, security &amp; safety, observability, velocity</strong>.</li>
+<li><strong>Token rate limits &amp; quotas</strong> let you cap consumption per user/agent, attribute usage, set alerts, and build cost dashboards — cost control is the headline concern for AI workloads.</li>
+<li><strong>Content safety policies</strong> moderate prompts/completions and block harmful (e.g. hateful) requests <em>before</em> they reach the backend model; PII leakage prevention is built in.</li>
+<li><strong>Semantic caching</strong> reduces token consumption (and therefore cost) by serving cached answers for semantically similar prompts.</li>
+<li><strong>Model routing &amp; fallback</strong>: prioritize provisioned (PTU) capacity for specific models and implement fallback strategies for reliability or cost.</li>
+<li>APIM supports <strong>all major model providers</strong>: Microsoft Foundry, OpenAI, Google Vertex AI, AWS Bedrock, Hugging Face, Anthropic, Mistral — plus clients like users, agents, and GitHub Copilot coding agents.</li>
+<li><strong>NEW (June this month):</strong> Anthropic (Messages API) and Vertex models can now get the full policy set — token limits/metrics, content safety, semantic caching — plus logs/metrics import.</li>
+<li><strong>NEW (GA):</strong> Expanded <strong>token metrics</strong> via the <code>llm-emit-token-metric</code> policy — captures <em>all</em> token types (completion, prompt, thinking/reasoning, cache) into Application Insights for accurate cost/usage dashboards.</li>
+<li><strong>NEW (Preview):</strong> <strong>Unified Model API</strong> — a single APIM-fronted API that translates between Anthropic Messages API and OpenAI Chat Completions backends; includes <strong>model aliases</strong> to decouple client-facing names from backend models and <strong>cross-provider failover</strong>.</li>
+<li><strong>NEW (GA):</strong> <strong>Bring Your Own Model</strong> in Microsoft Foundry — register any Chat-Completions-compatible model proxied by AI Gateway (APIM or third-party) for use in the Foundry agent service.</li>
+<li><strong>Tools = APIs or MCP servers</strong> that turn LLM intelligence into action; more tools = exponentially more security/compliance/performance risk, so they need the same gateway governance.</li>
+<li>You can <strong>convert existing REST APIs into MCP servers in a few clicks (no rewrites)</strong> and <strong>proxy first- or third-party MCP servers</strong> (Stripe, Jira, Atlassian, Box, Neon, etc.) to apply unified governance and auth via Credential Manager.</li>
+<li><strong>NEW MCP capabilities:</strong> MCP servers in the Products concept (bundling, subscriptions, quotas, approval workflows), <strong>MCP versioning</strong> (A/B test, blue-green, prod vs dev), finer OpenTelemetry metrics/traces/logs, and MCP as a first-class element in the management REST API; plus a <strong>built-in test console</strong> (no external MCP Inspector needed).</li>
+<li><strong>API Center</strong> is the enterprise catalog/system of record for four+ asset types (REST APIs, MCP tools, skills/plugins, models, agents) with <strong>Git-repo sync</strong>, <strong>LLM-as-a-judge quality scoring</strong> (4 dimensions, 1–5 scale, default threshold 3), and a <strong>marketplace endpoint</strong> that surfaces skills/plugins/MCP to Claude Code and Copilot CLI.</li>
+<li><strong>NEW (GA):</strong> <strong>Agent-to-Agent (A2A) support in APIM</strong> — bring A2A agents under the same enterprise-grade governance, security, and observability as REST APIs (agent cards, runtime operations, Gen AI semantic-convention OTel traces, throttling/IP-filtering/content-safety policies).</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="why-now-ai-is-in-production-not-a-pilot">Why now — AI is in production, not a pilot</h3>
+<p>The session opens by reframing the AI conversation: although AI and AI workflows have been discussed since 2023, <strong>AI is no longer a pilot</strong>. Most enterprises are moving AI into production. Gartner is cited: <strong>by 2028, more than 95% of enterprises will be using LLMs, GenAI APIs, and models in production applications.</strong> That shift makes governance urgent — enterprises must decide how to govern diverse AI endpoints, ensure secure access, and observe what's actually happening (cost, security, troubleshooting).</p>
+<p>The core argument: AI brings the <em>same</em> class of challenges enterprises already faced with APIs, but <strong>magnified</strong>:
+- <strong>Cost control &amp; compliance</strong> with organizational policies.
+- <strong>Agent proliferation</strong> — preparing systems for hundreds → thousands → millions of agents as they scale.
+- <strong>Security &amp; safety</strong> of systems and applications.
+- <strong>Monitoring &amp; troubleshooting</strong> of AI systems.
+- <strong>Developer velocity</strong> — empowering developers to build better AI systems faster.</p>
+<p>These are exactly the problems APIM has solved for traditional APIs for over a decade, so the thesis is that APIM is the natural place to solve them for AI too.</p>
+<h3 id="the-api-management-platform-two-products">The API Management platform = two products</h3>
+<p>Before going deeper, the speakers set context on what "the platform" means:
+1. <strong>Azure API Management</strong> — the gateway solution to securely <strong>publish, manage, and analyze APIs</strong> across all environments through a managed gateway. There is also a <strong>self-hosted gateway</strong> offering; together these are "API Management."
+2. <strong>Azure API Center</strong> — the <strong>catalog</strong> to <strong>track, discover, and govern</strong> APIs within an organization, regardless of API type or where the APIs are located.</p>
+<p>Together, these two products form the <strong>Azure API Management platform</strong>, which is the subject of the whole talk.</p>
+<h3 id="from-api-gateway-to-universal-gateway">From API gateway to universal gateway</h3>
+<p>APIM has supported the full API lifecycle — <strong>design, develop, secure, publish, scale, monitor, analyze</strong> — for traditional APIs for over a decade, with <strong>40,000+ customers processing trillions of requests per month</strong>. The strategic direction is to evolve it into a <strong>universal gateway</strong> that handles far more than REST:
+- <strong>Model APIs</strong> — Azure AI Foundry, AWS Bedrock, Google Vertex AI, OpenAI, Anthropic, Mistral, or anywhere else models are hosted.
+- <strong>Tools</strong> — MCP endpoints, OpenAPI specs, or custom connectors.
+- <strong>Agents</strong> — agents built on protocols like <strong>A2A</strong> get the same governance lens as traditional APIs.</p>
+<p>The value proposition: <strong>one solution for governance across all API endpoint types</strong>, so teams don't have to piecemeal effort across multiple gateway/governance products. APIM is positioned as simultaneously your <strong>API gateway, AI gateway, model gateway, tools gateway, and agents gateway</strong> — a single universal gateway for the entire product stack.</p>
+<h3 id="what-ai-gateway-actually-is">What "AI Gateway" actually is</h3>
+<p>"AI Gateway" is the simplified name for the <strong>AI-specific capabilities within APIM</strong>. Conceptually it's a <strong>bridge that mediates all AI usage</strong>:
+- <strong>Left side (clients):</strong> users, apps &amp; services, agents, co-pilots.
+- <strong>Right side (backends):</strong> AI models (from the many providers above), tools (MCP servers, APIs), and agents.</p>
+<p>Every client→backend interaction is mediated by the AI Gateway, which applies five pillars: <strong>governance, scalability, security, safety, observability, and velocity</strong> — directly mapping to the AI challenges raised earlier.</p>
+<h3 id="how-the-pillars-are-delivered-api-gateway-ai-gateway-capabilities-combined">How the pillars are delivered (API gateway + AI gateway capabilities combined)</h3>
+<p>The approach combines <strong>existing API gateway capabilities</strong> with <strong>new AI-purpose-built capabilities</strong>, organized by problem:</p>
+<p><strong>Governance</strong>
+- Existing: an extensive selection of <strong>policies</strong>, <strong>federated API management with workspaces</strong>, and <strong>enterprise-wide catalogs</strong>.
+- Extended for AI: catalogs now cover <strong>approved models, MCP servers, skills, plugins, and A2A agents</strong>; <strong>granular token rate limits and quotas</strong> for cost management; policy enforcement for MCP and A2A endpoints (secured access, content safety, secret-leak prevention).</p>
+<p><strong>Security &amp; safety</strong>
+- Existing: <strong>OWASP API Top 10</strong> protections, client authn/authz, <strong>keyless management</strong>, <strong>identity</strong>, <strong>Credential Manager</strong>.
+- Extended for AI: <strong>moderate prompts and completions</strong> and <strong>prevent PII / private-information leakage</strong>.</p>
+<p><strong>Observability</strong>
+- Existing: robust <strong>logs, metrics, and tracing</strong>.
+- Extended for AI: <strong>track token consumption</strong>, <strong>log prompts and completions</strong>, <strong>log MCP tool interactions</strong> (requests <em>and</em> responses), and <strong>trace end-to-end agentic interactions</strong>.</p>
+<p><strong>Scalability</strong>
+- AI-specific: <strong>saving tokens &amp; improving latency via semantic caching</strong>, <strong>prioritizing routing to provisioned capacity</strong> and specific models, <strong>model fallback</strong> for reliability or cost, and support for <strong>both SSE and streaming HTTP</strong> protocols (depending on how the tool is built).</p>
+<p><strong>Velocity</strong>
+- <strong>Developer portal</strong>, <strong>VS Code extensions</strong>, <strong>Copilot for policies</strong>, and <strong>test consoles for tools</strong> built directly into the APIM portal (test MCP-protocol tools in place).
+- Extended for AI: <strong>import AI Foundry models / tools from other providers</strong> (not just Foundry/APIM — import from anywhere), <strong>wrap existing/external MCP servers</strong> (Azure, off-Azure, or on-prem) and expose them as <strong>private endpoints</strong>, <strong>convert existing REST APIs into MCP servers</strong> (no duplicated work), and <strong>discover/consume assets via the API Center MCP server</strong>.</p>
+<h3 id="model-governance-mike-bzinski">Model governance (Mike Bzinski)</h3>
+<p>The <strong>model gateway</strong> capabilities recap and expand on the above:
+- <strong>Token rate &amp; quotas</strong> — monitor token consumption, attribute it to specific users or agents, set alerts, build dashboards.
+- <strong>Moderate prompts &amp; completions</strong> — log them for investigation/audit.
+- <strong>Semantic caching</strong> — reduce token consumption / the actual cost of token consumption on models.
+- <strong>Routing</strong> — prioritize <strong>provisioned capacity</strong> for certain models, implement <strong>model fallback</strong> strategies.
+- <strong>Backends supported</strong> — Microsoft Foundry, OpenAI, Google Vertex AI, AWS Bedrock, Hugging Face, and any other provider; clients include users, agents, and <strong>GitHub Copilot coding agents</strong>.</p>
+<p><strong>Model governance demo (AWS Bedrock):</strong> A model deployed on AWS Bedrock (in Amazon's cloud) is imported as an API in APIM with two policies: (1) a <strong>token limit of 10 tokens/minute per user</strong>, and (2) a <strong>content safety</strong> policy. A sample app loops requests to demonstrate enforcement:
+- First request ("explain Azure API Management in 10 words") <strong>succeeds</strong> with a proper answer.
+- The <strong>second request fails</strong> — the token-limit policy throttles it because the quota is exceeded; the AI Gateway returns a throttle response.
+- Changing the prompt to a hateful one ("I hate you") causes the AI Gateway to <strong>block the request</strong> under the content safety policy <strong>before it ever reaches the backend model</strong>.
+The same capabilities already work for OpenAI models, Microsoft Foundry models, and other OpenAI-compatible models.</p>
+<h3 id="model-governance-launches-mike-bzinski">Model governance launches (Mike Bzinski)</h3>
+<p>Mike walks through several model-gateway announcements:</p>
+<p><strong>1. Anthropic + Vertex policy support (this June).</strong> Starting June this month, the same policy set — <strong>token limits, token metrics, content safety, semantic caching, etc.</strong> — applies to <strong>Anthropic models (via the Anthropic Messages API)</strong> and <strong>Vertex models deployed on Google Cloud</strong>. Logs and metrics can be collected for those models, and cloud operations can be imported as part of the Microsoft import in APIM.</p>
+<p><strong>2. GA: expanded token metrics.</strong> The <code>llm-emit-token-metric</code> policy now collects metrics for <strong>all token types</strong> — not just completion and prompt tokens, but also <strong>thinking/reasoning tokens, cache tokens</strong>, and others. It forwards these metrics to <strong>Application Insights</strong>, where you can set alerts or build more complete and accurate dashboards for token usage and model consumption cost.</p>
+<p><strong>3. Preview: Unified Model API.</strong> A new API that creates <strong>a single APIM API in front of multiple backend model providers</strong>. Initially the supported backends are <strong>Anthropic models (Messages API)</strong> and <strong>OpenAI-compatible models (Chat Completions API)</strong>. A <strong>client-facing Chat Completions interface automatically translates</strong> calls to Anthropic and OpenAI backends, so clients can standardize on a single SDK / interface while many different backend models run behind it. Key sub-features:
+- <strong>Model aliases</strong> — decouple backend and client model names. Example: create an alias <code>GPT</code> that forwards to the <code>GPT 5.3</code> backend; later swap the alias to <code>GPT 5.4</code> or even to a different provider (e.g. Anthropic) <strong>without affecting any clients</strong>. Clients only ever use the alias; you keep full control of the real backend.
+- <strong>Centralized governance</strong> — apply a policy once and it works across all backend models from different providers.
+- <strong>Cross-provider failover</strong> — fail over from, e.g., an OpenAI GPT model to an Anthropic Claude model even though they use different backend API formats; APIM handles the translation.</p>
+<p><strong>4. GA: Bring Your Own Model in Microsoft Foundry.</strong> Lets you add <strong>any model proxied by an AI Gateway</strong> (Azure APIM or a third-party gateway) that is <strong>Chat Completions API compatible</strong>, and use it for building prompt-based agents in the <strong>Foundry agent service</strong>. (More detail at the linked docs.)</p>
+<h3 id="tool-governance-anish">Tool governance (Anish)</h3>
+<p><strong>What is a "tool"?</strong> Tools are <strong>APIs or MCP servers</strong> used within the enterprise. Models/LLMs supply <em>intelligence</em>; tools turn that intelligence into <em>action</em> by connecting agents/LLMs to APIs and services. The challenge: enterprises have built a huge sprawl of APIs and tools over the last couple of decades — how do they <strong>repurpose that estate for the AI world</strong>? And critically, <strong>the more tools you add, the more risk you create</strong> — security, compliance, and performance risk grows <strong>exponentially</strong> (per multiple surveys) with each added tool.</p>
+<p><strong>AI Gateway as the tool bridge.</strong> Just as it mediates model usage, the AI Gateway mediates <strong>tool usage</strong>, solving the same five issues (governance, security, observability, velocity, scalability) across tool backends:
+- <strong>API/cloud backends</strong> — Logic Apps, Functions, Container Apps, etc.
+- <strong>Third-party MCP servers</strong> — Atlassian, Stripe, Box, Neon, and others — mediated natively with the same governance policies as first-party APIs.</p>
+<p><strong>What you can do with APIM tools today:</strong>
+1. <strong>Create MCP servers</strong> — convert your existing REST API portfolio into MCP servers <strong>in a few clicks, no rewrites</strong>; expose any HTTP backend as an MCP server <strong>in under a minute</strong>.
+2. <strong>Proxy existing MCP servers</strong> — first-party (self-hosted) or third-party (Stripe, Jira, etc.) — to apply the same governance and security perimeter.
+3. <strong>Secure the endpoints</strong> — ensure agents/LLMs are <strong>authenticated</strong> with the right access and scopes; streamline access to MCP servers that have their own auth (API keys or OAuth) using <strong>Credential Manager</strong> and policies.
+4. <strong>Apply organizational policies</strong> — content safety (no PII leakage), throttling (prevent tool abuse by agents/LLMs), and more.
+5. <strong>Observability for every call</strong> — clear logs, traces, and metrics on each tool invocation for root-causing and performance tuning.</p>
+<p>The consistent theme: <strong>same gateway, same policies</strong> whether the caller is a REST client, an agent, or an MCP-aware coding tool.</p>
+<h3 id="whats-new-for-mcp-tools-anish">What's new for MCP / tools (Anish)</h3>
+<p>Recently shipped MCP/tool capabilities in APIM:
+- <strong>MCP in the Products concept</strong> — bundle one or more MCP servers into APIM <strong>products</strong> with <strong>subscriptions, quotas, and approval workflows</strong>, creating curated rule sets per product.
+- <strong>MCP versioning</strong> — create multiple versions of an MCP server to support <strong>A/B testing, experimentation, blue-green deployments</strong>, or running one version in prod and another in dev simultaneously.
+- <strong>Finer observability</strong> — more fine-grained data and metrics for MCP tools via <strong>OpenTelemetry</strong>; track <strong>end-to-end</strong> from client → APIM gateway → MCP server, including which tool was invoked.
+- <strong>MCP as a first-class element in the management REST API</strong> — create, secure, and apply policies to MCP servers programmatically via the APIM REST API, without going through the portal.</p>
+<p><strong>MCP demo (APIM portal, V2 instance):</strong>
+- Under <strong>MCP servers</strong> in the AI Gateway section, the presenter creates a new MCP server pointing at a third-party server (<code>mcp.stripe.com</code>), gives it a display name and base path, and <strong>assigns it to a product</strong> during creation (then the product can be configured further).
+- After creation, <strong>policies and settings</strong> can be applied — including <strong>subscription keys</strong> to authenticate access. A simple access policy is applied (a key, hardcoded for demo simplicity).
+- A <strong>built-in test console</strong> is shown — <strong>no external MCP Inspector needed</strong>; it auto-lists the tools and lets you invoke them directly.
+- <strong>Versioning</strong> is demoed by creating a <strong>v2</strong> of the "MCP test build 2026" server, resulting in two versions (original + v2) with separate private endpoints for experimentation / A/B testing / blue-green.</p>
+<p><strong>Agent tool discovery at design time (demo by Mike):</strong> A prototype shows the AI Gateway simplifying <strong>tool discovery while building an agent</strong>:
+- Start with an intent: <em>"I want to build an agent that calculates shipping costs for online orders."</em>
+- From that intent, <strong>GitHub Copilot queries the AI Gateway's MCP server</strong> to discover available tools, <strong>automatically selecting relevant ones</strong> (order lookup, US + international shipping cost) and <strong>excluding irrelevant ones</strong> (e.g. weather forecasting).
+- After the developer confirms the selected tools, <strong>Copilot generates the full agent code using the GitHub Copilot SDK</strong> — not just a scaffold, but correct tool definitions and chaining logic derived from tool metadata/descriptions. The agent is then ready to run locally or <strong>deploy to Foundry</strong>.
+- <strong>How it works:</strong> (1) a lightweight <strong>custom skill</strong> connects GitHub Copilot to the AI Gateway so Copilot can discover tools and generate code; (2) the <strong>GitHub Copilot CLI</strong> is configured with the AI Gateway's MCP server as the discovery endpoint for all exposed tools. For the prototype, the (future) AI Gateway — described as a <em>cloud-native, multi-tenant, always-on component that combines APIM + API Center</em> — is <strong>mocked using standalone APIM + API Center resources</strong>. API Center exposes the MCP server with tools auto-synced from APIM; irrelevant tools are filtered out by Copilot during discovery; APIM provides the tool runtime and the REST→MCP conversion.
+- <strong>Future prototyping:</strong> dynamic tool selection at <strong>agent runtime</strong> (not just design time) and routing <strong>all model calls through the AI Gateway</strong> to enforce governance (e.g. token consumption limits).</p>
+<h3 id="enterprise-catalog-for-ai-assets-api-center-shriant">Enterprise catalog for AI assets — API Center (Shriant)</h3>
+<p>As enterprises scale AI investments, the recurring question is <strong>"how do we manage all of it?"</strong> — the agents, skills, MCP servers, and models. Teams need to <strong>discover what exists, ensure quality, and prevent duplication</strong>. <strong>Azure API Center</strong> is positioned as the answer: the <strong>enterprise catalog and single system of record</strong> where every tool an agent might call is <strong>registered, tracked, and discoverable</strong> across the org.</p>
+<p><strong>Catalog scope — four+ asset types:</strong> REST APIs, MCP tools, skills/plugins, models, and agents.</p>
+<p><strong>Keeping it current is effortless:</strong> register via the <strong>portal, CLI, or direct GitHub repo sync</strong> — <strong>no manual drift</strong>; assets ship as new commits are made.</p>
+<p><strong>Quality assessment (LLM-as-a-judge):</strong> all assets are evaluated for clarity, parameter design, and safety so developers <em>and</em> agents can trust what they consume.</p>
+<p><strong>Marketplace for agents:</strong> API Center exposes a <strong>marketplace endpoint</strong> that lets developer tools like <strong>Claude Code and Copilot CLI</strong> discover and load enterprise skills, plugins, and MCP servers <strong>directly from the catalog</strong>, with the same lifecycle and quality signals platform teams curate. It works across <strong>Azure, other clouds, on-prem, and third-party SaaS</strong> — <em>one catalog, every asset.</em></p>
+<p><strong>API Center demo — skills:</strong>
+- <strong>Register a skill</strong> from the Assets sidebar: provide capabilities, use cases, behavior, and the <strong>Git repo URL</strong> of the skill source (e.g. a new "code review" skill pointing at its skill-markdown file).
+- <strong>Git-sync at scale:</strong> integrate a Git repo so any skill added/updated there <strong>auto-syncs</strong> to the API Center inventory. The demo integrates the <strong>Azure skills Git repository</strong>, which then auto-imports all Azure skills as discoverable assets.
+- <strong>Discovery:</strong> the portal lets developers find skills (e.g. the <strong>Azure cloud migrate</strong> skill for assessing/migrating cross-cloud workloads); clicking a skill opens its <strong>definition, reference docs, common tasks, and defined inputs/outputs</strong>. Developers contribute new skills by committing to the integrated Git repo; pushes auto-sync to the catalog with no manual intervention.</p>
+<p><strong>Skills assessment (LLM-as-a-judge detail):</strong> A large language model evaluates AI outputs against defined quality criteria, scoring across dimensions like <strong>accuracy, coherence, helpfulness</strong>. The judge can use <strong>rubrics, reference answers, or pair-wise comparisons</strong> for scalable feedback at a fraction of human-annotation cost. API Center ships <strong>default criteria</strong> across <strong>four dimensions, each scored 1–5 with a default threshold of 3</strong>:
+- <strong>Documentation clarity</strong> — how clearly the skill's purpose/behavior is communicated.
+- <strong>Help/completeness</strong> — whether the output is a comprehensive standalone reference.
+- <strong>Discoverability</strong> — how easily functionality can be navigated/found.
+- <strong>Safe usage</strong> — whether sufficient guidance is provided for safe operation.
+Platform admins can <strong>extend with custom criteria</strong> for org-specific standards, compliance, and governance. Developers then see a <strong>detailed AI quality score report</strong> per skill in the portal — an at-a-glance <strong>pass/fail</strong>, per-dimension scores, and actionable feedback — plus <strong>structural checks</strong> (valid front matter, skill name, body content) and <strong>schema validation</strong> (flags missing sections like examples or error handling). This lets developers judge a skill's quality/reliability <strong>before adopting it</strong>.</p>
+<p><strong>API Center demo — MCP tools:</strong> As the MCP ecosystem grows, orgs need scalable, automated registration. <strong>Git-repo integration</strong> keeps the MCP inventory in sync as tools evolve, giving a <strong>single source of truth</strong>. The demo imports the <strong>Azure MCP server</strong> into API Center via Git-repo sync, showing how fast a real-world MCP server goes from repo → fully registered, discoverable asset. The portal's <strong>built-in MCP Inspector</strong> lets developers explore tools, inspect inputs/outputs, and test them in real time <strong>without writing any code</strong>; the API Center <strong>data-plane MCP server</strong> lets developers list every MCP tool in the catalog and search for a specific server.</p>
+<p><strong>API Center demo — plugins:</strong> Plugins are <strong>self-contained extensions</strong> that supercharge supported AI dev tools, adding custom <strong>commands, agents, hooks, and MCP integrations</strong> to Copilot CLI, Claude Code, and beyond. Registration takes a <strong>title, summary, description</strong>, and a <strong>version</strong> (to track releases). The power move: <strong>bundle skills and MCP servers directly inside the plugin</strong>, so consumers get one self-contained, immediately actionable asset. The portal gives a single place to <strong>browse, search, and discover plugins</strong> alongside APIs, skills, and MCP servers — eliminating scattered repos and tribal knowledge — with each plugin surfacing its bundled skills/MCP servers in one view.</p>
+<p><strong>API Center data plane brings it together:</strong> API Center exposes a <strong>marketplace endpoint via its data-plane API</strong>, surfacing plugins directly to <strong>Claude Code and Copilot CLI</strong> so discovery happens <strong>without leaving the dev environment</strong>. Register the endpoint with Copilot CLI in <strong>one step</strong> and the full plugin catalog is instantly unlocked — browse, select, and plug in right from the CLI.</p>
+<h3 id="agent-governance-a2a-anish">Agent governance &amp; A2A (Anish)</h3>
+<p>As agents proliferate, <strong>raw unmediated access to backends doesn't scale</strong>. Users, apps, agents, and co-pilots all make calls against A2A, REST, and HTTP backends spanning any cloud and on-prem. You need a <strong>trusted thing in the middle — the AI Gateway</strong> — delivering the same five pillars (governance, scalability, safety &amp; security, observability, velocity): <em>one bridge for every agent, fully governed.</em></p>
+<p><strong>Announcement — A2A support is GA today.</strong> Agent-to-Agent (A2A) is becoming the backbone of <strong>multi-agent architectures</strong>. You can now bring <strong>A2A agents under the same enterprise-grade management</strong> you rely on for REST APIs — <strong>same governance, same security, same observability</strong> — alongside all your other APIs:
+- <strong>Expose agent cards and runtime operations.</strong>
+- <strong>Log OpenTelemetry traces using Gen AI semantic conventions</strong> for deep, standardized visibility.
+- <strong>Apply policies</strong> like <strong>throttling, IP filtering, and content safety</strong> to every agent call.
+- <strong>Inventory and publish</strong> agent APIs.
+Registering an A2A agent is simple, with <strong>agent-specific metadata</strong> (agent card, agent URL) surfaced natively alongside lifecycle and deployment details.</p>
+<h3 id="wrap-up">Wrap-up</h3>
+<p>Everything shown is <strong>available to use and build with today</strong>. More details are promised at the <strong>AKA.ms API blog</strong> (<code>aka.ms</code> API blog).</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Azure API Management (APIM)</strong> — the managed (and self-hosted) gateway to securely publish, manage, and analyze APIs; now the "universal gateway" for APIs, models, tools, and agents.</li>
+<li><strong>Azure API Center</strong> — the enterprise catalog / system of record to track, discover, and govern AI assets (REST APIs, MCP tools, skills, plugins, models, agents).</li>
+<li><strong>AI Gateway</strong> — shorthand for the AI-specific capabilities inside APIM that mediate client→model/tool/agent access across governance, scalability, security/safety, observability, velocity.</li>
+<li><strong>Self-hosted gateway</strong> — APIM gateway you run in your own environment; part of "API Management."</li>
+<li><strong>Workspaces / federated API management</strong> — governance construct for delegating management across teams.</li>
+<li><strong>Token rate limits &amp; quotas</strong> — cap and attribute token consumption per user/agent for cost control.</li>
+<li><strong>Content safety policy</strong> — moderates prompts/completions, blocks harmful requests before reaching the backend model.</li>
+<li><strong>Semantic caching</strong> — serves cached responses for semantically similar prompts to cut tokens/cost and latency.</li>
+<li><strong><code>llm-emit-token-metric</code> policy</strong> — emits all token-type metrics (prompt, completion, thinking/reasoning, cache) to Application Insights.</li>
+<li><strong>Unified Model API</strong> — single APIM API fronting multiple model providers with translation, aliases, and failover.</li>
+<li><strong>Model aliases</strong> — decouple client-facing model names from backend models for hot-swapping providers/versions.</li>
+<li><strong>Model routing / fallback</strong> — prioritize provisioned (PTU) capacity and fail over across models/providers.</li>
+<li><strong>Credential Manager</strong> — manages backend auth (API keys, OAuth) for tools/MCP servers and AI endpoints.</li>
+<li><strong>MCP (Model Context Protocol) servers</strong> — tool endpoints; created from REST APIs or proxied (first/third-party) through APIM.</li>
+<li><strong>MCP versioning</strong> — multiple versions of an MCP server for A/B testing, blue-green, prod vs dev.</li>
+<li><strong>MCP in Products</strong> — bundle MCP servers into APIM products with subscriptions, quotas, approval workflows.</li>
+<li><strong>Built-in MCP test console / MCP Inspector</strong> — test MCP tools in-portal without an external inspector.</li>
+<li><strong>APIM management REST API</strong> — MCP now a first-class element for programmatic create/secure/policy.</li>
+<li><strong>OpenTelemetry + Gen AI semantic conventions</strong> — standardized tracing/metrics/logs for tools and agents.</li>
+<li><strong>Application Insights</strong> — destination for token metrics, dashboards, and alerts.</li>
+<li><strong>Microsoft Foundry (Azure AI Foundry)</strong> — model host and agent service; target for Bring Your Own Model.</li>
+<li><strong>Foundry agent service</strong> — builds prompt-based agents using models proxied by AI Gateway.</li>
+<li><strong>Bring Your Own Model (Foundry)</strong> — register any Chat-Completions-compatible, gateway-proxied model in Foundry.</li>
+<li><strong>A2A (Agent-to-Agent) protocol</strong> — multi-agent communication; now governed via APIM (agent cards, runtime ops).</li>
+<li><strong>GitHub Copilot (SDK + CLI)</strong> — client/coding agent; discovers tools via AI Gateway MCP and generates agent code.</li>
+<li><strong>Claude Code</strong> — developer tool that consumes the API Center marketplace endpoint for skills/plugins/MCP.</li>
+<li><strong>LLM-as-a-judge</strong> — technique for automated quality scoring of skills/assets in API Center.</li>
+<li><strong>Skills &amp; Plugins</strong> — catalog asset types; plugins bundle skills + MCP servers + commands/agents/hooks.</li>
+<li><strong>Model providers supported</strong> — Microsoft Foundry, OpenAI, Anthropic (Messages API), Google Vertex AI, AWS Bedrock, Hugging Face, Mistral.</li>
+<li><strong>Third-party MCP servers referenced</strong> — Stripe, Jira, Atlassian, Box, Neon.</li>
+<li><strong>Azure compute backends referenced</strong> — Logic Apps, Azure Functions, Container Apps.</li>
+<li><strong>Azure MCP server / Azure skills repo</strong> — sample assets imported into API Center via Git-repo sync.</li>
+<li><strong>OWASP API Top 10</strong> — baseline API security protections inherited by AI endpoints.</li>
+<li><strong>SSE &amp; streaming HTTP</strong> — both transport protocols supported for tools/agents.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Anthropic + Vertex model policy support — launching June (this month).</strong> Full policy set (token limits, token metrics, content safety, semantic caching) now applies to <strong>Anthropic models via the Anthropic Messages API</strong> and <strong>Vertex models on Google Cloud</strong>, including logs/metrics collection and cloud-operations import. <em>(Rolling out this month.)</em></li>
+<li><strong>GA — Expanded token metrics.</strong> The <code>llm-emit-token-metric</code> policy now captures <strong>all token types</strong> (prompt, completion, thinking/reasoning, cache, etc.) into Application Insights for accurate cost/usage dashboards. <em>(Generally Available.)</em></li>
+<li><strong>Preview — Unified Model API.</strong> Single APIM API fronting multiple backends (initially <strong>Anthropic Messages API</strong> + <strong>OpenAI-compatible Chat Completions</strong>), with automatic translation, <strong>model aliases</strong> (decouple client/backend names), <strong>centralized cross-provider governance</strong>, and <strong>cross-provider failover</strong>. <em>(Now in Preview.)</em></li>
+<li><strong>GA — Bring Your Own Model in Microsoft Foundry.</strong> Add any <strong>Chat-Completions-compatible</strong> model proxied by an AI Gateway (APIM or third-party) and use it to build prompt agents in the Foundry agent service. <em>(Generally Available.)</em></li>
+<li><strong>GA — Agent-to-Agent (A2A) support in APIM.</strong> Govern A2A agents with the same enterprise-grade governance, security, and observability as REST APIs — agent cards, runtime operations, OTel Gen-AI-semantic-convention traces, throttling/IP-filtering/content-safety policies, inventory/publish. <em>(Generally Available today.)</em></li>
+<li><strong>Recently shipped (MCP/tools, status not explicitly labeled):</strong> MCP in the Products concept (bundling/subscriptions/quotas/approval workflows), <strong>MCP versioning</strong>, finer OpenTelemetry observability for MCP tools, MCP as a first-class element in the management REST API, and the built-in MCP test console.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Model governance (AWS Bedrock).</strong> A Bedrock-hosted model imported into APIM with a 10-token/min/user limit + content safety policy. First request succeeds; second is <strong>throttled</strong> by the token policy; a hateful prompt is <strong>blocked</strong> by content safety <strong>before reaching the backend</strong> — proving policy enforcement at the gateway.</li>
+<li><strong>MCP server creation &amp; management (APIM portal, V2 instance).</strong> Create an MCP server from a third-party endpoint (<code>mcp.stripe.com</code>), assign it to a product during creation, apply an access policy with a subscription key, test tools in the <strong>built-in test console</strong> (no external inspector), and create a <strong>v2 version</strong> (two endpoints) for A/B testing / blue-green — proving the new MCP product/versioning/test-console features.</li>
+<li><strong>Agent tool discovery at design time (GitHub Copilot + AI Gateway).</strong> From the intent "build an agent that calculates shipping costs," <strong>GitHub Copilot queries the AI Gateway's MCP server</strong>, auto-selects relevant tools (order lookup, US/intl shipping), excludes irrelevant ones (weather), and <strong>generates full agent code via the Copilot SDK</strong> ready to run locally or deploy to Foundry — proving gateway-driven, metadata-based tool discovery + code-gen (prototype; AI Gateway mocked with standalone APIM + API Center).</li>
+<li><strong>API Center — skills.</strong> Register a "code review" skill with a Git repo URL, then integrate the <strong>Azure skills Git repository</strong> so all skills auto-sync and become discoverable (e.g. the Azure cloud-migrate skill, with full definition/docs/inputs/outputs) — proving Git-sync registration + discovery.</li>
+<li><strong>API Center — skills assessment.</strong> Default LLM-as-a-judge scoring across 4 dimensions (documentation clarity, help/completeness, discoverability, safe usage; 1–5, threshold 3) plus structural + schema checks, surfaced as a pass/fail quality report — proving automated quality gating before adoption.</li>
+<li><strong>API Center — MCP tools.</strong> Import the <strong>Azure MCP server</strong> via Git-repo sync; use the <strong>built-in MCP Inspector</strong> to explore/test tools with no code; list/search every MCP tool via the data-plane MCP server — proving automated MCP registration + discovery.</li>
+<li><strong>API Center — plugins &amp; data-plane marketplace.</strong> Register a plugin (title/summary/description/version) that <strong>bundles skills + MCP servers</strong>; surface it via the <strong>marketplace endpoint</strong> to Claude Code and Copilot CLI; register the endpoint with Copilot CLI in <strong>one step</strong> to unlock the full plugin catalog from the CLI — proving in-IDE discovery without leaving the dev environment.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>Gartner: by 2028, more than 95% of enterprises</strong> will be using LLMs, GenAI APIs, and models in production applications.</li>
+<li><strong>40,000+ APIM customers</strong> processing <strong>trillions of requests per month</strong>.</li>
+<li><strong>Token limit demo:</strong> 10 tokens/minute per user (deliberately low to trigger throttling on the second call).</li>
+<li><strong>Skills assessment:</strong> 4 default dimensions, scored on a <strong>1–5 scale</strong>, <strong>default threshold of 3</strong>.</li>
+<li><em>"AI is no longer a pilot… most enterprises are starting to deploy AI in production."</em></li>
+<li><em>"The more tools you add, the more risk you create — the risk grows exponentially."</em></li>
+<li><em>"Same gateway, same policies whether it's a REST client or an agent or an MCP-aware coding tool."</em></li>
+<li><em>"One catalog, every asset."</em> (API Center positioning)</li>
+<li><em>"One bridge for every agent, fully governed."</em> (Agent governance)</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Stand up an APIM V2 instance and <strong>convert an existing REST API into an MCP server</strong> in the portal; test it in the built-in test console.</li>
+<li>Apply a <strong>token-rate-limit policy + content safety policy</strong> to a model API and reproduce the throttle + block behavior.</li>
+<li>Wire <code>llm-emit-token-metric</code> into <strong>Application Insights</strong> and build a token-cost dashboard covering reasoning + cache tokens.</li>
+<li>Try the <strong>Unified Model API</strong> (preview): create a <code>GPT</code> alias over an OpenAI backend, then swap the alias to Anthropic and confirm clients are unaffected; test cross-provider failover.</li>
+<li>Integrate a <strong>Git repo with API Center</strong> and watch skills/MCP auto-sync; review the LLM-as-a-judge quality report.</li>
+<li>Register the <strong>API Center marketplace endpoint with Copilot CLI</strong> and load enterprise plugins from the CLI.</li>
+<li>Register an <strong>A2A agent</strong> in APIM and confirm OTel Gen-AI-semantic-convention traces flow.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>When does the standalone, multi-tenant, always-on <strong>AI Gateway</strong> (combined APIM + API Center) GA, vs today's mocked/standalone setup?</li>
+<li>Will <strong>runtime</strong> (not just design-time) tool selection via AI Gateway reach preview/GA, and what's the latency overhead?</li>
+<li>Which additional providers beyond Anthropic + OpenAI will the <strong>Unified Model API</strong> translate for next?</li>
+<li>What are the exact <strong>pricing implications</strong> of token metrics + semantic caching at scale?</li>
+<li>How do <strong>content safety</strong> policies on the gateway interact with model-native safety filters (double-filtering)?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Enterprise AI platform / landing-zone governance and FinOps (token cost control).</li>
+<li>MCP tool/agent rollout where a single governance + security perimeter is required.</li>
+<li>Multi-provider model strategies needing provider-agnostic SDKs and failover.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><a class="wikilink wikilink--resolved" href="ODSP923.html">ODSP923 - Create enterprise apps with AI and MCP</a> — enterprise apps built on MCP; complements APIM's MCP governance.</li>
+<li><span class="wikilink wikilink--unresolved" title="Azure API Management">Azure API Management</span> — product hub note for APIM concepts, policies, and gateways.</li>
+<li><span class="wikilink wikilink--unresolved" title="Model Context Protocol (MCP)">Model Context Protocol (MCP)</span> — protocol background for tools/servers governed here.</li>
+<li><span class="wikilink wikilink--unresolved" title="Azure AI Foundry">Azure AI Foundry</span> — model host + agent service; target for Bring Your Own Model and agent deployment.</li>
+<li><span class="wikilink wikilink--unresolved" title="AI Gateway">AI Gateway</span> — the gateway pattern for mediating model/tool/agent access.</li>
+<li><span class="wikilink wikilink--unresolved" title="Agent-to-Agent (A2A)">Agent-to-Agent (A2A)</span> — multi-agent protocol now governable in APIM (GA).</li>
+<li><span class="wikilink wikilink--unresolved" title="GitHub Copilot">GitHub Copilot</span> — client/coding agent used for tool discovery and agent code-gen in the demos.</li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="OD828.html"><span class="pager-dir">← Previous</span><span class="pager-code">OD828</span><span class="pager-title">Latest Cobalt VMs and Azure Boost enhancements</span></a>
+    <a class="pager pager-next" href="OD832.html"><span class="pager-dir">Next →</span><span class="pager-code">OD832</span><span class="pager-title">From workflows to agentic automation with Azure Logic Apps</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

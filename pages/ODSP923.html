@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ODSP923 — Create enterprise apps with AI and MCP</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">ODSP923</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=hGbAbsaaHEI" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Create enterprise apps with AI and MCP</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Jason Barris (Infragistics)</span>
+      <span class="meta-item">⏱️ 19m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="mcp">MCP</span><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="enterprise-apps">Enterprise Apps</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="blazor">Blazor</span><span class="chip" data-tag="dotnet">.NET</span><span class="chip" data-tag="low-code">Low Code</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Jason Barris — Infragistics (jasonb@infragistics.com)<br>
+<strong>Duration:</strong> ~19 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=hGbAbsaaHEI">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>A vendor session from Infragistics showing how to build enterprise applications fast by combining <strong>AI/agents, MCP servers, and an installable "skills" system</strong> with a battle-tested UI component library (<strong>Ignite UI</strong> for web, <strong>WinUI/WPF/Windows Forms/MAUI</strong> for desktop &amp; cross-platform). The core thesis: pairing a coding agent (GitHub Copilot / Claude Code) with <strong>Infragistics' MCP servers + skills + CLIs</strong> gives the agent precise, approved knowledge of how to build with Ignite UI — so you get <strong>pixel-perfect, production-ready, hallucination-free</strong> code instead of thousands of unapproved <code>&lt;div&gt;</code>s. Jason demos the <strong>App Builder</strong> low-code WYSIWYG/conversational platform (Figma-to-app, sample CRM, publish to GitHub), then drives a coding agent in VS Code to add a data-bound grid and even generate a dashboard app <em>from a stock image</em> — all grounded by the MCP servers and skills. The headline announcement is the <strong>brand-new WinUI component suite, launching at Build 2026</strong>, mirroring the WPF experience.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Build less, ship more with AI + components:</strong> the pitch is "a little low code, not a lot of coding" — AI does a lot with very little effort <em>when it's grounded by a real component library and skills</em>.</li>
+<li><strong>Infragistics ships the same components on every platform</strong> with the <strong>same APIs and feature set</strong> — Blazor, Angular, React, Web Components on the web; WPF, WinUI, Windows Forms, MAUI on desktop/cross-platform. You're not locked into one framework to get a given component.</li>
+<li><strong>Data grids are the centre of gravity</strong> for enterprise/SaaS apps; Infragistics' grids ship dozens of rich interactions (row actions, export, toolbar, column move/pin/resize/hide, Excel-style filtering, Outlook-style Group By).</li>
+<li><strong>NEW at Build 2026: the Infragistics WinUI component suite</strong>, mirroring the WPF experience (data grids, data charts, geospatial maps, inputs, dashboard tile, more). <strong>MAUI</strong> with the same components follows shortly after.</li>
+<li><strong>App Builder = low-code WYSIWYG + conversational AI</strong> — drag-and-drop <em>or</em> talk to it; start from empty templates, <strong>Figma</strong>, sample apps, or "create with AI."</li>
+<li><strong>App Builder generates real, production-ready code</strong> (C#/HTML/Blazor or React) — "no black box, no garbage code" — and lets you <strong>publish to GitHub, Azure DevOps, or download a zip</strong>, even to GitHub Pages.</li>
+<li><strong>Three pillars ground the agent:</strong> (1) <strong>MCP servers</strong> (Ignite UI CLI MCP + theming MCP), (2) <strong>skills</strong> (per-framework, installed via the Ignite UI CLI from GitHub), (3) the <strong>CLIs</strong> themselves. Together they "inform the agents on how to best build applications with Ignite UI."</li>
+<li><strong><code>igniteui ... ai config</code></strong> scaffolds the <code>.vscode</code> MCP server config (<code>mcp.json</code>) for you; skills are installed with <strong><code>github skill install</code></strong> picking your framework (e.g. <code>Ignite UI/Ignite UI-Blazor</code>) and target agents (GitHub Copilot, Claude Code).</li>
+<li><strong>Skills are framework-specific:</strong> working in Blazor installs Blazor skills (component skill, generate-from-image, grids, theming); Angular/React install their own equivalents.</li>
+<li><strong>50 Ignite UI components are open-source MIT</strong> — you can build the majority of an app "literally free."</li>
+<li><strong>Six built-in themes</strong> (Fluent, Bootstrap, Material, Indigo families) with one-click theming and the ability to build custom themes; demo uses <strong>Fluent Light</strong>.</li>
+<li><strong>AI grounded by components beats raw generation:</strong> "no drift, no hallucination," fewer tokens, and certainty in outcomes because the agent uses an <em>approved design system</em> instead of inventing one.</li>
+<li><strong>Image-to-app works:</strong> drag a stock screenshot into chat → agent uses Ignite UI MCP + skills → analyses image → emits "pixel-perfect, enterprise-ready" Blazor (cards, charts, gauge) in ~2 minutes — work that "otherwise would have taken days."</li>
+<li><strong>Cross-product API consistency</strong> is the through-line: the <strong><code>XamCategoryChart</code></strong> in WinUI/WPF has the same APIs/properties as the Blazor/Angular/React chart — learn it once, use it everywhere.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-ai-mcp-low-code-minimal-hand-coding">Framing: AI + MCP + low code, minimal hand-coding</h3>
+<p>Jason opens by setting the thesis for the whole talk: build <strong>enterprise apps with AI and MCP</strong>, with <em>a little</em> low code and <em>not a lot</em> of hand-coding, because "with AI we can do a lot with very little effort nowadays." The session is deliberately <strong>demo-heavy</strong> — a bit of AI via Copilot, some low-code via Infragistics' <strong>App Builder</strong>, and some command-line tooling — ending with next steps. The implicit argument that recurs throughout: AI alone over-generates and drifts; <strong>AI + a real component library + MCP + skills</strong> produces approved, production-grade results.</p>
+<h3 id="who-infragistics-is-and-the-any-platform-claim">Who Infragistics is, and the "any platform" claim</h3>
+<p>Infragistics has shipped UI components "for over 35 years" — from the late '80s/'90s through the 2000s toward 2030 — across <strong>desktop, mobile, WPF, WinUI, MAUI, Windows Forms</strong>, and <strong>modern web with Blazor, Angular, React, and Web Components</strong>. The recurring promise: <strong>the same components, with the same APIs and the same feature set, on every platform.</strong> If you trial their React components and later switch to Blazor, the same things are available — you don't pick a framework to unlock a specific component.</p>
+<h3 id="why-data-grids-matter-for-enterprise-apps">Why data grids matter for enterprise apps</h3>
+<p>Most enterprise web and SaaS apps have the usual navigation, calendaring, and charting — but <strong>data grids are "a very big part"</strong> of them and have been Infragistics' "claim to fame for decades." For Blazor or Windows Forms you need <strong>dozens of rich interactions</strong> in the grid. The component set also ships polished themes/styles applied uniformly across components (previewed via screenshots, then shown live).</p>
+<h3 id="the-desktop-is-not-left-behind-and-the-winui-launch">The desktop is not left behind — and the WinUI launch</h3>
+<p>Infragistics still does "a lot of work" on <strong>Windows Forms and WPF</strong>, and at <strong>Build 2026 announces a brand-new WinUI component suite</strong>. It <strong>mirrors the WPF experience</strong>: rich <strong>data grids, data charts, geospatial maps, inputs, and more</strong>. <strong>MAUI</strong> with those same components follows "shortly after," enabling <strong>Android, iPad, and desktop</strong> apps from one component set. The message: components on <strong>any platform</strong> to build <strong>any type of experience</strong>.</p>
+<h3 id="product-tour-ignite-ui-reveal-slingshot">Product tour: Ignite UI, Reveal, Slingshot</h3>
+<p>Starting at <strong>infragistics.com</strong>, Jason highlights three product lines:
+- <strong>Ignite UI</strong> — the modern web component toolset (Angular, Blazor, React, Web Components).
+- <strong>Reveal</strong> — an <strong>embedded analytics SDK</strong>.
+- <strong>Slingshot</strong> — an <strong>"AI-native, AI-first" GTM / work-management</strong> platform (described as a growth/GTM tool).</p>
+<p>On the Ignite UI homepage he reiterates the cross-framework parity: <strong>each platform has the exact same components, APIs, and features.</strong> "We ship everything you need to build high-performance web apps on your platform of choice."</p>
+<h3 id="app-builder-low-code-wysiwyg-conversational-ai">App Builder — low-code WYSIWYG + conversational AI</h3>
+<p>The "easiest way to get started" is <strong>App Builder</strong>, a <strong>low-code WYSIWYG development platform</strong> into which Infragistics has <strong>injected AI over the last 18 months</strong> — so you can build with a <strong>conversational AI interface</strong> <em>or</em> <strong>drag-and-drop WYSIWYG</strong>. It's not exclusive: you can still use the <strong>CLI</strong>, <strong>VS Code / Visual Studio</strong>, <strong>Cursor</strong>, <strong>WinSurf</strong>, etc. Sign-in is via <strong>Office 365 login</strong>, landing in the <strong>App Builder workbench</strong>. New apps can start from: <strong>empty templates</strong>, <strong>Figma → app</strong>, a <strong>sample app</strong>, or <strong>create with AI</strong>.</p>
+<h3 id="inside-the-app-builder-ide-crm-sample">Inside the App Builder IDE (CRM sample)</h3>
+<p>Jason grabs the <strong>CRM sample app</strong> and lands in a <strong>single-page-application WYSIWYG IDE</strong> with a familiar layout:
+- <strong>Views</strong> on the left; <strong>properties</strong> on the right that change based on the selected element.
+- Drag/move elements; <strong>click and right-click</strong> to <strong>edit with AI</strong>.
+- <strong>Grid feature toggles:</strong> for a selected grid you can one-click enable <strong>row actions, exporting, the grid toolbar, column moving, pinning, resizing, hiding, Outlook Group By</strong>, then customise via the element/property panel.
+- <strong>Toolbox</strong> of UI components on the left. Key fact: <strong>50 Ignite UI components are open-source MIT</strong> — start "literally free" with the majority of them.
+- Bind to <strong>any type of data</strong>; configure <strong>routing, navigation, variables, custom theming</strong>.
+- <strong>Six default themes</strong> across <strong>Fluent, Bootstrap, Material, Indigo</strong>; one-click apply or build your own. Plus <strong>digital assets</strong> and the <strong>conversational AI helper</strong>.</p>
+<p>He switches the theme to <strong>Fluent Light</strong> and runs the app: dashboard, built-in navigation, the <strong>Kanban view</strong>, and the data grid with the enabled features — <strong>Excel-style filter, Outlook Group By, toolbar with export options</strong>.</p>
+<h3 id="generated-code-is-real-and-multi-framework">Generated code is real and multi-framework</h3>
+<p>A standout point: on the right of App Builder you can <strong>see the generated code for the current screen</strong>. For the Customers view it shows the <strong>C# code</strong> plus the <strong>HTML and the Infragistics Blazor components</strong> being generated. Switching the same screen to <strong>React</strong> shows the identical app rendered as React — proving the "any platform" claim live. App Builder is positioned as "an amazing WYSIWYG drag-and-drop AI app development" experience, but the generated output is the real asset.</p>
+<h3 id="publishing-the-app-github-and-inspecting-the-output">Publishing the app (GitHub) and inspecting the output</h3>
+<p>Jason leaves a <code>tasks</code> view intentionally empty, switches the target to a <strong>Blazor Server app</strong>, names it <strong>"CRM app / build 2026"</strong>, and <strong>publishes</strong>. Publish targets: <strong>GitHub, Azure DevOps, or download a zip</strong>; there's also a feature to publish as an actual app to <strong>GitHub Pages</strong>. He creates a <strong>public GitHub repo</strong>; App Builder provisions "the application in the cloud, all of the code that's necessary." Drilling into the repo, all the designed pages are present. Opening <code>customers.razor</code>, he stresses it's <strong>"production-ready, amazing C# HTML code — no black box, no garbage code."</strong></p>
+<h3 id="bringing-it-into-vs-code-and-wiring-up-mcp">Bringing it into VS Code and wiring up MCP</h3>
+<p>He <strong>clones</strong> the repo and opens it in <strong>VS Code</strong> — identical to what was in GitHub. The first real "AI engineering" step:
+1. <strong>No <code>mcp.json</code> exists yet.</strong> Using the <strong>Ignite UI CLI</strong> (already installed), he runs an <strong>"AI config"</strong> command which <strong>adds the MCP servers into the <code>.vscode</code> folder</strong> — specifically the <strong>Ignite UI CLI</strong> MCP and <strong>Ignite UI theming</strong> MCP. He <strong>starts</strong> them so they're "up and running."
+2. <strong>Install skills.</strong> Ignite UI has a <strong>CLI</strong>, a <strong>theming CLI</strong>, and <strong>skills</strong> — "all of these together inform the agents on how to best build applications with Ignite UI." He runs <strong><code>github skill install</code></strong>, chooses <strong><code>Ignite UI/Ignite UI-Blazor</code></strong> (would be Angular or React if working in those), selects <strong>all skills</strong>, targets <strong>GitHub Copilot and Claude Code</strong>, scoped to this project. Installed skills include: <strong>Ignite UI Blazor component skill, Blazor generate-from-image design, Blazor grids, Blazor theming</strong>.
+3. <strong>Verify the agent is grounded.</strong> He asks Copilot, <em>"Do you have the Ignite UI theming CLI, MCP servers, and skills available?"</em> — it confirms it has everything needed to build the <strong>Ignite UI for Blazor</strong> app.</p>
+<h3 id="running-the-cloned-app">Running the cloned app</h3>
+<p>A <code>dotnet run</code> launches the app in an external browser — the same beautiful app seen in App Builder, with all grid capabilities (the empty <strong>tasks</strong> page already shows Outlook Group By, filtering, column moving/pinning, <strong>export to Excel</strong>, column hiding) — <strong>none of which required hand-written code</strong>; it all came from App Builder.</p>
+<h3 id="agent-task-1-add-a-data-bound-grid-by-instruction">Agent task #1 — add a data-bound grid by instruction</h3>
+<p>Jason now uses the agent to extend the app. He has <strong>customer data with addresses in the cloud</strong> plus a <strong>logo from RoboHash</strong>. He stops the app and gives the agent a precise instruction to add a grid to the <strong>tasks</strong> page, binding the cloud JSON data, with a specific feature list:</p>
+<blockquote>
+<p><em>"On the task page, add a new Ignite UI data grid with this data bound. Add a nice margin around the page to match the other pages. Add these grid features: Outlook Group By, Excel-style filtering, column moving, export to Excel, and put the address information in a multi-row collapsible header. Make sure to inspect the schema of the JSON file to get the field names, and make sure the image for the logo column is rendered correctly."</em></p>
+</blockquote>
+<p>On enter, the agent uses the <strong>MCP servers</strong> — doing a <strong>list/search of the Ignite UI CLI MCP servers</strong> and <strong>engaging the skills</strong> — to update the app. After <code>dotnet run</code> and a browser refresh, the new grid is present with: an <strong>Outlook Group By</strong> already applied, the <strong>logo rendered</strong> in the left column, a <strong>multi-column header with a collapsible address area</strong>, an <strong>Excel-style filter</strong>, and <strong>toolbar options including export to Excel</strong>. Crucially, because he asked for <em>export to Excel</em> specifically (not PDF/CSV), the agent produced <strong>only the Excel export</strong> — evidence the skills + MCP give <strong>precise, instruction-faithful output</strong>.</p>
+<h3 id="agent-task-2-image-to-app-stock-screenshot-blazor">Agent task #2 — image-to-app (stock screenshot → Blazor)</h3>
+<p>Next, a different workflow: he has a <strong>stock dashboard screenshot from Adobe Stock</strong> (<code>image2.png</code>) — left nav, cards with data visualizations. He <strong>drags the image into chat</strong> and instructs:</p>
+<blockquote>
+<p><em>"Use Ignite UI Blazor MCP servers and skills, build an app that looks exactly like the attached image. Make sure to match the colors, fonts, etc."</em></p>
+</blockquote>
+<p>The agent detects the MCP servers + skills, <strong>analyses the image</strong>, and goes "right from an image to pixel-perfect, enterprise-ready code with Ignite UI Blazor." Here Jason makes his central argument explicitly: by using <strong>components + frameworks + AI together</strong>, you avoid <strong>drift and hallucination</strong>, you don't <strong>burn thousands of tokens</strong> generating screens full of <code>&lt;div&gt;</code>s on an <strong>unapproved design system</strong>, and you get <strong>certainty in outcomes</strong> in the <strong>most optimized, efficient manner</strong> (with .NET + Blazor/React/Angular). The result loads on localhost: a <strong>blue-themed app</strong> with <strong>cards across the top</strong>, an <strong>Ignite UI category chart</strong>, and a <strong>gauge</strong>. Comparing to the source image it's "pretty darn close" — a <strong>donut chart</strong> top-right, the category chart, and the <strong>correct values in the cards</strong> — though it <strong>didn't add the data grid</strong> from the image. Next steps would be to keep working with the agent to <strong>bind live data, add screens, and tweak</strong>. His takeaway: ~<strong>2 minutes</strong> for something that "otherwise would have potentially taken days," starting from a stock image with <strong>no designer</strong>.</p>
+<h3 id="winui-deep-dive-the-new-product">WinUI deep-dive — the new product</h3>
+<p>Closing the demos, Jason showcases the <strong>new WinUI product launching at Build 2026</strong> (more demos downloadable at infragistics.com / YouTube): <strong>beautiful charts, a data grid</strong>, and other components. He highlights the <strong>Dashboard Tile</strong> — a component that gives <strong>end users runtime customization</strong>: swap between <strong>data and chart</strong> views, configure the chart's features, and even <strong>change the chart type at runtime</strong> (optionally hiding the configuration). Switching to code, he shows the <strong><code>Infragistics XamCategoryChart</code></strong> in <strong>XAML</strong> and stresses <strong>API parity</strong>: WPF users know it as the <strong>XamCategoryChart</strong>, and the Blazor/Angular/React charts share <strong>the same capabilities, APIs, and property settings</strong> — the same holds for other components across WPF/WinUI and Angular/React/Blazor. He's also using <strong>GitHub Copilot Chat to customize the WinUI experience</strong>, reinforcing: build with Infragistics components via <strong>Copilot, by hand — your choice</strong>.</p>
+<h3 id="wrap-up-and-call-to-action">Wrap-up and call to action</h3>
+<p>The closing pitch: build beautiful experiences on <strong>any platform</strong> with Infragistics. Start today with <strong>Ignite UI + MCP servers + skills</strong> (any IDE), <strong>App Builder</strong> for low-code + conversational AI, and the <strong>new WinUI</strong> product (plus continued WPF/Windows Forms support). "Learn more at infragistics.com and have a great rest of Build 2026."</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Infragistics</strong> — UI component vendor (35+ years) for desktop, mobile, and web.</li>
+<li><strong>Ignite UI</strong> — modern web component suite (Blazor, Angular, React, Web Components); same components/APIs/features across frameworks; <strong>50 components open-source MIT</strong>.</li>
+<li><strong>App Builder</strong> — low-code WYSIWYG + conversational-AI app development platform (AI added over the last 18 months); start from empty templates, <strong>Figma</strong>, sample apps, or "create with AI"; generates real C#/HTML/Blazor/React code; publish to <strong>GitHub / Azure DevOps / zip / GitHub Pages</strong>.</li>
+<li><strong>WinUI component suite</strong> — <strong>NEW at Build 2026</strong>; mirrors WPF; data grids, data charts, geospatial maps, inputs, <strong>Dashboard Tile</strong>, more.</li>
+<li><strong>WPF / Windows Forms</strong> — long-standing Infragistics desktop component sets (still actively supported).</li>
+<li><strong>MAUI</strong> — cross-platform components (Android, iPad, desktop) with the same component set; arriving <strong>shortly after</strong> WinUI.</li>
+<li><strong>Reveal</strong> — Infragistics <strong>embedded analytics SDK</strong>.</li>
+<li><strong>Slingshot</strong> — Infragistics <strong>AI-native / AI-first GTM &amp; work-management</strong> platform.</li>
+<li><strong>Ignite UI CLI</strong> — command-line tool; provides the <strong><code>ai config</code></strong> command that scaffolds MCP server config and exposes an <strong>MCP server</strong>.</li>
+<li><strong>Ignite UI theming CLI / theming MCP server</strong> — theming command line + MCP.</li>
+<li><strong>Ignite UI skills</strong> — installable, framework-specific agent skills (e.g. Blazor component skill, generate-from-image, grids, theming) installed via <strong><code>github skill install</code></strong> (<code>Ignite UI/Ignite UI-Blazor</code>, etc.).</li>
+<li><strong>MCP (Model Context Protocol) servers</strong> — Ignite UI CLI MCP + theming MCP that let coding agents query/use Infragistics tooling (configured in <code>.vscode/mcp.json</code>).</li>
+<li><strong>GitHub Copilot / GitHub Copilot Chat</strong> — coding agent used to build &amp; customize apps (Blazor and WinUI).</li>
+<li><strong>Claude Code</strong> — supported coding agent target for skill installation.</li>
+<li><strong>Cursor, WinSurf, Visual Studio, VS Code</strong> — supported IDEs/editors.</li>
+<li><strong>.NET / Blazor (Server) / <code>dotnet run</code></strong> — runtime/framework for the generated apps.</li>
+<li><strong>Data grid features</strong> — row actions, export (Excel), grid toolbar, column moving/pinning/resizing/hiding, Excel-style filtering, Outlook Group By, <strong>multi-row collapsible headers</strong>.</li>
+<li><strong>Themes</strong> — six defaults across <strong>Fluent (Light), Bootstrap, Material, Indigo</strong>; custom themes supported.</li>
+<li><strong><code>XamCategoryChart</code></strong> — Infragistics chart in WPF/WinUI XAML with API parity to the Blazor/Angular/React charts; plus <strong>gauge</strong>, <strong>category/donut charts</strong>.</li>
+<li><strong>RoboHash</strong> — source of the demo logo image.</li>
+<li><strong>Figma</strong> — design source App Builder can turn into an app.</li>
+<li><strong>Adobe Stock</strong> — source of the dashboard screenshot used for image-to-app.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Brand-new Infragistics WinUI component suite — launching at Build 2026</strong> (data grids, data charts, geospatial maps, inputs, Dashboard Tile, more), mirroring the WPF component experience. Demos available to download at infragistics.com / on YouTube.</li>
+<li><strong>MAUI cross-platform components</strong> (same component set; Android, iPad, desktop) — <strong>coming shortly after</strong> the WinUI launch.</li>
+<li><strong>Ignite UI MCP servers + skills + CLIs</strong> positioned as the supported way to ground coding agents (GitHub Copilot / Claude Code) for building Ignite UI apps — emphasized as current/available tooling.</li>
+<li><strong>AI in App Builder</strong> — conversational AI interface added over the <strong>last 18 months</strong> (context: ongoing investment, not a brand-new Build 2026 reveal).</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>App Builder CRM sample:</strong> opened a sample CRM in the WYSIWYG IDE; one-click-enabled grid features (export, toolbar, column move/pin/resize/hide, Outlook Group By, Excel filter); applied <strong>Fluent Light</strong> theme; ran the app (dashboard, nav, Kanban view, feature-rich grid). <strong>Proved:</strong> rich enterprise UI assembled with zero hand-coding.</li>
+<li><strong>Generated-code inspection + framework swap:</strong> viewed the C#/HTML/Blazor code for a screen, then switched the same Customers screen to <strong>React</strong>. <strong>Proved:</strong> real production code is generated and components are framework-agnostic.</li>
+<li><strong>Publish to GitHub:</strong> set target to <strong>Blazor Server</strong>, named "CRM app build 2026," created a public GitHub repo with all pages and production-ready C#/Razor. <strong>Proved:</strong> App Builder output is real, no black box, deployable.</li>
+<li><strong>MCP + skills setup in VS Code:</strong> cloned the repo; ran Ignite UI CLI <strong><code>ai config</code></strong> to scaffold <code>.vscode</code> MCP servers; started them; ran <strong><code>github skill install</code></strong> for <strong>Ignite UI-Blazor</strong> (all skills → GitHub Copilot + Claude Code); confirmed via Copilot that CLIs/MCP/skills were available. <strong>Proved:</strong> how to ground a coding agent for Ignite UI.</li>
+<li><strong>Agent adds a data-bound grid (task #1):</strong> single natural-language instruction → agent used MCP servers + Blazor skills to add a grid bound to cloud JSON, with margins, Outlook Group By, Excel filtering, column moving, <strong>export to Excel only</strong>, multi-row collapsible address header, rendered RoboHash logo. <strong>Proved:</strong> precise, instruction-faithful, skill-driven generation (only Excel export because only Excel was asked for).</li>
+<li><strong>Image-to-app (task #2):</strong> dragged an Adobe Stock dashboard screenshot (<code>image2.png</code>) into chat and asked for an app that matches its colors/fonts; agent detected MCP + skills, analysed the image, and produced a blue-themed Blazor app (cards, <strong>Ignite UI category chart</strong>, <strong>gauge</strong>, <strong>donut chart</strong>, correct card values) in ~2 minutes — "pretty darn close," though it omitted the data grid. <strong>Proved:</strong> image-to-pixel-perfect enterprise code with an approved design system, no drift/hallucination, minimal tokens.</li>
+<li><strong>WinUI showcase:</strong> demoed the new WinUI charts/data grid and the <strong>Dashboard Tile</strong> (end users swap data↔chart, configure features, change chart type at runtime); inspected the <strong><code>XamCategoryChart</code></strong> in XAML and customized WinUI via <strong>GitHub Copilot Chat</strong>. <strong>Proved:</strong> new WinUI suite + cross-platform API parity (same XamCategoryChart APIs as WPF/Blazor/Angular/React).</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>35+ years</strong> building UI components ("from the late '80s to the '90s to the 2000s all the way through almost now to 2030").</li>
+<li><strong>50 Ignite UI components shipped as open-source MIT</strong> — "you can get started for literally free with the majority of our components."</li>
+<li><strong>AI added to App Builder over the last 18 months.</strong></li>
+<li><strong>6 default themes</strong> (Fluent, Bootstrap, Material, Indigo families).</li>
+<li>Image-to-app delivered a working dashboard in <strong>~2 minutes</strong> — work that "otherwise would have potentially taken days."</li>
+<li>
+<blockquote>
+<p>"This is all production-ready, amazing C# HTML code. No black box here. No garbage code."</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>"There is no drift. There is no hallucination. I'm not going crazy with tokens because I'm generating screens with thousands and thousands of lines of divs using a design system my company didn't approve... you'll get certainty in those outcomes in the most optimized, efficient manner."</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>"All of these together inform the agents on how to best build applications with Ignite UI." (on CLIs + MCP servers + skills)</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>"We give you components on any platform to build any type of experience that you need to deliver."</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Spin up the <strong>Ignite UI CLI</strong>, run <code>ai config</code> to scaffold <code>.vscode/mcp.json</code>, and <code>github skill install</code> the <strong>Blazor</strong> (or React/Angular) skills against GitHub Copilot — see how much grounding improves agent output vs raw generation.</li>
+<li>Test the <strong>image-to-app</strong> flow with a real internal design/screenshot and measure how close the Blazor/React output gets (colors, fonts, charts) and how many tweak iterations it needs.</li>
+<li>Evaluate <strong>App Builder</strong>'s Figma-to-app + publish-to-GitHub round-trip for a small internal SaaS-style CRM.</li>
+<li>Download and trial the <strong>new WinUI</strong> suite (Dashboard Tile runtime customization, XamCategoryChart) for any desktop scenarios.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>Are the Ignite UI MCP servers/skills usable with <strong>any</strong> MCP-capable agent (beyond Copilot/Claude Code), and how do they handle non-.NET stacks?</li>
+<li>Licensing model: which 50 components are MIT vs commercial, and what's gated behind a paid Infragistics license?</li>
+<li>How does the "no hallucination / fewer tokens" claim hold up on larger, multi-screen apps vs the small demos shown?</li>
+<li>WinUI/MAUI GA timelines and feature parity gaps vs WPF at launch?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Teams building <strong>enterprise/SaaS web apps</strong> in Blazor/React/Angular who want agent-assisted, design-system-consistent UI.</li>
+<li>Anyone evaluating <strong>MCP + skills</strong> as a pattern for grounding coding agents in a vendor toolkit (transferable idea beyond Infragistics).</li>
+<li>Internal tooling / dashboard / data-grid-heavy app projects.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Model Context Protocol (MCP)">Model Context Protocol (MCP)</span> — the protocol underpinning the Ignite UI CLI/theming MCP servers that ground the agent.</li>
+<li><span class="wikilink wikilink--unresolved" title="GitHub Copilot">GitHub Copilot</span> — the primary coding agent driven in the demos (also Claude Code as a target).</li>
+<li><span class="wikilink wikilink--unresolved" title="Blazor">Blazor</span> — the main framework used for the generated CRM and image-to-app demos.</li>
+<li><span class="wikilink wikilink--unresolved" title="Agent skills">Agent skills</span> — installable, framework-specific skills (<code>github skill install</code>) that teach agents how to build with a library.</li>
+<li><span class="wikilink wikilink--unresolved" title="WinUI">WinUI</span> — the new Infragistics desktop component suite launched at Build 2026.</li>
+<li><span class="wikilink wikilink--unresolved" title="Low-code platforms">Low-code platforms</span> — App Builder as a WYSIWYG + conversational-AI low-code dev tool.</li>
+<li><span class="wikilink wikilink--unresolved" title="Image-to-code with AI">Image-to-code with AI</span> — generating UI directly from a screenshot/design via agent + skills.</li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="ODSP922.html"><span class="pager-dir">← Previous</span><span class="pager-code">ODSP922</span><span class="pager-title">Develop a conversational search experience without rebuilding your app</span></a>
+    <a class="pager pager-next" href="ODSP925.html"><span class="pager-dir">Next →</span><span class="pager-code">ODSP925</span><span class="pager-title">Deliver production-ready AI search on unstructured data with RAG</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

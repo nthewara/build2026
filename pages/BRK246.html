@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRK246 — Foundry IQ: Fuel agents with enterprise knowledge and agentic retrieval</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">BRK246</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=FRptM_WiBRg" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Foundry IQ: Fuel agents with enterprise knowledge and agentic retrieval</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Pablo Castro (Microsoft — leads the AI Knowledge team, CoreAI division)</span>
+      <span class="meta-item">⏱️ 45m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="foundry">Foundry</span><span class="chip" data-tag="rag">Rag</span><span class="chip" data-tag="agentic-retrieval">Agentic Retrieval</span><span class="chip" data-tag="azure-ai-search">Azure Ai Search</span><span class="chip" data-tag="ai">AI</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Pablo Castro — leads the AI Knowledge team in the CoreAI division at Microsoft (Foundry IQ, Azure AI Search, Azure Content Understanding)<br>
+<strong>Duration:</strong> ~45 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=FRptM_WiBRg">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Foundry IQ is Microsoft's managed knowledge layer for connecting agents and AI models to the data they need to do real work — your application data, your Microsoft 365 content, your analytics, and the live web. The session walks the full lifecycle (provision → create a knowledge base → add knowledge sources → retrieve) and shows how the system is intentionally <strong>layered</strong> so you can start with a drag-and-drop "chat with my files" experience and grow into a sophisticated, multi-source, security-aware agentic retrieval pipeline without re-platforming. The headline announcement is the <strong>public preview of serverless Foundry IQ</strong> (scales to zero, ~10–20s to create, pay only for storage when idle), alongside a <strong>second-generation agentic retrieval engine</strong> that delivers better answers with fewer tokens. Every knowledge base is automatically an <strong>MCP server</strong>, and the whole stack enforces document-level security (Entra ACLs + Microsoft Purview sensitivity labels) at the bottom of the stack so you never have to bolt on your own.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Foundry IQ = the thing you use to connect agents to knowledge.</strong> It's the grounding/retrieval layer between your agents/models and your enterprise data.</li>
+<li>Three design goals drive everything: (1) <strong>easy to get started</strong>, (2) <strong>versatility</strong> as needs grow, (3) <strong>top quality</strong> across every AI-powered component (ranking, relevance, content understanding).</li>
+<li>The system is a <strong>clean, non-hiding stack of three layers</strong>: Foundry integration layer → knowledge-retrieval (agentic) layer → core retrieval engine (Azure AI Search). You pick the layer you need and can move <strong>up and down</strong> the stack freely — you're never locked in.</li>
+<li><strong>Every knowledge base is automatically an MCP server</strong> — append <code>/mcp</code> to the knowledge-base API endpoint and you have an MCP server with no extra setup. It's also callable as a plain REST API.</li>
+<li><strong>NEW: Serverless Foundry IQ (public preview)</strong> — no friction to start, ~10–20s to create, <strong>scales to zero</strong>, costs nothing until used, you only pay for index storage when idle. Production-ready, same state-of-the-art stack as dedicated.</li>
+<li><strong>Serverless vs dedicated is now a real choice:</strong> serverless for usage-based/dynamic/dev/unit-test/agent-created workloads and many small-to-medium indexes; <strong>dedicated</strong> for steady, highly predictable, isolated workloads (and optional <strong>confidential computing</strong> top to bottom).</li>
+<li>A <strong>knowledge base</strong> is the <em>scope/domain of knowledge + the policy for using it</em> (retrieval effort, steering instructions, answer synthesis on/off) — deliberately hidden from the agent to separate concerns. Underneath it sit one or more <strong>knowledge sources</strong>.</li>
+<li>Knowledge sources span a <strong>spectrum</strong>: loose files → file knowledge source (indexed) → object stores (Blob, OneLake, databases) → <strong>Microsoft IQ surfaces (Work IQ / Fabric IQ / Web IQ)</strong> → any app via <strong>MCP</strong>. You don't rebuild the plumbing for each.</li>
+<li>For indexed sources Foundry IQ runs a <strong>full ingestion pipeline by default</strong> (content extraction, chunking, vectorization, image handling) — assembled automatically, but <strong>every step is customizable</strong> with your own injected steps.</li>
+<li><strong>Azure Content Understanding is integrated</strong> for high-end extraction: OCR, document layout, correct reading order, hard tables (spanning pages, sparse, handwritten), checkbox extraction, and <strong>schema-driven</strong> structured extraction.</li>
+<li><strong>Ingestion is continuous, not one-shot:</strong> connectors track source changes and <strong>incrementally</strong> feed updates into the index, so your grounding index is always fresh.</li>
+<li><strong>Second-generation agentic retrieval:</strong> query planning → source selection → query decomposition → parallel search → reflect/iterate (per configured retrieval effort) → final result. Revamped to exploit newer models' improved tool-calling loops.</li>
+<li><strong>Quality + efficiency wins:</strong> material improvements across recall, answer correctness, completeness, and "knows when it doesn't know" vs BM25, hybrid, and minimal mode — and a <strong>better Pareto frontier (better answers with fewer tokens)</strong> via batched queries, a new semantic ranker, improved answer synthesis, model-specific MCP-parameter-binding prompts, and prefix/token-cache-aware prompt construction.</li>
+<li><strong>Security is enforced at the bottom of the stack:</strong> Entra-integrated ACL propagation (SharePoint, Blob w/ hierarchical namespaces) and <strong>Microsoft Purview</strong> sensitivity-label support (decode → index → re-secure → propagate labels to your UI). Pass the user's delegated token at query time; results look like only what that user can see.</li>
+<li><strong>Speed changes how you think about retrieval:</strong> raw search indexes are effectively instantaneous (a 22M-chunk full-English-Wikipedia index searches faster than you can type), so an agent can fire 10–20+ parallel searches per round; agentic retrieval trades a few seconds (up to ~10s on hard, multi-iteration queries) of latency for much higher answer quality.</li>
+<li><strong>Everything shown is available today</strong> — via Foundry, the Azure portal, or the SDKs.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="what-foundry-iq-is-and-why-it-exists">What Foundry IQ is and why it exists</h3>
+<p>Agents and AI models are only as useful as the knowledge they can reach. The Foundry model powering an agent has a knowledge cutoff and no access to your proprietary data on its own. <strong>Foundry IQ is the component you use to connect agents to the knowledge that ties them to your applications, your company, and the data they need to get their job done.</strong> Pablo frames the whole talk around three goals the team optimizes for:
+1. <strong>Easy to get started</strong> — getting a working knowledge base should be a "piece of cake."
+2. <strong>Versatility</strong> — as your application gets sophisticated, your needs grow, or the problem gets hard, you should find what you need <strong>in the same platform</strong> without switching tools.
+3. <strong>Top quality</strong> — like any AI-based system, quality must hold across every AI-powered component. For retrieval specifically that means <strong>great ranking, great relevance, great content understanding</strong>.</p>
+<h3 id="the-easy-to-get-started-path-drag-and-drop-files-working-agent">The "easy to get started" path (drag-and-drop files → working agent)</h3>
+<p>The opening demo proves goal #1. In Foundry: go to <strong>Build → a Foundry project → Knowledge</strong>, which is where you manage all your knowledge bases. Create a new knowledge base, choose the easy case ("my data is just in files"), <strong>drag and drop</strong> a handful of files (Pablo used Wikipedia movie articles → named it <em>movies wiki</em>), give it a <strong>name and a description so agents know what it's for</strong> ("full articles about movies"), and <strong>Save</strong>. The knowledge base lives inside a Foundry IQ instance he'd already created (named <code>demo3</code>).</p>
+<p>Crucially, <strong>out of the box every knowledge base is an MCP server</strong> — you don't stand anything up or run anything. To consume it he used <strong>GitHub Copilot as the agent</strong> (rather than write a new one): add a new MCP server in Copilot, point it at the knowledge base endpoint. The endpoint shape is:
+<code>https://&lt;service&gt;.search.windows.net/knowledgeBases/&lt;knowledge-base-name&gt;</code> (backed by <strong>Azure AI Search</strong>), and <strong>appending <code>/mcp</code></strong> to that turns the same API entry point into an MCP server. APIs are versioned (he used the brand-new API version shipped that day). Once connected, asking <em>"which pill did Neo take?"</em> causes Copilot to ground on the MCP knowledge base, send a few sub-queries, retrieve grounding, and answer <strong>"Neo took the red pill"</strong> (from <em>The Matrix</em>). The point: <strong>zero to a working, agent-consumable knowledge base in about a minute</strong>, via MCP or API.</p>
+<h3 id="the-layered-architecture-the-core-mental-model">The layered architecture (the core mental model)</h3>
+<p>Foundry IQ is built as a <strong>comprehensive, layered system that does not hide options</strong> — you choose which layer to use:
+- <strong>Top — Foundry integration layer.</strong> The fast, productive surface you just saw for building new agents.
+- <strong>Middle — complete knowledge-retrieval system.</strong> Uses <strong>agentic retrieval when needed</strong>: iterative query planning, handling multiple sources, choosing <strong>when to query what</strong>, connecting to the entire Microsoft IQ surface, with <strong>APIs you can call directly</strong>.
+- <strong>Foundation — core retrieval engine.</strong> State-of-the-art Azure AI Search: <strong>vector retrieval, lexical search, hybrid (the two combined), state-of-the-art ranking models</strong> — everything for best-quality ranking without rebuilding from scratch, under enterprise-grade security, quality, and scale.</p>
+<p>A non-trivial design achievement: even after you pick a layer, <strong>you're not stuck in it</strong> — you can go up and down the stack as needs change, or change your mind after building.</p>
+<h3 id="the-four-stage-lifecycle">The four-stage lifecycle</h3>
+<p>Using Foundry IQ in detail follows four stages, each of which the session improves:
+1. <strong>Provision</strong> a Foundry IQ instance.
+2. <strong>Create a knowledge base.</strong>
+3. <strong>Add knowledge sources.</strong>
+4. <strong>Retrieve.</strong></p>
+<h3 id="stage-1-provisioning-dedicated-vs-the-new-serverless">Stage 1 — Provisioning: dedicated vs the NEW serverless</h3>
+<p>Historically Foundry IQ / Azure AI Search required <strong>dedicated capacity</strong> — great for <strong>steady workloads</strong>: predictable, isolated to your environment, full control over competing workloads — but you must <strong>know your capacity up front</strong>.</p>
+<p><strong>Announcement — public preview of serverless Foundry IQ.</strong> With serverless: <strong>no friction to start, ~10–20s to create a service, costs nothing until you actually use it, scales to zero when idle, and you only pay for the storage your indexes use.</strong> It's <strong>production-ready</strong> (dev workloads <em>and</em> very dynamic workloads — e.g., agents creating services, or apps creating/deleting services on the fly). Same state-of-the-art tech as the existing stack: <strong>state-of-the-art ranking, an instant RAG stack, a rock-solid foundation — plus serverless dynamics.</strong></p>
+<p><strong>Choosing between them:</strong>
+- <strong>Serverless</strong> → usage-based plan; lots of medium/small indexes; the developer workflow; unit tests that create/delete on the spot; <strong>agents that create their own services/indexes</strong> autonomously.
+- <strong>Dedicated</strong> → highly predictable plan; <strong>isolated capacity</strong>; option to run on <strong>confidential computing</strong> stacks top to bottom.</p>
+<p>Provisioning serverless was shown two ways: <strong>(a)</strong> by telling a Copilot agent to "create a new Foundry IQ service, create an index, and load the first ~100 rows from this IMDb file" (it picked a name, created a <em>serverless</em> service + an index, and loaded 100 documents on its own); and <strong>(b)</strong> in Foundry UI: create new resource → name + resource group → pick a <strong>serverless-supporting region</strong> (e.g., West Central US) → choose <strong>serverless</strong> as the SKU → Create (10–20s). The same option appears in the <strong>Azure portal</strong>.</p>
+<h3 id="stage-2-knowledge-bases-scope-policy-not-access">Stage 2 — Knowledge bases (scope + policy, not access)</h3>
+<p>Think of a <strong>knowledge base</strong> as the <strong>scope of knowledge and the policy for using it</strong> — <em>not</em> how it's accessed — and it's <strong>hidden from the agent</strong> to separate concerns. It defines the <strong>domain of knowledge</strong> and the <strong>usage policy</strong>, e.g.:
+- <strong>Retrieval effort</strong> — quick single pass vs iterative retrieval.
+- <strong>Steering instructions</strong> — influence how the model behaves.
+- <strong>Answer synthesis</strong> — whether Foundry IQ composes a natural-language answer (with citations) or returns raw passages.
+- The <strong>orchestration model</strong> — when a knowledge base has multiple/online sources you must specify the model used for orchestration (he used <strong>GPT-4.x mini</strong>, with a default reasoning effort you can override, optional answer synthesis, and optional steering instructions for each).</p>
+<p>Underneath the agentic retrieval stack sit the <strong>knowledge sources</strong>. For most, you point Foundry IQ at where the knowledge lives and it <strong>builds vector + lexical indexes</strong>; some sources are <strong>federated</strong> (accessed online at runtime). Regardless of representation, <strong>at runtime the system chooses which sources to use</strong> for a given scenario and queries them.</p>
+<h3 id="stage-3-knowledge-sources-the-data-spectrum">Stage 3 — Knowledge sources (the data spectrum)</h3>
+<p>Real-world data is everywhere, so Foundry IQ offers a spectrum so you never reinvent the plumbing:</p>
+<p><strong>Loose files vs the file knowledge source.</strong> Local file access (what coding agents do well) is great for ~50–100 files / a few MB. But developers routinely have "a million PDFs in a blob account" — you can't grep your way through that if you want to fire 10–20 queries a second. The <strong>file knowledge source</strong> lets you upload content but puts the <strong>full retrieval engine behind it</strong>: pushed files run through <strong>full content processing</strong> (extraction, image handling, vectorization) and build indexes for fast retrieval.</p>
+<p><strong>Object stores (Blob / database / OneLake-on-Fabric).</strong> When an app manages content internally it usually lands in Blob, a database, or OneLake. Point Foundry IQ at it and it <strong>assembles a full ingestion pipeline by default</strong> — chunking, vectorization, etc. — for very high-quality results, while letting you <strong>customize every step or inject custom steps</strong> for exact control. It handles <strong>text-heavy and multimedia</strong> content.</p>
+<p><strong>Azure Content Understanding (integrated).</strong> First step is understanding what's actually inside files (PDFs especially) before presenting to agents. Content Understanding provides high-end <strong>OCR, document layout, correct reading-order preservation,</strong> and robust <strong>table handling</strong> (tables spanning pages, sparse tables, handwritten/partially-handwritten tables, <strong>checkbox extraction</strong>). It can also do <strong>schema-driven extraction</strong> — give it a schema of the elements you want and it isolates/extracts them to feed the agent or use as <strong>filters</strong>. With an embedding model it vectorizes; add a <strong>chat-completion model</strong> and it does <strong>image verbalization</strong> for media.</p>
+<p><strong>Continuous, incremental ingestion.</strong> Connecting a source (demo: a Blob container of movie annotations, using <strong>system identity</strong>, <strong>standard</strong> = full Content Understanding, an embedding model, optional chat model for image verbalization) <strong>imports everything now and then keeps running</strong>, tracking source changes and <strong>incrementally</strong> feeding them into the index — so the grounding index is <strong>always fresh</strong>.</p>
+<h3 id="stage-3-cont-microsoft-iq-surfaces-work-iq-fabric-iq-web-iq">Stage 3 (cont.) — Microsoft IQ surfaces: Work IQ, Fabric IQ, Web IQ</h3>
+<p>Your data rarely lives in isolation. The <strong>Microsoft IQ</strong> family lets agents reach organizational knowledge, and Foundry IQ <strong>integrates with the entire spectrum out of the box</strong>:
+- <strong>Work IQ</strong> — direct access to your <strong>Microsoft 365 tenant</strong> (Word docs, calendar, email, etc.). Integration is trivial: <strong>point at your tenant — nothing to configure</strong> — but the <strong>tenant admin must consent</strong> (it's your Office data). Once consented, it just works.
+- <strong>Fabric IQ</strong> — your analytics estate in <strong>Microsoft Fabric</strong> (OneLake → structured files like Parquet + unstructured content → semantic models → Power BI reports → <strong>data agents</strong> and <strong>ontologies</strong>). Foundry IQ integrates with the <strong>entire OneLake catalog</strong>, so you can browse lakehouses, data agents, ontologies, etc. Fabric IQ handles <strong>natural-language-to-SQL</strong> and navigating multiple data sources. Demo: a simple <strong>data agent</strong> over Parquet movie-stats files (ratings, etc.) answered NL questions (Fabric turns them into SQL). Added as a knowledge source, it's queried <strong>agent-to-agent</strong> at retrieval time (a lakehouse would get indexing options; the data agent needs no indexing — questions are integrated at retrieval time).
+- <strong>Web IQ</strong> — <strong>announced the day before</strong> this session — access to the live web. Added here as an <strong>MCP knowledge source</strong> (endpoint from the Web IQ preview + auth, choosing the <strong>web search</strong> tool).</p>
+<p>Guidance: each IQ component <strong>works fine in isolation</strong> — if your data lives in just one place, use only that one and don't over-complicate. But it's common to mix your own app data with M365 content and analytics, and Foundry IQ makes connecting all those dots easy. In the demo a <strong>single knowledge base</strong> ended up combining Wikipedia articles (indexed), the <strong>web</strong> (via Web IQ MCP), and <strong>Fabric data agents</strong> — and the consuming agent doesn't need to know any of those moving parts exist; the <strong>agentic orchestration chooses what to use when</strong>.</p>
+<h3 id="stage-3-cont-extensibility-via-mcp-any-app-as-a-data-source">Stage 3 (cont.) — Extensibility via MCP (any app as a data source)</h3>
+<p>When the built-in options don't fit, MCP is the escape hatch. There's no "ODBC for agents," but <strong>MCP is universal and everywhere</strong>, and if you don't have an MCP server it's easy to make one — so it became a great integration point. Foundry IQ turns MCP output (via heuristics) into an <strong>item-oriented list</strong> where possible and <strong>runs its own ranking on top to improve relevance even for MCP</strong> results. This means <strong>any data source</strong> — your own app, or e.g. the <strong>GitHub MCP server turning issues into a table</strong> you feed the system — "just works."</p>
+<h3 id="stage-4-retrieval-where-the-value-is-delivered">Stage 4 — Retrieval (where the value is delivered)</h3>
+<p>Retrieval is the moment all the prior work pays off: a search engine is useful the instant your <strong>top three or four results</strong> are what the agent needed to ground its answer. Foundry IQ includes an <strong>agentic retrieval pipeline</strong> you can opt into (or skip in favor of raw indexes):
+1. <strong>Query planning</strong> — given the calling agent's question/data requirement, decide <strong>which data sources</strong> to consult and <strong>how to decompose</strong> the query.
+2. <strong>Search</strong> — run several searches.
+3. <strong>Reflect</strong> — examine results and decide whether it got what it hoped for.
+4. <strong>Iterate</strong> — if not (and depending on configured <strong>retrieval effort</strong>), search again on the new information.
+5. <strong>Final result</strong> — produce the result for the agent.</p>
+<p>This is now the <strong>second generation</strong> of agentic retrieval. A key driver: models changed a lot from ~October last year to now (notably <strong>tool-calling loops</strong>), so the team <strong>significantly revamped</strong> the retrieval workflow to fit how today's models perform best.</p>
+<h3 id="where-the-quality-and-efficiency-gains-come-from">Where the quality and efficiency gains come from</h3>
+<p>Charts compare the new system against <strong>BM25 (lexical only)</strong>, <strong>hybrid (vector + lexical)</strong>, and a knowledge base with agentic retrieval off (<strong>"minimal mode"</strong>), across: <strong>recall, answer correctness, answer completeness,</strong> and <strong>how often the model says "I don't know" even though the answer was present</strong>. Result: <strong>material improvements across the entire metric set.</strong> The trade-off is <strong>latency</strong> — raw indexes are instantaneous (ignore them in your latency budget), whereas agentic retrieval can take <strong>a few seconds, sometimes ~10s</strong> if it must iterate.</p>
+<p>Improvement sources are a mix:
+- <strong>Better language models</strong> → the retrieval workflow was updated to fit their style (big difference).
+- <strong>A newly trained semantic ranker</strong> (the team keeps pushing reranker quality).
+- <strong>Improved answer synthesis.</strong>
+- <strong>Model-specific prompts for tasks like MCP parameter binding</strong> — tuned per model because variability between models is significant.</p>
+<p><strong>Token efficiency</strong> is now first-class. Anyone can <em>do a search</em> with few tokens — the real question is <em>did you get it right?</em> A Pareto-style chart (full agentic retrieval vs hybrid + an outer orchestrating agent) shows <strong>fewer tokens needed to produce better answers</strong>. Prompts are also constructed to be <strong>token-cache-aware</strong>: managing their own context so calls <strong>hit the prefix cache</strong> on the target model — making it both <strong>faster</strong> (cache hits) and <strong>cheaper</strong> (cached tokens cost less than full tokens). The science team publishes detailed write-ups (a URL on screen) for those in information retrieval who want the full evaluation methodology and data.</p>
+<h3 id="putting-it-together-a-single-multi-source-retrieve-call">Putting it together — a single multi-source retrieve call</h3>
+<p>Pablo "vibe-crafted" a small client that calls the <strong>retrieve API</strong> against the combined knowledge base, run at <strong>medium</strong> effort. For a question spanning <em>ratings</em> and <em>box office</em>, the activity trace showed: the <strong>planner</strong> ran → went to the <strong>Fabric data agent</strong> (ratings live in Parquet, queried via SQL) to find top sci-fi movies → hit the <strong>web MCP server</strong> for box-office figures not in any dataset (discarding some content) → a <strong>synthesis step</strong> built the answer → the reasoning finished. The response came with <strong>full references</strong> per result: which <strong>knowledge source</strong> it came from and, where available, <strong>links to underlying files</strong>. You normally wouldn't show this in the UX, but it's great to <strong>feed to an agent</strong> to understand the interaction or for <strong>debugging</strong>. The punchline: <strong>all the ranking/relevance/agentic-retrieval science sits behind one MCP-server call or one retrieve call</strong> — everything else happens under the covers.</p>
+<h3 id="document-level-security-enforced-at-the-bottom-of-the-stack">Document-level security (enforced at the bottom of the stack)</h3>
+<p>Early RAG made "chat with your documents" feel novel — dump everything into an index, put a chat UI on top. But in real companies <strong>not everyone can see every document</strong>, and <strong>document-level security isn't something to improvise</strong> while building the rest. The <strong>retrieval system must support the same security model as the underlying data.</strong> Foundry IQ:
+- <strong>Propagates access-control info</strong> from sources that support it (e.g., <strong>SharePoint</strong>, <strong>Blob with hierarchical namespaces / ACLs</strong>) into the indexes it builds under the covers, <strong>integrated with Entra</strong> (so <strong>group membership</strong> and the expected behaviors work).
+- At <strong>query time</strong> you present the <strong>user's credentials (delegated token)</strong>; the searchable surface then <strong>looks like it only contains the subset that user can see</strong>. You don't layer your own security on top.
+- Supports <strong>Microsoft Purview</strong>: documents with <strong>sensitivity labels</strong> are encrypted and can't be indexed by a random tool, but Foundry IQ <strong>decodes, indexes, then re-secures</strong> them with the original ACLs — so you control <strong>who can see them</strong> <em>and</em> can <strong>propagate the sensitivity labels to your UI</strong>, making your app "look like Office" for labeling. A <strong>complete example</strong> (URL on screen) shows how to assemble all these moving parts.</p>
+<h3 id="versatility-going-up-and-down-the-stack">Versatility — going up and down the stack</h3>
+<p>Because the stack is cleanly layered, you can start at <strong>Foundry integration</strong>, drop to <strong>knowledge bases</strong>, or go <strong>straight to the core retrieval engine</strong> (Azure AI Search) — and move between layers as you need, or <strong>change your mind</strong> after building one. Pablo demonstrated peeking under the covers of the combined knowledge base in the <strong>Azure portal</strong>: in the <code>demo3</code> service's <strong>Azure AI Search blade</strong> you can see the <strong>knowledge base</strong>, all its <strong>knowledge sources</strong>, and for the two indexed sources the actual <strong>indexer</strong> (the data pipeline that pulls/transforms data into the index — inspect runs, configure internals) and the <strong>index</strong> itself. From the index you can view the <strong>schema</strong> and tune low-level details, e.g. <strong>vector-search compression</strong> (default <strong>8-bit quantization</strong>, but you can choose a different quantization or reranking policy), and inspect the <strong>actual chunked content snippets</strong> and even the raw <strong>vectors</strong> used for vector-distance comparisons. This control also enables explicit <strong>latency trade-offs</strong>: choose <strong>full agentic retrieval</strong> (a few seconds, great results) or a <strong>files-style burst of fast searches</strong> you iterate on quickly.</p>
+<h3 id="scale-and-speed-why-it-changes-your-retrieval-design">Scale and speed (why it changes your retrieval design)</h3>
+<p>To show raw speed, Pablo built a service over <strong>all of English Wikipedia</strong>, chunked into <strong>~22 million chunks</strong> — a sizable index. Searching it on <strong>every keystroke</strong>, he literally <strong>could not type fast enough to out-run the search</strong> ("I can't force the lag"). The implication: an agent can issue <strong>10 searches, or multiple rounds of 10–20 searches each</strong>, and they all finish <strong>well within a second in parallel</strong> — even at <strong>tens or hundreds of millions of documents</strong>. This <strong>completely changes how you think about retrieval</strong>: let Foundry IQ run the agentic loop for you, <strong>or</strong> hand the agent direct entry points and let it hit the search index <strong>as hard as you want</strong>.</p>
+<h3 id="wrap-up">Wrap-up</h3>
+<p>Everything demonstrated is usable <strong>today</strong> — via <strong>Foundry</strong>, the <strong>Azure portal</strong>, or the <strong>SDKs</strong> — and the session pointed to related Build sessions on the same theme.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Foundry IQ</strong> — Microsoft's managed knowledge/retrieval layer that connects agents and AI models to enterprise (and web) knowledge; the central subject of the talk.</li>
+<li><strong>Serverless Foundry IQ</strong> <em>(public preview, announced)</em> — scale-to-zero, usage-based deployment option (~10–20s to create, pay only for index storage when idle).</li>
+<li><strong>Dedicated capacity</strong> — predictable, isolated Foundry IQ/Azure AI Search capacity; supports <strong>confidential computing</strong> top to bottom.</li>
+<li><strong>Azure AI Search</strong> — the core retrieval engine under Foundry IQ (vector, lexical, hybrid search; state-of-the-art ranking; indexers; index schema control). Knowledge-base endpoints live at <code>*.search.windows.net</code>.</li>
+<li><strong>Knowledge base</strong> — top-level resource defining the <strong>scope of knowledge + usage policy</strong> (retrieval effort, steering instructions, answer synthesis, orchestration model); hidden from the agent.</li>
+<li><strong>Knowledge sources</strong> — connections under a knowledge base (files, object stores, IQ surfaces, MCP); indexed or federated.</li>
+<li><strong>File knowledge source</strong> — upload files but with the full retrieval engine behind them (extraction, vectorization, indexing).</li>
+<li><strong>Foundry IQ MCP server</strong> — every knowledge base is automatically an MCP server (append <code>/mcp</code> to the API endpoint); consumable by any MCP-compatible host.</li>
+<li><strong>Agentic retrieval pipeline (2nd generation)</strong> — query planning → source selection → query decomposition → parallel search → reflect/iterate → result; configurable <strong>retrieval effort</strong>.</li>
+<li><strong>Minimal mode</strong> — agentic retrieval turned off (used as a baseline in benchmarks).</li>
+<li><strong>Semantic ranker</strong> — newly trained reranker improving relevance.</li>
+<li><strong>Answer synthesis</strong> — optional composition of a natural-language answer with citations.</li>
+<li><strong>Azure Content Understanding</strong> — integrated extraction: OCR, document layout, reading-order preservation, complex/handwritten/sparse tables, checkbox extraction, <strong>schema-driven</strong> structured extraction.</li>
+<li><strong>Image verbalization</strong> — handling media by adding a chat-completion model to describe images for indexing.</li>
+<li><strong>Microsoft IQ</strong> — umbrella for the enterprise-intelligence surfaces below.</li>
+<li><strong>Work IQ</strong> — direct access to Microsoft 365 tenant content (docs, calendar, email); tenant-admin consent required.</li>
+<li><strong>Fabric IQ</strong> — access to the Microsoft Fabric analytics estate (OneLake, semantic models, Power BI, <strong>data agents</strong>, ontologies) with natural-language-to-SQL.</li>
+<li><strong>Web IQ</strong> <em>(announced the day before)</em> — live-web access; added as an MCP knowledge source (web search tool).</li>
+<li><strong>Microsoft Fabric / OneLake / data agents / Parquet</strong> — structured analytics data and agents Foundry IQ queries agent-to-agent at retrieval time.</li>
+<li><strong>Azure Blob Storage (incl. hierarchical namespaces/ACLs)</strong> — supported object-store knowledge source with continuous, incremental ingestion and ACL propagation.</li>
+<li><strong>Microsoft Entra</strong> — identity backbone for ACL propagation and group-membership-aware, query-time security.</li>
+<li><strong>Microsoft Purview</strong> — sensitivity-label support (decode → index → re-secure → propagate labels to your UI).</li>
+<li><strong>Model Context Protocol (MCP)</strong> — universal integration point; both how knowledge bases are exposed and how arbitrary apps (e.g., the <strong>GitHub MCP server</strong>) become data sources.</li>
+<li><strong>GitHub Copilot</strong> — used as the agent that consumed the knowledge-base MCP server and provisioned a serverless service from a one-line prompt.</li>
+<li><strong>MCP <code>mcp-o-proxy</code> ("odd proxy")</strong> — proxy used to connect GitHub Copilot's MCP config to the Foundry IQ knowledge-base endpoint in the demo.</li>
+<li><strong>GPT-4.x mini</strong> — the orchestration model chosen for the multi-source knowledge base (with selectable default reasoning effort).</li>
+<li><strong>Embedding model (e.g., text-embedding family)</strong> — used for vectorization of source content.</li>
+<li><strong>Token / prefix caching</strong> — prompts constructed to hit the model's prefix cache for faster, cheaper retrieval.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Serverless Foundry IQ — public preview.</strong> No-friction, scale-to-zero deployment: ~10–20s to create, costs nothing until used, pay only for index storage when idle. Production-ready; built on the same state-of-the-art stack as dedicated; ideal for dev/unit-test/dynamic workloads and <strong>agents that create/delete services and indexes on the fly</strong>. Available in serverless-supporting regions (e.g., West Central US shown).</li>
+<li><strong>Second-generation agentic retrieval engine.</strong> Revamped to exploit newer models' tool-calling loops; delivers <strong>material gains in recall, answer correctness, completeness, and "knows when it doesn't know,"</strong> while using <strong>fewer tokens</strong> (better Pareto frontier) via batched queries, a <strong>newly trained semantic ranker</strong>, improved answer synthesis, model-specific MCP-parameter-binding prompts, and token/prefix-cache-aware prompting. Detailed science write-ups published (URL on screen).</li>
+<li><strong>Web IQ</strong> — referenced as <strong>announced the day before</strong> this session; integrated here as an MCP knowledge source for live-web grounding.</li>
+<li><strong>General availability emphasis:</strong> Pablo stressed <em>"everything I showed you today you can use today"</em> via Foundry, the Azure portal, or the SDKs (including the new API version used for knowledge-base/MCP endpoints).</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Zero-to-working knowledge base in ~1 minute.</strong> Drag-and-drop Wikipedia <em>movies</em> articles into a new knowledge base, then consume it from <strong>GitHub Copilot</strong> by adding the auto-generated <strong>MCP server</strong> (<code>&lt;service&gt;.search.windows.net/knowledgeBases/&lt;name&gt;</code> + <code>/mcp</code>). Asking <em>"which pill did Neo take?"</em> returned <strong>"the red pill"</strong> grounded from <em>The Matrix</em> — proving the "easy to get started" goal and that <strong>every KB is an MCP server with no setup</strong>.</li>
+<li><strong>Agent self-provisioning a serverless service.</strong> A one-line prompt to a Copilot agent ("look at this IMDb file, create a new Foundry IQ service + index, load ~100 rows") resulted in the agent <strong>creating a serverless service, an index, and loading 100 documents</strong> autonomously — verified in the Azure portal (serverless service <code>Fiq-IMDb…</code>, index with 100 docs). Demonstrates serverless for agent-driven workloads.</li>
+<li><strong>Serverless creation in the Foundry UI.</strong> Create new resource → name/RG → serverless-supporting region (West Central US) → choose <strong>serverless</strong> SKU → Create (~10–20s) → ready for knowledge bases. Same option exists in the Azure portal.</li>
+<li><strong>Connecting a Blob knowledge source with Content Understanding.</strong> Added a Blob container of movie annotations using <strong>system identity</strong> + <strong>standard</strong> extraction (full Content Understanding) + embedding model; ingestion runs in the <strong>background and continuously/incrementally</strong> tracks changes to keep the index fresh.</li>
+<li><strong>Azure Content Understanding extraction quality.</strong> Showed a scanned PDF with a <strong>partially handwritten table</strong> extracted to markdown <strong>including checkboxes</strong>, correct <strong>two-column layout/reading order</strong>, extracted pictures; plus <strong>schema-driven</strong> extraction of specific document elements for filters/agent input.</li>
+<li><strong>Fabric data agent as a knowledge source.</strong> A simple Fabric <strong>data agent</strong> over Parquet movie-stats files answered NL questions (Fabric → SQL); added to the knowledge base it's queried <strong>agent-to-agent</strong> at retrieval time (no indexing needed).</li>
+<li><strong>Single multi-source knowledge base.</strong> Combined Wikipedia articles (indexed) + <strong>Web IQ</strong> (MCP) + <strong>Fabric</strong> data agent — the consuming agent is unaware of the parts; orchestration chooses sources per question.</li>
+<li><strong>Multi-source retrieve call (medium effort).</strong> For a ratings + box-office question, the activity trace showed planner → <strong>Fabric data agent</strong> (ratings via SQL on Parquet) → <strong>web MCP</strong> (box office, some content discarded) → <strong>synthesis</strong> → done, returning <strong>full references</strong> (knowledge source + links) useful for agents/debugging.</li>
+<li><strong>Under-the-covers inspection (Azure portal).</strong> Viewed the knowledge base, its sources, the <strong>indexer</strong> (data pipeline + runs), and the <strong>index schema</strong> — tuning <strong>vector compression</strong> (default <strong>8-bit quantization</strong>), inspecting chunked snippets and raw vectors.</li>
+<li><strong>22M-chunk Wikipedia speed test.</strong> Searching all of English Wikipedia (~<strong>22 million chunks</strong>) <strong>on every keystroke</strong> — search kept up faster than Pablo could type, illustrating that agents can fire <strong>many parallel searches per round</strong> sub-second, even at hundreds of millions of documents.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>~10–20 seconds</strong> to create a serverless Foundry IQ service; <strong>scales to zero</strong> and <strong>costs nothing until used</strong> (pay only for index storage when idle).</li>
+<li><strong>~22 million chunks</strong> — all of English Wikipedia chunked into one index; searchable <strong>faster than you can type</strong>, on every keystroke.</li>
+<li><strong>100 documents / first ~100 rows</strong> loaded by the self-provisioning agent demo from an IMDb file.</li>
+<li><strong>Default 8-bit quantization</strong> for vector-search compression (customizable).</li>
+<li><strong>A few seconds, sometimes ~10s</strong> — agentic-retrieval latency when iterating, vs <strong>instantaneous</strong> raw index search.</li>
+<li>Benchmark axes: <strong>recall, answer correctness, answer completeness, and rate of "says it doesn't know" when the answer was present</strong> — improved across the board vs <strong>BM25 / hybrid / minimal mode</strong>, while spending <strong>fewer tokens</strong>.</li>
+<li><em>"Foundry IQ is the thing you use to connect agents to knowledge."</em></li>
+<li><em>"For easy scenarios we should do easy things"</em> — but in practice data is everywhere ("I have a million PDFs in this blob storage account — what do I do?").</li>
+<li><em>"Life is too short to … handle things like tables that span pages, sparse tables"</em> — the case for Content Understanding.</li>
+<li><em>"Security is enforced at the bottom of the stack. You don't have to layer your own on top."</em></li>
+<li><em>"Everything I showed you today you can use today."</em></li>
+<li><em>"I used to say I wrote [the code] as in I wrote the code … I don't know what to say these days"</em> — on vibe-coding the retrieve-API demo client.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Spin up a <strong>serverless Foundry IQ</strong> instance (West Central US or another supported region), drag in a few files, and consume it from an MCP host via the <code>/mcp</code> endpoint.</li>
+<li>Reproduce <strong>agent self-provisioning</strong>: a one-line prompt that creates a serverless service + index and loads rows from a CSV/Parquet.</li>
+<li>Build a <strong>multi-source knowledge base</strong> mixing an indexed Blob source + a <strong>Fabric data agent</strong> + <strong>Web IQ</strong>, then inspect the <strong>retrieve activity trace + references</strong>.</li>
+<li>Test <strong>Content Understanding</strong> on a messy PDF (handwritten/sparse tables, multi-column) and try <strong>schema-driven extraction</strong> for filters.</li>
+<li>Validate <strong>document-level security</strong> end-to-end: ACL propagation from SharePoint/Blob + Purview sensitivity-label round-trip, passing a user delegated token at query time.</li>
+<li>Compare <strong>minimal vs low vs medium</strong> retrieval effort on a multi-hop question; measure latency vs answer quality and token spend.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>Exact <strong>GA vs preview matrix</strong> by Search REST API version (KBs GA per blog; serverless + MCP-as-source in preview) — which features are blocked on which API version?</li>
+<li>Which <strong>regions</strong> support serverless at launch, and the pricing detail for idle storage vs active usage?</li>
+<li>How does <strong>agent-to-agent</strong> querying of Fabric data agents handle auth, latency, and cost at scale?</li>
+<li>How configurable is the <strong>MCP-result ranking/heuristic item extraction</strong> for arbitrary MCP servers?</li>
+<li>For confidential computing (dedicated), what's covered "top to bottom" and any quality/latency trade-offs?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Any enterprise RAG / agent-grounding project on Azure (replace bespoke per-project pipelines with a reusable KB).</li>
+<li>Azure lab work and demos needing fast, multi-source, security-aware retrieval.</li>
+<li>Related Build 2026 sessions: <strong>BRK240</strong> (Microsoft IQ / context-aware agents), <strong>LAB532</strong> (agent-ready knowledge with Foundry IQ), <strong>DEM331</strong> (APIs/tools/data → agent velocity).</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><a href="https://devblogs.microsoft.com/foundry/build-smarter-agents-faster-with-foundry-iq/">Foundry IQ blog — Build smarter agents faster with unified knowledge and serverless retrieval</a></li>
+<li><a href="https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/what-is-foundry-iq">What is Foundry IQ? — Microsoft Learn</a></li>
+<li>Build 2026 sessions: <strong>BRK240</strong> (Build context-aware agents with Microsoft IQ), <strong>LAB532</strong> (From data to context: agent-ready knowledge with Foundry IQ), <strong>DEM331</strong> (Turn APIs, tools, and data into real agent velocity)</li>
+<li>Topics: <span class="wikilink wikilink--unresolved" title="Azure AI Search">Azure AI Search</span> · <span class="wikilink wikilink--unresolved" title="RAG">RAG</span> · <span class="wikilink wikilink--unresolved" title="Agentic retrieval">Agentic retrieval</span> · <span class="wikilink wikilink--unresolved" title="Model Context Protocol (MCP)">Model Context Protocol (MCP)</span> · <span class="wikilink wikilink--unresolved" title="Microsoft Fabric">Microsoft Fabric</span> · <span class="wikilink wikilink--unresolved" title="Microsoft Purview">Microsoft Purview</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="BRK245.html"><span class="pager-dir">← Previous</span><span class="pager-code">BRK245</span><span class="pager-title">Build the thing that builds the thing</span></a>
+    <a class="pager pager-next" href="BRK247.html"><span class="pager-dir">Next →</span><span class="pager-code">BRK247</span><span class="pager-title">Scott and Mark learn...how agents reshape software engineering</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

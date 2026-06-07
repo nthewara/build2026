@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OD832 — From workflows to agentic automation with Azure Logic Apps</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">OD832</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=MglAzcQEkUg" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">From workflows to agentic automation with Azure Logic Apps</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Divya Swarnkar</span>
+      <span class="meta-item">⏱️ 23m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="logic-apps">Logic Apps</span><span class="chip" data-tag="automation">Automation</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="azure-integration">Azure Integration</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Divya Swarnkar (Product Manager, Azure Logic Apps)<br>
+<strong>Duration:</strong> ~23 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=MglAzcQEkUg">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Azure Logic Apps is evolving from a decade-proven enterprise integration platform into a full <strong>AI automation platform</strong>, and this session anchors that shift around three big moves. First, the headline announcement: <strong>Azure Logic Apps Automation</strong>, a new enterprise-ready platform (public preview at <code>auto.azure.com</code>) that strips out infrastructure overhead and the Azure portal dependency — you sign in with just a Microsoft Entra ID, no Azure expertise required, yet everything you build still runs on Azure with full enterprise rigor. Second, <strong>Knowledge as a Service</strong>: managed RAG built directly into workflows so you upload files and Logic Apps auto-ingests, chunks, vectorizes, and retrieves with zero pipeline code (built on Cosmos DB + Azure OpenAI). Third, <strong>deep Azure AI Foundry + Logic Apps integration</strong>: build/host agents in Foundry, then trigger, orchestrate, and operationalize them from Logic Apps with 1,400+ connectors, human-in-the-loop, and full run-history traceability. The unifying goal across all three: make AI automation <strong>easier to build and easier to trust in production</strong>.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li>Logic Apps is being repositioned from an "enterprise integration platform" to an <strong>"AI automation platform"</strong> — the same trusted foundation now extends natively to agents.</li>
+<li>The platform's scale story: <strong>100,000+ customers</strong>, <strong>millions of workflow executions</strong> and <strong>trillions of connector operations per month</strong>, across <strong>1,400+ connectors</strong> (SaaS, databases, AI services, on-prem) — including most of the Fortune 500.</li>
+<li>Core thesis: most companies have built an AI agent <strong>demo</strong>, but very few run one in <strong>production</strong> — because the gap is retries, error handling, logs, networking, identity, security, and governance, all of which Logic Apps provides from day zero.</li>
+<li>The same enterprise control that makes Logic Apps powerful also made it <strong>heavy to start</strong> — procurement approvals for multiple Azure services/models, provisioning overhead, and self-wiring separate services were the real friction.</li>
+<li><strong>Azure Logic Apps Automation</strong> (announced, public preview at <code>auto.azure.com</code>) solves this by removing <strong>infrastructure management</strong> and the <strong>Azure portal dependency</strong> while keeping Azure-grade reliability and scale.</li>
+<li>Two deliberate changes + one deliberate non-change: (1) took out infra management but <strong>kept Azure</strong>; (2) took out the Azure portal so you sign in with <strong>Entra ID only</strong>; and they did <strong>not</strong> change the enterprise rigor.</li>
+<li>AI lowers the barrier so <strong>operations leads, analysts, AI builders, and knowledge workers</strong> can describe a workflow in natural language and participate in building it — breaking the central-integration-team / IT bottleneck.</li>
+<li>Real-world solutions combine <strong>deterministic steps + AI reasoning</strong> in one workflow (e.g. ServiceNow/Salesforce deterministic actions around an AI invoice-validation agent).</li>
+<li>Agents in the new platform are built on the <strong>GitHub Copilot SDK</strong> and run on a <strong>sandbox</strong> — isolated compute per workflow, with native file, shell, and web operations, plus support for <strong>skills and MCPs</strong>.</li>
+<li><strong>Knowledge as a Service</strong> collapses a complex RAG pipeline into a few steps: upload files → automatic ingest, chunk, vectorize; retrieval is a native workflow step. Built on <strong>Cosmos DB</strong> (vector store) + <strong>Azure OpenAI</strong> (embeddings + chat). Now in public preview.</li>
+<li>The governance model has <strong>two layers / two roles</strong>: <strong>Project</strong> (an Azure ARM/RBAC resource the admin owns — members, permissions, policies, quotas, knowledge, sandboxes, models) and <strong>App</strong> (where developers build workflows with no Azure access required). One team governs, another builds — same secure boundary.</li>
+<li><strong>Azure AI Foundry + Logic Apps</strong> together: Foundry is where agents <strong>live</strong> (models, tools, instructions, grounding, evaluation, versioning, observability); Logic Apps is where agents are <strong>invoked and orchestrated</strong> (triggered by any event/schedule, using native connectors).</li>
+<li>You can <strong>create and edit Foundry agents from inside Logic Apps</strong> (it calls Foundry APIs to provision), and Foundry agents can use <strong>native Logic Apps connectors/APIs/workflows as their tools</strong> — the key "unlock."</li>
+<li><strong>Human-in-the-loop</strong> is first class: long-running workflows can pause an agent for Teams-based approval and resume on response. Execution is correlated across both portals by <strong>run ID</strong> — operational view in Logic Apps, agent reasoning/traces in Foundry.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-from-integration-platform-to-ai-automation-platform">Framing: from integration platform to AI automation platform</h3>
+<p>Divya Swarnkar (PM, Azure Logic Apps) opens by framing the entire narrative: Logic Apps is moving from an <strong>enterprise-proven integration platform</strong> to an <strong>AI automation platform</strong>. The session is structured in three parts, each with a demo:
+1. <strong>Logic Apps Automation</strong> — a brand-new platform announced at Build.
+2. <strong>Knowledge as a Service</strong> — managed RAG ("managed drag") built directly inside workflows.
+3. <strong>Azure AI Foundry + Logic Apps</strong> — coming together to build and orchestrate real-world AI agents.</p>
+<h3 id="what-logic-apps-already-is-the-grounding">What Logic Apps already is (the grounding)</h3>
+<p>Before the new announcements, she grounds the audience in the existing platform's maturity:
+- <strong>Proven across a decade</strong> of enterprise use, operating at <strong>planetary scale</strong>.
+- <strong>100,000+ customers</strong>, running <strong>millions of workflow executions</strong> and <strong>trillions of connector operations every month</strong>.
+- <strong>1,400+ connectors</strong> spanning SaaS applications, databases, AI services, and on-prem applications.
+- Rapid token-usage growth is coming from <strong>agentic workflows running in production at scale</strong>.
+- The audience signal: a large share of customers — <strong>most of the Fortune 500</strong> — are already running enterprise workloads on Logic Apps in production.</p>
+<p>Crucially, it's "not just scale." The platform ships with everything needed for production-grade apps: <strong>dedicated compute, VNet support, security, identity, networking, compliance</strong>. These are <strong>not add-ons</strong> — they are <strong>built in from day zero</strong>. And every one of these enterprise foundations now <strong>extends to AI</strong>: on the same foundation, Logic Apps offers workflows plus AI capabilities including <strong>agents, tools, and human-in-the-loop controls</strong>.</p>
+<h3 id="the-demo-to-production-gap-the-central-argument">The "demo to production" gap (the central argument)</h3>
+<p>The recurring theme: when customers ask "What's our path from AI demo to production?", the answer is increasingly "<strong>you already have the platform you can trust</strong>." The reasoning:
+- Most companies have built an <strong>AI agent demo</strong>, but <strong>very few have one in production</strong>.
+- For a <strong>demo</strong>, the happy path is enough — no retries, no error handling, no logs.
+- For <strong>production</strong>, you need <strong>consistent outcomes</strong> and a platform where networking, identity, security, and governance are <strong>on from day one</strong>.
+- That difference — happy-path prototype vs. business-critical, governed workflow — is the real "distance," and Logic Apps is purpose-built for the production ("right column") side.</p>
+<h3 id="the-catch-power-created-friction">The catch: power created friction</h3>
+<p>Honest acknowledgment: the very things that make Logic Apps powerful and give customers control <strong>also made it heavy to start</strong>. Friction points:
+- <strong>Procurement / approvals</strong> for multiple Azure services and AI models.
+- <strong>Provisioning and management overhead</strong> of services and infrastructure.
+- Because capabilities ship as <strong>separate Azure services</strong>, developers <strong>wire them together themselves</strong> — the real hidden cost.</p>
+<p>The consequence: developers either <strong>burn weeks</strong> getting to "Hello World"/a basic prototype, or they <strong>pick a lighter-weight tool that doesn't actually fit</strong> just because it's faster to start. Either way, the powerful platform <strong>isn't reaching the people who need it most</strong>.</p>
+<h3 id="why-now-ai-changes-who-can-automate">Why now: AI changes who can automate</h3>
+<p>Historically, automation was limited to <strong>people who could write code</strong>, so those closest to the business problems often couldn't build solutions — creating the classic <strong>IT bottleneck</strong>. AI changes the dynamic: an <strong>operations lead, analyst, AI builder, or knowledge worker</strong> can now describe a workflow in <strong>natural language</strong> and participate in building it. Automation is no longer confined to <strong>central integration teams</strong>. This creates the clear need: a platform with <strong>power and reliability for production workloads</strong> that <strong>doesn't require you to be an Azure expert</strong>.</p>
+<h3 id="the-solution-shape-two-changes-one-deliberate-non-change">The solution shape: two changes, one deliberate non-change</h3>
+<p>The design move that defines Logic Apps Automation:
+- <strong>Problem 1 — infrastructure overhead:</strong> they <strong>took out infrastructure management</strong> but <strong>kept the Azure</strong>, so you still get full <strong>Azure-grade reliability and scale</strong>.
+- <strong>Problem 2 — barrier to entry:</strong> they <strong>removed the Azure portal dependency</strong> — sign in with your <strong>Entra ID</strong> and start building. <strong>No Azure access or expertise required</strong>, yet whatever you build is still <strong>built on Azure</strong>.
+- <strong>Deliberate non-change:</strong> the <strong>enterprise rigor</strong> stays. "Remove the friction, but not the rigor."</p>
+<p>These two things "almost never come together" — and now they do.</p>
+<h3 id="announcement-azure-logic-apps-automation">Announcement: Azure Logic Apps Automation</h3>
+<p><strong>Azure Logic Apps Automation</strong> — an enterprise-ready automation platform built for <strong>developers of every kind</strong>, offering a <strong>low barrier to entry with the same enterprise rigor</strong>. <strong>Available in public preview today at <code>auto.azure.com</code>.</strong> Four defining attributes:
+1. <strong>Same enterprise-ready platform</strong> that runs trillions of action executions per month → <strong>production-ready from day one</strong>.
+2. <strong>Day-zero friction gone</strong> — all compute, infrastructure, and service provisioning is <strong>hosted on your behalf</strong>; you sign in and you're ready to build.
+3. <strong>No Azure portal needed</strong> — it's <strong>hosted outside Azure</strong>; all you need is <strong>Microsoft Entra ID</strong> to log in.
+4. <strong>Still built for enterprises</strong> — isolated compute, <strong>RBAC</strong>, auditability, <strong>VNet support</strong>, and everything Logic Apps offers as an enterprise platform today.</p>
+<h3 id="under-the-hood-the-resourceorganization-model">Under the hood: the resource/organization model</h3>
+<p>After the first demo, Divya explains the underlying constructs:
+- <strong>Project (topmost construct):</strong> where an <strong>admin</strong> operates. Think of projects as <strong>environments</strong> — scoped by development environments or by <strong>business domains</strong> (your choice). Projects are how the <strong>platform/infrastructure team controls access, networking policies, and shared resources</strong>.
+- <strong>Applications (inside a project):</strong> developers create one or many. This is where <strong>builders work day-to-day</strong>; <strong>no Azure access</strong> is needed.
+- <strong>Shared resources (project level, platform-team managed, app-consumable):</strong> <strong>knowledge</strong> (for grounding), <strong>sandboxes</strong> (isolated agent compute), <strong>policies</strong> (governance/guardrails), and the <strong>ability to include/exclude connectors</strong>.
+- <strong>Per-app resources:</strong> each app has its own <strong>workflows, connections, files, and skills</strong>, plus an <strong>analytics dashboard</strong> and its own permission model (<strong>reader or contributor</strong>) so teams collaborate without exposing the rest of the project.</p>
+<p>This yields a <strong>clean separation</strong>: <strong>admins govern the platform, developers build on top.</strong></p>
+<h3 id="two-layer-governance-model">Two-layer governance model</h3>
+<ul>
+<li><strong>Layer 1 — Project:</strong> an <strong>Azure resource</strong> governed by <strong>ARM RBAC</strong>. The <strong>project admin</strong> owns it and manages members, permissions, policies, quotas, knowledge, sandboxes, and models scoped at the project level.</li>
+<li><strong>Layer 2 — App (developer/builder):</strong> developers build apps (workflows, connections, files, skills). <strong>No Azure access or permissions required.</strong> They consume <strong>project-scoped resources within the policies the admin set</strong>.</li>
+<li>Net: <strong>one team governs while another builds, both inside the same secure boundary.</strong></li>
+</ul>
+<h3 id="sandbox-agent-execution-model">Sandbox &amp; agent execution model</h3>
+<p>The <strong>sandbox</strong> is an <strong>isolated environment</strong> to run <strong>GitHub Copilot agents</strong> with <strong>native file, shell, and web operations</strong> and isolated execution. These agents can <strong>write code dynamically</strong> and support <strong>skills and MCPs</strong> for reasoning and actions. The sandbox is <strong>configured at the project</strong> with repositories, skills, and other context. In the invoice example, the <strong>invoice agent is built on the GitHub Copilot SDK</strong> and runs on a <strong>sandbox</strong> (isolated compute <strong>per workflow</strong>, configured at the project). You can provide it <strong>business context</strong> (e.g. the invoice), <strong>skills</strong> (validation, notification), and even <strong>GitHub or Azure DevOps repositories</strong>.</p>
+<h3 id="knowledge-as-a-service-managed-rag">Knowledge as a Service (managed RAG)</h3>
+<p>Building a RAG pipeline today is <strong>complex</strong>: prepare the vector store and data, then build a pipeline to <strong>parse, chunk, and tokenize</strong> documents. Logic Apps <strong>collapses this into a few simple steps</strong>:
+- You <strong>upload files</strong>; Logic Apps <strong>automatically ingests, chunks, and vectorizes</strong> the content.
+- <strong>No pipeline to configure, no infrastructure to maintain.</strong>
+- <strong>Retrieval is a native workflow step.</strong>
+- This <strong>dramatically lowers the barrier</strong> for anyone building <strong>grounded, personalized agents</strong>.</p>
+<p>Implementation details from the demo:
+- The <strong>knowledge base is scoped at the app level</strong>, so it's shared across workflows in the same app.
+- <strong>One-time setup:</strong> built on <strong>Cosmos DB</strong> as the vector store and <strong>Azure OpenAI</strong> for models — you connect the knowledge base to a <strong>Cosmos DB instance</strong>, then provide a model for <strong>embedding generation</strong> and another for <strong>chat completions</strong>.
+- Files are organized into <strong>groups</strong>, which are the <strong>unit of reference from an agent</strong> — group logically by scenario/outcome. On upload you choose the group and add <strong>metadata (name, description)</strong>. Each file goes through <strong>tokenization, chunking, and embedding</strong>, with a <strong>status</strong> shown so you know when it's ready.
+- In the agent, a <strong>knowledge section</strong> lets you select the specific <strong>knowledge group</strong> to expose (and add files directly). Behind the scenes the agent performs <strong>semantic search and retrieval</strong> against the group based on the query. <strong>References to knowledge are surfaced</strong> in both the agent chat and the run history, and the agent node shows the <strong>knowledge group used + token utilization</strong>.</p>
+<h3 id="azure-ai-foundry-logic-apps-two-services-one-cohesive-experience">Azure AI Foundry + Logic Apps: two services, one cohesive experience</h3>
+<p>The third pillar brings two Azure services together:
+- <strong>Azure AI Foundry (left):</strong> Microsoft's AI platform where <strong>agents are built and hosted</strong>. You <strong>define agents</strong> with models, tools, instructions; <strong>ground</strong> responses in knowledge and enterprise data; and <strong>evaluate, version, and observe</strong> agent behavior. <strong>"Foundry is where your agent lives."</strong>
+- <strong>Azure Logic Apps (right):</strong> your <strong>automation and orchestration platform</strong>, where agents are <strong>invoked and orchestrated</strong>. You <strong>trigger agents from any event or schedule</strong> using the <strong>hundreds of connectors</strong> Logic Apps offers natively.</p>
+<p>The integration provides an improved experience to use the services together to <strong>automate and operationalize AI agents and run them in production at scale</strong>.</p>
+<p>Key mechanics from the auto-loan demo:
+- In Logic Apps you create a workflow and add an <strong>agent node</strong> that <strong>connects to a Foundry project</strong>; you can <strong>pick any model or existing agent</strong> in that project (every Foundry agent "shows up ready to invoke").
+- If the agent you need doesn't exist, you can <strong>create it without leaving Logic Apps</strong> — behind the scenes Logic Apps <strong>calls the Foundry APIs to provision it</strong>, and it appears in your Foundry project. A <strong>deep link</strong> lets you jump between portals.
+- <strong>Two-way sync:</strong> updating instructions in Logic Apps <strong>flows straight back to Foundry</strong>; the agent <strong>stays in sync</strong>.
+- The <strong>unlock:</strong> the loan agent's <strong>tools are native Logic Apps connectors, APIs, and workflows</strong> — i.e. <strong>Foundry as the AI platform + the full Logic Apps ecosystem (1,400+ connectors, your APIs, your custom code) as the agents' tools</strong>, on a proven enterprise platform.</p>
+<h3 id="human-in-the-loop-and-dual-lens-observability">Human-in-the-loop and dual-lens observability</h3>
+<p>The auto-loan workflow handles incoming loan requests <strong>autonomously</strong>, combining <strong>deterministic business steps with AI reasoning</strong> — using a <strong>triage agent</strong> in Foundry for <strong>duplicate checks</strong>, then an <strong>auto-loan agent</strong> for the <strong>approval decision</strong>. Flow:
+- A submitted loan request that <strong>needs human approval</strong> pauses the agent; the <strong>approval request lands in Teams</strong>.
+- With Logic Apps workflows you can build <strong>long-running human-in-the-loop processes</strong> with Foundry agents.
+- Once the approver responds, the <strong>workflow resumes</strong>, the loan agent <strong>finalizes the decision</strong>, and the customer gets an <strong>approval notification</strong> — "autonomous with a human in the loop exactly where it matters."
+- <strong>Two correlated lenses, one execution:</strong>
+  - <strong>Logic Apps run history</strong> — every step end to end: <strong>inputs, outputs, token usage</strong> — the <strong>operational/governance view</strong> for platform and automation teams.
+  - <strong>Foundry</strong> — the agent's <strong>own traces and logs</strong>: reasoning, tool calls, thread history — the <strong>developer view</strong> to tune prompts, debug behavior, and track quality.
+  - The two are <strong>correlated by run ID across both portals</strong>, so you get the right view in the right place "without losing the thread between them."</p>
+<h3 id="session-recap-divyas-own-wrap">Session recap (Divya's own wrap)</h3>
+<p>Three key capabilities, one common goal:
+1. <strong>Logic Apps Automation</strong> — a new platform for building automations on the <strong>same enterprise-grade platform at scale</strong>, but with <strong>low barrier to entry</strong>.
+2. <strong>Knowledge as a Service</strong> — managed RAG directly inside workflows.
+3. <strong>Deep Foundry ↔ Logic Apps integration</strong> — for agent orchestration.</p>
+<p>The unifying goal: <strong>make AI automation easier to build and easier to trust in production.</strong> Learn more via the docs, blogs, and demos referenced in the session.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Azure Logic Apps</strong> — the decade-proven enterprise integration platform being extended into an AI automation platform.</li>
+<li><strong>Azure Logic Apps Automation</strong> <em>(new)</em> — enterprise-ready automation platform with no infra management and no Azure portal dependency; public preview at <code>auto.azure.com</code>.</li>
+<li><strong>Knowledge as a Service / Knowledge in Logic Apps</strong> <em>(new, public preview)</em> — managed RAG (ingest, chunk, vectorize, retrieve) as native workflow steps.</li>
+<li><strong>Azure AI Foundry</strong> — Microsoft's AI platform where agents are built, hosted, grounded, evaluated, versioned, and observed.</li>
+<li><strong>Microsoft Entra ID</strong> — the only credential needed to sign in to Logic Apps Automation (replaces Azure portal access).</li>
+<li><strong>GitHub Copilot SDK</strong> — the framework the automation-platform agents are built on.</li>
+<li><strong>GitHub Copilot agents</strong> — agents run in the sandbox with native file/shell/web operations.</li>
+<li><strong>Sandbox</strong> — isolated compute environment (per workflow, configured at project) for running agents, supporting skills and MCPs.</li>
+<li><strong>MCP (Model Context Protocol)</strong> — supported by sandbox agents for reasoning and actions.</li>
+<li><strong>Skills</strong> — reusable capabilities (e.g. validation, notification) provided to agents.</li>
+<li><strong>Azure Cosmos DB</strong> — vector store backing the Knowledge as a Service capability.</li>
+<li><strong>Azure OpenAI</strong> — provides embedding-generation and chat-completion models for the knowledge base.</li>
+<li><strong>ARM RBAC (Azure Resource Manager role-based access control)</strong> — governs the Project layer.</li>
+<li><strong>VNet support</strong> — built-in networking isolation for enterprise workloads.</li>
+<li><strong>Connectors (1,400+)</strong> — native Logic Apps connectors to SaaS, databases, AI services, on-prem; usable as Foundry agent tools.</li>
+<li><strong>ServiceNow</strong> — deterministic step (ticket creation) in the invoice-processing workflow.</li>
+<li><strong>Salesforce</strong> — deterministic step (record update) in the invoice-processing workflow.</li>
+<li><strong>Microsoft Teams</strong> — destination for human-in-the-loop approval requests.</li>
+<li><strong>GitHub / Azure DevOps repositories</strong> — can be provided as context/source to agents.</li>
+<li><strong>JavaScript (in-workflow code)</strong> — Copilot writes JavaScript expressions/code in action scope with exception handling.</li>
+<li><strong>Default hosted LLM</strong> — provided out of the box; you can bring additional first-party and third-party models via your GitHub account.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Azure Logic Apps Automation — public preview</strong> (announced at Build). Available today at <strong><code>auto.azure.com</code></strong>. New enterprise-ready automation platform: no infrastructure management, no Azure portal dependency (Entra ID sign-in only), with isolated compute, RBAC, auditability, and VNet support retained.</li>
+<li><strong>Knowledge as a Service (Knowledge in Logic Apps) — public preview.</strong> Managed RAG built into workflows — upload files and get automatic ingest/chunk/vectorize plus native retrieval; built on Cosmos DB (vector store) + Azure OpenAI (embeddings + chat). "Bring your organization's documents into your agents without writing a single line of pipeline code."</li>
+<li><strong>Azure AI Foundry ↔ Logic Apps deep integration.</strong> Improved experience to build/host agents in Foundry and invoke/orchestrate them from Logic Apps — including creating/editing Foundry agents from within Logic Apps (via Foundry APIs), two-way instruction sync, native Logic Apps connectors as agent tools, human-in-the-loop, and run-ID-correlated observability across both portals. (Presented as a new/improved integrated experience; specific GA/preview status not explicitly stated.)</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<h3 id="demo-1-logic-apps-automation-zero-setup-onboarding-invoice-processing">Demo 1 — Logic Apps Automation (zero-setup onboarding + invoice processing)</h3>
+<ul>
+<li>Open a browser → <code>auto.azure.com</code> (hosted <strong>outside</strong> Azure); landing page previews capabilities; <strong>sign in with Entra ID only</strong>.</li>
+<li>Land on a <strong>projects</strong> page; inside a project are <strong>apps</strong> and <strong>shared resources</strong> (sandbox, models, network policies); <strong>project admins add developers and assign role-based permissions</strong>.</li>
+<li><strong>Sandbox</strong> highlighted as isolated environment for GitHub Copilot agents (native file/shell/web, skills, MCPs), configured at project with repos/skills/context.</li>
+<li>Create a workflow by <strong>describing it in natural language</strong>; the agent <strong>scaffolds the workflow</strong>, with Copilot picking connectors and configuring many parameters (connections still need updating). Iteratively build/test with Copilot; when asked to write code, Copilot adds the action and writes <strong>JavaScript with exception handling</strong>. Updates can be <strong>workflow-scoped or action-scoped</strong>.</li>
+<li>A pre-built <strong>invoice-processing workflow</strong> shows the <strong>deterministic + AI</strong> pattern: <strong>ServiceNow ticket creation</strong> and <strong>Salesforce update</strong> are deterministic; the <strong>invoice agent</strong> (GitHub Copilot SDK, on a sandbox) validates against business context/skills; after validation, deterministic steps update Salesforce and close the ticket if approved.</li>
+<li><strong>Code view</strong> is an editable, real-time-synced view of the same workflow; Copilot can be scoped to a <strong>specific action</strong> for targeted JavaScript expressions/code, with <strong>multi-turn conversations</strong> to iterate.</li>
+<li>On trigger (invoice received), the <strong>run history shows full traceability and auditability</strong> of every step, with <strong>real-time streaming</strong> into each step as it happens. For an <strong>agent node</strong>, you can <strong>visually see in real time the tools it's using</strong>. Every step is logged with <strong>inputs, outputs, execution time, status</strong>, and <strong>agent outcomes include token utilization at each step</strong>.</li>
+<li><strong>Point proved:</strong> the heavy prerequisites are gone — sign in and build — while keeping full enterprise traceability and the deterministic-plus-AI workflow model.</li>
+</ul>
+<h3 id="demo-2-knowledge-as-a-service-managed-rag-inside-a-workflow">Demo 2 — Knowledge as a Service (managed RAG inside a workflow)</h3>
+<ul>
+<li>Set up a <strong>knowledge base</strong> scoped at the <strong>app level</strong> (shared across workflows in the app).</li>
+<li><strong>One-time setup:</strong> connect to a <strong>Cosmos DB</strong> instance (vector store) and provide an <strong>Azure OpenAI</strong> model for <strong>embeddings</strong> and another for <strong>chat completions</strong>.</li>
+<li>Add files to the knowledge base and organize into <strong>groups</strong> (the unit of reference from an agent); on upload choose the group and add <strong>metadata (name, description)</strong>. Each file goes through <strong>tokenization, chunking, embedding</strong>, with <strong>status</strong> shown until ready.</li>
+<li>A workflow with an <strong>agent that classifies incoming documents</strong> — and if it's a <strong>contract</strong>, validates against the org's approval rules/policies — is grounded via the agent's <strong>knowledge section</strong>: select the <strong>knowledge group</strong> (connection pre-set), add files directly, and provide instructions. Behind the scenes the agent runs <strong>semantic search and retrieval</strong>.</li>
+<li>Run with a <strong>sample contract</strong>: run history shows the agent <strong>classified the document as a contract</strong>, then ran the <strong>contract validation steps</strong>, all <strong>grounded</strong> in the uploaded classification + contract-processing guides, with <strong>knowledge references surfaced in both agent chat and run history</strong>, plus the <strong>knowledge group used and token utilization</strong>.</li>
+<li><strong>Point proved:</strong> what normally takes significant effort as a custom ingestion + retrieval pipeline is <strong>fully handled for you</strong> — grounded agents with no pipeline code.</li>
+</ul>
+<h3 id="demo-3-foundry-agents-orchestrated-from-logic-apps-auto-loan-approval">Demo 3 — Foundry agents orchestrated from Logic Apps (auto-loan approval)</h3>
+<ul>
+<li>In Logic Apps, create a workflow and add an <strong>agent node</strong> connected to a <strong>Foundry project</strong>; <strong>pick any model or existing agent</strong> (every Foundry agent shows up ready to invoke).</li>
+<li><strong>Create a new Foundry agent in-place</strong> with just a name + model — Logic Apps calls the <strong>Foundry APIs</strong> to provision it, and it appears in the Foundry project; a <strong>deep link</strong> lets you jump between portals. <strong>Updating instructions in Logic Apps flows back to Foundry</strong> (agents stay in sync).</li>
+<li><strong>Auto-loan approval workflow</strong> handles incoming loan requests <strong>autonomously in real time</strong> using a <strong>triage agent</strong> (duplicate checks) and an <strong>auto-loan agent</strong> (approval decision) — both living in <strong>Foundry</strong>, but using <strong>native Logic Apps connectors, APIs, and workflows as their tools</strong>.</li>
+<li>Submit a loan request that <strong>requires human approval</strong>: run history shows the agent <strong>paused waiting on human approval</strong>; the <strong>approval request lands in Teams</strong>; once the approver responds the <strong>workflow resumes</strong>, the loan agent <strong>finalizes the decision</strong>, and the customer gets an <strong>approval notification</strong>.</li>
+<li><strong>Dual-lens observability:</strong> Logic Apps run history captures every step end to end (<strong>inputs, outputs, token usage</strong>) for the platform/automation/governance view; <strong>Foundry</strong> shows the agent's <strong>traces, logs, reasoning, tool calls, thread history</strong> for developers — the <strong>same execution correlated by run ID</strong> across both portals.</li>
+<li><strong>Point proved:</strong> Foundry as the AI platform + the full Logic Apps ecosystem as the agents' tools enables <strong>long-running, human-in-the-loop, autonomous workflows</strong> that are fully observable on a proven enterprise platform.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>100,000+ customers</strong> running on the Logic Apps platform.</li>
+<li><strong>Millions of workflow executions</strong> and <strong>trillions of connector operations every month.</strong></li>
+<li><strong>1,400+ connectors</strong> to SaaS apps, databases, AI services, and on-prem applications.</li>
+<li>The platform runs <strong>trillions of action executions per month</strong> (cited as why Logic Apps Automation is production-ready from day one).</li>
+<li><strong>Most of the Fortune 500</strong> already run enterprise workloads on Logic Apps in production.</li>
+<li><em>"We wanted to remove the friction, but not the rigor."</em></li>
+<li><em>"Most companies at this point have built an AI agent demo, but very few have one running in production."</em></li>
+<li><em>"Foundry is where your agent lives."</em> / Logic Apps is <em>"where agents are invoked and orchestrated."</em></li>
+<li><em>"Same execution, two lenses correlated by run ID across both portals."</em></li>
+<li><em>"Low barrier to entry with same enterprise rigor."</em></li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:<ul>
+<li>Sign in to <strong><code>auto.azure.com</code></strong> with an Entra ID and scaffold a workflow from a natural-language prompt to gauge how much Copilot configures vs. what needs manual wiring.</li>
+<li>Stand up the <strong>Knowledge as a Service</strong> one-time setup (Cosmos DB vector store + Azure OpenAI embedding/chat models) and test grounding an agent against a small document group.</li>
+<li>Build a minimal <strong>Foundry agent + Logic Apps</strong> orchestration with a <strong>Teams human-in-the-loop</strong> approval step and inspect the run-ID correlation across both portals.</li>
+<li>Compare a <strong>deterministic + AI</strong> invoice/contract workflow here vs. an equivalent hand-built pipeline to quantify the time-to-Hello-World savings.</li>
+</ul>
+</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:<ul>
+<li>What are the <strong>pricing / quota / token-billing</strong> mechanics for the hosted compute, default LLM, and sandbox in Logic Apps Automation?</li>
+<li>Since the platform is <strong>hosted outside Azure</strong> (Entra ID only), how does <strong>data residency, VNet, and compliance</strong> map back to a customer's Azure tenant in practice?</li>
+<li>Is the <strong>Cosmos DB + Azure OpenAI</strong> dependency for Knowledge configurable (other vector stores / models), or fixed?</li>
+<li>What's the <strong>GA timeline</strong> for Logic Apps Automation, Knowledge, and the Foundry integration?</li>
+<li>How do <strong>MCPs and skills</strong> in the sandbox interoperate with the standard 1,400+ connectors — overlap or complementary?</li>
+</ul>
+</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:<ul>
+<li>Azure integration / iPaaS modernization and any "AI demo → production" governance conversations.</li>
+<li>Customers wanting <strong>citizen-developer / low-barrier</strong> automation without surrendering enterprise controls.</li>
+<li>Agent orchestration architectures pairing <strong>Azure AI Foundry</strong> with <strong>human-in-the-loop</strong> business processes.</li>
+</ul>
+</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Azure Logic Apps">Azure Logic Apps</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Azure AI Foundry">Azure AI Foundry</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Agentic automation">Agentic automation</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Retrieval-Augmented Generation (RAG)">Retrieval-Augmented Generation (RAG)</span></li>
+<li><span class="wikilink wikilink--unresolved" title="GitHub Copilot SDK">GitHub Copilot SDK</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Human-in-the-loop">Human-in-the-loop</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Model Context Protocol (MCP)">Model Context Protocol (MCP)</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Build 2026">Microsoft Build 2026</span></li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="OD831.html"><span class="pager-dir">← Previous</span><span class="pager-code">OD831</span><span class="pager-title">Govern AI models, tools, and agents with Azure API Management</span></a>
+    <a class="pager pager-next" href="OD836.html"><span class="pager-dir">Next →</span><span class="pager-code">OD836</span><span class="pager-title">From Test Kitchen to Table: A Demo-driven Tour of Foundry Portal for AI Developers</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

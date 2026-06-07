@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ODSP906 — Apply orchestration patterns for production AI agents</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">ODSP906</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=kUDXvURx-yk" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Apply orchestration patterns for production AI agents</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Cliff Simpkins (UiPath) + UiPath product team</span>
+      <span class="meta-item">⏱️ 20m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="orchestration">Orchestration</span><span class="chip" data-tag="agent-framework">Agent Framework</span><span class="chip" data-tag="automation">Automation</span><span class="chip" data-tag="uipath">Uipath</span><span class="chip" data-tag="production">Production</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Cliff Simpkins (Lead, Developer Relations — UiPath) + UiPath product team (keynote highlight reel from UiPath's Bengaluru developer conference)<br>
+<strong>Duration:</strong> ~20 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=kUDXvURx-yk">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>This is a UiPath partner session positioning <strong>UiPath as Microsoft's preferred enterprise agentic automation platform</strong>, built on Azure. The thesis: prototypes and Copilot are great for open-ended work in Microsoft 365, but <strong>complex, long-running, exception-driven enterprise processes</strong> (claims, loans, approvals) need a dedicated <strong>orchestration layer</strong> with governance, durable state, human approvals, and observability out of the box. UiPath's answer is <strong>Maestro</strong>, an orchestration engine offering three canvases — <strong>BPMN</strong> (business processes), the new <strong>Flow</strong> (developer canvas, file-based and coding-agent-native), and <strong>Case</strong> (dynamic, exception-driven work). The second half is a ~15-min cut of UiPath's developer keynote demoing coding agents (Claude Code, Gemini CLI, Codex) building/debugging/deploying on UiPath, plus new <strong>agentic testing</strong> (Autopilot, Delegate) in Test Cloud. Everything shown is available now or in early access; Flow is in early access.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>UiPath = the production "execution layer" for agents</strong>, not the place you prototype them. It supplies governance, observability, human approvals, and durable state out of the box so agents become enterprise-ready.</li>
+<li><strong>Orchestration ≠ automation.</strong> Automation is "one bot doing one thing at one time." Orchestration is modeling a whole <strong>process</strong> — a journey spanning many heterogeneous tasks (agents that reason, RPA bots, human reviews, ERP/system integrations, exceptions).</li>
+<li><strong>Maestro is the orchestration engine</strong> at the core of UiPath. It handles control flow for AI agents + human approval steps + system integrations, manages state across long-running processes, and handles retries, timeouts, and partial failures. Every process is observable and automatable out of the box.</li>
+<li><strong>Three Maestro canvases map to three operating models:</strong> <strong>BPMN</strong> (time-tested BPMN 2.0 standard for business-process owners), <strong>Flow</strong> (developer canvas), and <strong>Case</strong> (complex, dynamic, exception-driven processes).</li>
+<li><strong>Flow is the new developer-friendly canvas</strong> running on the Maestro runtime. Its key differentiator: a <strong>schema natively supported by coding agents</strong>, so a coding agent can author the entire flow file and drive everything that happens in it.</li>
+<li><strong>Flow is file-based and local.</strong> Flow files live on your machine in VS Code, so you get <strong>Git / version control</strong> for reviewing changes you and teammates make — proper developer workflow, not a locked web designer.</li>
+<li><strong>Agents are configured inline in Flow</strong> — tools, context, prompts, output schema, advanced error handling, and <strong>platform-level guardrails</strong> (PII detection, harmful-content detection, user-prompt-attack defense) — no separate project required.</li>
+<li><strong>Case is for dynamic, exception-driven work</strong> (e.g. loan origination). It is <strong>not</strong> straight-line BPMN: stages have <strong>no arrows</strong>; the <strong>case manager</strong> activates each stage via rules or <strong>agent reasoning</strong>, enabling parallel work, re-entering stages, escalations, and ad-hoc stages without losing continuity.</li>
+<li><strong>Coding-agent support is platform-agnostic.</strong> Demos used Claude Code, Gemini CLI, and Codex interchangeably; UiPath provides CLIs/tools giving agents full, governed control of the platform.</li>
+<li><strong>GitHub Copilot integration:</strong> install <strong>UiPath skills + CLI via npm</strong> and Copilot gets full context on UiPath APIs, CLI commands, and deployment patterns — build/deploy/manage agentic automations without leaving VS Code.</li>
+<li><strong>UiPath conversational agents now run in Microsoft Teams</strong> — packaged via standard Teams packaging; employees use them in 1:1 chats or channel workflows to submit info, check status, and get updates.</li>
+<li><strong>Evaluations are coming to end-to-end processes in Flow</strong> — think "test cases for your process orchestrations," extending agent evals to whole orchestrations.</li>
+<li><strong>Agentic testing in Test Cloud</strong> targets the testing bottleneck created by AI-accelerated code: <strong>Autopilot</strong> runs/explores tests autonomously (Playwright on web, Appium on mobile, plus SAP/Epic/Citrix), and <strong>Delegate</strong> eliminates QA busy-work (running tests, filing Jira issues, reporting).</li>
+<li><strong>Because UiPath runs on Azure, you inherit existing security, identity, and compliance</strong> — "nothing new for you to approve."</li>
+<li><strong>Headline industry stats cited:</strong> 40%+ of code is now AI-generated; 85% of developers use coding agents.</li>
+<li><strong>Adoption is low-friction:</strong> install the CLI, add UiPath skills to GitHub Copilot, start building in VS Code — entry point at <strong>uipath.com/developers</strong>.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-why-a-dedicated-orchestration-layer-and-what-uipath-is">Framing: why a dedicated orchestration layer (and what UiPath is)</h3>
+<p>Cliff Simpkins (Dev Relations lead at UiPath) opens by positioning UiPath as <strong>Microsoft's preferred enterprise agentic automation platform</strong> — built on Azure and deployed into some of the most governed enterprise environments. For developers, three things matter:
+1. <strong>UiPath Orchestrator is the execution layer that makes an agent production-ready</strong> — governance, observability, human approvals, and durable state all out of the box. It's the enterprise runtime your agents deploy directly into.
+2. <strong>GitHub Copilot users can build on UiPath out of the box</strong> — install UiPath skills + CLI via npm and Copilot gets full context on the platform's APIs, CLI commands, and battle-tested deployment patterns; you can ship without leaving VS Code.
+3. <strong>Running on Azure means inherited security, identity, and compliance</strong> — the controls the enterprise already trusts, "nothing new to approve."</p>
+<p>UiPath is known for its <strong>RPA roots</strong>, but the pitch is that the platform is now a <strong>runtime for orchestrating complex, agentic processes</strong> — one of the only platforms that can manage agents, robots, human-review steps, system integrations, and exceptions together in a governed, auditable execution environment. Developers keep flexibility: low-code tools, pre-built agents, <strong>or custom agents using the frameworks/models/tools they already trust</strong>, with secure access to data <strong>without moving or duplicating it</strong> (built-in data governance for stringent compliance).</p>
+<h3 id="maestro-the-orchestration-engine-and-its-responsibilities">Maestro — the orchestration engine and its responsibilities</h3>
+<p>At the core of the platform is <strong>Maestro</strong>, the UiPath orchestration engine. Its job is to handle <strong>control flow</strong> across a process that mixes AI agents, human approval steps, and system integrations. Concretely Maestro:
+- <strong>Manages state across long-running processes</strong> (durable orchestration that survives over time).
+- <strong>Handles retries, timeouts, and partial failures</strong> — the reliability primitives production processes need.
+- Makes <strong>every process observable and automatable out of the box</strong>.</p>
+<p>The mental model the team stresses: <strong>automation is one bot doing one thing at one time, but a <em>process</em> is a journey that spans many tasks.</strong> Some tasks are automations (RPA), but others are <strong>agents that reason</strong> (e.g. an investigation/triage agent), <strong>humans</strong> doing reviews/approvals, or <strong>integrations into ERP systems</strong>. Maestro is what stitches these heterogeneous task types into one governed flow — this is the "orchestration pattern" the session title refers to, applied at enterprise scale rather than as in-code agent primitives.</p>
+<h3 id="the-three-maestro-canvases-the-orchestration-patterns">The three Maestro canvases (the orchestration "patterns")</h3>
+<p>Maestro supports <strong>three canvases</strong> to model how an organization operates — the session essentially frames these as three orchestration styles:</p>
+<ul>
+<li><strong>Maestro BPMN</strong> — the <strong>business process canvas</strong>, built on the <strong>BPMN 2.0 standard</strong>. Time-tested and still the industry standard for process owners. Best for well-defined, linear-ish business processes.</li>
+<li><strong>Maestro Flow</strong> — the <strong>developer canvas</strong> (new). Same Maestro runtime underneath (enterprise governance, auditability, durability) but a developer-friendly, <strong>file-based</strong> experience whose schema is <strong>natively understood by coding agents</strong>.</li>
+<li><strong>Maestro Case</strong> — for <strong>more complex and dynamic business processes</strong>; purpose-built for <strong>exception-driven</strong> work that doesn't fit a linear flow.</li>
+</ul>
+<h3 id="pattern-1-maestro-bpmn-linear-standards-based-business-orchestration">Pattern 1 — Maestro BPMN (linear, standards-based business orchestration)</h3>
+<p>BPMN is positioned as the foundation: it uses the <strong>BPMN 2.0 standard</strong>, which process owners already know and trust. It's the right tool when the process is well-understood and largely sequential. Importantly, capabilities shown in Flow (extraction nodes, script routing, data-fabric lookups, agents) are noted as <strong>also supported in Maestro BPMN</strong> — Flow is a different authoring surface, not a different capability set.</p>
+<h3 id="pattern-2-maestro-flow-developer-canvas-coding-agent-native">Pattern 2 — Maestro Flow (developer canvas, coding-agent-native)</h3>
+<p>Flow is the headline developer story. Key points from the demo (a <strong>billing-dispute process</strong>):
+- <strong>The canvas is new; the runtime is Maestro</strong> — so you keep enterprise-grade governance, auditability, and durability.
+- <strong>Coding-agent-native schema:</strong> unlike other visual workflow tools, Flow's schema is designed so <strong>a coding agent can write the entire flow file</strong> and affect everything in the flow. You build alongside Claude Code (sidebar), Codex (terminal), etc.
+- <strong>Local files + version control:</strong> Flow files live on your <strong>personal machine in VS Code</strong>, so you (and teammates) review changes via <strong>Git or any VCS</strong> — real developer workflow.
+- <strong>Multiple triggers of different types:</strong> the demo starts from a manual/webhook trigger, then adds an <strong>Outlook "email received" trigger</strong> — Flow supports several trigger types on one flow.
+- <strong>Inline agent configuration (no separate project):</strong> add an agent node and configure its <strong>tools, context, escalations, prompts, output schema, and advanced error handling</strong> inline. You can also <strong>wire outputs from previous nodes</strong> and preview the output schema.
+- <strong>Platform-level guardrails on agents:</strong> <strong>PII detection, harmful-content detection, and user-prompt-attack</strong> protection — described as critical so you can trust an agent that runs on inbound email.
+- <strong>Rich node types in the flow:</strong> an <strong>invoice extraction node referencing an IXP project</strong> (so you don't call a separate process to do IXP extraction from Maestro), <strong>script nodes</strong> for routing, <strong>native data-fabric lookups</strong>, <strong>discrepancy detection</strong> on a constructed payload, then a second agent for <strong>dispute analysis</strong> with an <strong>inline context-grounding index</strong> (the agent consults its standard operating procedure).
+- <strong>Full observability / trace view:</strong> the <strong>trace view</strong> shows <strong>every call an agent makes</strong> plus the inner workings of all platform components the flow references.
+- <strong>Human approval inline:</strong> the dispute agent routes to an <strong>approval task</strong> that <strong>shows up right in your screen</strong> — no trip to Action Center or another platform; approve and keep debugging.
+- <strong>End-to-end finish:</strong> call an <strong>API function for a financial adjustment in the ERP</strong>, hand to a <strong>final agent</strong> that drafts the customer email, send it, and fire a <strong>Slack</strong> notification internally.
+- <strong>Evaluations for whole processes:</strong> UiPath announced <strong>bringing evaluations to end-to-end processes in Flow</strong> — "test cases for your process orchestrations," extending the agent-eval concept to entire orchestrations.</p>
+<p>The recurring message: <em>"You don't have to choose between a developer experience you actually enjoy and the power of an enterprise platform — with Flow you get both."</em></p>
+<h3 id="pattern-3-maestro-case-dynamic-exception-driven-orchestration">Pattern 3 — Maestro Case (dynamic, exception-driven orchestration)</h3>
+<p>Case targets the messiest reality. The motivating example is a <strong>loan process</strong>: many departments, missing documents that get kicked back and resubmitted, partial reprocessing of only the newly submitted docs, and mid-process life events (e.g. changing jobs) that alter how the loan is processed — i.e. lots of <strong>exceptions, ad-hoc steps, and deviations</strong> the process must handle natively. Maestro lets you <strong>visualize and harness this complexity</strong> instead of forcing it into a linear flow where you'd have to define every path.</p>
+<p>Demo: <strong>loan origination implemented in Maestro Case</strong> (a "case plan"):
+- A new canvas <strong>purpose-built for dynamic, exception-driven work</strong> — "not just straight-line BPMN."
+- Structure: a <strong>case manager</strong> on top; the case is organized into <strong>stages</strong>, with <strong>tasks</strong> under each. Tasks can be <strong>agents, API workflows, RPA, BPM, or external agents</strong> — anything you could do in Maestro BPMN.
+- <strong>Crucially, after the intake stage there are NO arrows in the diagram.</strong> Each stage is <strong>activated based on what the case manager decides — via rules or agent reasoning</strong> — rather than fixed sequential edges. This is the core difference from BPMN.
+- <strong>Rework illustrated:</strong> sanction screening ran <strong>twice</strong>; the <strong>execution trail</strong> is opened to see why. The <strong>case agent always gives its rationale</strong> for each decision it made.
+- <strong>Parallelism + escalation:</strong> <strong>underwriting and escalation run in parallel</strong>. The trace shows the agent <strong>reasoned a medium-risk loan should go to a manager for approval (escalation) but should also proceed to underwriting</strong> because it isn't high-risk — i.e. a task can <strong>cross boundaries and activate multiple stages at once.</strong>
+- The summary of the dynamism: <strong>parallel work, re-entering stages, escalations, and ad-hoc stages — all without losing continuity.</strong></p>
+<h3 id="coding-agents-across-the-lifecycle-build-debug-deploy">Coding agents across the lifecycle (build → debug → deploy)</h3>
+<p>A central theme: developers are now the most leveraged people in their company, and coding agents compress the lifecycle. The "same five stages, dramatically different timelines" — planning/building drop from months to hours/days; debugging/deploying/testing to hours; an incident can be remediated in <strong>minutes</strong> (a coding agent can even start before you get the incident).</p>
+<p>Demos:
+- <strong>Failing onboarding queue (Claude Code):</strong> an onboarding automation in an online portal fails on a Friday. Claude Code investigates like a human but faster — goes to <strong>Orchestrator</strong>, reads logs, investigates target systems, forms and tests hypotheses, and finds the root cause (<strong>target system blocked the APIs</strong>). It produces a clear timeline (what/why/when) and a suggested fix. Told to fix it, it walks the existing code + recommendations, <strong>switches the automation from API to UI</strong> when needed, identifies the required UI element, and (fast-forwarded ~30 min) has built an <strong>object repository, UI files, and the needed actions</strong> (filling the form, typing inputs), then <strong>builds the package and pushes it to Orchestrator</strong> — all in the same trusted, governed environment.
+- <strong>Platform-agnostic agents (Gemini CLI):</strong> to prove the coding-agent support is <strong>agnostic</strong>, the same kind of work is done with <strong>Gemini CLI</strong> — it reads the <strong>PDD</strong>, understands the requirement, and recommends structuring the code as a <strong>producer/consumer with a queue.</strong></p>
+<p>The takeaway line: <em>"You get coding agents to help you from build to troubleshoot to production and back."</em> UiPath provides the <strong>tools and CLIs</strong> that give agents full, governed control of the platform.</p>
+<h3 id="agentic-testing-keeping-qa-up-with-ai-speed-code-test-cloud">Agentic testing — keeping QA up with AI-speed code (Test Cloud)</h3>
+<p>Because code ships faster, <strong>testing risk rises too</strong>. UiPath's <strong>Agent Testing solution in Test Cloud</strong> moves from manual testing to <strong>AI-augmented / autonomous software testing</strong>, with three capabilities under one mission (autonomous software testing):
+- <strong>Autonomous test-case execution with Autopilot:</strong> manual tests that <strong>run themselves with no pre-built automations</strong> — point Autopilot at the tests, give it a mission, and it executes across the <strong>web (Playwright)</strong>, <strong>mobile (Appium)</strong>, or any UI including <strong>SAP, Epic, Citrix</strong>.
+- <strong>Autonomous test <em>exploration</em>:</strong> hand Autopilot a goal and it returns <strong>full coverage with edge cases you didn't think of</strong>, plus planning/mapping of application testing.
+- <strong>UiPath Delegate</strong> — your "sidekick" that <strong>eliminates QA/testing busy-work</strong> (the administrative overhead).</p>
+<p>Demo (<strong>Delegate</strong>, tester at a bank): asked to run all assigned tests, email the test manager, and file any issues. Delegate pulls <strong>"skills"</strong> to talk to UiPath products (it reads info from <strong>Test Manager</strong> in context), and — beyond planning — it <strong>interacts with desktop/web/any applications</strong> under test. It identifies the problem, collates info, <strong>files the issues (a Jira link is shown with full context + results)</strong>, creates reports, and <strong>publishes results back to Test Manager</strong> — the skills keep it on track. The framing: <em>"not the future of testing — this is happening right now."</em></p>
+<h3 id="microsoft-focused-integrations-the-joint-architecture">Microsoft-focused integrations (the joint architecture)</h3>
+<p>The recommended architecture for a <strong>Microsoft-first environment</strong>: most enterprise work starts in <strong>Microsoft 365</strong>, but complex processes (claims, loans, approvals) need a dedicated orchestration layer <strong>Copilot wasn't designed to be out of the box.</strong> So:
+- Employees <strong>collaborate in Teams, Outlook, SharePoint, and Copilot</strong> to orchestrate open-ended/complex tasks.
+- Those complex tasks <strong>run in UiPath's orchestration layer</strong> — problem-solving, dynamic decisions, and long-running execution across documents, desktops, legacy apps, and enterprise systems.
+- <strong>If a human is needed, the process surfaces it back to a human via Teams.</strong>
+- Net: users, teams, and data stay where they are, with an orchestration engine bringing them together.</p>
+<p>Two <strong>new Microsoft integrations</strong> called out:
+1. <strong>UiPath conversational agents in Microsoft Teams</strong> — agents are built/deployed in UiPath (using the extensive <strong>integration service connectors</strong>) then deployed via <strong>standard Teams packaging</strong>; employees use them in <strong>1:1 chats or channel-based workflows</strong> to submit info, check process status, and receive updates without leaving Teams.
+2. <strong>Copilot unlocks the UiPath platform</strong> — install <strong>UiPath skills + CLI via npm</strong>, and Copilot gets full context on the platform's <strong>APIs, CLI commands, and deployment patterns</strong>; from there you build, deploy, and manage agentic automations on UiPath using your preferred coding agent.</p>
+<h3 id="reliability-observability-governance-for-orchestrated-agents-the-production-story">Reliability, observability &amp; governance for orchestrated agents (the production story)</h3>
+<p>Pulling the production threads together, the orchestration patterns are made "production-grade" by capabilities baked into Maestro/Orchestrator rather than bolted on:
+- <strong>Durable state + retries/timeouts/partial-failure handling</strong> for long-running, multi-step processes (Maestro).
+- <strong>Observability everywhere</strong> — every process is observable out of the box; the <strong>trace/execution view</strong> exposes every agent call and every platform-component interaction, and the <strong>case agent records its rationale</strong> for each decision (auditable reasoning).
+- <strong>Human-in-the-loop</strong> as a first-class task type (approval tasks inline in Flow; surface-to-Teams in the joint architecture).
+- <strong>Guardrails</strong> at the platform level (PII, harmful content, prompt-injection/user-prompt-attack defense) applied to agents.
+- <strong>Governed, auditable execution environment</strong> spanning agents, robots, human steps, and system integrations — with <strong>Azure-inherited</strong> security/identity/compliance.</p>
+<h3 id="wrap-up-availability">Wrap-up &amp; availability</h3>
+<p>Closing message: if you're building AI agents that must run in an enterprise environment where you need <strong>audit trails, processes that cross multiple systems/teams, and humans in the loop</strong>, UiPath is worth evaluating, and the <strong>entry point is low friction</strong>. Install the CLI, add the UiPath skills to GitHub Copilot, and start building on the platform <strong>without leaving VS Code</strong>. Everything to get started (SDKs, docs, CLI, GitHub Copilot skills, community resources) is at <strong>uipath.com/developers</strong>.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>UiPath</strong> — Microsoft's preferred enterprise agentic automation platform; built on Azure, deployed into highly governed environments.</li>
+<li><strong>UiPath Orchestrator</strong> — the execution/runtime layer that makes agents production-ready (governance, observability, human approvals, durable state); coding agents read its logs and push packages to it.</li>
+<li><strong>Maestro</strong> — UiPath's orchestration engine; control flow + durable state + retries/timeouts/partial-failure handling; observable and automatable out of the box.</li>
+<li><strong>Maestro BPMN</strong> — business-process canvas built on the <strong>BPMN 2.0</strong> standard (for process owners).</li>
+<li><strong>Maestro Flow</strong> — new developer canvas on the Maestro runtime; file-based, local, coding-agent-native schema, inline agent config, multi-trigger.</li>
+<li><strong>Maestro Case</strong> — new canvas for dynamic, exception-driven processes; stage/task model driven by a <strong>case manager</strong> via rules or agent reasoning (no fixed arrows).</li>
+<li><strong>IXP (Intelligent Xtraction / document extraction)</strong> — referenced via an <strong>invoice extraction node</strong> in Flow so extraction runs without a separate process.</li>
+<li><strong>Data Fabric</strong> — native data lookups inside a flow.</li>
+<li><strong>Context grounding index</strong> — inline grounding for agents to consult standard operating procedures.</li>
+<li><strong>Integration Service connectors</strong> — used to build/deploy UiPath conversational agents.</li>
+<li><strong>UiPath CLI + UiPath skills (npm)</strong> — give coding agents (and GitHub Copilot) full, governed context/control of the platform.</li>
+<li><strong>GitHub Copilot</strong> — gains full UiPath context via the skills/CLI; build/deploy/manage in VS Code.</li>
+<li><strong>Claude Code</strong> — coding agent used to investigate/fix the failing onboarding queue (sidebar in Flow).</li>
+<li><strong>Gemini CLI</strong> — coding agent used to prove platform-agnostic support (producer/consumer + queue).</li>
+<li><strong>Codex</strong> — coding agent (terminal) cited as usable in Flow alongside Claude Code.</li>
+<li><strong>UiPath Test Cloud</strong> — home of the agentic/autonomous testing solution.</li>
+<li><strong>UiPath Autopilot (testing)</strong> — autonomous test execution + exploration; Playwright (web), Appium (mobile), plus SAP/Epic/Citrix UIs.</li>
+<li><strong>UiPath Delegate</strong> — autonomous QA "sidekick" that runs tests, interacts with apps, files issues, and reports; uses "skills" to talk to UiPath products.</li>
+<li><strong>UiPath Test Manager</strong> — test management product Delegate reads from and publishes results to.</li>
+<li><strong>Microsoft 365 / Teams / Outlook / SharePoint / Copilot</strong> — collaboration surfaces in the joint architecture; Teams hosts conversational agents and human escalations; Outlook provides the email-received trigger.</li>
+<li><strong>Azure</strong> — UiPath runs on Azure, so customers inherit existing security, identity, and compliance controls.</li>
+<li><strong>Slack</strong> — used for an internal notification at the end of the Flow billing-dispute process.</li>
+<li><strong>Jira</strong> — Delegate files bug issues into Jira with full context + results.</li>
+<li><strong>Playwright / Appium</strong> — web and mobile automation engines Autopilot uses to execute tests.</li>
+<li><strong>BPMN 2.0</strong> — the time-tested process-modeling standard underpinning Maestro BPMN.</li>
+<li><strong>Object Repository / UI files</strong> — UiPath UI-automation artifacts the coding agent generated for the onboarding fix.</li>
+<li><strong>PDD (Process Definition Document)</strong> — read by Gemini CLI to understand and structure the automation.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Maestro Flow (developer canvas)</strong> — new visual canvas on the Maestro runtime with full VS Code + coding-agent support; schema is natively authorable by coding agents. <strong>Status: early access</strong>, with public availability "in the coming weeks."</li>
+<li><strong>Maestro Case</strong> — new canvas purpose-built for complex, dynamic, exception-driven processes (stage/task model driven by a case manager via rules or agent reasoning). Shown as a major evolution of Maestro/business orchestration.</li>
+<li><strong>Evaluations for end-to-end processes in Flow</strong> — announced; "test cases for your process orchestrations," extending agent evals to whole orchestrations.</li>
+<li><strong>UiPath conversational agents in Microsoft Teams</strong> — new integration; deploy UiPath agents into Teams (1:1 and channel workflows) via standard Teams packaging.</li>
+<li><strong>GitHub Copilot ↔ UiPath integration (skills + CLI via npm)</strong> — gives Copilot full UiPath platform context for build/deploy/manage in VS Code. <strong>Status: live now</strong>, with full GitHub Copilot support.</li>
+<li><strong>UiPath CLI + UiPath skills</strong> — <strong>live now</strong>.</li>
+<li><strong>Agentic testing in Test Cloud — Autopilot (autonomous test execution + exploration) and Delegate (QA busy-work elimination)</strong> — framed as "what we're delivering next"; the Delegate capability was demoed as already working ("happening right now"). Overall, everything shown is <strong>"available now or in early access."</strong></li>
+<li>⚠️ This is a UiPath (partner) session, so these are <strong>UiPath product announcements</strong> surfaced at Microsoft Build, not Microsoft product GAs. Exact GA dates beyond "now" / "early access" / "coming weeks" were not given.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Failing onboarding queue, fixed by Claude Code (Orchestrator):</strong> Claude Code reads Orchestrator logs, investigates target systems, forms/tests hypotheses, finds root cause (target system blocked APIs), produces a timeline + suggested fix, then implements it — switching the automation from API to UI, generating an object repository/UI files/actions, building the package, and pushing to Orchestrator. <strong>Proves:</strong> coding agents can do end-to-end investigate→fix→deploy in a governed environment, compressing incident remediation to minutes.</li>
+<li><strong>Gemini CLI building a producer/consumer automation:</strong> reads the PDD, understands the requirement, recommends a producer/consumer + queue structure. <strong>Proves:</strong> UiPath's coding-agent support is platform-agnostic (not tied to one vendor's agent).</li>
+<li><strong>Flow billing-dispute process (live run):</strong> Outlook email trigger → classification agent (with guardrails) → IXP invoice extraction node → script-node routing → native data-fabric lookups → discrepancy detection → dispute-analysis agent with inline context-grounding index → inline approval task (approved on-screen) → ERP financial-adjustment API → final agent drafts customer email → send email + internal Slack notification; trace view shows every agent call and platform-component interaction. <strong>Proves:</strong> a complete, observable, human-in-the-loop enterprise process built/run in a developer-friendly, version-controlled canvas.</li>
+<li><strong>Maestro Case loan origination:</strong> case plan with a case manager + stages/tasks and <strong>no arrows after intake</strong>; shows <strong>rework</strong> (sanction screening ran twice, with agent rationale in the execution trail) and <strong>parallel underwriting + escalation</strong> (agent reasoned a medium-risk loan needs manager approval <em>and</em> should proceed to underwriting). <strong>Proves:</strong> dynamic, exception-driven orchestration — parallel work, re-entering stages, escalations, ad-hoc stages — without losing continuity.</li>
+<li><strong>Delegate autonomous testing (bank tester):</strong> asked to run all assigned tests, email the test manager, and file issues. Delegate pulls "skills" to read Test Manager, interacts with desktop/web apps under test, identifies the problem, files Jira issues (link shown with full context + results), creates reports, and publishes results back to Test Manager. <strong>Proves:</strong> autonomous QA that handles the full pre/post-test busy-work, not just planning.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>"40% or more of code is now generated by AI."</strong></li>
+<li><strong>"85% of developers use coding agents to do their work now."</strong></li>
+<li>On the lifecycle shift: <em>"The world of development… has dramatically changed in the last 12 months — more so than it changed in the last two decades"</em>; building/planning compress <em>"from months to hours and days,"</em> and an incident can be remediated <em>"in minutes"</em> (a coding agent can start <em>"even before you get an incident"</em>).</li>
+<li><em>"Automation is one bot doing one thing at one time. However, process is a journey that spans many tasks."</em></li>
+<li><em>"The canvas is new, the runtime is Maestro."</em> (Flow)</li>
+<li><em>"You don't have to choose between a developer experience you actually enjoy and the power of an enterprise platform. With Flow, you get both."</em></li>
+<li><em>"What you're seeing is not the future of testing. This is what is happening right now."</em> (Delegate)</li>
+<li>~<strong>15-minute</strong> keynote cut; UiPath's developer conference ran ~<strong>3 weeks</strong> before Build in <strong>Bengaluru</strong>.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Install the <strong>UiPath CLI + skills via npm</strong> and add them to <strong>GitHub Copilot</strong>; build a trivial automation end-to-end in VS Code without leaving the editor.</li>
+<li>Stand up a <strong>Maestro Flow</strong> billing-dispute–style process and drive it with <strong>Claude Code / Codex</strong>; commit the flow file to Git and review the diff to feel the "flow-as-code" workflow.</li>
+<li>Prototype a <strong>Maestro Case</strong> plan for an exception-heavy process (e.g. loan/claim) to see case-manager rules vs. agent-reasoning stage activation, parallel stages, and rework.</li>
+<li>Wire a <strong>UiPath conversational agent into Teams</strong> and test 1:1 + channel workflows with human escalation back to Teams.</li>
+<li>Trial <strong>Autopilot/Delegate</strong> in Test Cloud on a web app (Playwright) to gauge autonomous coverage + Jira filing.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>How does Maestro's <strong>durable state + retry/timeout</strong> model compare to Durable Task / Temporal-style orchestration, and is there an OpenTelemetry export for the trace view?</li>
+<li>For <strong>Case</strong>, how is the case manager's decision policy authored/governed (rules DSL vs. an LLM agent) and how is non-determinism audited/replayed?</li>
+<li>Where does the <strong>agent reasoning</strong> in Flow/Case run (which models, hosted where) and how do the platform guardrails (PII/prompt-injection) integrate with Azure AI Content Safety?</li>
+<li>What exactly do the <strong>"skills"</strong> Delegate/Copilot consume look like (schema/format), and can custom skills be authored?</li>
+<li>Pricing/licensing model for Maestro Flow/Case + Test Cloud at enterprise scale?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Anyone taking agents <strong>from prototype to production</strong> who needs governance, durable state, human-in-the-loop, and audit trails on top of (or alongside) Microsoft 365 / Copilot.</li>
+<li>Enterprise architects designing <strong>multi-agent, multi-system, exception-driven</strong> processes (claims/loans/approvals) in a Microsoft-first environment.</li>
+<li>Teams adopting <strong>coding agents</strong> (Claude Code/Gemini/Codex) for build→debug→deploy and wanting platform-agnostic agent support + agentic testing.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><a class="wikilink wikilink--resolved" href="OD820.html">OD820 - Designing Reliable Multi-Agent Apps with Azure Cosmos DB</a></li>
+<li><a class="wikilink wikilink--resolved" href="BRK241.html">BRK241 - From prototype to production build and run agents at scale</a></li>
+<li><a class="wikilink wikilink--resolved" href="ODSP909.html">ODSP909 - Take AI agents from prototype to production with OpenTelemetry</a></li>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Agent Framework">Microsoft Agent Framework</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Multi-agent orchestration patterns">Multi-agent orchestration patterns</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Human-in-the-loop agent design">Human-in-the-loop agent design</span></li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="ODSP902.html"><span class="pager-dir">← Previous</span><span class="pager-code">ODSP902</span><span class="pager-title">Build AI-driven UIs in .NET MAUI with design systems</span></a>
+    <a class="pager pager-next" href="ODSP907.html"><span class="pager-dir">Next →</span><span class="pager-code">ODSP907</span><span class="pager-title">Monitor GenAI applications beyond golden signals</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

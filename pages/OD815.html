@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OD815 — Unify your entire data estate on a single, AI-ready data lake</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">OD815</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=Alb2Tnw4moo" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Unify your entire data estate on a single, AI-ready data lake</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Deepti Borkar, Josh (OneLake team), Weishung (OneLake team), Michaela (OneLake team), Rohan (demo)</span>
+      <span class="meta-item">⏱️ 35m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="fabric">Fabric</span><span class="chip" data-tag="onelake">Onelake</span><span class="chip" data-tag="data-lake">Data Lake</span><span class="chip" data-tag="ai">AI</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Deepti Borkar (OneLake &amp; Fabric teams — intro/overview), Josh (OneLake — pillars: storage, open access, security), Weishung (OneLake — shortcuts &amp; mirroring), Michaela (OneLake — AI-ready / Fabric IQ + Foundry), Rohan (live demo narration)<br>
+<strong>Duration:</strong> ~35 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=Alb2Tnw4moo">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>OneLake is pitched as "the OneDrive for data" — a single logical data lake (always exactly <strong>one per organization</strong>) that unifies a customer's entire data estate with <strong>zero ETL</strong>, via two mechanisms: <strong>shortcuts</strong> (virtualize data in place, no movement) and <strong>mirroring</strong> (CDC-based replication of whole databases). Data lands in <strong>open formats (Delta Lake + Iceberg)</strong> and is then reachable everywhere across the Microsoft ecosystem (Fabric, Power BI, Excel, SharePoint, Foundry, Copilot) and by dozens of external engines (Databricks, Snowflake, Salesforce, DuckDB, ClickHouse, ServiceNow, etc.). The session is organized around <strong>four pillars</strong>: (1) a <strong>unified data estate</strong>, (2) <strong>open access</strong> ("one copy" of data consumed by many engines via the OneLake table API for Delta + Iceberg), (3) <strong>AI-ready</strong> data + context through <strong>Microsoft IQ / Fabric IQ</strong> and native <strong>OneLake catalog ↔ Foundry</strong> integration, and (4) <strong>unified discovery &amp; governance</strong> via <strong>OneLake security</strong> (now GA) and the <strong>OneLake catalog</strong>. Headline new items include <strong>lifecycle management with storage tiering</strong>, <strong>SharePoint list mirroring</strong>, <strong>Excel shortcuts</strong>, <strong>table API metadata writes</strong>, <strong>mirroring over workspace private link</strong>, and <strong>OneLake security GA</strong> (plus Event House in preview).</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>OneLake = "OneDrive for data."</strong> One unified logical lake per org that spans Fabric engines, ADLS/on-prem, SharePoint, other clouds (S3, GCP) and many data providers — all with <strong>zero ETL</strong>.</li>
+<li><strong>Always exactly one lake per organization</strong> — never more, never less. This invariant is a core anti-silo design choice; all data shows up in open formats, is auto-indexable/scannable, and is always protected by OneLake security.</li>
+<li><strong>Two ways to bring data in:</strong> (1) <strong>connect</strong> your existing estate in place (shortcuts/mirroring — no movement, no duplication, no migration; you keep managing your storage) or (2) <strong>physically store</strong> it in OneLake (Microsoft manages scale/throughput). After ingest, <strong>all functionality is identical regardless of path</strong>.</li>
+<li><strong>OneLake is the foundation of Microsoft Fabric</strong> — <strong>every Fabric customer is a OneLake customer</strong>: 35,000+ paying customers, <strong>80%+ of the Fortune 500</strong>, <strong>48 billion interactions/day</strong>, <strong>9.4 million active shortcuts</strong>, growing <strong>4× year-over-year</strong> in storage.</li>
+<li><strong>Native storage is expanding beyond Fabric:</strong> Snowflake can now natively store its <strong>Iceberg</strong> tables in OneLake; <strong>Azure Databricks</strong> native storage in OneLake is in <strong>preview</strong>. OneLake exposes the same <strong>ADLS + Blob APIs</strong>, so anything that talks to Azure storage can read/write it.</li>
+<li><strong>Shortcuts vs mirroring:</strong> shortcuts connect data wherever it lives with no movement (on-prem or any cloud); mirroring brings an entire database catalog in via the source's <strong>change data capture (CDC)</strong> to keep an up-to-date mirrored database.</li>
+<li><strong>Lots of sources are GA</strong> for shortcut/mirroring: SQL Server (incl. SQL Server 2025 and on-prem), Snowflake, Oracle, SAP Datasphere, plus newly <strong>SharePoint &amp; OneDrive</strong>. New in <strong>public preview</strong>: Dremio (caption "Dream U"), Azure Monitor, and <strong>AWS Glue coming soon</strong>.</li>
+<li><strong>"One copy" principle:</strong> one physical copy of data is consumed by <strong>multiple engines</strong> (T-SQL warehouse team and Python/notebook lakehouse team both land data in OneLake, readable by any engine) — decoupling how data is created from how it's consumed.</li>
+<li><strong>OneLake table API</strong> now exposes the same open-source APIs for <strong>both Delta Lake and Iceberg natively</strong>, so any Iceberg- or Delta-compliant app can read <strong>all</strong> OneLake data regardless of how it was written. New: <strong>writing metadata</strong> (create tables/schemas, update/publish transactions) via the table API — <strong>available today</strong> (reading metadata was already GA).</li>
+<li><strong>AI-ready means data + context, not just data.</strong> <strong>Microsoft IQ / Fabric IQ</strong> frees the knowledge/context that was trapped in silos alongside the data, encapsulates it with the data in OneLake, and distributes both to ground AI agents (semantic models + operational intelligence).</li>
+<li><strong>OneLake catalog is now natively integrated into Foundry</strong> — discover trusted enterprise data (sensitivity labels, endorsements) and use it directly in Foundry <strong>knowledge</strong> for grounding agents, with <strong>no data copy</strong> (shortcuts virtualize structured + unstructured data including SharePoint, S3, NetApp, Azure Blob).</li>
+<li><strong>OneLake security is GA.</strong> It pushes engine-specific controls (row-level, column-level) <strong>down into the lake</strong>, so you <strong>define security once</strong> and it's <strong>enforced across every engine</strong> (SQL endpoint, Spark, semantic models / Direct Lake, Power BI, Excel). <strong>Event House</strong> support is in <strong>public preview</strong>.</li>
+<li><strong>OneLake catalog</strong> is the discovery/governance surface, <strong>trusted by 240,000+ organizations worldwide</strong> — described as the "final piece" of OneLake.</li>
+<li><strong>Customer proof points:</strong> <strong>Lumen</strong> (ingest once, use anywhere), <strong>London Stock Exchange Group</strong> (Data-as-a-Service on Fabric; chose it for Snowflake/Databricks interop + openness), <strong>AP Pension</strong> (eliminated the E and L of ETL, kept only Transformation via mirroring).</li>
+<li><strong>Enterprise hardening shipped:</strong> customer-managed-key encryption at rest (<strong>GA</strong>), immutable diagnostic logs, and stronger network security (workspace-level private links, outbound access protection, workspace firewall, <strong>resource instance rules</strong> for specific Azure services).</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="what-onelake-is-the-onedrive-for-data">What OneLake is — "the OneDrive for data"</h3>
+<p>Deepti Borkar opens by framing <strong>OneLake</strong> as <em>the OneDrive for data</em>. Its job is to <strong>unify an organization's entire data estate</strong> without ETL:
+- <strong>Microsoft-managed estate:</strong> Fabric (with all its engines) and the broader Azure/on-prem estate (ADLS and others).
+- <strong>Business productivity:</strong> <strong>SharePoint</strong> (cloud or on-prem).
+- <strong>Other clouds &amp; providers:</strong> <strong>S3, GCP</strong>, and many more.</p>
+<p>The unification happens with <strong>zero ETL</strong> through two mechanisms (covered in depth later): <strong>shortcuts</strong> and <strong>mirroring</strong>. Once data is in OneLake as a <strong>single pane of glass</strong>, it becomes reachable across the Microsoft ecosystem — <strong>Teams, Fabric, Foundry</strong>, and even <strong>Excel</strong>, where the <strong>OneLake hub</strong> can be opened to pull structured data straight into a spreadsheet.</p>
+<p>Crucially, the data stays <strong>completely open</strong>. OneLake supports <strong>Delta and Iceberg</strong> open formats, which means the same data is consumable by a long tail of external products and services: <strong>DuckDB, Databricks, Snowflake, ServiceNow, Salesforce, ClickHouse</strong>, and many others. The stated goal: give you unification of <strong>data — and, for the AI age, context</strong> — and make it <strong>accessible everywhere</strong>.</p>
+<h3 id="the-onelake-ecosystem">The OneLake ecosystem</h3>
+<p>Deepti describes a "vibrant, continuously growing" ecosystem with several integration patterns:
+- <strong>Native integration</strong> — e.g. Databricks and Snowflake can read/write directly on top of OneLake (Josh covers native storage later).
+- <strong>Catalog federation</strong> — integrate via catalog mechanisms (Iceberg, Presto catalogs, etc.); a broad range of services fall here.
+- <strong>Data movement tools</strong> — Informatica, Fivetran and others integrate so you can land data natively into OneLake from many sources.</p>
+<p>She invites builders to integrate with OneLake too.</p>
+<h3 id="scale-momentum-customer-proof">Scale, momentum &amp; customer proof</h3>
+<p>OneLake is the <strong>foundation for Microsoft Fabric</strong>, the single product for managing, exploring, gaining insights from, and making data <strong>AI-ready</strong>. <strong>Every Fabric customer is a OneLake customer.</strong> Stats cited:
+- <strong>35,000+ paying customers</strong> on Fabric/OneLake.
+- <strong>80%+ of the Fortune 500</strong> use OneLake/Fabric.
+- <strong>48 billion interactions per day</strong> on the OneLake service, with strong reliability.
+- <strong>9.4 million active shortcuts</strong> already created across the ecosystem (sources include AWS S3, GCP, on-prem, etc.) — heavy use of <strong>zero-copy</strong>.
+- <strong>4× year-over-year growth</strong> in storage.</p>
+<p>Three highlighted customers:
+- <strong>Lumen</strong> — OneLake let them <strong>ingest data once and use it anywhere</strong> (the single-pane-of-glass benefit).
+- <strong>London Stock Exchange Group (LSEG)</strong> — their <strong>Data-as-a-Service</strong> offering is built on Fabric; they adopted it for <strong>interoperability</strong> between Snowflake, Databricks and others, plus OneLake's <strong>openness</strong>.
+- <strong>AP Pension</strong> — <strong>eliminated the E and the L</strong> of ETL, leaving only the <strong>Transformation</strong>, using OneLake's <strong>mirroring</strong> capabilities.</p>
+<h3 id="the-four-pillars-of-onelake">The four pillars of OneLake</h3>
+<p>Deepti sets up the structure for the rest of the talk — OneLake's core has <strong>four aspects</strong>:
+1. <strong>Unified data estate</strong> — open, accessible from many platforms.
+2. <strong>Open access</strong> — built so any engine can consume the data.
+3. <strong>AI-ready</strong> — integrates with Foundry and other products to power AI.
+4. <strong>Unified discovery &amp; governance</strong> — via <strong>OneLake security</strong> and the <strong>OneLake catalog</strong>.</p>
+<p>She then hands to <strong>Josh</strong> to walk through the pillars.</p>
+<h3 id="pillar-1-unified-data-estate-josh">Pillar 1 — Unified data estate (Josh)</h3>
+<p>Josh frames the origin story: customers were drowning in <strong>data silos</strong> — unable to get to or blend the data they needed. <strong>OneLake came in "like a wrecking ball,"</strong> busted the silos open, freed the data, and unified everything into <strong>a single logical lake</strong>.</p>
+<p>Key invariant: <strong>there is always exactly one lake per organization</strong> — you can never have more than one or fewer than one. This is one of the primary ways silos are avoided. In OneLake, <strong>all data shows up in open formats</strong>, can be <strong>automatically indexed and scanned</strong>, and is <strong>always protected by OneLake security</strong>.</p>
+<p><strong>Two ways to bring your data estate to OneLake:</strong>
+1. <strong>Connect your existing estate (easiest).</strong> Connect data <strong>wherever it lives</strong> with <strong>no data movement, no duplication, no migration</strong> — Azure, other clouds, or on-prem. You keep managing your existing storage resources but get all the OneLake benefits/features.
+2. <strong>Physically store data in OneLake.</strong> Microsoft manages <strong>over 3 million storage accounts</strong> for users today (the thing that "really makes us the OneDrive for data"). OneLake auto-handles <strong>scale and throughput</strong> as needs change, without you managing individual storage resources.</p>
+<p><strong>The payoff:</strong> no matter how data arrives (connected vs stored), <strong>all functionality is identical afterward</strong>.</p>
+<h3 id="native-storage-improvements-josh">Native storage improvements (Josh)</h3>
+<p>Since launch, Fabric has always stored its data inside OneLake. Newer expansions:
+- <strong>Snowflake</strong> can now <strong>natively store its Iceberg tables</strong> in OneLake.
+- <strong>Azure Databricks</strong> native storage in OneLake is in <strong>preview</strong>.
+- This is <strong>in addition to anything that talks to Azure storage</strong> — OneLake exposes the <strong>same ADLS and Blob APIs</strong>, so any storage-speaking service can natively read/write OneLake.</p>
+<p><strong>Enterprise security hardening on native storage:</strong>
+- <strong>Data encryption with customer-managed keys (CMK) at rest</strong> — <strong>generally available today</strong>.
+- <strong>Diagnostic logs with immutable storage</strong> — see/debug everything happening across the entire data lake.
+- <strong>Stronger network security:</strong> <strong>workspace-level private links</strong>, <strong>outbound access protection</strong>, <strong>workspace firewall</strong>, and newly <strong>resource instance rules</strong> that specify which specific Azure services may connect to your data.
+- Reference: the <strong>Fabric Security white paper</strong>.</p>
+<h3 id="pillar-1-recap-josh">Pillar 1 recap (Josh)</h3>
+<p>After the storage demo, Josh recaps what just shipped:
+- <strong>OneLake File Explorer</strong> — <strong>generally available</strong>, along with the <strong>OneLake MCP</strong>.
+- <strong>Item size reporting</strong> — <strong>public preview</strong>.
+- <strong>Lifecycle management with data tiering</strong> — described as "probably our biggest announcement" — <strong>now available</strong>.</p>
+<p>He then hands to <strong>Weishung</strong> for connecting existing data (shortcuts &amp; mirroring).</p>
+<h3 id="shortcuts-mirroring-weishung">Shortcuts &amp; mirroring (Weishung)</h3>
+<p>Two complementary ways to unify the estate:
+- <strong>Shortcuts</strong> — "super cool": connect to data <strong>wherever it is</strong> with <strong>no data movement</strong>; works for data <strong>on-premises or in any cloud</strong>.
+- <strong>Mirroring</strong> — brings your <strong>entire data catalog</strong> into OneLake. For sources like <strong>Oracle / SQL Server</strong> (on-prem or cloud), it leverages the underlying <strong>change data capture (CDC)</strong> to keep an <strong>up-to-date mirrored database</strong>.</p>
+<p>Combined, shortcuts + mirroring let you <strong>unify your data estate into OneLake</strong>.</p>
+<p><strong>Generally available sources</strong> (sampling): the <strong>SQL family</strong> (SQL Server 2025, on-prem SQL Server, and more), <strong>Snowflake</strong>, <strong>Oracle database</strong>, <strong>SAP Datasphere</strong>, and more recently <strong>SharePoint and OneDrive</strong>. You can use these to bring data in <strong>with or without data movement</strong>.</p>
+<p><strong>New in public preview:</strong> <strong>Dremio</strong> (rendered "Dream U" in captions), <strong>Azure Monitor</strong>, with <strong>AWS Glue coming soon</strong>.</p>
+<p><strong>Mirroring over workspace private link</strong> (a top customer ask): adds private-link network security to your mirrored database and routes <strong>all traffic through the Microsoft private network instead of the public internet</strong> — now in <strong>public preview</strong>, initially supporting <strong>Azure Cosmos DB, Azure SQL Managed Instance (SQL MI), and SQL Server 2025</strong>, with more sources coming.</p>
+<h3 id="shortcut-transformation-weishung">Shortcut transformation (Weishung)</h3>
+<p><strong>Shortcut transformation</strong> enriches data with <strong>native AI capabilities in OneLake</strong> — <strong>generally available</strong>. You point at <strong>source folders in OneLake</strong> and add <strong>defined AI transformations</strong>; it then <strong>continuously auto-tracks source changes</strong> and <strong>syncs to the destination</strong> while enriching with AI.</p>
+<p>New improvements:
+- <strong>Preview and define schemas</strong> (top customer ask).
+- <strong>Manage transformations with detailed logs</strong> / <strong>enhanced monitoring</strong> to understand what's happening under the hood.</p>
+<p><strong>What shortcut transformation can do (at a glance):</strong>
+- <strong>Format conversions</strong> — Parquet → table, Excel → table, and many more.
+- <strong>AI enrichment</strong> — <strong>PII detection, translation, text summarization, sentiment analysis, name recognition</strong>, and more.</p>
+<h3 id="pillar-2-open-access-one-copy-josh">Pillar 2 — Open access &amp; "one copy" (Josh)</h3>
+<p>Having unified the estate, the <strong>purpose</strong> is to use the data in many places. <strong>All OneLake data is available across the entire Microsoft ecosystem</strong> — deep integrations with <strong>Foundry, Power BI, Office, Excel, Copilot</strong> — and <strong>well beyond Microsoft</strong> to dozens of services including <strong>Databricks, Snowflake, Salesforce</strong>.</p>
+<p><strong>The "one copy" principle:</strong> you can use <strong>one copy of data across multiple engines</strong>. This separates <em>how you create</em> the data/lake from <em>how you consume</em> it:
+- A team that prefers <strong>stored procedures + T-SQL</strong> can build a <strong>data warehouse</strong>.
+- A team that prefers <strong>Python + notebooks</strong> can build a <strong>lakehouse</strong>.
+- Both end up as <strong>data in OneLake</strong>, consumable by <strong>any engine</strong> — within Fabric, Databricks, or anywhere that reads an open data format.</p>
+<p><strong>OneLake table API:</strong> OneLake now exposes the <strong>same open-source APIs for both Delta Lake and Iceberg natively</strong>. Any application that understands <strong>at least one</strong> of those formats (Snowflake, Databricks, etc.) can read <strong>all</strong> data in OneLake — <strong>regardless of how/what format it was written in</strong>.
+- Already <strong>GA:</strong> <strong>reading metadata</strong> through the table APIs.
+- <strong>New (available today):</strong> <strong>writing metadata</strong> — create tables, create schemas, update/publish transactions via the table API.</p>
+<p>Beyond APIs, OneLake is <strong>deeply integrated</strong> with dedicated experiences in <strong>Fabric, Excel, and SharePoint</strong>, so data is visible and usable directly. "OneLake data literally is everywhere."</p>
+<h3 id="pillar-3-ai-ready-data-context-microsoft-iq-fabric-iq-josh-michaela">Pillar 3 — AI-ready data + context: Microsoft IQ / Fabric IQ (Josh → Michaela)</h3>
+<p>Josh's key insight: when data was freed from silos, <strong>it wasn't the only thing stuck — so was the knowledge/context</strong> that lived in people's heads inside those silos. <strong>Microsoft IQ</strong> and <strong>Fabric IQ</strong> free the data <em>and</em> <strong>encapsulate that context with the data</strong> in OneLake. Once data + context are together, you can <strong>distribute both</strong> to all the data/applications (and <strong>agents</strong>) that need it — so you get not just data, but <strong>the knowledge of how best to work with it</strong>. OneLake spans <strong>all databases, all clouds</strong>, and brings <strong>semantic models (analytical intelligence)</strong> plus <strong>operational intelligence</strong>, making it the best source of knowledge to <strong>ground AI applications</strong>.</p>
+<p><strong>Michaela</strong> extends this: OneLake already brings together <strong>unified data, business intelligence, and operational intelligence</strong>. What's <strong>new</strong> is making the data usable across a <strong>full set of AI consumers</strong> — <strong>Fabric, Foundry, Copilot Studio, and partner tools</strong>. When data flows through these AI experiences it is <strong>never copied</strong>; it's exposed through a <strong>common data foundation</strong> with <strong>shared context and intelligence</strong> on top.</p>
+<p>A lot of enterprise value is in <strong>unstructured</strong> data — <strong>documents, PDFs, SharePoint sites, customer conversations, contracts, invoices</strong>. With OneLake you can unify <strong>structured and unstructured</strong> data in one place from many sources (SharePoint, Amazon S3, etc.) <strong>without replication</strong>.</p>
+<p><strong>OneLake catalog → Foundry (native):</strong> the <strong>OneLake catalog is now natively integrated into Foundry</strong>. You can <strong>discover all trusted enterprise data in one place</strong> and immediately use it inside <strong>knowledge, agents, and any AI workload</strong>, with the catalog's full discoverability capabilities — <strong>sensitivity labels and endorsements</strong> — giving a consistent view across <strong>Fabric and Foundry</strong>.</p>
+<h3 id="pillar-4-discovery-governance-onelake-security-catalog-josh">Pillar 4 — Discovery &amp; governance: OneLake security + catalog (Josh)</h3>
+<p>To safely access data from anywhere (including AI), you must <strong>secure and govern</strong> it. <strong>OneLake security is now generally available</strong> and "changes the game."
+- The old world: the most capable security lived <strong>at the edges</strong> — in presentation layers and database engines — with <strong>different security for every single engine</strong>.
+- OneLake unified the <strong>data</strong> ("one copy across multiple engines"); security needed the same. <strong>OneLake security takes engine-specific capabilities — row-level security, column-level security — and moves them down to the data lake.</strong>
+- You <strong>define security definitions once</strong>; they <strong>live with the data in the lake</strong> and are <strong>enforced everywhere the data is used, in any engine</strong>.</p>
+<p>After the security demo, Josh adds:
+- <strong>OneLake security for Event House</strong> is in <strong>public preview</strong>, joining the engines in Fabric that can enforce OneLake security across the board.
+- This is <strong>part of the OneLake catalog</strong>, the <strong>final piece</strong> of OneLake. The <strong>OneLake catalog</strong> exposes data for <strong>discovery and governance</strong> and is <strong>trusted by 240,000+ organizations worldwide</strong>.
+- To learn more about the catalog: see the session from <strong>Kim Manis</strong>. Closing: bring your data and build a single unified data lake for your whole organization.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>OneLake</strong> — the unified, open, AI-ready logical data lake; "the OneDrive for data"; exactly one per organization; foundation of Microsoft Fabric.</li>
+<li><strong>Microsoft Fabric</strong> — single product for managing/exploring data and making it AI-ready; built on OneLake.</li>
+<li><strong>OneLake shortcuts</strong> — virtualize/connect data in place with <strong>no movement</strong> (on-prem or any cloud); 9.4M active.</li>
+<li><strong>Mirroring</strong> — CDC-based replication that brings an entire database catalog into OneLake (keeps an up-to-date mirror).</li>
+<li><strong>SharePoint list mirroring</strong> — mirror a SharePoint Online list into OneLake (announced in session).</li>
+<li><strong>Excel shortcuts</strong> — shortcut to an Excel workbook; Fabric detects the file and turns <strong>each sheet into a first-class table</strong> (announced).</li>
+<li><strong>Shortcut transformation</strong> — continuous, auto-tracking AI enrichment + format conversion on OneLake source folders (GA).</li>
+<li><strong>OneLake table API</strong> — exposes Delta Lake <strong>and</strong> Iceberg APIs natively; read <strong>and now write</strong> metadata (create tables/schemas, publish transactions).</li>
+<li><strong>Delta Lake / Apache Iceberg</strong> — the two open table formats OneLake natively supports.</li>
+<li><strong>OneLake File Explorer</strong> — Windows File Explorer integration showing workspace items as folders/files; drag-and-drop ingest (GA).</li>
+<li><strong>OneLake MCP</strong> — Model Context Protocol surface for OneLake (GA, mentioned alongside File Explorer).</li>
+<li><strong>OneLake storage report / item size reporting</strong> — item-level storage visibility incl. soft-deleted + system folders (public preview).</li>
+<li><strong>Storage tiers + lifecycle management (data tiering)</strong> — auto-move infrequently used data to cool/cold tiers; default + customizable tiering rules.</li>
+<li><strong>OneLake security</strong> — row/column-level security defined once at the lake, enforced across all engines (GA); <strong>Event House</strong> support in preview.</li>
+<li><strong>OneLake catalog</strong> — discovery + governance surface (sensitivity labels, endorsements, promotion); trusted by 240k+ orgs; now native in Foundry.</li>
+<li><strong>Microsoft AI Foundry</strong> — AI dev platform; uses <strong>knowledge</strong> to index OneLake context for grounding agents; OneLake catalog natively integrated.</li>
+<li><strong>Foundry knowledge</strong> — indexing step turning raw files into searchable/retrievable knowledge for agents.</li>
+<li><strong>Microsoft IQ / Fabric IQ</strong> — encapsulates context/knowledge alongside data in OneLake to power agents (semantic + operational intelligence).</li>
+<li><strong>Copilot / Copilot Studio</strong> — AI consumers of OneLake data.</li>
+<li><strong>Power BI / Direct Lake</strong> — reporting and semantic models built over OneLake mirror tables, honoring OneLake security.</li>
+<li><strong>Semantic models</strong> — analytical intelligence layer carried with the data.</li>
+<li><strong>ADLS + Blob APIs</strong> — OneLake exposes the same storage APIs so any Azure-storage client can read/write it.</li>
+<li><strong>Diagnostic events / immutable logs</strong> — capture who accesses OneLake data; can be made immutable.</li>
+<li><strong>Customer-managed keys (CMK)</strong> — encryption at rest under your own keys (GA).</li>
+<li><strong>Network protection</strong> — workspace-level private links, outbound access protection, workspace firewall, resource instance rules.</li>
+<li><strong>Catalog federation</strong> — integrate external catalogs (Iceberg, Presto) into OneLake.</li>
+<li><strong>Data movement partners</strong> — Informatica, Fivetran (and others) land data natively into OneLake.</li>
+<li><strong>External engines / consumers</strong> — Databricks, Snowflake, Salesforce, ServiceNow, ClickHouse, DuckDB (open-format read/write/consume).</li>
+<li><strong>SQL endpoint / Spark</strong> — query engines in the demo that honor OneLake security row/column rules.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p><strong>Generally available (GA):</strong>
+- <strong>OneLake security</strong> — define row/column-level security once at the lake; enforced across all Fabric engines.
+- <strong>OneLake File Explorer</strong> (Windows File Explorer integration) and the <strong>OneLake MCP</strong>.
+- <strong>Lifecycle management with data tiering</strong> (cool/cold storage tiers + default &amp; custom tiering policies) — called "probably our biggest announcement."
+- <strong>Customer-managed-key (CMK) encryption at rest</strong> for native OneLake storage.
+- <strong>Shortcut transformation</strong> (native AI enrichment + format conversion on OneLake folders) — plus new schema preview/define and detailed-log monitoring improvements.
+- <strong>OneLake table API — writing metadata</strong> (create tables/schemas, update/publish transactions); reading metadata was already GA. "Available today."
+- <strong>Shortcut &amp; mirroring sources GA:</strong> SQL Server 2025, on-prem SQL Server (and broader SQL family), Snowflake, Oracle, SAP Datasphere, and newly <strong>SharePoint &amp; OneDrive</strong>.</p>
+<p><strong>Public preview:</strong>
+- <strong>Azure Databricks native storage in OneLake</strong> (store Databricks data directly in OneLake).
+- <strong>Item size reporting</strong> (OneLake storage report with item-level + soft-deleted + system-folder visibility).
+- <strong>Mirroring over workspace private link</strong> — initially Azure Cosmos DB, Azure SQL MI, SQL Server 2025 (traffic over Microsoft private network).
+- <strong>New shortcut/mirroring sources:</strong> <strong>Dremio</strong> (caption "Dream U") and <strong>Azure Monitor</strong>.
+- <strong>OneLake security for Event House</strong> (joins existing engines that enforce OneLake security).</p>
+<p><strong>Announced in-session (mirroring/shortcut features demoed live):</strong>
+- <strong>SharePoint list mirroring</strong> — mirror a SharePoint Online list into OneLake (demoed; GA listed among shortcut/mirroring sources).
+- <strong>Excel shortcuts in OneLake</strong> — "Starting today"; each sheet becomes a first-class lakehouse table.
+- <strong>OneLake catalog natively integrated into Foundry</strong> — discover trusted enterprise data and use it in Foundry knowledge/agents.</p>
+<p><strong>Coming soon / roadmap:</strong>
+- <strong>AWS Glue</strong> support for shortcut/mirroring.
+- More mirroring sources over workspace private link.</p>
+<p><strong>Already-GA capabilities reinforced (status as stated):</strong>
+- Snowflake natively storing <strong>Iceberg</strong> tables in OneLake.
+- Snowflake/Databricks/Salesforce open-format interoperability via Delta + Iceberg table APIs.</p>
+<h2 id="demos">💡 Demos</h2>
+<p><strong>Demo 1 — New OneLake storage features (narrated, post-Josh).</strong> Opens in a "busy, real, production-looking" workspace. Shows the <strong>OneLake File Explorer</strong> surfacing all item types as folders/files in one consistent Windows view, with <strong>drag-and-drop ingest</strong> (no storage account provisioning, no infra setup). Introduces the <strong>OneLake storage report</strong>: item-level storage so you can spot what's driving footprint, including non-obvious things like <strong>soft-deleted data and system folders</strong> (logs/metadata/temp). Scenario: a lakehouse holds <strong>4 TB of bronze data</strong> kept for compliance but rarely touched after a few days — a common at-scale pattern. <strong>Storage tiers + lifecycle management</strong> then auto-move infrequently used data to <strong>cool/cold tiers</strong> (lower storage cost, higher transaction price only on access), with <strong>default tiering rules</strong> that are customizable. Reinforces enterprise management in one place: diagnostics events (who accessed data, optionally immutable), network protection rules, and CMK encryption. <strong>Point proved:</strong> you can see <em>and act on</em> storage cost/governance in the same place without separate tooling.</p>
+<p><strong>Demo 2 — Unified estate with SharePoint list mirroring + Excel shortcuts (Rohan / "Zalva" / "Ziva").</strong> Starts from a basic Fabric task flow (store → analyze/visualize → alert). A lakehouse is built from <strong>shortcuts to several DB sources</strong> — but critical data also lives in a <strong>SharePoint list</strong> (the ops team tracks readiness/staffing/build-out for 15 new stores across Atlanta, Chicago, Seattle, Miami). Old pain: export CSVs / Power Automate. New: <strong>SharePoint list mirroring</strong> — create a mirrored SharePoint Online list item (enter site URL or pick a connection, select the list, optionally auto-mirror future tables, name it, create). The mirror starts and shows <strong>195 rows already replicated</strong>; a <strong>shortcut</strong> to the mirrored list makes the data appear in the lakehouse with <strong>no pipeline/copy job</strong>. Then <strong>Excel shortcuts</strong>: the team's regional budget/forecast workbook (build-out costs, marketing spend, projected revenue) is shortcut in — Fabric detects the Excel file and turns <strong>every sheet into a first-class table</strong> ("two sources, one lakehouse, zero friction"). A <strong>Power BI report</strong> shows store readiness + staffing with <strong>SharePoint-list data sitting next to Excel-workbook data</strong>. Live update test: a regional manager bumps <strong>Chicago staffing in Excel</strong>; the store manager sets <strong>Chicago status "ready to open" in the SharePoint list</strong>; a report <strong>refresh</strong> lights up "Chicago ready to open, fully staffed, budget on track." <strong>Point proved:</strong> the single pane of glass — SharePoint, Excel, and databases all flow into one lakehouse and power one set of reports, using tools teams already know, with no CSVs/Power Automate/IT tickets.</p>
+<p><strong>Demo 3 — Unify Fabric + Foundry for AI on unstructured data (Michaela).</strong> Most orgs have valuable <strong>unstructured</strong> content in SharePoint (business docs, PDFs, Excel) that's disconnected from analytics/AI. In a Fabric <strong>lakehouse</strong>, unstructured SharePoint files live alongside structured data; because they're <strong>OneLake shortcuts</strong>, files are <strong>virtualized in place</strong> (no copy/movement/duplication), unified with <strong>multi-cloud</strong> data (S3, NetApp files behind network protection, Azure Blob holding customer-support transcripts). In <strong>AI Foundry</strong>, <strong>knowledge</strong> indexes this context (turning raw files into searchable/retrievable knowledge for grounding). The <strong>OneLake catalog</strong> (natively integrated) lets her search available data, see <strong>endorsements</strong> and <strong>sensitivity labels</strong> to judge trust, and confirm a <strong>promoted</strong> lakehouse is ready for broad use. She adds the <strong>OneLake knowledge source</strong> to an agent and asks a business question ("What are my best-selling products and how can I improve my sales?"). <strong>Point proved:</strong> connect to business data where it lives, unify structured + unstructured <strong>without copying</strong>, discover trusted data via the catalog, and ground a Foundry agent natively.</p>
+<p><strong>Demo 4 — OneLake security end-to-end ("Zahara").</strong> Platform admin <strong>Zahara</strong> consolidates sales data into OneLake via a <strong>mirror database</strong> (customers + sales). She creates <strong>OneLake security roles</strong>: a <strong>non-PII</strong> role (picks tables, then configures <strong>column-level security (CLS)</strong> to remove email and phone from the customers table; adds <strong>Patrick</strong>), and a <strong>data science no-EU</strong> role (allows PII but <strong>restricts EU rows</strong> for compliance; members <strong>Diego</strong> and <strong>Priya</strong>). Enforcement is then shown across engines: <strong>Priya</strong> (data scientist) verifies via the <strong>SQL endpoint</strong> (sees only allowed rows, identity honored), then <strong>shortcuts</strong> the data into her own lakehouse and queries with <strong>Spark</strong> (joining sales + customers) — <strong>EU rows restricted seamlessly</strong> for ML. <strong>Diego</strong> (sales manager) builds a <strong>semantic model directly over the mirror tables using Direct Lake</strong>; the <strong>security roles are pulled into the model automatically</strong>, and his <strong>Power BI</strong> report hides EU customers because he's in the no-EU role. <strong>Patrick</strong> (business analyst) uses the <strong>OneLake catalog</strong> to find Diego's report but the sales table is disabled (he's non-PII and can't see phone numbers); he then analyzes the semantic model <strong>in Excel</strong>, where <strong>OneLake security automatically hides PII columns</strong> while he still builds a pivot table. <strong>Point proved:</strong> "Secure your data once and have it be enforced everywhere" — across SQL endpoint, Spark, Direct Lake semantic models, Power BI, and Excel.</p>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>35,000+</strong> paying Fabric/OneLake customers.</li>
+<li><strong>80%+ of the Fortune 500</strong> use OneLake/Fabric.</li>
+<li><strong>48 billion</strong> OneLake service interactions <strong>per day</strong>.</li>
+<li><strong>9.4 million</strong> active shortcuts across the ecosystem.</li>
+<li><strong>4× year-over-year</strong> storage growth.</li>
+<li><strong>3+ million</strong> storage accounts Microsoft manages for OneLake users.</li>
+<li><strong>240,000+</strong> organizations worldwide trust the OneLake catalog.</li>
+<li>Demo specifics: <strong>4 TB</strong> bronze data kept for compliance; <strong>195 rows</strong> replicated via SharePoint list mirroring.</li>
+<li><em>"OneLake... is the OneDrive for data."</em> — Deepti Borkar.</li>
+<li><em>"OneLake really came in like a wrecking ball and busted open these silos, freed the data, and unified all into a single logical lake."</em> — Josh.</li>
+<li><em>"There's always one lake per organization. You can never have more than one. You can never have less than one."</em> — Josh.</li>
+<li><em>"Two sources, one lakehouse, zero friction."</em> — Rohan (demo).</li>
+<li><em>"Secure your data once and have it be enforced everywhere."</em> — Josh (OneLake security).</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Stand up a OneLake <strong>shortcut</strong> to an existing ADLS/S3 path and confirm <strong>zero-copy</strong> access in a lakehouse.</li>
+<li>Test <strong>SharePoint list mirroring</strong> + <strong>Excel shortcuts</strong> to reproduce the "one report from three source types" pattern.</li>
+<li>Enable <strong>lifecycle management / data tiering</strong> on a cold lakehouse (e.g. bronze) and measure storage-cost vs transaction-cost trade-off.</li>
+<li>Define a <strong>OneLake security</strong> role (RLS + CLS) once and verify enforcement across SQL endpoint, Spark, Direct Lake, Power BI, and Excel.</li>
+<li>Wire the <strong>OneLake catalog → Foundry knowledge</strong> path to ground an agent on structured + unstructured data with no copy.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>Cost model details for <strong>cool/cold tiers</strong> (storage savings vs per-access transaction pricing) at real scale?</li>
+<li>Latency/throughput of <strong>mirroring CDC</strong> for high-write OLTP sources (Oracle/SQL Server) — and limits on SharePoint list mirroring?</li>
+<li>How do <strong>OneLake security</strong> definitions behave for <strong>external engines</strong> (Snowflake/Databricks) reading via the table API — are RLS/CLS enforced there too, or only inside Fabric engines?</li>
+<li>GA timeline for <strong>Azure Databricks native storage</strong> and <strong>AWS Glue</strong> shortcut/mirroring?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Any data platform consolidating silos (ADLS + on-prem + SaaS) onto an open lake without ETL.</li>
+<li>Teams grounding AI agents on enterprise data (Fabric + Foundry) needing trust signals (sensitivity labels, endorsements).</li>
+<li>Governance/security owners needing one place to define RLS/CLS enforced across engines.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><a class="wikilink wikilink--resolved" href="OD811.html">OD811 - Powering the next AI frontier with a unified data platform</a> — sibling Fabric session on the unified data platform vision.</li>
+<li><a class="wikilink wikilink--resolved" href="OD818.html">OD818 - The AI-native Data Engineer</a> — sibling Fabric session on the AI-native data engineering experience.</li>
+<li><a class="wikilink wikilink--resolved" href="OD812.html">OD812 - Fabric IQ Bringing enterprise intelligence into the developer workflow</a> — sibling Fabric session in the same Build 2026 OneLake/Fabric track.</li>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Fabric">Microsoft Fabric</span> — the product OneLake is the foundation of.</li>
+<li><span class="wikilink wikilink--unresolved" title="OneLake">OneLake</span> — the unified, open, AI-ready data lake covered in this session.</li>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft AI Foundry">Microsoft AI Foundry</span> — AI platform that natively integrates the OneLake catalog for grounding agents.</li>
+<li><span class="wikilink wikilink--unresolved" title="Delta Lake and Apache Iceberg">Delta Lake and Apache Iceberg</span> — the open table formats OneLake exposes via the table API.</li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="OD812.html"><span class="pager-dir">← Previous</span><span class="pager-code">OD812</span><span class="pager-title">Fabric IQ: Bringing enterprise intelligence into the developer workflow</span></a>
+    <a class="pager pager-next" href="OD818.html"><span class="pager-dir">Next →</span><span class="pager-code">OD818</span><span class="pager-title">The AI-native Data Engineer</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

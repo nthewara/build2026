@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRK242 — Turn your agents into action: Connect tools, APIs, and documents</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">BRK242</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=nZM5PkjzSKo" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Turn your agents into action: Connect tools, APIs, and documents</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Maria Nagaga, Joe Blick</span>
+      <span class="meta-item">⏱️ 43m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="tools">Tools</span><span class="chip" data-tag="mcp">MCP</span><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="foundry">Foundry</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Maria Nagaga (Program/Product Manager, Microsoft Foundry tools) · Joe Blick (Content Understanding)<br>
+<strong>Duration:</strong> ~43 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=nZM5PkjzSKo">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Agents create business value through <strong>tool calling</strong> — but as the tool ecosystem explodes (MCP, OpenAPI, A2A, connectors, skills, CLIs, plugins…), wiring tools into agents has become the real bottleneck: every integration has its own identity, protocol, and credential model, so "six integrations" silently balloons into hundreds. Microsoft Foundry's answer is <strong>Toolbox</strong> — a reusable, managed bundle that exposes <em>any</em> tool type through a single MCP-compatible endpoint with one auth, plus <strong>Tool Search</strong> so the agent loads only the one tool it needs (saving context/tokens) instead of every tool. The second half covers <strong>Content Understanding</strong>, a GA pipeline (parse → classify → extract) that turns messy multimodal files (PDFs, docx, images, video, charts) into clean, grounded, structured JSON/markdown so agents stop choking on documents — with <strong>agentic extraction</strong>, section-level splitting, knowledge-source training, and GPT-5-family engines arriving in July. The throughline: the same "Fibby" fiber-optic field-ops agent demonstrates toolbox + content understanding working together end to end.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Tool calling is the single most important agent capability</strong> — LLMs provide reasoning, but tool calling is what lets an agent <em>take action</em> and deliver real business value.</li>
+<li>The tool ecosystem is exploding beyond MCP: <strong>OpenAPI, MCP, A2A, Logic App connectors, skills, CLIs, plugins</strong> and more — and the hard part is no longer the <em>number</em> of tools but the <em>types</em>.</li>
+<li>Three unsolved agentic problems sit on top of a catalog: <strong>tool creation</strong> (curate a set per task), <strong>tool discovery</strong> (pick the best tool within a <em>token budget</em>), and <strong>tool governance</strong> (control who/what gets which tools).</li>
+<li><strong>Tool discovery ≠ searching a registry</strong> — it's choosing the best tool to complete a task <em>while minimising tokens / context-window bloat</em>.</li>
+<li><strong>Integration, not discovery, is the real pain</strong>: each tool has its own identity, team-of-origin, protocol, and credential management; one field-ops agent's "6 integrations" multiplied across many agents becomes <em>hundreds</em> of integrations. Devs spend more time integrating than building agents.</li>
+<li><strong>Toolbox</strong> = a reusable bundle of tools, <strong>managed in Foundry</strong>, consumed through one <strong>consistent interface regardless of tool type</strong> — four pillars: <strong>Build, Discovery, Consuming, Governed</strong>.</li>
+<li>Toolbox gives <strong>one unified MCP-compatible endpoint, one auth, one experience</strong> — the agent doesn't care whether the underlying tool is MCP, an OpenAPI spec, a skill, or a connector.</li>
+<li><strong>Tool Search</strong> is a tool <em>inside</em> the toolbox: it reads tool metadata and loads only the required tool into the context window (e.g. "I need GitHub" → only the GitHub tool loads, not all 10).</li>
+<li>Toolbox is portable across runtimes: <strong>GitHub Copilot / CLI, GitHub Copilot SDK</strong>, targeting <strong>Claude Code</strong>, and <strong>soon Microsoft Copilot Studio</strong>.</li>
+<li>The <strong>tools catalog shipped in 2025</strong>; for a private registry you can pair it with <strong>Azure API Center + Azure API Management</strong> for extra governance.</li>
+<li><strong>Content Understanding</strong> turns messy, multimodal content into <strong>clean, structured, agent-ready output</strong> (structured JSON + key-value pairs + markdown) so agents stop writing brittle custom code to crack files.</li>
+<li>Content Understanding is a <strong>single pipeline: parse → classify → extract</strong>, works across <strong>any modality</strong> (PDF, docx, image, video, even zip/email files), and is <strong>already GA (~6 months) and in production ~1.5 years</strong>.</li>
+<li>Extracted fields are <strong>grounded to bounding boxes/words in the source</strong> and carry <strong>confidence scores</strong>, enabling <strong>auto-approve when confident / route to human review when not</strong> — the basis for real automation.</li>
+<li>A low-quality default parser silently produces <strong>ungrounded, wrong answers</strong> (e.g. missing measurements, "scheduled" vs "completed"); turning on Content Understanding yields correct, grounded answers and even <strong>JSON for charts/figures</strong>.</li>
+<li>Coming <strong>July</strong>: <strong>agentic extraction</strong> (build an answer by reasoning across files, not just find it), <strong>section-boundary splitting</strong>, <strong>knowledge-source training</strong> on your own document types, and <strong>cheaper pre-built analyzers</strong> plus <strong>GPT-5-family engines</strong>.</li>
+<li>Content Understanding plugs into agents three ways: <strong>Foundry IQ ingestion</strong>, <strong>context provider</strong> (incl. a <strong>LangChain</strong> primitive) to pre-process incoming files, and <strong>encoding business rules</strong> via custom classify/extract analyzers.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-what-it-means-to-build-an-agent-platform-at-microsoft">Framing: what it means to build an agent platform at Microsoft</h3>
+<p>The session opens with Microsoft's agent-platform story: <strong>build on GitHub</strong>, use <strong>Microsoft Foundry</strong> as the platform (agent runtime, agent optimisation, and the tools you need), and <strong>distribute through M365</strong>. Foundry itself provides <strong>agent services, models, IQ tools, and a control plane</strong>, and lets you <strong>govern the lifecycle from cloud to edge</strong>. Within Foundry, <strong>Foundry Tools</strong> (Maria's area, with colleague Linda) is the hub for <strong>pre-built tools and third-party tools</strong> with enterprise-grade scalability — the goal is <strong>one place for all your tools, regardless of tool type</strong>.</p>
+<h3 id="why-tool-calling-matters-and-why-its-hard">Why tool calling matters (and why it's hard)</h3>
+<ul>
+<li><strong>LLMs supply reasoning; tool calling supplies <em>action</em>.</strong> Tool calling is how agents deliver real business value.</li>
+<li>This is also where the danger lives: <strong>tools reach into production code, databases, and APIs and generate real results.</strong> Security has to cover both the <em>agent's</em> access to the right tools <em>and</em> the access of the <em>individual humans</em> using those agents.</li>
+<li>Customer pain points (thousands of papers written on this) cluster into recurring themes:</li>
+<li><strong>Steering</strong> — finding the right tool for the job in a rapidly growing ecosystem.</li>
+<li><strong>Sprawl</strong> — managing tools, keeping them secure, making them easy to publish.</li>
+<li><strong>Security / control</strong> — controlling which tools are exposed and to whom.</li>
+</ul>
+<h3 id="the-three-missing-capabilities-on-top-of-a-catalog">The three missing capabilities (on top of a catalog)</h3>
+<p>Even once you can <em>find</em> tools, three problems remain in the agentic ecosystem:
+1. <strong>Tool creation</strong> — curate the set of tools a given agent needs for a specific task, then <strong>share that curated list across every agent</strong> you control.
+2. <strong>Tool discovery</strong> — <em>not</em> "search a registry." It's <strong>choosing the best tool to complete the task while spending the fewest tokens</strong> (avoiding context-window bloat). Maria stresses token efficiency repeatedly.
+3. <strong>Tool governance</strong> — fine-grained control so different people/agents get different tool access ("I don't want Maria to have the same tool access as Linda").</p>
+<h3 id="the-tool-catalog-shipped-2025-and-its-limits">The tool catalog (shipped 2025) — and its limits</h3>
+<ul>
+<li>The <strong>tools catalog</strong> (built last year, <strong>shipped in 2025</strong>) solves the "all tools in one place" problem. Foundry ships a catalog of community/ecosystem tools custom-built for it.</li>
+<li>For a <strong>private registry</strong>, you can layer on <strong>Azure API Center</strong> and <strong>Azure API Management</strong> for additional governance.</li>
+<li><strong>The tool landscape is about <em>types</em>, not just counts:</strong> OpenAPI, MCP, A2A, Logic App connectors, skills, CLIs, plugins, "books," and more — "there's going to be foo bar, x bar, it's going to continuously grow."</li>
+</ul>
+<h3 id="the-real-bottleneck-integration-not-discovery">The real bottleneck: integration, not discovery</h3>
+<ul>
+<li>Catalog solves <em>finding</em>; it does <strong>not</strong> solve <em>integrating</em>. These are two different problems.</li>
+<li>Worked example: a <strong>field-ops agent</strong> with six integrations — <strong>Entra, SharePoint, ticketing, a custom MCP/API, Teams access, blob storage, Azure Search</strong>. It <em>sounds</em> simple, but each tool has:</li>
+<li>its <strong>own identity</strong>,</li>
+<li>is built by a <strong>different team</strong>,</li>
+<li>uses a <strong>different protocol</strong>,</li>
+<li>and has <strong>different credential management</strong>.</li>
+<li>Now multiply by every integration that agent needs, <strong>and</strong> by every <em>other</em> agent (customer support, billing, networks, inventory…). "Six integrations" becomes <strong>hundreds</strong> — before you even count permissions, failure handling, and debugging. Net effect: <strong>developers spend more time integrating tools than building agents</strong> (the thing that actually makes money).</li>
+</ul>
+<h3 id="toolbox-the-proposed-solution">Toolbox — the proposed solution</h3>
+<p>A <strong>Toolbox</strong> is <em>"a reusable bundle of tools managed in Foundry that agents can consume through a single consistent interface regardless of tool type."</em> (Featured in Satya's keynote earlier in the event.) The three words that matter:
+- <strong>Reusable</strong> — build a toolbox once, use it across any agent.
+- <strong>Managed</strong> — Foundry handles the lifecycle so you don't have to.
+- <strong>Consistent interface</strong> — the agent doesn't care whether the underlying tool is MCP, an OpenAPI spec, a skill, or a connector. You get <strong>one unified endpoint, one auth, one experience</strong>.</p>
+<h4 id="the-four-pillars-of-toolbox">The four pillars of Toolbox</h4>
+<ol>
+<li><strong>Build</strong> — create tools in a <strong>named, reusable bundle</strong>, configure and publish them. (E.g. a single <em>Field Ops</em> toolbox holding the Entra/SharePoint/etc. config instead of scattering it.)</li>
+<li><strong>Discovery</strong> — when the agent prompts the toolbox, it <strong>retrieves only the tool required</strong> to complete the task.</li>
+<li><strong>Consuming</strong> — a <strong>single MCP-compatible endpoint</strong> exposes every tool to any agent runtime; carry that one endpoint across every agent.</li>
+<li><strong>Governed</strong> — <strong>centralised authentication and observability</strong> to monitor all tool calls.</li>
+</ol>
+<h4 id="features-that-implement-the-pillars">Features that implement the pillars</h4>
+<ul>
+<li><strong>Toolbox</strong> — how you build the bundles.</li>
+<li><strong>Tool Search</strong> — a tool that lets you <strong>search and discover tools at runtime</strong> (see below).</li>
+<li><strong>Unified endpoint</strong> — the <strong>MCP-compatible</strong> consumption surface.</li>
+<li><strong>Control &amp; visibility</strong> — add your <strong>own policies and guardrails</strong>; a <strong>governance dashboard</strong> is coming for more detail.</li>
+</ul>
+<h4 id="portability-where-you-can-consume-a-toolbox">Portability (where you can consume a toolbox)</h4>
+<p>The toolbox endpoint is meant to travel: <strong>GitHub Copilot / CLI, GitHub Copilot SDK</strong>, with <strong>Claude Code</strong> support being worked on, and <strong>soon Microsoft Copilot Studio</strong>. The lifecycle promise: <em>build a toolbox → consume a unified endpoint → know it's governed.</em></p>
+<h3 id="tool-search-how-token-savings-actually-happen">Tool Search — how token savings actually happen</h3>
+<p><strong>Tool Search</strong> is a tool <em>within</em> the toolbox. Instead of loading every tool definition into the context window, it <strong>pulls the metadata of all tools in the toolbox, finds the right one, and loads only that tool</strong>. In the closing demo the agent "found 10 tools but only selected one." This is the concrete mechanism behind the repeated "use fewer tokens" message — the diagram Maria shows goes from <strong>manually wiring every tool to an agent</strong> → <strong>attach a toolbox, expose one unified endpoint, let Tool Search decide and load just the needed tool</strong>.</p>
+<h3 id="skills-the-catalog-and-a-new-browser-automation-tool-foundry-portal-tour">Skills, the catalog, and a new browser-automation tool (Foundry portal tour)</h3>
+<p>In the Foundry portal under <strong>Build → Tools</strong> you now see three things: <strong>Toolbox, Tools, and Skills.</strong>
+- <strong>Skills</strong> can be uploaded and shared: Maria uploads an "art skill" (one that helps make better architectural diagrams) from her desktop so <strong>any agent in that project</strong> can use it; she also publishes it to the repo.
+- <strong>Browser automation is a new tool available <em>today</em></strong> — <strong>built on Playwright</strong>, it can <strong>scrape information and fill in forms</strong> (demoed by auto-filling a Microsoft form).
+- Building a toolbox in the portal: <strong>Toolbox → Create → name it → Add tools</strong> (shows every catalog tool) <strong>→ Add skills</strong> (e.g. the skill just uploaded). A toolbox can be <strong>set as default</strong>, which <strong>points the hosted agent's endpoint at that specific toolbox version</strong>. There's a per-toolbox <strong>"turn Tool Search on/off"</strong> toggle.</p>
+<h3 id="part-2-agents-in-the-real-world-need-documents-not-just-apis-joe-blick">Part 2 — Agents in the real world need documents, not just APIs (Joe Blick)</h3>
+<p>Toolbox solves agents-accessing-tools and saves tokens, but <strong>a lot of the content an agent needs lives in documents, videos, and PowerPoint decks</strong>, not APIs. When agents try to crack that content themselves they <strong>break, scramble, and burn tokens</strong> — writing custom code to parse a PowerPoint, missing content, finding a table but failing to read its cells. <strong>Content Understanding</strong> exists to fix this.</p>
+<h3 id="what-content-understanding-is">What Content Understanding is</h3>
+<p>It <strong>takes messy, multimodal content and turns it into clean, structured, agent-ready output.</strong> Any file type flows in, gets <strong>parsed, classified, extracted</strong>, and comes out as <strong>structured JSON with key-value pairs plus markdown</strong> that represents the file's details with <strong>high fidelity</strong>.
+- Not new/experimental: <strong>GA'd ~6 months ago, in production ~1.5 years.</strong>
+- <strong>Foundry IQ</strong> uses it as its <strong>content-extraction layer</strong> to get the highest-fidelity input for grounding agents.
+- <strong>Microsoft 365 Copilot</strong> uses it when you ask a question about a document or PDF.</p>
+<h3 id="how-customers-use-it-proof-points">How customers use it (proof points)</h3>
+<ul>
+<li><strong>Wolters Kluwer</strong> — trusted professional tools for <strong>tax automation, legal, and healthcare</strong>. Their <strong>CCH Access Tax</strong> product uses Content Understanding to ingest <strong>tax forms, supporting tax documents, and other financial documents</strong> in structured format to <strong>automate tax-prep processing end to end</strong>.</li>
+<li><strong>DataSnipper</strong> — an <strong>agentic platform for audit and finance</strong>. Their AI extraction capability is <strong>powered by Content Understanding</strong>, taking any document <strong>directly into Excel</strong> (where finance pros want to work) in structured format. They cite <strong>faster reviews, more reliable evidence, and trustworthy AI</strong>.</li>
+</ul>
+<h3 id="the-pipeline-parse-classify-extract">The pipeline: parse → classify → extract</h3>
+<p>A <strong>single pipeline</strong>, available for <strong>any modality</strong> (video, image, document, PDF, even old formats like zip/email files), with a <strong>custom-tailored solution per file type</strong>:
+- <strong>Parse</strong> — turn any input document into <strong>markdown</strong>. Built on <strong>Microsoft's OCR + layout technology refined over 20 years</strong>, still state-of-the-art. Handles <strong>tables, multilingual documents, even a crumpled page</strong>. It's the <strong>foundation of search ingestion for Foundry IQ</strong>. Key advancement seen in the demo: <strong>extract tables well into structured markdown</strong> to ground agents, and <strong>detailed representations of figures (charts/diagrams)</strong> so that content isn't lost on ingestion.
+- <strong>Classify</strong> — decide <strong>what kind of document</strong> something is, or <strong>break a long document into logical parts</strong>. Enterprise files are often <strong>packages</strong> (a case file, an application bundle, a tax submission) of many documents combined. Classification lets you <strong>identify the classes you care about, throw away irrelevant parts, and extract from the right pieces</strong>. <em>Coming July:</em> split documents on <strong>section boundaries</strong>, not just page boundaries (a top customer ask, since real boundaries rarely fall neatly on pages).
+- <strong>Extract</strong> — parse content into <strong>structured fields / structured output</strong>: <strong>key-value pairs, confidence scores, grounded results.</strong> Each field is <strong>grounded back to a bounding box / word / sentence</strong> in the source (not just an LLM completion), so you can jump back into the file to see where it came from. <strong>Confidence scores</strong> drive <strong>auto-approve when high / human review when low</strong> — the basis for real automation workloads.</p>
+<h3 id="quality-integration-improvements">Quality + integration improvements</h3>
+<ul>
+<li><strong>Broad coverage:</strong> more new file types supported.</li>
+<li><strong>Better quality:</strong> the <strong>GPT-5 family of models</strong> added as an engine for running <strong>extraction and classification</strong>.</li>
+<li><strong>Easier integration:</strong> support for <strong>Logic Apps, Agent Framework, LangChain, markdown</strong>, and a set of <strong>open-source tools</strong> so extraction can run as part of your agent runtime.</li>
+</ul>
+<h3 id="whats-coming-in-july-extract-roadmap">What's coming in July (extract roadmap)</h3>
+<ul>
+<li><strong>Knowledge-source training:</strong> provide a few examples of a document type that matters to you (a specific tax form, an industry financial doc); <strong>Content Understanding trains on it and improves results.</strong></li>
+<li><strong>New pre-built analyzers</strong> with <strong>significant cost/token reductions</strong> — much more efficient.</li>
+<li><strong>Agentic extraction</strong> (detailed below).</li>
+</ul>
+<h3 id="agentic-extraction-build-the-answer-dont-just-find-it">Agentic extraction — "build the answer, don't just find it"</h3>
+<p>Standard extraction is good at <strong>finding answers and summarising data</strong> in a document. But a <strong>broader class of problems</strong> needs an answer that must be <strong>built step-by-step by reasoning across content</strong>, e.g.:
+- <em>"For this contract and this set of amendments, which clause applies across the entire chain of changes?"</em>
+- <em>"How do I root-cause this issue?"</em></p>
+<p>For these, just finding a single value isn't enough — you must <strong>reason across the files</strong>. <strong>Agentic mode</strong> (coming <strong>July</strong>) turns this on for the hardest problems where standard extraction fails.</p>
+<p><strong>Recorded demo (agentic extraction):</strong> uses the same grounding documents as morning <strong>demo session 331</strong> (repo available via QR code). Scenario: a <strong>complicated fiber-optic cable failure</strong> described across a document/history. You set <strong>questions in the schema</strong> — <em>"What's the root cause? How much will it cost to fix? Is it on budget?"</em> — and Content Understanding's agentic mode <strong>uses a set of tools to reason across the corpus of evidence and loop over it</strong>. In the trace it <strong>finds specific evidence in the documents, asks follow-up questions about images, runs calculations and code</strong>, and <strong>captures a set of evidence to support a final, well-grounded answer</strong>. Output: a <strong>root cause + cost analysis</strong>, correctly answered — work that would otherwise require a lot of custom coding.</p>
+<h3 id="the-three-ways-to-use-content-understanding-with-agents-fibby-demo">The three ways to use Content Understanding with agents (Fibby demo)</h3>
+<p>Joe returns to the <strong>"Fibby" fiber-optic field-ops agent</strong> (the same agent Maria demoed) to show three high-value patterns. The agent UI exposes which <strong>Foundry IQ knowledge source</strong> and which <strong>context provider</strong> it's using.</p>
+<ol>
+<li>
+<p><strong>Foundry IQ ingestion / knowledge source.</strong>
+   - With a <strong>minimal knowledge source that does NOT use Content Understanding</strong>, asking about an <strong>F3 fiber</strong> measurement (a "1310" value that has <em>no recorded evidence</em> in the doc) makes the agent <strong>hallucinate "46" — an ungrounded answer.</strong>
+   - Turning on <strong>Content Understanding (standard mode)</strong> generates a <strong>structured markdown representation of the maintenance log</strong> that surfaces the <strong>missing value</strong> explicitly — so the agent now correctly says <strong>there's no recorded separate value</strong>, instead of a simple PDF parser lumping it into a long list and inventing a number. During <strong>indexing</strong>, Content Understanding pulls <strong>figure descriptions, tables, and structure with minimal loss</strong> into the index for correct answers.</p>
+</li>
+<li>
+<p><strong>Context provider (real-time file upload).</strong>
+   - Agent harnesses typically have <strong>very limited file support</strong> — e.g. <strong><code>.docx</code> files aren't supported</strong> by default. Enabling <strong>Content Understanding as a context provider</strong> (a primitive in <strong>Agent Framework</strong>, with a <strong>LangChain</strong> equivalent) <strong>pre-processes files and generates a text version</strong> to hand the agent, so it can process <strong>any file type, not just PDFs</strong>.
+   - Even with PDFs, the <strong>default low-quality parser gives wrong answers</strong>: asked about <strong>work order 89</strong>, the agent says <strong>"scheduled,"</strong> but the order is actually <strong>"completed."</strong> Turning on Content Understanding produces a <strong>nice structured table</strong> (and a <strong>JSON representation of chart data</strong> so chart context isn't lost), and the agent then correctly reports <strong>work order 89 is complete</strong> — matching the PDF.</p>
+</li>
+<li>
+<p><strong>Encoding business rules via custom analyzers.</strong>
+   - Some files are inherently hard to interpret. Example: a work order where <strong>J. Martinez</strong> is the <strong>field technician</strong>, but <strong>John Smith</strong> is listed as the <strong>site contact</strong>. With <strong>no guidance</strong>, the agent wrongly answers <strong>"John Smith."</strong>
+   - Fix: build a <strong>classify + extract analyzer</strong> in <strong>Content Understanding Studio</strong> (where you can visualise/edit analyzers). The analyzer <strong>classifies the whole file</strong> ("is this a work order or not?" — with a description; you could list hundreds of classes, or classify page-by-page / section-by-section), and on a work order <strong>extracts the technician</strong> using <strong>guidance</strong> ("this <em>route</em> field tells you who the technician is"). With those <strong>business rules encoded</strong>, the agent correctly answers <strong>Jay Martinez</strong> — even for a genuinely hard question.</p>
+</li>
+</ol>
+<p><strong>Summary of the three scenarios:</strong> (1) Foundry IQ indexing with structure/figures/tables preserved, (2) context provider to process any incoming file type accurately, (3) custom analyzers to encode your own business rules — <em>"a work order, a tax file, or whatever the type of documents I care about."</em></p>
+<h3 id="closing-demo-and-resources-maria">Closing demo and resources (Maria)</h3>
+<p>A final demo shows an agent using the <strong>unified endpoint inside an Agent Framework / LangGraph application</strong> (similar to Fibby). Watching the <strong>activity line</strong>: it goes into the toolbox, <strong>loads a skill, finds 10 tools but selects only one</strong>, pulls that tool, checks the order, and returns results — proving Tool Search loads one tool instead of all of them, and that it's real and usable today.</p>
+<p><strong>Where to go:</strong>
+- <strong><code>ai.azure.com</code></strong> → Foundry (try toolbox/tools/skills).
+- <strong><code>aka.ms/&lt;build session number&gt;</code></strong> — demo content for this session.
+- <strong><code>aka.ms/phoebe</code></strong> — the <strong>live Fibby demo</strong> you can open on phone/computer; <strong>up for the rest of the week</strong>, with <strong>demo code</strong> included.
+- Join the <strong>Foundry Discord</strong> and the documentation.</p>
+<blockquote>
+<p>Honesty note from the room: several live demos struggled ("the demo gods weren't with me today"); Maria attributed failures to site load and joked about "demo ghosts." The recorded/GIF fallbacks and the hosted <code>aka.ms/phoebe</code> agent were provided as proof the features work.</p>
+</blockquote>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Microsoft Foundry</strong> — the agent platform: agent services, models, IQ tools, a control plane; governs lifecycle cloud-to-edge.</li>
+<li><strong>Foundry Tools</strong> — hub of pre-built + third-party tools with enterprise-grade scalability.</li>
+<li><strong>Tools Catalog</strong> — Foundry's catalog of ecosystem tools; <strong>shipped 2025</strong>; "all tools in one place."</li>
+<li><strong>Toolbox</strong> — reusable, Foundry-managed bundle of mixed-type tools behind one MCP-compatible endpoint + one auth (keynote feature).</li>
+<li><strong>Tool Search</strong> — tool inside a toolbox that loads only the required tool at runtime via metadata (token saver).</li>
+<li><strong>Unified endpoint</strong> — single <strong>MCP-compatible</strong> consumption surface for any agent runtime.</li>
+<li><strong>Skills</strong> — uploadable/shareable capability units (e.g. an architectural-diagram "art skill"); addable to toolboxes; visible under Foundry → Build → Tools.</li>
+<li><strong>Browser automation tool</strong> — <em>new, available today</em>; <strong>built on Playwright</strong>; scrapes info and fills forms.</li>
+<li><strong>MCP (Model Context Protocol)</strong> — the baseline protocol; toolbox's endpoint is MCP-compatible. Referenced as "the time when all we had was MCP."</li>
+<li><strong>Tool types named</strong> — <strong>OpenAPI, MCP, A2A (Agent-to-Agent), Logic App connectors, skills, CLIs, plugins, "books"</strong> and more.</li>
+<li><strong>Azure API Center</strong> — pair with the catalog to host your <strong>own private tool registry</strong> with extra governance.</li>
+<li><strong>Azure API Management (APIM)</strong> — additional governance layer for a private registry.</li>
+<li><strong>GitHub</strong> — where you build; toolbox consumable via <strong>GitHub Copilot / CLI</strong> and the <strong>GitHub Copilot SDK</strong>.</li>
+<li><strong>Claude Code</strong> — target runtime for toolbox support (in progress).</li>
+<li><strong>Microsoft Copilot Studio</strong> — toolbox consumption coming soon.</li>
+<li><strong>Microsoft 365 (M365)</strong> — distribution channel for tools/agents.</li>
+<li><strong>Entra, SharePoint, Microsoft Teams, Azure Blob Storage, Azure AI Search</strong> — example enterprise integrations for a field-ops agent (each with its own identity/protocol/credentials).</li>
+<li><strong>Azure Container Apps</strong> — where the hosted Fibby agent runs.</li>
+<li><strong>Governance dashboard</strong> — coming, for detailed control/visibility over tool calls.</li>
+<li><strong>Content Understanding</strong> — GA pipeline (parse → classify → extract) turning multimodal files into clean, grounded structured JSON + markdown.</li>
+<li><strong>Content Understanding Studio</strong> — UI to visualise and edit classify/extract analyzers.</li>
+<li><strong>Foundry IQ</strong> — uses Content Understanding as its content-extraction/grounding layer; knowledge-source + indexing.</li>
+<li><strong>Microsoft 365 Copilot</strong> — uses Content Understanding to answer questions about documents/PDFs.</li>
+<li><strong>GPT-5 family of models</strong> — added as an engine for Content Understanding extraction + classification.</li>
+<li><strong>Microsoft OCR + layout technology</strong> — 20-year-refined engine underpinning Parse (tables, multilingual, degraded pages).</li>
+<li><strong>Agent Framework</strong> — supports Content Understanding as a <strong>context provider</strong> primitive.</li>
+<li><strong>LangChain / LangGraph</strong> — supported: a LangChain context-provider primitive; closing demo runs in a LangGraph app.</li>
+<li><strong>Logic Apps</strong> — integration target for Content Understanding.</li>
+<li><strong>Pre-built analyzers</strong> — coming July with significant token/cost reductions.</li>
+<li><strong>Wolters Kluwer — CCH Access Tax</strong> — customer using Content Understanding for tax/financial document ingestion.</li>
+<li><strong>DataSnipper</strong> — audit/finance agentic platform whose AI extraction is powered by Content Understanding (docs → Excel).</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Toolbox</strong> — reusable, Foundry-managed bundles of mixed-type tools behind a single MCP-compatible endpoint with one auth + Tool Search; <strong>featured in Satya's Build keynote</strong>. Presented as available to build/try in Foundry now (portal + code); broader runtime support (Claude Code, Copilot Studio) in progress.</li>
+<li><strong>Tool Search</strong> — runtime tool-selection capability inside toolbox that loads only the needed tool (token savings), demoed live ("found 10 tools, selected one").</li>
+<li><strong>Browser automation tool</strong> — <strong>available today</strong>, built on Playwright; scrapes data and fills forms. Called out as a brand-new tool.</li>
+<li><strong>Tools catalog</strong> — (recap) shipped in 2025; foundation this builds on.</li>
+<li><strong>Content Understanding GPT-5-family engines</strong> — GPT-5 family added for extraction/classification (quality improvement).</li>
+<li><strong>Broader file-type coverage + open-source integrations</strong> — Logic Apps, Agent Framework, LangChain, markdown tooling for Content Understanding.</li>
+<li><strong>Coming July (Content Understanding):</strong></li>
+<li><strong>Section-boundary document splitting</strong> (not just page boundaries).</li>
+<li><strong>Knowledge-source training</strong> — train analyzers on your own document types from a few examples.</li>
+<li><strong>New pre-built analyzers</strong> with significant cost/token reductions.</li>
+<li><strong>Agentic extraction</strong> — reason across files to <em>build</em> answers for the hardest extraction problems.</li>
+<li><strong>Governance dashboard for toolbox</strong> — roadmap item (no date given).</li>
+<li><strong>Live demo agent</strong> at <strong>aka.ms/phoebe</strong> available for the rest of Build week, with demo code.</li>
+<li>Q&amp;A close: asked for a rough timeline on an unspecified item, the speaker estimated <strong>"two to three months"</strong> (explicitly "don't hold me to it").</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>"No-toolbox" config (anti-pattern):</strong> showed raw app config wiring <strong>3 MCP servers</strong> by hand — auth sprawled from <strong>line 33 to line 104</strong>, and that's only three servers. Point: manual multi-protocol wiring balloons fast and wastes dev time. (Code was AI-generated and non-runnable, shown only to illustrate the pain.)</li>
+<li><strong>Toolbox config:</strong> the equivalent collapses to a tiny config — auth configured once, all servers in one toolbox, which <strong>generates a URL</strong> to drop into any app. Point: toolbox replaces the sprawl with one endpoint.</li>
+<li><strong>Tool Search:</strong> showed that asking for GitHub loads <strong>only</strong> the GitHub tool into the context window, not every tool. Point: token/context savings.</li>
+<li><strong>Foundry portal tour:</strong> Build → Tools shows <strong>Toolbox / Tools / Skills</strong>; uploaded an <strong>"art skill"</strong> (architectural-diagram helper) from desktop so any agent in the project can use it.</li>
+<li><strong>Browser automation:</strong> auto-filled a <strong>Microsoft form</strong> from a pasted request (with a GIF fallback prepared). Point: new Playwright-based tool works end to end.</li>
+<li><strong>Build a toolbox in-portal:</strong> Toolbox → Create → name → Add tools (from catalog) + Add skills; set a toolbox as <strong>default</strong> to point the hosted agent's endpoint at that version; per-toolbox <strong>Tool Search on/off</strong> toggle.</li>
+<li><strong>Hosted agent work order (live):</strong> asked the agent to find a work order and check completeness/parts availability — succeeded live after a load-related stumble. Point: the unified endpoint drives a real agent.</li>
+<li><strong>Fibby agent on the same MCP endpoint:</strong> hosted in <strong>Azure Container Apps</strong>; the <strong>activity view</strong> shows which tools were called, how Tool Search picked them, and how they loaded.</li>
+<li><strong>Content Understanding — Foundry IQ grounding:</strong> minimal source hallucinated an <strong>F3 fiber / 1310</strong> measurement ("46") that has no evidence; enabling Content Understanding produced structured markdown exposing the <strong>missing value</strong> → correct "no recorded value" answer.</li>
+<li><strong>Content Understanding — context provider:</strong> default harness can't take <strong>.docx</strong>; enabling Content Understanding as a context provider pre-processes any file to text. With PDFs, the default parser said <strong>work order 89 = "scheduled"</strong> (wrong); Content Understanding produced a structured table + <strong>chart JSON</strong> → correct <strong>"completed."</strong></li>
+<li><strong>Content Understanding — business-rule analyzer:</strong> a work order had technician <strong>J. Martinez</strong> but contact <strong>John Smith</strong>; unguided agent answered "John Smith"; a custom classify+extract analyzer (built in Content Understanding Studio, using the <em>route</em> field as guidance) returned the correct <strong>Jay Martinez</strong>.</li>
+<li><strong>Agentic extraction (recorded):</strong> fiber-optic cable failure scenario (shared with demo 331); schema questions (root cause / cost / on-budget?) drove reasoning across evidence — searching docs, asking about images, running calculations/code — to produce a grounded <strong>root cause + cost analysis</strong>.</li>
+<li><strong>Closing LangGraph agent (live):</strong> activity line showed it <strong>load a skill, find 10 tools, select 1</strong>, check the order, and return results. Point: Tool Search is real and usable today.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>"6 integrations → hundreds of integrations"</strong> — the core scaling problem once you multiply tools across many agents.</li>
+<li><strong>Config sprawl: lines 33–104</strong> of auth config for just <strong>3 MCP servers</strong> without a toolbox.</li>
+<li><strong>Tool Search: "found 10 tools, but only selected one"</strong> loaded into the context window (twice demonstrated).</li>
+<li><strong>Content Understanding: GA'd ~6 months ago; in production ~1.5 years.</strong></li>
+<li><strong>20 years</strong> of refinement on Microsoft's OCR + layout technology behind Parse.</li>
+<li><strong>GPT-5 family</strong> added as the extraction/classification engine.</li>
+<li>Roadmap cadence: <strong>"coming in July"</strong> (section splitting, knowledge-source training, cheaper analyzers, agentic extraction); a Q&amp;A estimate of <strong>"two to three months"</strong> for an unspecified item.</li>
+<li><strong>"LLMs provide the reasoning… tool calling is what enables your agent to perform an action… this is how your agents provide real business value."</strong></li>
+<li><strong>"Tool discovery is choosing the best tool to complete the task while using the limited amount of tokens."</strong></li>
+<li><strong>"Your agent shouldn't have to care what the underlying tool type is."</strong> — one endpoint, one auth, one experience.</li>
+<li><strong>"An answer needs to be built, not found"</strong> — the rationale for agentic extraction.</li>
+<li><strong>"The demo gods weren't with me today."</strong> — on the live-demo struggles (most still succeeded or had fallbacks).</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Build a <strong>Toolbox</strong> in Foundry (<code>ai.azure.com</code>) bundling a couple of MCP servers + a skill, set it default, and point a hosted agent at the unified endpoint.</li>
+<li>Toggle <strong>Tool Search</strong> on a toolbox and watch the activity view confirm only the needed tool loads (measure token impact).</li>
+<li>Try the <strong>browser automation</strong> (Playwright) tool to fill a form / scrape a page.</li>
+<li>Open the live <strong>aka.ms/phoebe</strong> Fibby agent + pull the demo code from <code>aka.ms/&lt;this session's build number&gt;</code>.</li>
+<li>Turn on <strong>Content Understanding</strong> as a Foundry IQ knowledge source and as an <strong>Agent Framework / LangChain context provider</strong>; feed it a <code>.docx</code> and a chart-heavy PDF and compare answers vs the default parser.</li>
+<li>Build a classify+extract <strong>analyzer</strong> in Content Understanding Studio to encode a business rule (e.g. pick the right field from a work order/tax form).</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>Exact <strong>pricing/token model</strong> for Toolbox + Tool Search, and for Content Understanding standard vs agentic mode.</li>
+<li>What's the <strong>GA vs preview</strong> status of Toolbox itself (keynote feature — preview tier? regions?) and the <strong>July</strong> items.</li>
+<li>How does toolbox <strong>governance</strong> map to <strong>Entra</strong>/RBAC for per-user (not just per-agent) tool access?</li>
+<li>Does the <strong>MCP-compatible</strong> endpoint interop with non-Microsoft MCP clients cleanly today?</li>
+<li>Which <strong>file types</strong> are newly supported in Content Understanding, and analyzer <strong>training data</strong> requirements/limits?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Any agent project facing <strong>tool/integration sprawl</strong> across multiple agents (field ops, support, billing, inventory).</li>
+<li><strong>Document-heavy</strong> agent scenarios (finance/audit/tax/legal) needing grounded, structured extraction.</li>
+<li>Foundry IQ / RAG pipelines wanting <strong>table + figure fidelity</strong> at ingestion.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Foundry">Microsoft Foundry</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Foundry IQ">Foundry IQ</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Model Context Protocol (MCP)">Model Context Protocol (MCP)</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Content Understanding">Content Understanding</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Agent Framework">Agent Framework</span></li>
+<li>Build 2026 demo session <strong>331</strong> (shared agentic-extraction grounding docs)</li>
+<li><code>aka.ms/phoebe</code> — live Fibby fiber-optic field-ops agent + demo code</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="BRK241.html"><span class="pager-dir">← Previous</span><span class="pager-code">BRK241</span><span class="pager-title">From prototype to production: build and run agents at scale</span></a>
+    <a class="pager pager-next" href="BRK243.html"><span class="pager-dir">Next →</span><span class="pager-code">BRK243</span><span class="pager-title">Claw and agent harness in Microsoft Foundry</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

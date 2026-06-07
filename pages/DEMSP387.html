@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEMSP387 — Secure agent workflows in GitHub Copilot with NVIDIA OpenShell</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEMSP387</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=0mLL3aS9Wxw" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Secure agent workflows in GitHub Copilot with NVIDIA OpenShell</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Ali Golshan, Alexander Watson (NVIDIA / Gretel)</span>
+      <span class="meta-item">⏱️ 22m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="github-copilot">GitHub Copilot</span><span class="chip" data-tag="security">Security</span><span class="chip" data-tag="nvidia">Nvidia</span><span class="chip" data-tag="agents">Agents</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Ali Golshan (Sr. Director, AI Software @ NVIDIA; co-founder/CEO of Gretel) &amp; Alexander "Alex" Watson (co-founder of Gretel, now NVIDIA)<br>
+<strong>Duration:</strong> ~22 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=0mLL3aS9Wxw">YouTube</a></p>
+  </div>
+</div>
+
+<div class="callout callout-note">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">📝</span><span class="callout-title-text">Naming</span></div>
+  <div class="callout-body">
+<p>The auto-captions render the product as "Open Shell". The actual NVIDIA project name is <strong>OpenShell</strong> (one word) — corrected throughout these notes.</p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>OpenShell is an open-source (Apache 2.0) <strong>runtime for long-running, autonomous AI agents</strong>, started by Ali Golshan and Alex Watson at NVIDIA. Its core idea is <strong>out-of-process, "secure by design" governance</strong>: every agent (plus its harness/model/sub-agents) runs in a <strong>zero-trust sandbox</strong>, a <strong>gateway outside the sandbox</strong> holds all credentials/tokens (so a prompt-injected agent has nothing to leak — the sandbox is the blast radius), and policy is enforced at the <strong>kernel/infrastructure layer</strong> where the agent can't touch, override, or reason around it. Unique pieces include a <strong>policy prover</strong> (formal/SMT verification that mathematically proves what an agent <em>can still do</em> under a policy, running in single-digit milliseconds) and a <strong>privacy router</strong> (built on Gretel synthetic-data / differential-privacy tech) that keeps PII local while still using frontier models. The session demos using <strong>GitHub as a persistence/audit layer</strong> for fan-out agents and an agent <strong>negotiating its own access</strong> (getting blocked, drafting a policy proposal, the prover/gateway auto-approving, hot-reloading the policy). The goal: cut ~90% of human approvals for enterprise fleets running thousands-to-millions of sandboxes, while keeping a full audit trail.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>OpenShell = an agent-native runtime, not just a sandbox.</strong> Thesis: as agents become long-running, stateful, and persistent, they need a whole new stack built for <em>machine speed</em> and a <em>trusted runtime</em> everyone can confidently run agents, models, and harnesses inside.</li>
+<li><strong>Zero trust by default.</strong> Every sandbox/environment starts <strong>completely closed down</strong>; the agent is only granted access incrementally as it earns it.</li>
+<li><strong>Architectural departure: the agent runs <em>inside</em> the sandbox.</strong> With Copilot/Claude Code today, the agent runs outside and only executes code inside a sandbox, so governance lives at the Copilot layer. In OpenShell the agent itself (and its I/O) runs inside the sandbox, so <strong>one policy language governs any agent</strong> across your infrastructure.</li>
+<li><strong>Credentials never touch the agent.</strong> A <strong>gateway outside each sandbox</strong> holds all secrets/tokens/keys and authenticates to services on the agent's behalf. Prompt injection therefore has nothing to steal; the <strong>blast radius is a single sandbox</strong>.</li>
+<li><strong>Governance is lifted to the kernel/infra layer</strong>, out of the agent's probabilistic loop — <em>intentionally</em> out of the agent's path and reach so it can't bypass, override, or reason about it.</li>
+<li><strong>Policy prover</strong> is the signature feature: policies (OPA/Rego/YAML) are translated to <strong>formal logic</strong> and checked with <strong>SMT solvers / formal verification</strong> to produce a <strong>mathematical proof</strong> of what the agent can still do (e.g. "can it reach the internet? can it write to this repo?"). It <strong>cannot be fooled</strong> (assuming the logic description is correct), unlike a human or another reviewer-agent.</li>
+<li><strong>Speed matters:</strong> the prover runs in <strong>single-digit milliseconds</strong>, so adding security doesn't double token cost or latency the way "another agent reviews every call" does.</li>
+<li><strong>Privacy router</strong> (three modes): (1) PII detected → route to a <strong>local model</strong>; (2) no PII → route out to a <strong>frontier model</strong>; (3) hybrid → use planner models / <strong>differentially-private fine-tuned models (low epsilon)</strong> to synthetically rewrite the query, preserving utility but stripping PII, then <strong>rehydrate</strong> locally. Keeps context/PII local while leveraging global compute.</li>
+<li><strong>Per-sandbox isolation of agentic behavior</strong>, not just process/kernel isolation (vs gVisor / hardened containers / micro-VMs which just add layers between process and kernel).</li>
+<li><strong>Agents can negotiate their own access.</strong> Global org policies are visible to the sandboxed agent; from zero-trust it can request "give me X, Y, Z and I can finish" — the <strong>policy prover validates no exfiltration path is created</strong>, then the policy is granted, <strong>hot-reloaded</strong> (no sandbox restart), and the agent proceeds.</li>
+<li><strong>GitHub as a persistence/audit layer</strong> works cleanly for ephemeral, concurrent agents (artifacts, notes, full audit trail) with built-in concurrency and no risk of agents stomping each other.</li>
+<li><strong>Drivers</strong> let you choose the under-the-hood sandbox perimeter (Firecracker, hardened container, trusted computing, Kubernetes gVisor-style primitives); OpenShell enforces its runtime on top of whatever you pick.</li>
+<li><strong>Logs in OCSF</strong> (Open Cybersecurity Schema Framework) → compatible with Splunk / Datadog / any security data tooling.</li>
+<li><strong>Scale framing:</strong> even a 1% human-approval rate across millions of sandboxes = thousands of prompts/day; aim is to reduce ~<strong>90%</strong> of approvals down to one or two human sign-offs per piece of work.</li>
+<li><strong>Status:</strong> alpha; first released at <strong>GTC (San Jose), March 2026</strong> (~3 months prior); <strong>beta targeted in the next couple of months</strong>; long-term intent to <strong>donate to CNCF or Linux Foundation</strong>.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="origin-first-principles">Origin &amp; first principles</h3>
+<ul>
+<li>OpenShell was started by <strong>Ali Golshan and Alex Watson</strong> at NVIDIA as a <strong>20%-time project ~8 months ago</strong>. The two previously founded <strong>Gretel</strong> (synthetic data), joining NVIDIA ~a year ago.</li>
+<li>Built on two first principles:
+  1. <strong>Agent-native software stack.</strong> As the world moves to agents, what does an agent-native stack look like? Agents are becoming <strong>long-running, stateful, persistent</strong> sessions — that needs a different environment/stack to manage persistence than human-oriented software.
+  2. <strong>Machine-speed tooling.</strong> If the stack is agent-native, the tooling should be built for machine speed, not human pace.</li>
+<li>The unifying goal: instill a <strong>trusted runtime</strong> — <strong>secure by design</strong> — so anyone can confidently run agents, models, and harnesses inside it.</li>
+<li>Motivating question (Alex): <em>what happens when you run 500 or 1,000 agents at once?</em> You can't depend on humans approving every action. The aim is to approve as many agent actions as possible, in an enterprise-grade secure way, <strong>at agent speed</strong>, without human-in-the-loop bottlenecks.</li>
+</ul>
+<h3 id="zero-trust-environment">Zero-trust environment</h3>
+<ul>
+<li>Every sandbox/environment <strong>starts completely closed</strong> (not permissive). Access is granted incrementally as the agent moves through its task.</li>
+<li>Big categories of customer/partner/ecosystem concern about long-running autonomous agents drove the design. A key observation: most controls/governance today are enforced <strong>at the agent/model layer, inside the probabilistic loop</strong> — which is unreliable.</li>
+<li>OpenShell's answer: take those policies and create a <strong>deterministic</strong> way to control/govern the agent by pushing policy/governance down to the <strong>infrastructure / kernel layer</strong>.</li>
+<li><strong>Prompt-injection example:</strong> the agent should hold <strong>no credentials/secrets/tokens/keys</strong>. The <strong>gateway outside the sandbox</strong> holds them. So if the agent is injected/compromised, there's nothing for it to leak; the <strong>blast radius is one sandbox</strong>.</li>
+<li>Cloud-native analogy: like the shift from <strong>stateful monolithic VMs → container microservices on Kubernetes</strong>, you can treat these sandboxes more like <strong>cattle than pets</strong>, which makes them far easier to govern.</li>
+</ul>
+<h3 id="architecture-core-primitives">Architecture &amp; core primitives</h3>
+<p>OpenShell is a <strong>runtime</strong>. Everything (architecture, roadmap, code) is open source under <strong>Apache 2.0</strong> on the GitHub repo. Core primitives:</p>
+<ul>
+<li><strong>Gateway</strong> — sits <strong>outside every sandbox</strong>; communicates/interacts and <strong>holds credentials, tokens, keys</strong>. The agent has its session but no path to leak anything else.</li>
+<li><strong>Dedicated sandboxes</strong> — every agent (and its sub-agents and tooling) runs in its <strong>own sandbox</strong>. An agent that spawns sub-agents gets a sandbox each, with <strong>cross-sandbox communication</strong>.</li>
+<li><strong>Agent runs <em>inside</em> the sandbox (key departure)</strong> — normally (Copilot, Claude Code) the agent runs outside and only executes code inside a sandbox, so governance is at the Copilot layer (not the model layer). In OpenShell the agent runs inside the sandbox and <strong>every input/output is enforced</strong>, enabling <strong>one policy language across any agent</strong>.</li>
+<li><strong>Policy prover</strong> — see below.</li>
+<li><strong>Privacy router</strong> — see below.</li>
+</ul>
+<h3 id="policy-prover-signature-feature">Policy prover (signature feature)</h3>
+<ul>
+<li>Goal: answer not just "what does this policy enforce?" but <strong>"if I enforce this policy, what can the agent <em>still</em> do?"</strong></li>
+<li>Implementation: takes the policy language — <strong>OPA + Rego</strong> (or YAML) — and <strong>describes it in formal logic</strong>, then uses <strong>formal verification / SMT solvers</strong>. Uses <strong>technology that originally came from Microsoft</strong>.</li>
+<li>This goes beyond simple <code>if</code> statements ("can this agent access the internet / write to a repo?") — it creates a <strong>mathematical proof</strong>, enabling complex, robust reasoning about capabilities.</li>
+<li><strong>Why it beats reviewer-agents:</strong> OpenAI and Anthropic are moving toward using <strong>another trusted agent to review sandbox changes</strong> (e.g. "auto-approver" for Codex, "managed agents" for Claude). But a reviewer agent is <strong>susceptible to the same risks</strong> — it can be fooled, just like a human. The <strong>policy prover cannot be fooled</strong> (given a correct logic description). If you open a new hole in the sandbox (e.g. allow writing to a new GitHub repo), there is <strong>no way to fool the prover into not seeing it</strong> — it flags it.</li>
+<li><strong>Performance:</strong> runs in <strong>single-digit milliseconds</strong>, so it's often not even necessary to do a second-level (reviewer-agent) run. Avoids the failure mode where reviewing every agent call with another agent <strong>doubles token cost and time</strong>.</li>
+</ul>
+<h3 id="privacy-router">Privacy router</h3>
+<ul>
+<li>OpenShell isolates the usual constructs — <strong>system, file, network, memory</strong> — but its differentiator is <strong>isolation around <em>agentic behavior</em></strong>, which manifests very differently from traditional encapsulation (gVisor, hardened containers, micro-VMs just add layers between process and kernel to reduce attack surface).</li>
+<li>The privacy router <strong>borrows heavily from Gretel's synthetic-data work</strong> (and work Microsoft itself did). Three use cases:
+  1. <strong>PII present → local inference.</strong> Agent submits a query riddled with PII; router detects PII and <strong>routes to a local model</strong>.
+  2. <strong>No PII → frontier model.</strong> Agent needs multi-turn orchestration/tasking/reasoning and a frontier model; router sees no PII and <strong>lets it route out</strong>.
+  3. <strong>Hybrid (combination of 1 &amp; 2).</strong> Use <strong>planner models</strong> or <strong>differentially-private fine-tuned models (DP with low epsilons)</strong> to <strong>synthetically rewrite the query</strong> — preserving utility, removing PII — so it can go to a frontier model, reason, and come back to be <strong>rehydrated</strong> locally. Net effect: <strong>keep context + PII local while leveraging global compute.</strong></li>
+</ul>
+<h3 id="demo-1-github-as-a-persistencenotepad-layer-map-reduce-fan-out">Demo 1 — GitHub as a persistence/notepad layer (map-reduce / fan-out)</h3>
+<ul>
+<li>Problem framed: ephemeral agents are great (spin up, do the job, spin down) but how do they <strong>communicate and store data/persist</strong>? OpenShell uses <strong>GitHub as a persistence layer</strong> for artifacts, notes, and the full audit trail.</li>
+<li>This example ships in the repo: <strong>OpenShell → examples</strong>.</li>
+<li>Pattern shown: a <strong>map-reduce / fan-out</strong> — fire up <strong>five sandboxes</strong>, each works a task, each stores its notes, then a <strong>synthesis/summarization agent</strong> reads across all the notes and combines them into one result. All stored in GitHub.</li>
+<li>Sandboxes can be <strong>restarted as many times as you want</strong>; <strong>concurrency is built-in</strong> — no risk of agents stomping each other's notes in GitHub.</li>
+<li><strong>Policy shape:</strong> the demo shows an <strong>OPA Rego policy scoped to a single agent execution</strong> for GitHub — it lists the <strong>specific REST endpoints</strong> the agent may use. Need more → it must <strong>negotiate</strong>. This minimal scoping is the key security construct.</li>
+<li>The <strong>agent never sees credentials</strong> — all managed at the <strong>supervisor</strong> level. The terminal UI shows credentials being hidden from the agent.</li>
+<li>Observed run: five sandboxes spun up, each with a coding agent inside (<strong>Copilot or Codex</strong>), four running on tasks; they use granted credentials to write directly to GitHub; the synthesis agent merges results. Each agent is <strong>isolated in its own sandbox</strong> so you can reason precisely about what it's doing security-wise, while still coordinating.</li>
+<li>Mention: <strong>Google's A2A</strong> ("agent-to-agent") protocol enables fast, high-rate inter-agent communication for agents working tightly together — a more advanced option to build on. But for storing an <strong>audit trail / notes / execution</strong>, GitHub still makes a lot of sense.</li>
+<li>Result: sandboxes are <strong>closed down and deleted</strong>; everything is written out to GitHub. In the repo you can see <strong>each agent wrote to exactly one file</strong> (so <strong>no destructive actions are possible</strong>), then all were summarized into a single output.</li>
+<li><strong>Hot-reloaded policies:</strong> every time policies are loaded on the network-stack / file-system stack, they are <strong>hot reloaded</strong> — no need to restart the whole sandbox and eat that latency (unlike traditional containers). Designed for machine speed because <strong>every millisecond of delay compounds downstream</strong>.</li>
+</ul>
+<h3 id="demo-2-an-agent-negotiating-its-own-access-auto-approval-loop">Demo 2 — An agent negotiating its own access (auto-approval loop)</h3>
+<ul>
+<li>This functionality was <strong>"all of about 3 days old"</strong> — a big piece of in-progress work.</li>
+<li>Setup: OpenShell terminal on the left, demo on the right. A <strong>Codex agent</strong> is spun up inside a sandbox with <strong>read access to GitHub but no write access</strong>, and told to write to GitHub.</li>
+<li>Flow:
+  1. Agent tries to <strong>write to GitHub → gets blocked</strong> by OpenShell (policy block at drafting). A <strong>denial</strong> appears.
+  2. OpenShell <strong>passes the agent an explanation</strong>: "you got blocked because you don't have access to this repo; there's a <strong>local skill</strong> you can use."
+  3. The agent uses that <strong>local skill</strong> to <strong>enumerate the sandbox policies</strong> and <strong>extend the policy</strong> — it <strong>drafts a proposal</strong> requesting access to <strong>write to a specific repo endpoint</strong> (a network rule).
+  4. The <strong>policy prover runs against the proposal</strong> and reports <strong>one finding</strong>: it's <strong>expanding the agent's credential write scope</strong> — but that's deemed <strong>okay</strong>, so it's <strong>automatically approved</strong> and let through, <strong>all logged</strong>.
+  5. The policy is <strong>hot-reloaded</strong>, and the agent can then <strong>write to GitHub directly</strong>.</li>
+<li><strong>How policy visibility enables this:</strong> all <strong>global org policies</strong> (allowed/disallowed actions) are made available to the sandboxed agent. From zero-trust, the agent can say "if you give me X, Y, Z I can complete my task." This is <strong>not granted blindly</strong> — agents can <strong>chain capabilities</strong> to problem-solve, so the <strong>policy prover checks for accidental exfiltration paths</strong> before granting.</li>
+<li><strong>Logs:</strong> emitted in <strong>OCSF (Open Cybersecurity Schema Framework)</strong> — compatible with Splunk / Datadog / any security tooling. The trail shows: first write <strong>denied</strong> → agent <strong>authored a new proposal</strong> → <strong>gateway approved</strong> → <strong>policy hot-reloaded</strong> → <strong>write to GitHub succeeded</strong>.</li>
+<li>Value: set a security policy once and <strong>let agents evolve</strong> without granting a giant maximalist "here's everything you can do" policy. Keep each sandbox at the <strong>minimal policy required</strong>; the agent <strong>negotiates up</strong> from there.</li>
+</ul>
+<h3 id="ecosystem-go-to-market-roadmap">Ecosystem, go-to-market &amp; roadmap</h3>
+<ul>
+<li>Built <strong>with an ecosystem of partners</strong>, Apache 2.0; long-term intent to <strong>donate to CNCF or the Linux Foundation</strong>.</li>
+<li><strong>Microsoft</strong> (announced "yesterday" relative to the talk): OpenShell <strong>embedded into Windows native WSL, Azure, GitHub</strong> (and <strong>MXC</strong>, as spoken).</li>
+<li>Available via <strong>Canonical on Ubuntu</strong>, <strong>Red Hat on OpenShift</strong>, and <strong>Docker</strong>.</li>
+<li>Partners running their agents inside OpenShell for trust include <strong>SAP, Workday, ServiceNow</strong>.</li>
+<li>Vision: embed OpenShell as a <strong>trust layer</strong> everyone can build on; NVIDIA drives it but hopes the <strong>community picks it up and pushes it forward</strong>. Call to action: visit the GitHub repo, give feedback, experiment.</li>
+<li><strong>Timeline:</strong> <strong>alpha</strong> today; first released at <strong>GTC San Jose, March 2026</strong> (~3 months prior); <strong>beta targeted in roughly the next couple of months</strong>.</li>
+<li><strong>Drivers</strong> (new, powerful concept): when launching OpenShell you <strong>pick the sandboxing perimeter under the hood</strong> — <strong>Firecracker</strong>, a <strong>hardened container</strong>, <strong>trusted computing</strong>, or <strong>gVisor-style ("SIG") primitive sandboxing from Kubernetes</strong>. OpenShell relies on whatever tech is under the hood and <strong>enforces its runtime on top</strong>.</li>
+</ul>
+<h3 id="qa">Q&amp;A</h3>
+<ul>
+<li><strong>Q: How far can the agent negotiate before it stops?</strong></li>
+<li>Goal (a "finger-in-the-air" estimate) is to reduce ~<strong>90% of the approvals</strong> a human would typically need — ideally wrapping a piece of work into <strong>one or two required human approvals</strong>. Ultimately it depends on the <strong>constraints the security team</strong> chooses.</li>
+<li>In the project, <strong>providers</strong> (Codex, Claude, Copilot, etc.) are where <strong>central teams / IT / security run global policies</strong>. Every sandbox starts at <strong>zero trust</strong> (none granted), so the <strong>ceiling is whatever the central teams' global policies allow</strong>.</li>
+<li>Two ways to do this: (a) a single <strong>maximalist policy</strong> signed off by security ("everything you could possibly do") — <strong>bad</strong> security posture; not every agent should start with that. (b) OpenShell's approach — a <strong>dynamic</strong> way for the agent to grow into <strong>exactly what it needs and no more</strong>, with <strong>negotiation allowed up to the point the security team says "that's it — anything more needs a human."</strong></li>
+<li>Enforcement is at the <strong>kernel / infrastructure layer intentionally</strong>, to keep policy <strong>out of the agent's path and reach</strong> so it can't bypass/override/reason about it.</li>
+</ul>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>NVIDIA OpenShell</strong> — open-source (Apache 2.0) runtime for long-running, autonomous agents; the subject of the talk.</li>
+<li><strong>Gateway</strong> — out-of-sandbox component that holds credentials/tokens/keys and authenticates to services on the agent's behalf.</li>
+<li><strong>Sandbox</strong> — per-agent (and per-sub-agent/tooling) zero-trust isolated execution environment; the blast radius.</li>
+<li><strong>Policy prover</strong> — translates OPA/Rego policy to formal logic; uses SMT solvers/formal verification to mathematically prove what an agent can still do; runs in single-digit ms. Built on tech originating from Microsoft.</li>
+<li><strong>Privacy router</strong> — routes inference (local vs frontier) based on PII/cost/privacy policy; can DP-rewrite queries; built on Gretel synthetic-data tech.</li>
+<li><strong>OPA (Open Policy Agent) + Rego</strong> (and <strong>YAML</strong>) — the policy languages used to express what an agent may do.</li>
+<li><strong>Drivers</strong> — pluggable under-the-hood sandbox perimeters (Firecracker, hardened container, trusted computing, Kubernetes gVisor-style primitives).</li>
+<li><strong>OCSF (Open Cybersecurity Schema Framework)</strong> — log format used; compatible with Splunk / Datadog / security tooling.</li>
+<li><strong>GitHub</strong> — used as a persistence/notepad/audit-trail layer for ephemeral, concurrent agents; also the host of the OpenShell open-source repo + examples.</li>
+<li><strong>GitHub Copilot / OpenAI Codex</strong> — coding agents run <em>inside</em> OpenShell sandboxes in the demos.</li>
+<li><strong>Anthropic Claude / Claude Code</strong> — referenced; their "managed agents" reviewer-agent approach contrasted with the policy prover.</li>
+<li><strong>Google A2A (agent-to-agent) protocol</strong> — for fast, high-rate inter-agent communication when agents work tightly together.</li>
+<li><strong>Gretel</strong> — synthetic-data company co-founded by the speakers (now NVIDIA); source of the privacy router's DP/synthetic-data tech.</li>
+<li><strong>Differential privacy (DP) / differentially-private fine-tuned models (low epsilon)</strong> — used to synthetically rewrite queries, preserving utility while removing PII.</li>
+<li><strong>Firecracker, hardened containers, micro-VMs, gVisor, trusted computing, Kubernetes</strong> — sandboxing/isolation primitives referenced (some as "drivers", some as contrast for "just adding layers between process and kernel").</li>
+<li><strong>Splunk / Datadog</strong> — example security/observability tools OCSF logs integrate with.</li>
+<li><strong>WSL (Windows native), Azure, Canonical/Ubuntu, Red Hat/OpenShift, Docker</strong> — integration/distribution targets.</li>
+<li><strong>SAP, Workday, ServiceNow</strong> — partners running agents inside OpenShell for trust.</li>
+<li><strong>CNCF / Linux Foundation</strong> — potential future home for the project (donation intent).</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Microsoft integration announced (the day before the talk):</strong> OpenShell embedded into <strong>Windows native WSL, Azure, GitHub</strong> (and "MXC" as spoken).</li>
+<li><strong>Availability via partners:</strong> <strong>Canonical on Ubuntu</strong>, <strong>Red Hat on OpenShift</strong>, <strong>Docker</strong>.</li>
+<li><strong>Agent-negotiates-its-own-access loop</strong> (Demo 2) — brand new, <strong>"about 3 days old"</strong> at the time of the talk; an in-progress capability where a blocked agent drafts a policy proposal, the prover/gateway auto-approves it, and the policy hot-reloads.</li>
+<li><strong>Drivers</strong> — pluggable sandbox perimeters (Firecracker / hardened container / trusted computing / Kubernetes gVisor-style primitives) presented as a current, "very cool and powerful" concept being matured.</li>
+<li><strong>Status / roadmap:</strong> Project first released at <strong>GTC San Jose, March 2026</strong> (~3 months before this talk); currently <strong>alpha</strong>; <strong>beta targeted in roughly the next couple of months</strong>; long-term intent to <strong>donate to CNCF or the Linux Foundation</strong>.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Demo 1 — GitHub as a persistence/notepad layer (map-reduce / fan-out).</strong> Spun up <strong>five sandboxes</strong>, each with a coding agent (Copilot/Codex) working a task and writing its notes to <strong>exactly one file</strong> in a GitHub repo (so no destructive actions are possible); a <strong>synthesis agent</strong> then read across all notes and merged them into a single result. Showed: credentials hidden from the agent (managed at supervisor), minimal per-execution Rego policy scoped to specific REST endpoints, built-in concurrency, sandboxes restartable and then auto-deleted, and policies <strong>hot-reloaded</strong> without sandbox restarts. <strong>Point proved:</strong> ephemeral, concurrent agents can persist, coordinate, and leave a clean audit trail using GitHub — under strict, minimal, isolated policy.</li>
+<li><strong>Demo 2 — Agent negotiating its own access (auto-approval loop).</strong> A <strong>Codex agent</strong> with read-only GitHub access was told to write to GitHub. It got <strong>blocked</strong>; OpenShell returned an explanation + pointer to a <strong>local skill</strong>; the agent used the skill to <strong>enumerate and extend the sandbox policy</strong>, <strong>drafting a proposal</strong> for a specific write endpoint. The <strong>policy prover</strong> flagged one finding (credential write-scope expansion), deemed it okay, <strong>auto-approved</strong>, <strong>hot-reloaded</strong> the policy, and the agent then wrote to GitHub. The <strong>OCSF audit log</strong> showed deny → proposal authored → gateway approved → policy reloaded → write succeeded. <strong>Point proved:</strong> agents can dynamically negotiate up from zero-trust to exactly the access they need — provably safe and fully logged — without humans approving every step or granting a maximalist policy.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>~8 months</strong> — how long ago OpenShell was started (as a 20%-time project at NVIDIA).</li>
+<li><strong>~1 year</strong> — how long ago the speakers (ex-Gretel founders) joined NVIDIA.</li>
+<li><strong>500–1,000+ agents at once</strong> — the motivating scale question that framed the design.</li>
+<li><strong>Five sandboxes</strong> — fan-out fleet size in Demo 1.</li>
+<li><strong>Single-digit milliseconds</strong> — policy prover run time (so a second-level reviewer-agent pass is often unnecessary).</li>
+<li><strong>"About 3 days old"</strong> — age of the access-negotiation functionality in Demo 2.</li>
+<li><strong>~90%</strong> — target reduction in human approvals ("finger in the air"), ideally down to one or two human approvals per piece of work.</li>
+<li><strong>Even 1% human approval across millions of sandboxes = thousands of prompts/day</strong> — the scale argument for automation.</li>
+<li><strong>~3 months</strong> — since first release at GTC San Jose (March 2026).</li>
+<li><strong>4 minutes left</strong> — time remaining when they paused for Q&amp;A (talk ~22 min).</li>
+<li><em>"You can have one policy language that works across any type of agent that you're running across your infrastructure."</em> — Alex Watson, on the in-sandbox architecture.</li>
+<li><em>"The approver cannot be fooled — assuming our description of the logic of the policy is correct... there's no way to fool an agent into not seeing that you're doing it."</em> — Alex Watson, on the policy prover.</li>
+<li><em>"We intentionally want that policy to be out of the path and reach of the agent, so it can't bypass it or override it or reason about it."</em> — Ali Golshan, on kernel-layer enforcement.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: clone the <strong>NVIDIA OpenShell</strong> GitHub repo and run the <code>examples/</code> GitHub-notepad fan-out demo; test the access-negotiation loop with a Codex/Copilot agent; try a <strong>driver</strong> swap (Firecracker vs hardened container).</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: wire OpenShell <strong>OCSF</strong> logs into a Splunk/Datadog sink and inspect a deny → propose → approve → write trail.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: How mature is the <strong>privacy router</strong>'s DP-rewrite path (modes 1–3) in alpha, and what's the utility/latency cost? How are <strong>A2A</strong> and GitHub-persistence meant to coexist? What exactly is "MXC" from the Microsoft integration list (caption-ambiguous)?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: What's the relationship between OpenShell, <strong>NemoClaw</strong>, and the broader <strong>NVIDIA Agent Toolkit</strong> (mentioned in NVIDIA blog/press, not deeply in this talk)?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: secure agent platforms; GitHub Copilot / Codex enterprise rollouts; agent governance &amp; policy-as-code (OPA/Rego); zero-trust runtime design; DP/synthetic-data privacy routing; Azure/WSL/GitHub agent integrations.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><a href="https://developer.nvidia.com/blog/run-autonomous-self-evolving-agents-more-safely-with-nvidia-openshell/">NVIDIA Technical Blog — Run Autonomous, Self-Evolving Agents More Safely with NVIDIA OpenShell</a></li>
+<li><a href="https://build.nvidia.com/openshell">build.nvidia.com/openshell</a></li>
+<li>NVIDIA Agent Toolkit / NemoClaw / Nemotron (broader stack OpenShell is part of)</li>
+<li>Topics: OPA + Rego policy-as-code · SMT solvers / formal verification · differential privacy (Gretel) · OCSF · Google A2A protocol · Firecracker / gVisor sandboxing</li>
+<li></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEMSP385.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEMSP385</span><span class="pager-title">Build context-aware agents using GitHub Copilot, Elastic, and Azure AI</span></a>
+    <a class="pager pager-next" href="DEMSP388.html"><span class="pager-dir">Next →</span><span class="pager-code">DEMSP388</span><span class="pager-title">Ship faster with Claude Code and Cowork in Microsoft Foundry</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

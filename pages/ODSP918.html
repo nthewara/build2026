@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ODSP918 — Build persistent and scalable AI agent memory with TiDB</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">ODSP918</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=J0o-Dkt5tnI" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Build persistent and scalable AI agent memory with TiDB</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Ravish (Solutions Engineer, PingCAP / TiDB)</span>
+      <span class="meta-item">⏱️ 17m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="tidb">Tidb</span><span class="chip" data-tag="agent-memory">Agent Memory</span><span class="chip" data-tag="vector-search">Vector Search</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="databases">Databases</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Ravish — Solutions Engineer at PingCAP, working on TiDB<br>
+<strong>Duration:</strong> ~17 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=J0o-Dkt5tnI">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>This is a PingCAP partner session showing how to build <strong>persistent, scalable memory for AI agents using just SQL</strong> on <strong>TiDB</strong> — a distributed, MySQL-compatible SQL database with built-in vector search, full-text search, and an HTAP/AI engine. The core argument: agents stress databases differently from normal apps (bursty workloads, massive concurrency, constant context recall), and the common "memory stack" of three separate databases (relational + vector + search) glued together with ETL pipelines breaks at scale in four specific ways (stale data, read-after-write, partial writes, connection fan-out). TiDB collapses all of that into <strong>one table in one database</strong> — auto-generating embeddings on insert, doing vector + keyword + hybrid search in single SQL queries, and providing ACID transactions across tables. A six-step live demo walks through creating a memory table, inserting plain-English memories, and running semantic, keyword, hybrid (RRF), and multi-table ACID queries. Real production proof points (Manus, Dify, Pinterest) and a "free cluster in 30 seconds, scale to zero" pitch close it out.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Agents hit databases in three fundamentally different ways:</strong> workloads are <em>bursty</em> (one agent flat-out for 10s, another idle for 2h), concurrency is <em>massive</em> (millions of agents, each with its own state — not thousands of users), and they need <em>constant context recall</em> (every step must remember what just happened or the agent falls apart).</li>
+<li><strong>The typical agent "memory layer" is three databases + glue:</strong> a relational DB (source of truth for chat history/accounts), a vector DB (semantic search over embeddings), a search engine (keyword/exact matches, since vectors are bad at exact terms), and a fourth invisible piece — the <strong>ETL/glue layer</strong> (jobs, message buses, cron) that keeps the three in sync and that your team must build and maintain.</li>
+<li><strong>That stack is tolerable for regular apps but breaks for agents in four ways:</strong> (1) <strong>stale data</strong> — the vector index lags the main DB by seconds, so the agent reads old facts; (2) <strong>read-after-write</strong> — an agent places an order, the user asks status 2s later, the replica hasn't caught up, agent says "no orders"; (3) <strong>partial writes</strong> — a multi-step refund deducts balance + logs event + triggers email, the email service dies midway, leaving a "ghost refund"; (4) <strong>connection fan-out</strong> — 10,000 agents × 3 systems = 30,000 connections to manage, blowing up latency on spikes.</li>
+<li><strong>These failures only surface at scale — the worst possible time</strong> — and are real production problems, not hypotheticals.</li>
+<li><strong>TiDB is a distributed SQL database</strong> that scales horizontally by adding nodes — <strong>no sharding, no rewrites</strong>, just add nodes for capacity on demand.</li>
+<li><strong>TiDB is MySQL-compatible</strong> — existing MySQL drivers, ORMs, and tooling work unchanged.</li>
+<li><strong>TiDB has an HTAP + AI engine:</strong> transactions, analytics, vector search, and full-text search all live in <strong>the same database</strong> (HTAP = Hybrid Transactional/Analytical Processing).</li>
+<li><strong>Auto-embeddings on insert via a SQL function</strong> (<code>EMBED_TEXT</code> / "embedders text"): define the embedding as a <strong>generated vector column</strong>, and every insert calls the configured embedding model (e.g. Azure OpenAI) and stores the vector — <strong>no Python, no pipeline</strong>.</li>
+<li><strong>One table does it all:</strong> normal SQL columns for agent state/chat history, a <strong>vector column with an HNSW index</strong> for semantic recall, and a <strong>full-text index with a multilingual parser</strong> (English, Spanish, Japanese, etc.) for keyword search.</li>
+<li><strong>Hybrid retrieval done "the right way"</strong> = two searches (vector top-N + keyword top-N) combined with <strong>Reciprocal Rank Fusion (RRF)</strong> so rows ranking high in <em>both</em> lists win — all in one query, one database.</li>
+<li><strong>ACID transactions span multiple tables</strong> — multi-step agent writes (e.g. insert memory + update per-user stats) land together or roll back together; no partial-write ghost states.</li>
+<li><strong>Agent-shaped operational features:</strong> <strong>scale to zero</strong> (idle agents cost nothing; bursty traffic → bursty bill), <strong>database branching</strong> (isolated DB per agent spun up in milliseconds), <strong>resource control</strong> (cap per-workload usage so one runaway agent can't take everything down), and <strong>fast scale-out</strong> (compute and storage are separated, so capacity is added in seconds, not minutes).</li>
+<li><strong>Production proof, real numbers not benchmarks:</strong> <strong>Manus</strong> — ~1.5M agents, a DB per agent in ms, to production in 2 weeks; <strong>Dify</strong> — moved ~500,000 containers onto TiDB, now one engine; <strong>Pinterest</strong> — replaced six database systems with one, ~<strong>1.3M queries/sec</strong> on TiDB.</li>
+<li><strong>Getting started:</strong> spin up a <strong>free TiDB Cloud "starter" cluster in 30 seconds, no credit card</strong>; native <strong>Azure OpenAI integration</strong>; <strong>Python SDK</strong> (<code>pip install pytidb</code>) gives hybrid search + RRF in three lines; <strong>MCP server + agent rules</strong> for Cursor/Claude users to drop TiDB into an AI coding workflow.</li>
+<li><strong>Closing thesis:</strong> "Stop running three databases when you only need one" — less infrastructure, more speed, engineers building product instead of patching pipelines.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-why-agents-are-different-from-the-apps-youve-built-before">Framing: why agents are different from the apps you've built before</h3>
+<p>Ravish opens by arguing that AI agents stress a database in ways traditional applications never did, and there are three non-negotiable characteristics:</p>
+<ol>
+<li><strong>Bursty workloads.</strong> One agent might run flat-out for 10 seconds, while another sits idle for two hours. The database must handle both extremes <strong>without costing a lot of money</strong> — i.e. you can't keep paying for peak capacity during long idle stretches.</li>
+<li><strong>Massive concurrency.</strong> This isn't an app serving a thousand users; it's <strong>millions of agents running simultaneously, each carrying its own state.</strong> The concurrency model is qualitatively different.</li>
+<li><strong>Constant context recall.</strong> Every single step an agent takes depends on remembering what just happened. Lose that recall and "the whole thing falls apart." Memory is not a nice-to-have; it's load-bearing.</li>
+</ol>
+<p>These three are presented as things "you can't really skip" when designing agent infrastructure.</p>
+<h3 id="the-problem-in-concrete-terms-the-amnesiac-agent">The problem in concrete terms: the amnesiac agent</h3>
+<p>The motivating scenario: an agent finishes a chat with a user today. The user returns tomorrow and the agent <strong>has no clue who they are</strong> — it's as if the conversation never happened. Solving this persistence problem is what "agent memory" means.</p>
+<h3 id="what-most-teams-build-today-three-databases-a-glue-layer">What most teams build today: three databases + a glue layer</h3>
+<p>To give the agent memory, the common pattern stitches together <strong>three databases plus ETL pipelines</strong>:</p>
+<ul>
+<li><strong>Relational database</strong> — the <strong>source of truth</strong>. Stores chat history, user accounts, and similar structured data.</li>
+<li><strong>Vector database</strong> — for <strong>semantic search</strong>. Stores embeddings of what the user said so the agent can retrieve by meaning.</li>
+<li><strong>Search engine</strong> — for <strong>keyword / exact matching</strong>, because <strong>vectors are bad at exact matches</strong>. If the user literally said "Tokyo," you want a keyword index to find that exact token.</li>
+<li><strong>The glue layer (the fourth, under-discussed piece)</strong> — the <strong>ETL jobs, message buses, and cron jobs</strong> that keep all three stores in sync. <em>Your team writes and maintains this code.</em></li>
+</ul>
+<p>The cost of this architecture: <strong>three databases to run, three separate bills, three things that can break</strong>, and <strong>data that is never truly in sync.</strong> Ravish concedes that for a <em>regular application</em> you can "sort of live with this" — it's annoying but survivable. For <em>agents</em>, it breaks.</p>
+<h3 id="how-the-three-database-stack-breaks-for-agents-the-four-failure-modes">How the three-database stack breaks for agents (the four failure modes)</h3>
+<p>This is the heart of the "why TiDB" argument. Four specific, production-real failures:</p>
+<ol>
+<li><strong>Stale data.</strong> The vector index is always a few seconds behind the main database, so the agent reads <strong>old data / old facts</strong>. Example: the user updated their address an hour ago, but the agent still uses the old one because the embedding/index hasn't caught up.</li>
+<li><strong>Read-after-write.</strong> The agent just placed an order; two seconds later the user asks "what's the status of my order?" The write happened, but the <strong>read replica hasn't caught up</strong>, so the agent answers "I don't see any orders." The system contradicts an action it just took.</li>
+<li><strong>Partial writes.</strong> A multi-step operation — e.g. processing a refund — must (a) deduct the balance, (b) log the refund event, (c) trigger an email. If the <strong>email service dies midway</strong>, the balance shows the refund applied and the log says it happened, <strong>but the user never got the email.</strong> Support later looks at the logs, sees everything "looks fine," and you're left <strong>explaining a ghost refund.</strong> This is a transactional-integrity failure across systems.</li>
+<li><strong>Connection fan-out.</strong> With, say, <strong>10,000 agents × 3 systems = 30,000 connections</strong> to maintain and manage. Connection pools struggle to keep up; <strong>latency rises when traffic spikes</strong>, and you spend half your time managing connections instead of building features.</li>
+</ol>
+<p>Key point hammered home: <strong>this is not theory.</strong> It happens in production and <strong>you only hit it at scale — the worst possible time</strong> to discover it.</p>
+<h3 id="what-tidb-is-the-one-database-alternative">What TiDB is (the one-database alternative)</h3>
+<p>A quick primer on TiDB for those unfamiliar:</p>
+<ul>
+<li><strong>Distributed SQL database</strong> — scales <strong>horizontally across nodes</strong>. <strong>No sharding, no rewrites</strong>; you just add nodes (and thus capacity) whenever you need it.</li>
+<li><strong>MySQL-compatible</strong> — any MySQL drivers, ORMs, and tools work with TiDB as-is.</li>
+<li><strong>HTAP + AI engine</strong> — <strong>transactions, analytics, vector search, and full-text search all live in the same database.</strong> (HTAP = Hybrid Transactional/Analytical Processing.)</li>
+<li><strong>Battle-tested in production</strong> — used by customers including <strong>Manus, Pinterest, Dify</strong>, and others.</li>
+</ul>
+<h3 id="tidb-capabilities-mapped-to-agent-needs">TiDB capabilities mapped to agent needs</h3>
+<p>Ravish presents a capability table where the <strong>first three rows fix the three data problems</strong> above, and the <strong>last two are quality-of-life extras</strong> for building agents:</p>
+<ul>
+<li><strong>Agent state &amp; chat history</strong> → just <strong>normal SQL</strong> (the relational source-of-truth role).</li>
+<li><strong>Semantic recall</strong> → a <strong>vector column with an HNSW index</strong> (replaces the standalone vector DB).</li>
+<li><strong>Keyword search</strong> → a <strong>full-text index with a multilingual parser</strong> handling English, Spanish, Japanese, "whatever you throw at it" (replaces the standalone search engine).</li>
+<li><strong>Embeddings on insert</strong> → a SQL function (<code>EMBED_TEXT</code>, spoken as "embedders text"): give it text and it <strong>calls the embedding model and stores the vector for you</strong> in the table — no separate embedding pipeline.</li>
+<li><strong>Hybrid retrieval</strong> → run a <strong>vector search and a keyword search and combine them with a ranking algorithm</strong>, all inside the database.</li>
+</ul>
+<p>Because all five capabilities live on one table in one engine, <strong>there is nothing to keep in sync</strong> — the stale-data, read-after-write, and partial-write problems largely dissolve because reads and writes hit a single consistent transactional store.</p>
+<h3 id="tidbs-agent-shaped-operational-model-mapping-back-to-agents-are-different">TiDB's agent-shaped operational model (mapping back to "agents are different")</h3>
+<p>This slide directly answers the three opening characteristics (bursty, concurrent, recall-heavy) with operational features:</p>
+<ul>
+<li><strong>Scale to zero.</strong> Idle agents <strong>literally cost nothing</strong> — you pay only for the requests you actually run. "When your traffic is bursty, your bill is bursty too." (Answers the bursty-workload problem.)</li>
+<li><strong>Database branching.</strong> Spin up an <strong>isolated database per agent in a few milliseconds</strong>, so each agent gets its own fully-separated workspace. (Answers massive concurrency + isolation.)</li>
+<li><strong>Resource control.</strong> <strong>Cap how much each workload uses</strong>, so a single runaway ("off the rails") agent can't take down everything else.</li>
+<li><strong>Fast scale-out.</strong> <strong>Compute and storage are separated</strong>, so on a traffic spike the database can <strong>add capacity in seconds instead of minutes.</strong></li>
+</ul>
+<h3 id="the-live-demo-one-free-cluster-one-table-six-steps">The live demo — one free cluster, one table, six steps</h3>
+<p>Ravish runs the entire demo in the <strong>TiDB Cloud SQL editor on a free cluster, using a single table</strong>. (Details captured in the Demos section below.) The recurring refrain throughout each step: <em>"the same table, no separate engine to keep in sync."</em> The progression: create table → insert memories → semantic search → keyword search → hybrid search (RRF) → ACID transaction across two tables.</p>
+<h3 id="why-hybrid-search-the-right-way-matters">Why hybrid search "the right way" matters</h3>
+<p>Ravish stresses that <strong>real hybrid search is not a single query</strong> — it's <strong>two searches plus a ranking step</strong>:
+- CTE #1 runs a <strong>vector search</strong> for the top-10 rows <strong>by meaning</strong>.
+- CTE #2 runs a <strong>keyword search</strong> for the top-10 rows <strong>by exact word match</strong>.
+- The two result sets are fused with <strong>Reciprocal Rank Fusion (RRF)</strong>: the idea is simple — <strong>rows that rank highly in <em>both</em> lists win.</strong></p>
+<p>This combines semantic understanding (intent/meaning) with lexical precision (exact terms like "allergy," "peanut"), which neither approach alone handles well.</p>
+<h3 id="acid-across-tables-why-agents-need-real-distributed-transactions">ACID across tables — why agents need real distributed transactions</h3>
+<p>"Real agents do multi-step writes that have to land together." The demo uses two tables — the <code>memories</code> table plus a separate <code>user_facts</code> table tracking aggregate per-user stats (trips, memory count). Wrapping an <code>INSERT INTO memories</code> + <code>UPDATE user_facts</code> in a single transaction and committing means <strong>both writes land or neither does.</strong> This is <strong>real distributed ACID across multiple tables</strong> — the structural fix for the "partial write / ghost refund" failure mode.</p>
+<h3 id="production-proof-points">Production proof points</h3>
+<p>Ravish closes the technical content with three customers running TiDB in production (emphasizing these are <strong>real numbers, not benchmarks</strong>):</p>
+<ul>
+<li><strong>Manus</strong> — an AI startup; <strong>every agent gets its own database spun up in milliseconds</strong>; <strong>over ~1.5 million</strong> such agents currently; migrated to TiDB and <strong>reached production in two weeks.</strong></li>
+<li><strong>Dify</strong> — an AI dev-platform company; backend previously ran on <strong>~500,000 containers</strong>, all moved onto TiDB; now <strong>one engine does everything.</strong></li>
+<li><strong>Pinterest</strong> — not an AI company, but had the same shape of problem: <strong>six different database systems</strong> doing different jobs, now consolidated to <strong>one (TiDB)</strong>, serving <strong>~1.3 million queries per second.</strong></li>
+</ul>
+<p>The common storyline across all three: <strong>less stuff, more speed, engineers building product instead of patching pipelines.</strong></p>
+<h3 id="recap-the-value-proposition">Recap &amp; the value proposition</h3>
+<p>With TiDB you get: <strong>auto-embeddings on insert</strong> (no Python pipelines), <strong>vector + full-text search + SQL on the same table</strong> (one source of truth), <strong>hybrid search done right</strong> (two searches + RRF), and an engine <strong>built for how agents actually run</strong> (branching, scale-to-zero, resource control). The kicker: <strong>spin up a free cluster in 30 seconds</strong> and it <strong>scales to millions of agents.</strong></p>
+<h3 id="getting-started-where-to-go">Getting started — where to go</h3>
+<ul>
+<li><strong>tidbcloud.com</strong> — spin up a <strong>free TiDB "starter" cluster, no credit card, ready in ~30 seconds.</strong></li>
+<li><strong>Native Azure OpenAI integration</strong> — easily wire your Azure deployment in for the agent patterns shown.</li>
+<li><strong>Customer stories</strong> — referenced at a PingCAP AI/agents landing page ("pingcap.com/ai...", URL caption-garbled).</li>
+<li><strong>Python SDK</strong> — <code>pip install pytidb</code> → hybrid search + RRF in <strong>three lines</strong> of code.</li>
+<li><strong>MCP server + agent rules</strong> for <strong>Cursor and Claude</strong> users — published on GitHub (PingCAP "agent rules" repo) — to drop TiDB directly into an AI coding workflow.</li>
+</ul>
+<p>Closing line: <em>"Go build something cool with TiDB, and stop running three databases when you only need one."</em></p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>TiDB</strong> — distributed, MySQL-compatible SQL database with an HTAP + AI engine; the central product of the talk; positioned as a single store for agent memory.</li>
+<li><strong>TiDB Cloud</strong> (<code>tidbcloud.com</code>) — managed TiDB service; offers a free "starter" cluster provisioned in ~30 seconds with no credit card.</li>
+<li><strong>PingCAP</strong> — the company behind TiDB (the presenter's employer; caption-garbled as "Pinkap/pinkcat/pinkapp").</li>
+<li><strong><code>EMBED_TEXT</code> SQL function</strong> ("embedders text") — built-in function that calls the configured embedding model and stores the resulting vector; used to define a <strong>generated vector column</strong> so embeddings are created automatically on insert.</li>
+<li><strong>Vector column + HNSW index</strong> — TiDB's native vector type (1536 dimensions in the demo) with an HNSW (Hierarchical Navigable Small World) approximate-nearest-neighbour index for semantic search.</li>
+<li><strong>Full-text index with multilingual parser</strong> — TiDB's keyword/exact-match search supporting multiple languages (English, Spanish, Japanese, etc.).</li>
+<li><strong>Hybrid search + Reciprocal Rank Fusion (RRF)</strong> — combines vector and keyword result sets via RRF ranking, all in one SQL query.</li>
+<li><strong>Distributed ACID transactions</strong> — multi-statement transactions spanning multiple tables (commit/rollback together).</li>
+<li><strong>Scale to zero / database branching / resource control / separated compute &amp; storage</strong> — TiDB's agent-oriented operational features.</li>
+<li><strong>Azure OpenAI</strong> — used as the embedding-model backend in the demo; TiDB has a native integration for it.</li>
+<li><strong>PyTiDB (Python SDK)</strong> — <code>pip install pytidb</code>; gives hybrid search + RRF in ~3 lines.</li>
+<li><strong>TiDB MCP server + agent rules</strong> — Model Context Protocol server and rule files (PingCAP GitHub repo) for using TiDB inside Cursor / Claude AI coding workflows.</li>
+<li><strong>MySQL</strong> — compatibility baseline (drivers, ORMs, tooling carry over).</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p>None explicitly announced as new at Build 2026. The session is a capability/how-to walkthrough of existing TiDB features (auto-embeddings, vector + full-text + hybrid search, ACID, scale-to-zero, database branching, Azure OpenAI integration, PyTiDB SDK, MCP server). No GA/preview status changes or new releases were called out.</p>
+<h2 id="demos">💡 Demos</h2>
+<p>A single end-to-end demo run in the <strong>TiDB Cloud SQL editor on a free cluster</strong>, all on <strong>one table</strong>, in six steps:</p>
+<ol>
+<li><strong>Create the memory table.</strong> Normal columns (<code>user_id</code>, an <code>id</code>, <code>content</code>, a <code>timestamp</code>) plus the key column: an <strong><code>embedding</code> vector with 1536 dimensions defined as a generated column.</strong> On every insert, TiDB calls <code>EMBED_TEXT</code> (pointed at an <strong>Azure OpenAI</strong> deployment) to generate and store the embedding — <strong>no Python, no pipeline.</strong> The table also defines a <strong>vector index</strong> (semantic search) and a <strong>full-text index</strong> (keyword search) <strong>on the same table.</strong> <em>Proves:</em> one table can carry relational data, vectors, and full-text indexes with embeddings auto-generated.</li>
+<li><strong>Insert memories &amp; view data.</strong> Inserts <strong>five plain-English memory strings for <code>user_id</code> 42</strong> (jazz/vinyl, peanut allergy, Tokyo flight, email preference, etc.). <strong>No embedding code anywhere in the script</strong> — TiDB calls Azure OpenAI in the background to embed each row. <em>Proves:</em> embeddings happen transparently on insert.</li>
+<li><strong>Semantic search.</strong> Agent asks <em>"what does the user like to listen to?"</em> — a question sharing <strong>zero keywords</strong> with the data (no "listen," no "like to"; the row just says jazz/Miles Davis). The <strong>jazz row returns first</strong> with a <strong>distance of 0.49</strong> (closest match by meaning). TiDB embedded the question and ranked rows by similarity <strong>in one SQL call.</strong> <em>Proves:</em> meaning-based retrieval works without keyword overlap.</li>
+<li><strong>Keyword search.</strong> Sometimes you need <strong>exact word matching</strong> (vectors are bad at this). A <strong>full-text search</strong> checks whether the user mentioned a city; the <strong>Tokyo row</strong> returns as the exact match with a <strong>score of 1.34.</strong> Crucially, this is <strong>the same table</strong> the vector search ran on — <strong>no separate engine to sync.</strong> <em>Proves:</em> exact-match search co-exists on the same table.</li>
+<li><strong>Hybrid search (the one that "really matters").</strong> Two CTEs — one <strong>vector search (top 10 by meaning)</strong>, one <strong>keyword search (top 10 by exact word)</strong> — combined with <strong>Reciprocal Rank Fusion (RRF)</strong>. Asking <em>"what dietary restrictions does the user have?"</em>: vector looks for meaning, keyword looks for words like "allergy"/"peanut," and the <strong>peanut-allergy row comes first</strong> because it scores well in <strong>both</strong>. <em>Proves:</em> one query, one database delivers proper hybrid retrieval.</li>
+<li><strong>ACID transactions across tables.</strong> Two tables — <code>memories</code> and a separate <code>user_facts</code> (aggregate per-user stats: trips, memory count). A transaction wraps <strong><code>INSERT INTO memories</code> + <code>UPDATE user_facts</code> + <code>COMMIT</code>.</strong> Result: the new memory lands, the <strong>trip counter goes 0 → 1</strong>, and the <strong>memory counter goes 0 → 1</strong> — <strong>both writes land together</strong>, and if either had failed, <strong>neither would have stuck.</strong> <em>Proves:</em> real distributed ACID across multiple tables (fixes the partial-write problem).</li>
+</ol>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>Embedding dimensions:</strong> vector column = <strong>1536 dimensions</strong> (demo).</li>
+<li><strong>Semantic search result:</strong> jazz row distance = <strong>0.49</strong> (closest by meaning).</li>
+<li><strong>Keyword search result:</strong> Tokyo row full-text score = <strong>1.34</strong>.</li>
+<li><strong>Connection fan-out math:</strong> <strong>10,000 agents × 3 systems = 30,000 connections</strong> to manage.</li>
+<li><strong>Manus:</strong> <strong>~1.5 million</strong> agents, a database per agent in <strong>milliseconds</strong>, to production in <strong>two weeks</strong>.</li>
+<li><strong>Dify:</strong> migrated <strong>~500,000 containers</strong> onto TiDB → <strong>one engine</strong>.</li>
+<li><strong>Pinterest:</strong> consolidated <strong>6 database systems → 1</strong>, running <strong>~1.3 million queries per second</strong>.</li>
+<li><strong>Free cluster:</strong> provisioned in <strong>~30 seconds</strong>, no credit card; <strong>scales to millions of agents</strong>.</li>
+<li><strong>PyTiDB:</strong> hybrid search + RRF <strong>in 3 lines</strong> of code.</li>
+<li><strong>Time budget:</strong> presenter framed the talk as "~20 minutes" with a demo halfway through (actual runtime ~17 min).</li>
+<li><strong>Tagline:</strong> <em>"Stop running three databases when you only need one."</em></li>
+<li><strong>On bursty billing:</strong> <em>"When your traffic is bursty, your bill is bursty too."</em></li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:<ul>
+<li>Spin up a free TiDB Cloud starter cluster (tidbcloud.com, ~30s, no credit card) and recreate the demo's single memory table.</li>
+<li>Wire up the <strong>native Azure OpenAI integration</strong> + a <strong>generated vector column</strong> with <code>EMBED_TEXT</code> and confirm embeddings populate automatically on insert (no Python pipeline).</li>
+<li>Build a hybrid-search query: two CTEs (vector top-10 + full-text top-10) fused with <strong>RRF</strong>; compare results vs vector-only and keyword-only.</li>
+<li>Try <code>pip install pytidb</code> and see if hybrid search + RRF really is ~3 lines.</li>
+<li>Install the <strong>TiDB MCP server + agent rules</strong> (PingCAP GitHub) into Cursor/Claude and test dropping TiDB into an AI coding workflow.</li>
+<li>Validate the <strong>ACID-across-tables</strong> pattern (memories + user_facts in one transaction) for our own multi-step agent writes.</li>
+</ul>
+</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:<ul>
+<li>How does TiDB's <strong>scale-to-zero</strong> cold-start latency compare to keeping a small warm pool? What's the wake-up time on the first request after idle?</li>
+<li><strong>Database branching per agent in milliseconds</strong> — what are the real limits (max concurrent branches, cost model, cleanup) at the ~1.5M-agent scale Manus runs?</li>
+<li>HNSW recall/latency tradeoffs at high dimensionality (1536) and large row counts — how does it compare to a dedicated vector DB (e.g. on accuracy/QPS)?</li>
+<li>How fresh is vector search relative to writes inside TiDB itself — does the single-engine design fully eliminate the stale-index lag, or is the vector index still async?</li>
+<li>What's the embedding cost/latency exposure when <code>EMBED_TEXT</code> calls Azure OpenAI synchronously on every insert at high write volume? Batching support?</li>
+<li>How does TiDB's offering compare to Azure Cosmos DB / Azure Database for PostgreSQL (pgvector) + DiskANN for the same agent-memory use case?</li>
+</ul>
+</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:<ul>
+<li>Designing the <strong>memory/persistence layer</strong> for any multi-agent system — strong "one store instead of three" argument to evaluate against our current stack.</li>
+<li>Anyone currently gluing relational + vector + search DBs with ETL who's hitting stale-data / read-after-write / partial-write / connection-fan-out pain.</li>
+<li>AI agent platform / RAG architecture decisions where hybrid retrieval (semantic + exact) and transactional integrity both matter.</li>
+</ul>
+</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><a class="wikilink wikilink--resolved" href="OD820.html">OD820 - Designing Reliable Multi-Agent Apps with Azure Cosmos DB</a> — same problem space (data/memory layer for multi-agent apps) on the Azure-native side; good comparison to TiDB's single-store pitch.</li>
+<li><a class="wikilink wikilink--resolved" href="ODSP900.html">ODSP900 - Performance tuning on Cobalt with Arm Performix</a> — sibling ODSP partner session at Build 2026; infrastructure/performance angle.</li>
+<li><a class="wikilink wikilink--resolved" href="BRK223.html">BRK223 - From rows to reasoning</a> — "designing databases for AI apps and agents" theme; directly complements vector + hybrid search for agents.</li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="ODSP916.html"><span class="pager-dir">← Previous</span><span class="pager-code">ODSP916</span><span class="pager-title">Design systems for every user including people and LLMs</span></a>
+    <a class="pager pager-next" href="ODSP919.html"><span class="pager-dir">Next →</span><span class="pager-code">ODSP919</span><span class="pager-title">Move from data to intelligence with Oracle MCP and Microsoft IQ</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ODSP900 — Performance tuning on Cobalt with Arm Performix</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">ODSP900</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=J43ze2sO5-U" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Performance tuning on Cobalt with Arm Performix</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 David Heckney (Technical Product Director, Arm)</span>
+      <span class="meta-item">⏱️ 8m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="arm">Arm</span><span class="chip" data-tag="cobalt">Cobalt</span><span class="chip" data-tag="performance">Performance</span><span class="chip" data-tag="azure">Azure</span><span class="chip" data-tag="profiling">Profiling</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> David Heckney — Technical Product Director, Arm<br>
+<strong>Duration:</strong> ~8 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=J43ze2sO5-U">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Arm's David Heckney introduces <strong>Arm Performix</strong>, a new performance-analysis toolkit built in close collaboration with Microsoft's performance experts to help engineers observe and accelerate workloads running on <strong>Azure Cobalt</strong> (Arm-based) VMs. Performix frames performance work like a crime investigation — broad evidence-gathering first, then progressively deeper, hypothesis-driven dives — and packages that disciplined methodology into a unified UI (and equivalent CLI) built around two core concepts: <strong>targets</strong> (the Cobalt instances under test, added via SSH) and <strong>recipes</strong> (the experiments/workflows you run). A guided ladder of recipes takes you from validating the instance (system characterization), to seeing how it behaves under load (system utilization heat map), to finding hot code (code hotspots, language-agnostic incl. Java/.NET), to instruction mix and Arm top-down CPU microarchitecture analysis. The standout capability is an <strong>MCP server</strong> that couples Performix's profiling data, disassembly, target info, and source code to an LLM (demoed beside code in Visual Studio), turning analysis from passive sampling into active, confidence-based optimization suggestions. <strong>Performix is available now, free to download and free to use.</strong></p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Arm Performix</strong> is a new, free performance-analysis toolkit purpose-built to observe and accelerate workloads on <strong>Azure Cobalt</strong> Arm-based instances.</li>
+<li>It was <strong>co-developed with Microsoft performance experts</strong>, reflecting the strong Microsoft–Arm partnership; aimed especially at teams <strong>migrating to Cobalt for the first time</strong>.</li>
+<li>Core mental model: performance analysis is an <strong>investigation</strong> — suspects, leads, hypotheses, evidence, dead ends — <strong>not</strong> a linear process; expert workflow is consistent even though each case is unique.</li>
+<li>Method = <strong>breadth-first, then depth</strong>: get the overall picture, then dive into specifics; use <strong>good science</strong> (change one variable at a time, repeat runs for consistency, compare against baselines).</li>
+<li>Two foundational concepts: <strong>Targets</strong> (systems to test — Cobalt instances added via SSH: host, user, port, keys) and <strong>Recipes</strong> (the experiments/workflows; some still flagged <strong>experimental</strong> as the toolkit expands).</li>
+<li><strong>System characterization recipe</strong> runs micro-benchmarks to validate the instance performs as expected (e.g. how <strong>memory bandwidth varies with access size</strong> = cache behavior).</li>
+<li><strong>System utilization recipe</strong> shows behavior under load — e.g. a <strong>CPU heat map across a 96-core system</strong> over a 1-second interval (demo: ~2/3 cores busy, 1/3 idle) to surface investigation avenues (more threads? different instance size? lock contention?).</li>
+<li><strong>Code hotspots recipe</strong> samples where time is spent and ties it back to source — <strong>works across all languages including Java and .NET</strong> — finding hot paths static analysis can't.</li>
+<li><strong>Instruction mix</strong> reveals how well the app exploits the platform; demo <strong>compared Arm NEON vs SVE</strong> matrix-multiply instruction mixes across two runs.</li>
+<li><strong>CPU microarchitecture recipe</strong> applies <strong>Arm's top-down methodology</strong> to attribute time across CPU layers — cache levels, pipeline stalls from <strong>branch mispredictions</strong>, etc.</li>
+<li><strong>Run comparison</strong> is first-class: easily diff two runs against each other / against baselines.</li>
+<li>The <strong>MCP server</strong> integrates Performix with an LLM (shown in <strong>Visual Studio</strong>), feeding it profiling data + disassembly + target info + source code so it <strong>actively suggests confidence-based improvements</strong> — analysis becomes dynamic, not passive.</li>
+<li>Everything in the UI is <strong>also available via the command line</strong> for terminal-first workflows; <strong>Performix is available now, free to download and free to use.</strong></li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="context-why-this-toolkit-and-who-its-for">Context: why this toolkit, and who it's for</h3>
+<p>David Heckney (Technical Product Director, Arm) presents a short walkthrough of <strong>Arm Performix</strong>, a brand-new performance analysis toolkit for observing and accelerating workloads on <strong>Cobalt</strong> (Azure's Arm-based compute). He stresses the <strong>strong Microsoft–Arm partnership</strong> — Performix was developed in <strong>close collaboration with Microsoft performance experts</strong>. The talk explicitly addresses people who may be <strong>migrating to Cobalt for the first time</strong>, nudging them toward the available migration resources before diving in. The motivating problem: performance engineers today must wrangle a <strong>wide, complex, and fragmented tool set</strong>, and Performix exists to unify that.</p>
+<h3 id="the-mental-model-performance-analysis-as-a-crime-investigation">The mental model: performance analysis as a crime investigation</h3>
+<p>Before the demo, Heckney sets the conceptual frame. Performance analysis is <strong>like a crime investigation</strong>:
+- You have <strong>suspects, leads, and hypotheses</strong>.
+- You <strong>gather evidence</strong> to support or disprove theories.
+- Expect <strong>blind alleys and dead ends</strong>; <strong>new evidence can force you to revisit prior assumptions</strong>.
+- It is <strong>not a straightforward linear process</strong>.</p>
+<p>Crucially, while every investigation is unique, the <strong>overall approach expert analysts take is consistent</strong> — and that consistency is what Performix encodes into a guided workflow.</p>
+<h3 id="the-methodology-breadth-first-then-depth-with-good-science">The methodology: breadth-first, then depth, with good science</h3>
+<p>The disciplined approach Performix bakes in:
+1. <strong>Start broad</strong> — acquire an overall picture before diving into detail.
+2. <strong>Run experiments with good science</strong> — change <strong>one variable at a time</strong>, <strong>repeat runs</strong> to understand consistency, and <strong>compare against previous baselines</strong>.
+3. Concretely, this means:
+   - First understand <strong>what the platform (the Cobalt instance) is capable of</strong>.
+   - Then understand <strong>how the system behaves once the workload is applied</strong> — which dictates <strong>where analysis should be focused</strong>.
+   - Then <strong>go deeper</strong> with targeted analysis where the evidence points.</p>
+<h3 id="two-core-concepts-targets-and-recipes">Two core concepts: Targets and Recipes</h3>
+<p>The Performix UI (with full <strong>CLI parity</strong> for terminal users) is organized around two primitives:</p>
+<ul>
+<li><strong>Targets</strong> — the systems you run workloads on; in this case <strong>Cobalt instances</strong>. Adding a target is simply supplying the relevant <strong>SSH credentials</strong>: host, user, port, and any required SSH keys.</li>
+<li><strong>Recipes</strong> — the <strong>experiments or workflows</strong> you run against a target as part of analysis. There's a catalog of recipes; ones <strong>still under development are marked "experimental"</strong> as Arm continues to expand the toolkit.</li>
+</ul>
+<p>When you run a recipe you <strong>select the target</strong> and <strong>choose the benchmarks/options</strong>; Performix then <strong>ensures the target is set up and installs any dependencies on the target system on your behalf</strong> — removing manual setup friction.</p>
+<h3 id="recipe-1-system-characterization-validate-the-instance">Recipe 1 — System characterization (validate the instance)</h3>
+<p>The first step assesses the overall Cobalt target. The <strong>system characterization recipe</strong> runs a <strong>series of micro-benchmarks</strong> on the platform. Example output shown: <strong>how memory bandwidth varies with access size</strong> — i.e., <strong>how the cache is performing</strong>. The purpose is to <strong>validate that the instance itself is performing at the expected level</strong> before you start blaming your workload. (This is the "understand what the platform is capable of" step.)</p>
+<h3 id="recipe-2-system-utilization-behavior-under-load">Recipe 2 — System utilization (behavior under load)</h3>
+<p>Next, see how the instance behaves with the workload running, via the <strong>system utilization recipe</strong>. It can:
+- <strong>Launch a new workload</strong>,
+- <strong>Attach to an already running process</strong>, or
+- <strong>Profile across all processes</strong>.</p>
+<p>Demo: focusing on the <strong>CPU of a 96-core system</strong>, Performix shows a <strong>heat map of how busy each core is over a 1-second interval</strong>. Roughly <strong>two-thirds of cores are occupied, the remaining third relatively idle</strong>. This <strong>at-a-glance visualization generates investigation avenues</strong>, e.g.:
+- Could we <strong>increase the thread count</strong>?
+- Would a <strong>different instance size</strong> help?
+- Is there <strong>lock contention</strong> occupying these cores?</p>
+<p>This is the pivot point that decides where to dig deeper.</p>
+<h3 id="recipe-3-code-hotspots-find-the-hot-code-any-language">Recipe 3 — Code hotspots (find the hot code, any language)</h3>
+<p>To learn what those busy cores are actually running, use the <strong>code hotspots recipe</strong>. It <strong>samples where time is being spent in the code</strong> and <strong>ties it back to the source code itself</strong>. Key strengths:
+- <strong>Works across all languages, including Java and .NET</strong> (i.e. managed runtimes, not just native).
+- Ensures you <strong>optimize the right places</strong> — something <strong>static analysis tools can't do</strong>, because hotness is a runtime property.</p>
+<h3 id="recipe-4-instruction-mix-how-well-you-use-the-platform">Recipe 4 — Instruction mix (how well you use the platform)</h3>
+<p>Another lens on where time goes is <strong>instruction mix</strong>, useful for understanding <strong>how well the application is taking advantage of the platform's capabilities</strong>. Because comparison is core to the methodology, Performix lets you <strong>easily compare between runs</strong>. Demo: comparing the <strong>instruction mixes of two different matrix multiplications</strong> — one using <strong>Arm NEON</strong> instructions, the other using <strong>SVE</strong> (Scalable Vector Extension) — illustrating how a code change shifts the instruction profile.</p>
+<h3 id="recipe-5-cpu-microarchitecture-arm-top-down">Recipe 5 — CPU microarchitecture (Arm top-down)</h3>
+<p>For the deepest hardware-level view, the <strong>CPU microarchitecture recipe</strong> uses <strong>Arm's top-down methodology</strong> to characterize <strong>where time is being spent at various parts of the CPU</strong>. With it you can:
+- Dig into <strong>how the various layers of caching are performing</strong>.
+- <strong>Detect pipeline stalls</strong> caused by <strong>branch mispredictions</strong>.</p>
+<p>This completes the "breadth-first across the whole system, then deep into specific aspects as the investigation unfolds" arc.</p>
+<h3 id="delivering-insights-the-mcp-server-llm-integration-the-headline">Delivering insights: the MCP server + LLM integration (the headline)</h3>
+<p>For the final part, the focus shifts from analysis to <strong>actually delivering improvements</strong>. Performix <strong>provides an MCP (Model Context Protocol) server</strong> so the analysis can be <strong>tightly coupled with an LLM</strong>. Demo: working <strong>next to code in Visual Studio</strong>, Heckney <strong>summons the analysis from all the runs just performed</strong>. By feeding the LLM:
+- the <strong>profiling data</strong>,
+- the <strong>disassembly</strong>,
+- <strong>information about the target system</strong>, and
+- the <strong>source code</strong>,</p>
+<p>Performix can <strong>deliver dynamic insight and suggest confidence-based improvements</strong> to accelerate the workload on Cobalt. This transforms performance analysis <strong>from a passive activity</strong> (sampling and profiling) <strong>into a dynamic one</strong> that <strong>actively suggests optimizations</strong>.</p>
+<h3 id="wrap-up">Wrap-up</h3>
+<p>Summary of the arc: Performix uses <strong>targets and recipes</strong> to apply a <strong>guided analysis approach</strong> — start broad with <strong>system characterization</strong> and <strong>utilization</strong>, then enable <strong>deeper analysis</strong> with specialized recipes (code hotspots, instruction mix, CPU microarchitecture). The <strong>MCP server integration</strong> is the differentiator, turning profiling into active optimization. <strong>Performix is available now, free to download and free to use</strong> — Arm invites viewers to try it and share feedback. (Note: the transcript contains a stray caption artifact — "[snorts]" — mid-summary; it carries no content.)</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Arm Performix</strong> — new (free) performance-analysis toolkit for observing and accelerating workloads on Cobalt; unifies a fragmented performance tool set; UI + CLI parity. The subject of the entire session.</li>
+<li><strong>Azure Cobalt</strong> — Microsoft's Arm-based cloud compute; the "target" platform whose instances are analyzed and tuned here.</li>
+<li><strong>Targets (Performix concept)</strong> — the systems/Cobalt instances under test, added via SSH (host, user, port, keys).</li>
+<li><strong>Recipes (Performix concept)</strong> — the experiments/workflows; some flagged "experimental."</li>
+<li><strong>System characterization recipe</strong> — micro-benchmarks to validate instance capability (e.g. memory bandwidth vs access size = cache behavior).</li>
+<li><strong>System utilization recipe</strong> — launch/attach/profile-all-processes; CPU core-busy heat map over a time interval.</li>
+<li><strong>Code hotspots recipe</strong> — runtime sampling tied back to source; language-agnostic, <strong>incl. Java and .NET</strong>.</li>
+<li><strong>Instruction mix</strong> — analyzes how well code uses the platform; supports run-to-run comparison.</li>
+<li><strong>CPU microarchitecture recipe</strong> — <strong>Arm top-down methodology</strong>; cache-layer analysis + branch-misprediction pipeline-stall detection.</li>
+<li><strong>MCP (Model Context Protocol) server</strong> — Performix-provided server that couples analysis with an LLM for active, confidence-based optimization suggestions.</li>
+<li><strong>Visual Studio</strong> — IDE where the LLM-driven analysis is summoned next to the user's code in the demo.</li>
+<li><strong>Arm NEON</strong> — Arm SIMD instruction set; one matrix-multiply variant in the instruction-mix comparison.</li>
+<li><strong>Arm SVE (Scalable Vector Extension)</strong> — Arm vector ISA; the other matrix-multiply variant compared against NEON.</li>
+<li><strong>SSH</strong> — transport/credentials used to register Cobalt targets.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Arm Performix is available now</strong> — <strong>free to download and free to use</strong> (general availability framing; presented as released, not a preview). This is the session's principal announcement.</li>
+<li>Some Performix <strong>recipes are still in development and marked "experimental"</strong>, indicating the toolkit will continue to expand.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<p>The session is essentially one continuous product demo of the Performix UI:
+- <strong>Adding a target</strong> — register a Cobalt instance via SSH (host/user/port/keys). <em>Proves setup is trivial.</em>
+- <strong>System characterization</strong> — micro-benchmarks; output graph of <strong>memory bandwidth vs access size</strong> (cache performance). <em>Proves the instance performs at the expected level.</em>
+- <strong>System utilization</strong> — <strong>96-core CPU heat map</strong> over a 1-second interval showing ~2/3 cores busy, 1/3 idle. <em>Proves you can spot utilization patterns and generate hypotheses (threads/instance size/lock contention) at a glance.</em>
+- <strong>Code hotspots</strong> — sampling tied back to source across languages. <em>Proves you optimize the right code, beyond static analysis.</em>
+- <strong>Instruction mix comparison</strong> — two matrix multiplications, <strong>NEON vs SVE</strong>, compared across runs. <em>Proves run-to-run comparison and platform-utilization insight.</em>
+- <strong>CPU microarchitecture</strong> — Arm top-down attribution; cache layers + branch-misprediction stalls. <em>Proves deep hardware-level diagnosis.</em>
+- <strong>MCP server + LLM in Visual Studio</strong> — summoning combined analysis (profiling + disassembly + target info + source) to get <strong>confidence-based improvement suggestions</strong>. <em>Proves the shift from passive profiling to active, AI-assisted optimization.</em></p>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>96-core system</strong> used in the utilization demo; <strong>~2/3 of cores occupied, ~1/3 idle</strong> over a <strong>1-second</strong> sampling interval.</li>
+<li><strong>Performix is "available now, free to download and free to use."</strong></li>
+<li>Framing quote: <em>"Performance analysis can be thought of like a crime investigation. You have suspects, leads, hypotheses... It is not a straightforward linear process."</em></li>
+<li>On AI integration: analysis goes <em>"from being a passive activity of sampling and profiling to a dynamic one of actively suggesting improvements and optimizations to accelerate your workload."</em></li>
+<li>Good-science principle: <em>"changing one variable at a time, repeating the runs to understand consistency, and comparing results against previous baselines."</em></li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Download <strong>Arm Performix</strong> (free) and add one of our Cobalt instances as a target via SSH; run <strong>system characterization</strong> to baseline the instance, then <strong>system utilization</strong> on a real workload to read the core heat map.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Use <strong>code hotspots</strong> on a <strong>.NET</strong> workload on Cobalt to confirm managed-runtime sampling works as advertised; then run <strong>instruction mix</strong> to compare NEON vs SVE on any vectorizable hot path.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Wire up the <strong>Performix MCP server</strong> to an LLM in <strong>Visual Studio</strong> and see how actionable the confidence-based optimization suggestions actually are.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: Which Linux distros/agent requirements does the on-target Performix agent need (it auto-installs dependencies — what footprint)? Does it support Windows-on-Arm targets or Linux only?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: Is the MCP server LLM-agnostic (bring-your-own model/endpoint) and does any profiling/source data leave the machine? Which recipes are still "experimental"?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: How does Performix's Arm top-down output compare to <code>perf</code>/<code>topdown</code> tooling — is it a superset or a friendlier front-end?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: Cobalt migration/cost-optimization work; right-sizing Arm instance SKUs; any team profiling Java/.NET services on Azure Arm; the broader Arm-on-Azure performance story (pairs with DEMSP381 / OD828).</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><a class="wikilink wikilink--resolved" href="DEMSP381.html">DEMSP381 - Scale agentic AI on Azure with Arm Cobalt VMs</a> — sibling Arm partner session; scaling agentic AI workloads on the same Cobalt platform.</li>
+<li><a class="wikilink wikilink--resolved" href="OD828.html">OD828 - Latest Cobalt VMs and Azure Boost enhancements</a> — the Cobalt VM family and Azure Boost context these tuning workflows run against.</li>
+<li><a class="wikilink wikilink--resolved" href="DEM300.html">DEM300 - Supercharged profiling Finding performance bugs with agents</a> — complementary Microsoft profiling story (Visual Studio Profiler + agents); same "AI-assisted performance" theme.</li>
+<li><a class="wikilink wikilink--resolved" href="OD827.html">OD827 - Build deploy and run Linux workloads on Azure</a> — running/operating the Linux workloads you'd profile with Performix on Cobalt.</li>
+<li><a class="wikilink wikilink--resolved" href="DEM311.html">DEM311 - Scale cloud-native workloads with Azure Linux</a> — Azure Linux as the OS layer for cloud-native (incl. Arm) workloads under analysis.</li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="OD870.html"><span class="pager-dir">← Previous</span><span class="pager-code">OD870</span><span class="pager-title">Azure Storage for AI workloads</span></a>
+    <a class="pager pager-next" href="ODSP901.html"><span class="pager-dir">Next →</span><span class="pager-code">ODSP901</span><span class="pager-title">Discover, govern, and scale Azure resources with HashiCorp Terraform</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

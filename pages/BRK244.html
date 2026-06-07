@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRK244 — Agent supervision is the new senior engineering skill</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">BRK244</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=QyX2w7Mr-iE" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Agent supervision is the new senior engineering skill</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Swyx (Shawn Wang) — Founder, Latent Space &amp; AI Engineer; Advisor, Cognition</span>
+      <span class="meta-item">⏱️ 36m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="engineering">Engineering</span><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="devex">Devex</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Swyx (Shawn Wang) — Founder of Latent Space &amp; the AI Engineer community/conferences; advisor to Cognition; host of the Latent Space podcast<br>
+<strong>Duration:</strong> ~36 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=QyX2w7Mr-iE">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Swyx argues that the unit of work for engineers has shifted from writing code to <strong>supervising swarms of coding agents</strong>, and that the entire industry has independently converged ("carcinized") on the same UI — the <strong>agent command center / conductor</strong> form factor. The real differentiator is no longer the model (you can leak Claude Code's source and nothing changes) nor the harness, but your ability to <strong>orchestrate many agents and achieve human↔agent "mind meld."</strong> He walks the audience through what he considers <em>guaranteed</em> over the next ~2 years — agents writing the majority of code, the death of code review (the "dark factory"), spec-driven development as the new programming, a coming <strong>CPU shortage</strong>, and hardware delivering <strong>hundreds of thousands of tokens/sec</strong> — versus what is still <em>speculative research</em> (real-time/low-latency interaction, memory &amp; continual learning, world models, agentic video/everything). His through-line: what happened to coding last year is now happening to <em>all</em> knowledge work, and "agent supervision" is the senior skill that survives.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Everything is converging on the "conductor" / agent command center.</strong> Conductor pioneered the form factor; Cursor, Windsurf, Codex, GitHub Copilot (new app) and even Cognition all rebranded into the same thing — "convergent evolution," like how nature reinvented the crab ~7 times.</li>
+<li><strong>The moat is neither the model nor the harness.</strong> Leaking Claude Code's full source changed nothing — Anthropic still becomes a trillion-dollar company; rival harness makers said the leak only <em>validated</em> they had the same approach. The moat is <strong>multi-agent orchestration + human↔agent alignment.</strong></li>
+<li><strong>"Model religion" is over → it's now model + harness.</strong> Developers gain real influence by <em>shaping the harness</em> (MCPs, skills, workflows) — not just prompts — which demands new UIs beyond chat.</li>
+<li><strong>A real economic/capability phase transition happened ~late 2025.</strong> Agent autonomy jumped from ~1–2 hour tasks to <strong>10–12h and even 20–24h tasks</strong> (a ~10x in autonomous capability), which unlocks entirely new UX. Swyx frames it like a new "WTF happened in 1971" inflection.</li>
+<li><strong>Agent-written code is exploding.</strong> Claude Code's attributable share of GitHub commits hit ~4–5% (Feb), likely ~10% now, on track for ~50% by end of year. The GitHub COO cited <strong>~14,000x (14,000×) year-on-year commit growth</strong> from agent attribution.</li>
+<li><strong>The SDLC is collapsing stage by stage:</strong> the <em>idea</em> is dying (Steve Yegge's prediction), <strong>PRs → "prompt requests"</strong> (maintainers want intent, not your code), and code review itself is next.</li>
+<li><strong>The "dark factory" is coming:</strong> a software factory with <strong>no human reviewers</strong> in the loop — scary but demanded by multi-agent scale. Today it's fringe; "fringe last year becomes normal this year."</li>
+<li><strong>We have superhuman <em>coders<em> but not superhuman </em>reviewers</em></strong> — mostly a <em>communication</em> bottleneck (no high-bandwidth neural link), so agents guess intent and sometimes guess wrong. The fix is <strong>fast cycles → fast feedback → strong alignment</strong> (e.g. enforce &lt;1 min compile times).</li>
+<li><strong>Spec-driven development is the new programming.</strong> OpenAI's open-sourced <strong>Symphony</strong> is ~2,000 lines of markdown prompts — a "gold-standard spec" focused on the <strong>"narrow waist"</strong> (API contracts, module surfaces, types/data structures) to contain model entropy.</li>
+<li><strong>"Goal/Ralph loops" redefine instruction:</strong> you don't tell the agent <em>how</em> to do the task — you tell it <em>how you'll evaluate it and when to stop.</em> This enables closed-loop self-verification.</li>
+<li><strong>An infrastructure shift is mathematically locked in:</strong> GPU:CPU ratio moving from ~8:1 toward <strong>1:1</strong> as agents do massive CPU-bound work → a <strong>coming CPU shortage</strong>, not just GPU (per Intel CEO Lip-Bu Tan; Sam Altman: now an "inference company").</li>
+<li><strong>Inference speed is about to 10x repeatedly.</strong> Today ~50–100 tok/s; Cerebras and others already do thousands; <strong>Tâlus demoed ~17,000 tok/s</strong> (vs H200/B200/Groq/Cerebras). Swyx is "highly convinced" a <strong>300,000 tok/s</strong> world for commodity tokens is coming — this is <strong>hardware/optimization, not research.</strong></li>
+<li><strong>Chips now last longer; their terminal value is rising.</strong> Old amortization ~3–4 years → now ~8; people still run GPT-4.1 / Llama 3 because working open-weight apps "only get cheaper and faster." H100 average price has <em>melted up</em>.</li>
+<li><strong>Model sizes keep creeping up:</strong> "small" went 2B → 7B → <strong>24B (Mistral Small)</strong>; "small" may eventually mean ~100B. Top-end went from ~1T params (GPT-4 class) to <strong>10T+</strong> — but we're running out of orders of magnitude.</li>
+<li><strong>Coding is just the preview — the real story is <em>all</em> knowledge work.</strong> Agents are generalizing into unverifiable domains (browsing/computer use, design, video). Developers are "privileged" to live this future first.</li>
+<li><strong>The frontier research grand prizes (speculative):</strong> <strong>real-time / low-latency interaction</strong> (the GPT-4o voice we were promised but never got), <strong>memory &amp; continual learning</strong>, <strong>world models</strong> (theory-of-mind of what <em>you</em> want), and <strong>agentic everything</strong> (video agents orchestrating video models).</li>
+<li><strong>The "agent work paradox":</strong> agents do more work than ever, yet humans work harder than ever — and that's normalized. Swyx's self-serving thesis: <strong>AI engineering is "the last job"</strong> because you're the one automating all the others.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-everything-is-becoming-a-conductor-carcinization-of-agent-uis">Framing: everything is becoming a "conductor" (carcinization of agent UIs)</h3>
+<p>Swyx opens (semi-provocatively) by poking fun at Microsoft's recently launched <strong>GitHub Copilot app</strong> — the big rebrand of what Copilot can be <em>beyond VS Code</em> — noting it looks strikingly similar to other recently launched apps. His thesis: <strong>Conductor</strong> was first to the "agent's command center" form factor, and then <strong>Cursor, Windsurf, Codex, and GitHub</strong> all rebranded into the same shape. Even <strong>Cognition</strong> (the company he advises) shipped its own agent command center <em>the day before</em> the talk, complete with <strong>local-to-cloud handoff</strong> features.</p>
+<p>He frames this not as a failure of imagination but as <strong>convergent evolution</strong> — "everything becoming a crab." Carcinization: nature independently reinvented the crab body plan at least ~7 times; the industry has independently reinvented the agent command center because it's simply <strong>the form factor everyone agreed to converge on.</strong></p>
+<p>The deeper point: the <strong>level of abstraction is shifting from managing individual agents to orchestrating many.</strong> The progression he describes:
+1. Autocomplete →
+2. Managing individual terminals →
+3. <code>tmux</code>-ing 12 terminals at once (chaotic) →
+4. Something "more civilized and organized" — the command center, multiplexing across Cursor, Claude Code instances, etc.</p>
+<p>(He jokes mid-talk that he just published his GitHub tokens on screen and needs to rotate them — a running gag, since the session is recorded.)</p>
+<h3 id="six-core-themes-from-the-ai-engineer-community">Six core themes from the AI engineer community</h3>
+<p>Swyx has spent his career organizing the <strong>AI engineer community</strong> (Paris, London, Miami, Singapore) and has watched an "explosion" over the last year. He distills ~six contributing themes shaping where things are going:</p>
+<ul>
+<li><strong>Anxiety / "FOMAT" — Fear Of Missing Agent Time.</strong> People do <em>polyphasic sleep</em>, waking at 2am to kick off another agent run before bed. The compulsion to keep agents busy is real.</li>
+<li><strong>Model religion is dead → model + harness.</strong> The old "big model" belief gave way to a <strong>model + harness combination</strong>, which is <em>good for developers</em> because you can exert strong influence by <strong>shaping the harness</strong> — formerly via prompts, now via <strong>MCPs, skills, workflows</strong>, and more. This requires a <strong>different UI than chat.</strong></li>
+<li><strong>Labs are shipping harnesses, increasingly swarm-oriented.</strong> Model labs are transitioning from "ship the pure model" to shipping harnesses. Examples: <strong>Kimi K2</strong> putting out <em>hundreds of parallel swarms</em>; <strong>Anthropic</strong> releasing an "embarrassingly parallel" feature to port its <strong>million-line Zig codebase into Rust.</strong> A sign of things to come.</li>
+<li><strong>Lots of humans will still be employed here</strong> — job security exists. Tellingly, <strong>the agent codebase itself isn't the value:</strong> you can leak the <em>entire</em> Claude Code source and <em>nothing changes.</em> Anthropic still becomes a trillion-dollar company; rival harness makers told Swyx (on his podcast) the leak just <strong>validated</strong> that they'd independently discovered the same things — "no secret sauce."</li>
+<li><strong>Therefore the moat is elsewhere:</strong> not the model, not the harness, but <strong>orchestrating multiple agents</strong> and doing the <strong>human↔agent "mind meld."</strong></li>
+<li><strong>Hands-off model work is newly possible</strong> — the enabling shift (see below).</li>
+</ul>
+<h3 id="the-late-2025-capability-phase-transition">The late-2025 capability phase transition</h3>
+<p>Swyx references <strong>"WTF Happened in 1971"</strong> (a famous economics site documenting sharp 50-year econ transitions) and argues <strong>another such inflection just happened — around late 2025</strong>, and we're now living its implications.</p>
+<p>The mechanism: models moved from <strong>requiring heavy human-in-the-loop</strong> to autonomous long-horizon work. He cites <strong>METR</strong>-style measurement: capability jumped from <strong>1–2 hour tasks to 10–12 hour and 20–24+ hour tasks.</strong> That ~<strong>10x in autonomous capability</strong> is what unlocks fundamentally <strong>different UX</strong> — you can now dispatch work and walk away.</p>
+<p><strong>Evidence in the wild (GitHub):</strong>
+- <strong>Claude Code commit attribution</strong> on GitHub rose to <strong>~4–5% as of February</strong>, "probably ~10% right now," on a trajectory to <strong>~50% by end of year</strong> (and that's <em>just</em> Claude Code — add Codex, Copilot, and other coding agents).
+- The <strong>GitHub COO</strong> (Swyx's podcast guest the day before) cited <strong>~14,000x (14,000×) year-on-year commit growth</strong> attributable to agents.</p>
+<p>He stresses this isn't only coding: agents are also tackling <strong>unverifiable domains</strong> — general browsing/computer use <em>and design</em> — and the training focus on <strong>generalization</strong> means these capabilities are breaking out of the "verifiable domains only" assumption.</p>
+<h3 id="the-collapsing-sdlc-idea-prs-code-review">The collapsing SDLC: idea → PRs → code review</h3>
+<p>Swyx traces the software development life cycle being eaten stage by stage:</p>
+<ul>
+<li><strong>The idea is dying.</strong> He curated a "prescient" talk by <strong>Steve Yegge</strong> (creator of "Gastown"/Gas Town; author of the legendary <strong>Platform Rant</strong>) predicting at end of 2026 that <strong>"the idea" would die in 2026</strong> — which Swyx says basically came true, with the "everything is a conductor" carcinization trend arriving right after. (He notes the irony of Yegge's Platform Rant lore alongside interviewing <strong>Satya</strong> about turning Microsoft into an <strong>AI platform</strong>.)</li>
+<li><strong>PRs → "prompt requests."</strong> Pull requests exist because you "can't be trusted to review your own." Two flavors:</li>
+<li><strong>Open source</strong> (most at threat) — the vector for malicious or misaligned PRs.</li>
+<li><strong>Internal teams.</strong>
+  Instead of pull requests, send <strong>prompt requests</strong>: maintainers adapt your <strong>intent</strong>, because "they don't need your code anymore."</li>
+<li><strong>Goal loops &amp; self-verification.</strong> With agents coding ~14x more than last year, the next frontier is <strong>goal loops</strong> — the <strong>"Ralph Wiggum loop"</strong> went viral last year and is now adopted by every major coding agent. This leads to a <strong>closed loop where coding agents verify their own work</strong> (work Cognition is doing).</li>
+<li><strong>Death of code review → the "dark factory."</strong> Borrowing from manufacturing's "software factory / token factory":</li>
+<li><strong>Light factory</strong> = humans reviewing the output.</li>
+<li><strong>Dark factory</strong> = <strong>no humans reviewing</strong> — lights-off automated software production.
+  Swyx calls the dark factory "very, very scary" yet inevitable, because human review is <strong>the</strong> remaining bottleneck for multi-agent orchestration.</li>
+</ul>
+<h3 id="qa-hardening-the-dark-factory-the-external-loop">Q&amp;A — hardening the dark factory (the external loop)</h3>
+<p>An attendee asks: in a dark-factory scenario, what's the <strong>hardening at the end</strong> — for audit/compliance, user acceptance, and change management? Swyx splits it into the <strong>internal loop</strong> (producing code) and <strong>external loop</strong> (user acceptance/validation):
+- You need a <strong>strong spec</strong> defining what to converge to — the work shifts "one level above raw code delivery" because the hard problem becomes <strong>how you validate.</strong>
+- He cites a <strong>"Swiss cheese model"</strong> (a top Latent Space contributor post of the year): combine a strong <strong>specification</strong> <em>and</em> a strong <strong>test suite</strong> to guard against regressions — but that's <strong>not enough.</strong>
+- Add <strong>online eval</strong> of what you ship, plus <strong>feature flagging</strong> for <strong>progressive rollouts.</strong> These are "just good software engineering practices anyway," but they become <strong>far more important</strong> because a 10-person team is now shipping at <strong>Uber/Facebook scale</strong> — you've pulled forward large-org engineering discipline because you effectively <em>are</em> a large engineering org (made of agents).
+- The audience pushes: you can only scale so far with humans in the room; there must be a <strong>higher-order, more scalable</strong> thing to evaluate. Swyx agrees this is the open frontier.</p>
+<h3 id="harness-engineering-the-openai-symphony-gold-standard-spec">Harness engineering &amp; the OpenAI "Symphony" gold-standard spec</h3>
+<p>Swyx points to <strong>Ryan (Apollo-/research-side, working on the dark factory)</strong> — referenced as "Ryan Levesque/Apollo, OpenAI" in the captions — who wrote a piece on <strong>harness engineering</strong>: shipping <strong>~1 billion tokens/day (~$10,000/day)</strong> with <strong>no human review.</strong> OpenAI <strong>open-sourced "Symphony,"</strong> which has "a very strong structure." (He notes others innovating in dark-factory space too, e.g. <strong>StrongDM</strong>.)</p>
+<p>Key reframing on <strong>"goal":</strong> <em>Goal is when you don't tell the agent how to do it — you tell it how you're about to evaluate it and when it should stop.</em> That's a primitive form of what a human reviewer does; you're just <strong>taking the time to write it down</strong> (the Ralph/goal loop).</p>
+<p><strong>Why fast cycles matter:</strong> despite a million LOC and a large app, the Symphony team <strong>insists on &lt;1-minute compile time</strong> — something Swyx says he never had professionally. With agents you <em>can</em> take a daily "garbage-collection pause" to cut all build times, because <strong>fast cycles → fast feedback → strong human↔agent alignment.</strong> Critically: <strong>"we have superhuman coders but not superhuman reviewers yet,"</strong> and that's largely <strong>not the agents' fault</strong> — it's a <strong>communication-bandwidth</strong> problem (no "neural link" to plug intent into the machine), so agents guess and sometimes guess wrong.</p>
+<p><strong>What Symphony actually looks like:</strong> a <strong>giant list of markdown files</strong> — you "program with markdown and English." It tracks everything down to the list, focusing on the <strong>"narrow waist"</strong> of any program: <strong>API contracts, surfaces between modules, types, and data structures</strong> — because everything else can be derived from those. A narrow waist <strong>contains the entropy</strong> models inherently cause and gives you a way to verify you're not veering off course. It's <strong>~2,000 lines of pure prompts</strong> — a "<strong>gold-standard spec.</strong>" Most people (including Swyx) write ~200 lines "if lucky," but this is the <strong>shape of fully-automated development.</strong></p>
+<p><strong>The Microsoft vision (Swyx's read):</strong> today you rent frontier models (GPTs, Claude), but ultimately you'll have <strong>your own personal/company model trained on your spec</strong>, so you won't need the expensive frontier models. A good <strong>agent platform should be <em>your</em> friend, not OpenAI's friend</strong> — "someone needs to be on your side." This is the crux of his <strong>"agent labs vs. model labs"</strong> debate.</p>
+<h3 id="the-eight-levels-of-agent-adoption-steve-yegge-gas-town-gas-city">The eight levels of agent adoption (Steve Yegge / Gas Town → Gas City)</h3>
+<p>Swyx recommends Yegge's <strong>Gas Town</strong> post on the <strong>eight levels of "fully LLM psychosis"</strong> adoption. Rough progression:
+1. Single coding agent →
+2. <strong>Multi-agent</strong> (where <em>most people in the room</em> are, if up to speed) →
+3. <strong>Building your own orchestrator</strong> (what Yegge is now doing with <strong>"Gas City"</strong> instead of Gas Town).</p>
+<p>He stresses the timeline compression: Yegge said this in <strong>November</strong>, and it became <strong>true around March</strong> — "it's not that far ahead."</p>
+<h3 id="sandboxes-the-unsexy-but-critical-infrastructure-need">Sandboxes: the unsexy but critical infrastructure need</h3>
+<p>Not a "sexy ML topic" like GRPO or RL — just: <strong>agents need their own computers.</strong> You must <strong>fork agents into safe environments</strong>; a new Git branch isn't enough — you need a <strong>full fork of the entire environment.</strong> Swyx calls this <strong>"the Kubernetes problem on crack":</strong> Kubernetes was built to <strong>keep things alive</strong>, but agent sandboxes need to be <strong>extremely serverless / ephemeral</strong> — fork, run, tear down. Current programming paradigms aren't well-adjusted for this.</p>
+<h3 id="the-coming-cpu-shortage-infrastructure-ratios-are-flipping">The coming CPU shortage (infrastructure ratios are flipping)</h3>
+<p>The compute mix is shifting. Historically: mostly <strong>training</strong>, a little <strong>inference</strong>, with a <strong>GPU:CPU ratio ~8:1</strong> (cited from <strong>Intel CEO Lip-Bu Tan's</strong> most recent earnings call). With agents, the ratio is moving toward <strong>1:1 GPU:CPU</strong> — which is why there's a <strong>coming CPU shortage, not just a GPU shortage.</strong> He backs this with <strong>Sam Altman</strong> (a few months prior) saying AI is now <strong>"to a very significant degree an inference company," not just training.</strong></p>
+<h3 id="inference-speed-the-10x-staircase-toward-300000-toks">Inference speed: the 10x staircase toward 300,000 tok/s</h3>
+<p>For massively parallel agents, you want them to <strong>finish as fast as possible.</strong> Reference points:
+- <strong>Typical inference today:</strong> ~<strong>50–100 tokens/sec</strong> (know your own number).
+- <strong>Cognition + Cerebras</strong> collaboration: thousands of tok/s (mentions versions ~31.5 / 32 coming).
+- <strong>Tâlus</strong> (captioned "Talas") made a <strong>public demo this year</strong> plotting tokens/sec across <strong>Nvidia H200, B200, Groq, and Cerebras</strong> (the supposed "fast ones") — with <strong>Tâlus at ~17,000 tokens/sec.</strong> Swyx has <em>seen this himself</em>; not an exaggeration.
+- <strong>Projection:</strong> a <strong>300,000 tokens/sec</strong> world is coming — <strong>for commodity token logic, not frontier reasoning.</strong> Current demos run <strong>Llama 8B</strong>, but this proceeds to <strong>30B</strong> and eventually <strong>hundreds of B.</strong> At some saturation point, intelligence becomes <strong>functionally instant</strong> for the vast majority of work.</p>
+<p>Crucially: <strong>none of this is research — it's all hardware/optimization</strong> ("the highest-stakes poker game I've ever seen," played with billions of dollars). When asked "what pushes us from here — the next model or hardware?" Swyx is firm: <strong>all hardware.</strong> The most interesting <em>speed</em> research actually comes from the <strong>image/video-gen community</strong>; the language/coding side is mostly quantization and numerical-precision work. Every <strong>10x changes usage habits, the products you can build, and your open-vs-closed-model choices</strong> — so plan for "cool demo now, normal in a year."</p>
+<h3 id="qa-etching-models-onto-silicon-and-chip-longevity">Q&amp;A — etching models onto silicon (and chip longevity)</h3>
+<p>An attendee (referencing <strong>Mark's</strong> talk on specializing vs. generalizing) asks: if you <strong>etch a model onto silicon</strong> but hardware life cycles are 5–6 years while the model is irrelevant in ~1 year, how does that reconcile? Swyx clarifies a common misconception:
+- <strong>Most fast-inference players are NOT burning weights onto silicon</strong> — <strong>only Cerebras</strong> is etching actual weights right now.
+- There were <strong>three generations</strong> of specialized-inference companies: a <strong>first generation that largely failed</strong>, a <strong>second generation</strong> (<strong>Cerebras, Groq</strong>) "getting paid," and a <strong>third generation</strong> doing it "white hat" by <strong>not</strong> taking the short-term win of <strong>burning weights in.</strong>
+- <strong>The tail is very long:</strong> people still run <strong>GPT-4.1</strong> and <strong>Llama 3.</strong> The whole point of <strong>open weights</strong> is that <strong>you own them and no one moves your cheese</strong> — if the app works, why change it? It only gets <strong>cheaper and faster.</strong>
+- Therefore the <strong>terminal value of a chip is increasing.</strong> Old "tokenomics" (Latent Space, ~2 years ago) put chip amortization at <strong>3–4 years; now closer to 8.</strong> The <strong>average H100 price has melted up</strong> (old norm was rapid chip deprecation — a "hot potato" you'd never start a cloud on; now a ~4-year-old chip holds value because software keeps extracting more inference from general-purpose hardware).</p>
+<h3 id="model-sizes-keep-creeping-up">Model sizes keep creeping up</h3>
+<p>There's a <strong>fundamental limit to compression</strong>, so models keep getting larger. "Small" has drifted: <strong>2B → 1B → 7B → 24B</strong> today (<strong>Mistral Small is 24B</strong>, per Mistral's Chief Scientist on the podcast), and may eventually mean <strong>~100B.</strong> At the top end, we've gone from <strong>~1 trillion params (GPT-4 class)</strong> to <strong>10T+</strong> (Mistral-class top end) — but <strong>we don't have many orders of magnitude left to go.</strong></p>
+<h3 id="the-research-frontier-the-speculative-4-minutes">The research frontier (the speculative ~4-minutes)</h3>
+<p>Everything above is "guaranteed — set your clock by it for ~2 years." The <strong>research agenda</strong> (un-equally weighted) is what's <em>uncertain</em>:</p>
+<ul>
+<li><strong>Memory &amp; continual learning</strong> — you'll <em>hear about it for 5 years</em> but likely <strong>not see huge change soon</strong>; very speculative.</li>
+<li><strong>Real-time / low-latency interaction (the king, happening NOW).</strong> This is the <strong>low-latency voice promised by the GPT-4o demo that we never got.</strong> Swyx wrote about the <strong>"semi-async valley of death"</strong>: an <strong>uncanny-valley latency zone</strong> where you sit watching the AI without really thinking or adding value, unable to context-switch. The cure is to live at the <strong>two extremes</strong>:</li>
+<li><strong>Stay in flow / very fast</strong> (deep work, your highest-value main thread), or</li>
+<li><strong>Go fully async</strong> (dispatch background agents, with a good system to work with them).
+  There's "no room in between." All recent model progress has been <strong>more reasoning</strong> (2h → 15h autonomy), but <strong>nobody has driven latency from 2,000ms → 200ms → 20ms.</strong> The few people doing truly-interactive small models (he highlights interaction-focused small models, not yet released — only demo videos) prove there's <em>alpha</em> here. You can partly <em>cheat</em> on latency with hardware (buy a 300,000 tok/s chip), but that's <strong>not truly interactive</strong> — it still tries to inference ~100,000 reasoning tokens before answering. <strong>Truly interactive</strong> means <strong>micro-batches of interaction are modeled in the training data itself</strong>, enabling live <strong>human↔machine mind meld</strong>; it'll <em>seem</em> smarter simply because it better aligns with what you wanted.</li>
+<li><strong>Agents are eating everything (agentic everything).</strong> From an XAI podcast: people think video generation = prompt → single forward pass through a video model. It's about to become <strong>video agents</strong> — agents <em>orchestrating</em> the video model. It sounds trivial ("I could do that") but most underestimate what it takes to <strong>train the orchestrator for specific domains</strong> like video agents — and similarly for <strong>all other modalities.</strong></li>
+<li><strong>World models (the dark horse).</strong> Models currently predict what the <strong>median RLHF person / RL environment</strong> is likely to reward. A <strong>world model of what <em>you</em> specifically want/like</strong> is the <strong>second-level intelligence</strong> — <strong>presence of mind / theory of mind</strong> — that's largely missing today. Solving any of these research directions changes how we use models.</li>
+</ul>
+<h3 id="closing-the-agent-work-paradox-and-the-last-job">Closing: the "agent work paradox" and the last job</h3>
+<p>Swyx ends on the <strong>agent work paradox</strong>: <strong>agents are doing more work than ever, yet we're working harder than ever</strong> — and that's <strong>okay and normal.</strong> He explicitly <strong>normalizes the stress</strong> ("I'm also stressed out; you all feel it too"). It's rewarding precisely because <strong>we're first to feel it</strong> — bearing the brunt of the <strong>compression of the future.</strong> His (admittedly self-serving) conclusion: <strong>AI engineering is "the last job,"</strong> because <strong>you're the ones automating all the other jobs away</strong> — so "you guys are in good hands." [applause]</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>GitHub Copilot app</strong> — Microsoft's new standalone Copilot app (beyond VS Code); the rebrand that prompted Swyx's "everything is a conductor" framing.</li>
+<li><strong>Conductor</strong> — first mover on the "agent command center" form factor that everyone copied.</li>
+<li><strong>Cursor / Windsurf / Codex</strong> — coding tools that all rebranded into the agent-command-center form factor.</li>
+<li><strong>Cognition</strong> — AI agent company Swyx advises; shipped its own agent command center (with local↔cloud handoff) the day before the talk; building closed-loop self-verifying coding agents; partnering with Cerebras on fast inference.</li>
+<li><strong>Claude Code (Anthropic)</strong> — coding agent with clear GitHub commit attribution (~4–5% in Feb → trending toward 50%); its full source was leaked yet changed nothing competitively.</li>
+<li><strong>OpenAI Codex</strong> — coding agent; OpenAI announced merging Codex into ChatGPT.</li>
+<li><strong>OpenAI Symphony</strong> — open-sourced harness/spec framework; a giant set of markdown files (~2,000 lines of prompts) representing a "gold-standard spec."</li>
+<li><strong>Kimi K2 / K2.5 (Moonshot)</strong> — model running hundreds of parallel swarms; example of fast open-weight inference potential.</li>
+<li><strong>MCPs / skills / workflows</strong> — harness components that let developers shape agent behavior beyond prompts.</li>
+<li><strong>Ralph Wiggum loop / goal loops</strong> — autonomous goal-driven self-verification loops now adopted by major coding agents.</li>
+<li><strong>Gas Town / Gas City (Steve Yegge)</strong> — Yegge's agent-orchestration projects; Gas Town post documents the eight levels of agent adoption.</li>
+<li><strong>Cerebras</strong> — fast-inference hardware doing thousands of tok/s; the only player currently etching actual weights onto silicon.</li>
+<li><strong>Groq</strong> — fast-inference chip company ("second generation" getting paid).</li>
+<li><strong>Tâlus</strong> (captioned "Talas") — public 2026 demo hitting ~17,000 tok/s, beating H200/B200/Groq/Cerebras.</li>
+<li><strong>Nvidia H100 / H200 / B200</strong> — GPUs referenced for inference speed and chip-pricing/longevity discussion.</li>
+<li><strong>Llama 8B / Llama 3</strong> — small open model used in fast-inference demos; Llama 3 still in production use (long tail).</li>
+<li><strong>GPT-4.1 / GPT-4 / GPT-4o</strong> — frontier models referenced for long tail (4.1 still used), top-end param counts (GPT-4 ~1T), and the unfulfilled low-latency voice promise (4o demo).</li>
+<li><strong>Mistral Small (24B)</strong> — example that "small" models are now 24B; Mistral's top end cited at 10T+ params.</li>
+<li><strong>StrongDM</strong> — cited as another company innovating in the dark-factory space.</li>
+<li><strong>METR</strong> — referenced for the autonomy-time measurements (1–2h → 10–24h tasks).</li>
+<li><strong>Latent Space / AI Engineer</strong> — Swyx's publication, podcast, and conference/community.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p>This was an opinion/trends + Q&amp;A talk, not a product-launch session. Items <em>referenced</em> as recent news (announced elsewhere, not by Swyx here):
+- <strong>OpenAI merging Codex into ChatGPT</strong> — announced by the OpenAI team the day before (Swyx relays it as a "fun fact," not his own announcement).
+- <strong>Cognition's agent command center</strong> — shipped the day before the talk (with local-to-cloud handoff).
+- <strong>GitHub Copilot app</strong> — launched "a couple weeks ago."
+- <strong>OpenAI Symphony</strong> — recently open-sourced harness/spec framework.
+- No <em>new</em> Microsoft product/feature was announced within this session itself. <strong>None explicitly announced by the speaker.</strong></p>
+<h2 id="demos">💡 Demos</h2>
+<p>This was a discussion/Q&amp;A talk rather than a build-along, but Swyx pulled several artifacts up live on screen to make his points:
+- <strong>OpenAI Symphony spec walkthrough</strong> — opened the open-sourced Symphony repo live and scrolled its "giant list of markdown files," highlighting that the structure tracks the <strong>narrow waist</strong> of a program (API contracts, module surfaces, types/data structures) and that the example spec is "like 2,000 lines of just prompts" — a "gold standard" spec versus the ~200 lines most people write.
+- <strong>Tâlus inference-speed chart</strong> — showed a tokens/second comparison chart pitting Tâlus against NVIDIA H200/B200, Groq, and Cerebras, with Tâlus at <strong>~17,000 tok/s</strong> (on Llama 8B), used to argue a near-future of <strong>~300,000 tok/s</strong> commodity-token inference.
+- <strong>H100 price time series</strong> — pulled up a blog chart of average H100 pricing "melting up," illustrating that chip terminal value/amortization has stretched from ~3–4 years toward ~8 years.
+- <strong>Steve Yegge "Gas Town" 8-levels visual</strong> — displayed the progression-of-agent-adoption graphic (single coding agent → multi-agent → building your own orchestrator / "Gas City"), placing "most of the room" at the multi-agent stage.</p>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>Agent autonomy:</strong> ~<strong>1–2 hour</strong> tasks → <strong>10–12h</strong> and <strong>20–24h+</strong> tasks (a ~10x jump, ~late 2025).</li>
+<li><strong>Claude Code GitHub commit share:</strong> ~<strong>4–5%</strong> (Feb) → "~<strong>10%</strong> now" → trending to <strong>~50%</strong> by end of year.</li>
+<li><strong>GitHub COO:</strong> <strong>~14,000× (14,000x)</strong> year-on-year commit growth attributable to agents.</li>
+<li><strong>Harness engineering scale:</strong> ~<strong>1 billion tokens/day ≈ ~$10,000/day</strong> with <strong>0% human review.</strong></li>
+<li><strong>Compile-time discipline:</strong> Symphony enforces <strong>&lt;1 minute</strong> compile time on a <strong>million-LOC</strong> app.</li>
+<li><strong>GPU:CPU ratio</strong> shifting from <strong>~8:1 → ~1:1</strong> → a <strong>coming CPU shortage</strong> (Intel CEO Lip-Bu Tan).</li>
+<li><strong>Inference speed:</strong> typical <strong>~50–100 tok/s</strong>; <strong>Tâlus ~17,000 tok/s</strong> demo; projected <strong>~300,000 tok/s</strong> for commodity tokens.</li>
+<li><strong>Chip amortization:</strong> <strong>3–4 years → ~8 years</strong>; H100 average price has <strong>"melted up."</strong></li>
+<li><strong>Model sizes:</strong> "small" = <strong>2B → 7B → 24B</strong> (Mistral Small); top end <strong>~1T (GPT-4) → 10T+</strong> (Mistral class).</li>
+<li><strong>"You can leak the entire source code of Claude Code and nothing changes."</strong> — the moat isn't the harness.</li>
+<li><strong>"We have superhuman coders but we don't have superhuman reviewers yet."</strong></li>
+<li><strong>"FOMAT — fear of missing agent time."</strong></li>
+<li><strong>"Goal is... you don't tell the agent how to do it. You tell the agent how you're about to evaluate it and when it should stop."</strong></li>
+<li><strong>"AI engineering is the last job... because you're the ones to automate all the other jobs away."</strong></li>
+<li><strong>"Everything is Conductor."</strong> / <strong>"We've independently reinvented the crab at least seven times."</strong></li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Read OpenAI <strong>Symphony</strong> on GitHub to study its markdown-spec structure (focus on the "narrow waist" — API contracts, module surfaces, types). Experiment with a <strong>goal/Ralph loop</strong> (define evaluation + stop conditions rather than step-by-step instructions). Stand up an <strong>ephemeral sandbox</strong> pattern (full-env fork, serverless teardown) for agent isolation. Adopt <strong>&lt;1-min build times + online eval + feature-flagged progressive rollouts</strong> as the "large-org practices at small scale" baseline.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: Where's the realistic ceiling on the <strong>dark factory</strong> for regulated/compliance-heavy software? What does a practical <strong>"agent labs vs. model labs"</strong> stack look like (own spec-trained company model vs. renting frontier)? How soon does <strong>truly interactive (micro-batched) low-latency</strong> ship vs. just faster hardware? Is the <strong>CPU-shortage</strong> thesis already showing up in cloud pricing?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: Building/scaling <strong>multi-agent orchestration</strong> workflows; spec-driven / harness engineering for our own coding agents; infra capacity planning (CPU vs GPU); evaluating fast-inference vendors (Cerebras/Groq/Tâlus); broader "agents for all knowledge work" strategy beyond coding.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><a class="wikilink wikilink--resolved" href="BRK229.html">BRK229 - From Skeptic to Superpower</a></li>
+<li><a class="wikilink wikilink--resolved" href="BRK247.html">BRK247 - Scott and Mark learn how agents reshape software engineering</a></li>
+<li><a class="wikilink wikilink--resolved" href="ODSP906.html">ODSP906 - Apply orchestration patterns for production AI agents</a></li>
+<li><a class="wikilink wikilink--resolved" href="BRK241.html">BRK241 - From prototype to production build and run agents at scale</a></li>
+<li><a class="wikilink wikilink--resolved" href="BRK200.html">BRK200 - Why your AI code doesnt ship Closing the gap to production</a></li>
+<li><a class="wikilink wikilink--resolved" href="BRK233.html">BRK233 - Software Defensibility in the era of AI coding</a></li>
+<li><a class="wikilink wikilink--resolved" href="DEM305.html">DEM305 - GitHub Copilot Anywhere Remote CLIs to Cloud Sandboxes</a></li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="BRK243.html"><span class="pager-dir">← Previous</span><span class="pager-code">BRK243</span><span class="pager-title">Claw and agent harness in Microsoft Foundry</span></a>
+    <a class="pager pager-next" href="BRK245.html"><span class="pager-dir">Next →</span><span class="pager-code">BRK245</span><span class="pager-title">Build the thing that builds the thing</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

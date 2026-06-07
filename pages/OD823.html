@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OD823 — Faster AI Responses with Semantic Caching in Azure Managed Redis</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">OD823</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=QQXnwN302n8" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Faster AI Responses with Semantic Caching in Azure Managed Redis</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Shruti (PM, Azure Managed Redis); Philip Blasimann (Senior Solutions Architect, Redis); Roy (Solution Architect, Redis — EMEA)</span>
+      <span class="meta-item">⏱️ 31m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="redis">Redis</span><span class="chip" data-tag="semantic-cache">Semantic Cache</span><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="azure">Azure</span><span class="chip" data-tag="agent-memory">Agent Memory</span><span class="chip" data-tag="vector-search">Vector Search</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Shruti (Product Manager, Azure Managed Redis) · Philip Blasimann (Senior Solutions Architect, Redis — Azure Managed Redis specialist) · Roy (Solution Architect, Redis — covering EMEA, based in the Netherlands)<br>
+<strong>Duration:</strong> ~31 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=QQXnwN302n8">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Azure Managed Redis (AMR) is positioned as the "new age" first-party Redis on Azure — fully managed, built on Redis Enterprise, up to <strong>15× more performant</strong> than Azure Cache for Redis with a more cost-effective TCO, zone-redundant and 4-nines by default (5-nines with geo-replication). Beyond classic caching/session/leaderboard workloads, AMR's "secret sauce" is the <strong>Redis Search module</strong> (free to enable), which adds vector similarity search over embeddings and unlocks two flagship AI use cases. The first is <strong>semantic caching</strong>: instead of exact key-value matching, prompts are embedded and compared by cosine similarity against a tunable threshold, so semantically-equivalent questions hit the cache — saving tokens, slashing latency to near-zero, and adding response consistency. The second is <strong>agent memory</strong>: AMR stores both short-term (conversation/state) and long-term (durable facts, preferences, interests) memory as vector hashes, retrievable via semantic search and natively integrated with the Microsoft Agent Framework. Demos showed live cache-hit behavior, threshold tuning, per-user vs. global caches for data-leakage control, a cost calculator (≈$200K+/yr saved at 70% hit rate), and an AI that learns and recalls facts about a user.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Azure Managed Redis (AMR)</strong> is a fully managed, first-party in-memory data store on Azure built on <strong>Redis Enterprise</strong> software — distinct from (and successor to) the older Azure Cache for Redis.</li>
+<li>AMR is claimed <strong>up to 15× more performant</strong> than Azure Cache for Redis (the speaker corrected herself from "15%" to "15 times") with a more cost-effective TCO.</li>
+<li><strong>Reliability defaults:</strong> zone-redundant by default, <strong>four-nines (99.99%) SLA</strong> by default; <strong>five-nines</strong> achievable with a geo-replicated (active-active) setup.</li>
+<li>The <strong>Redis Search module</strong> is AMR's "secret sauce" — configurable at <strong>no extra cost</strong> — and provides <strong>vector similarity search</strong> over embeddings stored in Redis. This single capability powers both cost-savings (semantic caching) and memory/context scenarios.</li>
+<li><strong>Exact key-value caching is a poor fit for LLMs:</strong> two prompts can be worded differently but share the same intent/meaning. Semantic caching solves this by comparing meaning via embeddings, not literal string match.</li>
+<li><strong>Semantic cache flow:</strong> prompt arrives → (optional exact/hash lookup) → generate embedding → vector similarity search → if cosine similarity ≥ your threshold, it's a cache hit and the stored response is returned with <strong>zero new tokens generated</strong>; otherwise call the LLM and store the new result.</li>
+<li><strong>Three benefits of semantic caching:</strong> (1) <strong>token savings</strong> (no LLM call on a hit), (2) <strong>response time</strong> (in-memory Redis returns hits in ~milliseconds vs seconds/minutes for long-running agents), (3) <strong>consistency/determinism</strong> (same intent reliably returns the same vetted answer).</li>
+<li><strong>The similarity threshold is a tuning knob</strong> you set in your app/client: lower (e.g. 50%) = more hits but looser matches; higher (75%, 90%) = stricter, fewer hits. A 100% "prompt-hash hit" is the exact key-value match that always fires.</li>
+<li><strong>Data-leakage control via key design:</strong> use <strong>per-user key naming conventions</strong> so a user only gets cache hits on their own data; use a <strong>global cache</strong> for shared content like an FAQ bot where every user benefits from the same answers.</li>
+<li><strong>Cost impact is dramatic and scalable:</strong> the demo's break-even is a <strong>~1.2% cache-hit rate</strong> — only ~1 in 100 queries needs to be a hit to start saving money net of embedding + Redis costs. At 200K daily queries / 70% hit rate / GPT-5 pricing, savings were <strong>~$200K+ per year</strong>.</li>
+<li><strong>Agent memory has two tiers:</strong> <strong>short-term</strong> (conversation history, state) and <strong>long-term</strong> (durable facts, preferences, behavior, interests for personalization) — both stored in AMR as vector hashes and retrieved by semantic search.</li>
+<li><strong>Memory is curated, not dumped:</strong> the agent is given decision criteria/instructions to judge each message — permanent fact vs temporary, about the user vs about the world, "would this help personalize future conversations?" — and only durable facts are saved (e.g. "I'm a software engineer" is saved; "I'm feeling tired today" is skipped).</li>
+<li><strong>TTLs govern retention:</strong> in the demo, short-term memory kept ~30 days, long-term memory kept <strong>over a year</strong> so a returning user (away for months) is still recognized.</li>
+<li><strong>Native integration:</strong> AMR's agent-memory capability is <strong>natively embedded/supported by the Microsoft Agent Framework</strong>; embeddings in the memory demo used Azure OpenAI's <strong>text-embedding-3-small</strong> model.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-redis-has-outgrown-its-classic-use-cases">Framing: Redis has outgrown its classic use cases</h3>
+<p>Shruti (PM for Azure Managed Redis) opens by noting most people already know Redis from traditional roles — session store, leaderboards, reducing database cost, making databases more performant. But as "internet scale" has grown, Redis use cases have expanded well beyond the basics to include <strong>time series, vector search, JSON data, and semantic caching</strong>. The talk's thesis: Redis — specifically <strong>Azure Managed Redis</strong> — is the "new age" Redis for building AI apps at internet scale.</p>
+<h3 id="what-azure-managed-redis-amr-is">What Azure Managed Redis (AMR) is</h3>
+<ul>
+<li>A <strong>fully managed in-memory data store on Azure</strong>, a <strong>first-party offering</strong>.</li>
+<li>Built on <strong>Redis Enterprise</strong> software, giving a <strong>more cost-effective TCO</strong> than Azure Cache for Redis and significantly better performance.</li>
+<li><strong>Performance:</strong> up to <strong>15× more performant</strong> than Azure Cache for Redis (explicitly corrected live from "15%" to "15 times").</li>
+<li><strong>Availability:</strong> <strong>zone-redundant by default</strong>, <strong>four-nines (99.99%)</strong> by default; configure <strong>geo-replication</strong> to reach <strong>five-nines</strong> availability SLA.</li>
+<li><strong>Workloads:</strong> all the classic acceleration scenarios — distributed cache, session management, leaderboards, pub/sub, etc. — <strong>plus</strong> powering <strong>RAG scenarios</strong> and acting as a <strong>lightweight vector data store</strong>.</li>
+</ul>
+<h3 id="the-state-of-ai-agents-today-the-problem-space">The state of AI agents today (the problem space)</h3>
+<p>Shruti gives a simple agent anatomy: an <strong>input/trigger/event</strong> kicks off the agent; internally an agent is <strong>instructions + a model + many tool calls</strong> that enrich what it can do; it then produces a useful <strong>output</strong>. To be effective, the tool calls need three things:
+1. <strong>Domain-specific knowledge</strong> (specific to your business),
+2. <strong>Actions</strong> it can execute to be impactful,
+3. <strong>Memory.</strong></p>
+<p><strong>Market context:</strong> Gartner is cited predicting <strong>40% of enterprise applications will have task-specific AI agents by 2026</strong> (up sharply from 2025), and growing further.</p>
+<p><strong>Production challenges that emerge:</strong>
+- <strong>Keeping pace with AI innovation</strong> — the rate of change (especially in vector search) is hard to track and adopt for production.
+- <strong>Unpredictable cost</strong> — tokens are new territory; the token-to-dollar relationship surprises people at month-end billing. Model calls are <strong>expensive and slow</strong>.
+- <strong>Agents need context and memory</strong> to be impactful.</p>
+<p>Solving these unlocks <strong>enterprise-ready, internet-scale AI agents</strong>. The session focuses on <strong>two</strong> of them: <strong>cost management</strong> and <strong>context/memory</strong>.</p>
+<h3 id="the-secret-sauce-redis-search-module-vector-similarity-search">The "secret sauce": Redis Search module + vector similarity search</h3>
+<p>The enabler for both AI use cases is the <strong>Redis Search module</strong>, configurable on AMR <strong>at no extra cost</strong>. Once enabled, AMR can perform <strong>vector similarity search on embeddings stored inside Redis</strong>. This single capability powers both the cost-savings story (semantic caching) and the memory/context story (agent memory). Shruti then hands off — Phil covers semantic caching, Roy covers agent memory.</p>
+<h3 id="semantic-caching-from-exact-match-to-meaning-match-phil">Semantic caching — from exact-match to meaning-match (Phil)</h3>
+<p>Phil Blasimann (Senior Solutions Architect at Redis, AMR specialist) frames caching as Redis's founding, "bread and butter" use case of the last ~10 years. <strong>Classic cache pattern:</strong> sit Redis in front of the database to offload repetitive cost and pressure and improve performance — check the cache for an existing key; if present, serve it; if not, call the database and load the result back into Redis. It's a best-practice first optimization for databases.</p>
+<p><strong>Why LLMs break exact-match caching:</strong> with generative AI (especially the last 2–3 years), <strong>exact key-value match caching is not ideal for LLMs</strong>. Two users can ask the <em>same underlying intent</em> with <em>slightly different wording</em>. Under exact-match, the second query misses and you pay to generate a <strong>full set of (expensive) tokens</strong> again even though you could have reused the prior answer.</p>
+<p><strong>Semantic caching pattern:</strong> the shape stays the same — check Redis for a hit — but:
+- Instead of calling a <em>database</em> on a miss, you call an <strong>LLM</strong>.
+- You <strong>store vector embeddings</strong> in the Redis instance.
+- As prompts come in, you embed them and run <strong>vector similarity search</strong>, comparing similarity against a <strong>threshold you set</strong>; clearing the threshold = a cache hit.</p>
+<p><strong>Three reasons semantic caching matters:</strong>
+1. <strong>Token savings</strong> — a hit returns the stored answer with <strong>no token generation</strong>; token cost is "exploding" in the news daily.
+2. <strong>Response time</strong> — agents run longer/smarter, leading to seconds or even minutes of wait; an in-memory Redis hit returns near-instantly.
+3. <strong>Consistency</strong> — sometimes you <em>don't</em> want LLM non-determinism; for the same intent you want confidence you're serving the same intended answer.</p>
+<h3 id="demo-1-semantic-caching-live-phil">Demo 1 — Semantic caching, live (Phil)</h3>
+<p><strong>Setup/orientation:</strong> A split UI. <strong>Left = a plain LLM</strong> (think Copilot/ChatGPT/Claude). <strong>Right = the same idea but with semantic caching under the hood, powered by a live Azure Managed Redis instance.</strong> Metrics (tokens, timing) are captured for every prompt.</p>
+<ul>
+<li><strong>Prompt 1</strong> (Contoso e-commerce persona): <em>"How do I improve product search relevance using vector embeddings?"</em> Both sides behave as normal LLMs and return <strong>similar-but-different</strong> answers (illustrating non-determinism): <strong>left 118 tokens, right 131 tokens</strong>, both ~<strong>1–2 seconds</strong>.</li>
+<li><strong>Prompt 2 (rephrased, same intent):</strong> <em>"How can vector embeddings make product search more relevant?"</em> On the <strong>right</strong>, this triggers a <strong>semantic cache hit</strong>: it returns <strong>extremely fast</strong> and is the <strong>exact same response</strong> as before, with <strong>zero tokens generated</strong> (reusing the prior answer). On the <strong>left</strong> (plain LLM), it just makes a new call and generates <strong>~126 tokens</strong>.</li>
+<li><strong>Under-the-hood steps</strong> (shown by clicking a query — all happening in ~a millisecond): (1) <strong>check the cache</strong> — first attempt an <strong>exact/hash cache lookup</strong> (serve like a normal data cache if a key-value pair exists); (2) since none existed, <strong>generate embeddings</strong>; (3) get embeddings back and run <strong>vector similarity search</strong>; (4) <strong>cosine similarity</strong> cleared the threshold → <strong>cache hit</strong> → fast result, no tokens.</li>
+<li><strong>Performance reassurance:</strong> because Redis is <strong>in-memory</strong> it's "lightning fast" — even though all this runs on <strong>every</strong> request, users aren't left waiting; firing more queries shows no perceptible overhead.</li>
+</ul>
+<h3 id="demo-1b-tuning-the-similarity-threshold-phil">Demo 1b — Tuning the similarity threshold (Phil)</h3>
+<p>Using a base prompt — <em>"What's the most cost-effective caching strategy for serving personalized product recommendations to 10 million daily active users?"</em> — plus several variations (some very similar, some unrelated), Phil runs a <strong>cosine vector similarity</strong> test and sweeps the <strong>similarity threshold</strong> (the value you'd set in your app/client):
+- <strong>50% threshold:</strong> the <strong>top four</strong> prompts qualify as semantic cache hits.
+- <strong>75% threshold:</strong> "variation four" drops out — no longer similar enough.
+- <strong>90% threshold:</strong> <strong>every</strong> variation misses (super strict).
+- <strong>Prompt-hash hit:</strong> the exact key-value pair <strong>matches 100% of the time</strong> regardless of threshold (it's an exact match, not a semantic one).</p>
+<p>Takeaway: the threshold gives you <strong>per-scenario flexibility</strong> over how strict matching should be.</p>
+<h3 id="demo-1c-data-leakage-control-per-user-vs-global-caches-phil">Demo 1c — Data-leakage control: per-user vs global caches (Phil)</h3>
+<p>Concern: if two users ask similar questions but one has <strong>user-specific data</strong>, how do you avoid leaking it via a shared cache hit?
+- <strong>Per-user cache:</strong> Two personas — <strong>Merchandiser Mia</strong> (left) and <strong>Platform Priya</strong> (right). Asking <em>"What's my job?"</em> yields a semantic cache hit <strong>strictly on the keys saved for that user</strong>. This is achieved by the <strong>key naming convention in Redis</strong> — structure keys per user/domain so the search engine queries only that user's scope. Result: <strong>no chance of leakage</strong> between users.
+- <strong>Global cache:</strong> Some cases <em>want</em> a shared cache — e.g. an <strong>FAQ bot</strong> where the user's identity doesn't matter and everyone asks similar things. Demo: a Contoso public FAQ bot for unauthenticated users; <em>"What are your hours?"</em> gets a cache hit because it's similar enough to a prior question. A later visitor (e.g. 5 minutes on) "wouldn't know any different," and in such public instances <strong>almost every response can be a semantic cache hit</strong> with <strong>no tokens spent</strong> — using real company data.</p>
+<p>Takeaway: AMR supports <strong>either global or per-user</strong> caching depending on the use case.</p>
+<h3 id="demo-1d-cost-at-scale-phil">Demo 1d — Cost at scale (Phil)</h3>
+<p>A calculator for an enterprise scenario:
+- Inputs: <strong>200,000 daily queries</strong>, <strong>70% semantic cache-hit rate</strong>, a deliberately <strong>low token budget</strong>, <strong>GPT-5 pricing</strong>.
+- Baseline annual token spend: <strong>~$300,000/year</strong>.
+- <strong>Savings rule of thumb:</strong> your <strong>net savings ≈ your cache-hit rate</strong>. At 70% hit rate → <strong>~70% savings</strong>, i.e. annual spend drops to <strong>~$90K (just under $100K)</strong>.
+- This <strong>factors in both</strong> the <strong>embedding costs</strong> per query and the <strong>Redis instance</strong> needed to power the load — and still <strong>saves over $200,000/year</strong>.
+- <strong>Break-even rate:</strong> at a <strong>~1.2% cache-hit rate</strong>, you only need <strong>~1 in 100 queries</strong> to be a semantic cache hit for the setup to net-save money after that first query. Conclusion: highly <strong>scalable</strong>, "set it and leave it," strong performance + token-spend wins.</p>
+<h3 id="agent-memory-with-amr-roy">Agent memory with AMR (Roy)</h3>
+<p>Roy (Solution Architect for AMR covering EMEA, based in the Netherlands) shifts to <strong>agent memory</strong> — using AMR so agents in an <strong>agentic workflow</strong> (multiple agents collaborating on high-fulfilling tasks) can leverage memory and act even better.</p>
+<p><strong>Two memory tiers:</strong>
+- <strong>Short-term memory:</strong> the interaction/conversation, certain <strong>state</strong>, etc.
+- <strong>Long-term memory:</strong> <strong>personalization</strong> — durable facts, preferences, behavior, and a user's interests, so the system "knows" the user.</p>
+<p><strong>Why AMR shines here:</strong> agents get <strong>rapidly fast access</strong> to this data and fold it into their tool use / LLM reasoning. Critically, when <strong>agents collaborate</strong>, one agent can pass context to another simply because it's <strong>stored in AMR</strong> — "Hey, have a look at this" — and the next agent grabs that information instantly, improving the overall workflow and user experience.</p>
+<h3 id="demo-2-personalization-memory-live-roy">Demo 2 — Personalization memory, live (Roy)</h3>
+<p>Same Contoso context as Phil's demo, split UI: <strong>left = without memory</strong>, <strong>right = with memory</strong>. The right side stores conversations and durable facts (work, preferences, interests).
+- Roy teaches the AI: <em>"I'm a software engineer working on machine learning projects and I love hiking, photography on the weekends."</em>
+  - <strong>Left:</strong> responds politely ("nice to meet you") but <strong>saves nothing</strong> — neither conversation nor long-term memory.
+  - <strong>Right:</strong> <strong>analyzes the message</strong>, responds, and <strong>remembers durable facts</strong> (user is a software engineer; loves hiking; loves photography). The <strong>agent activity log</strong> shows the steps: analyze → reason about the message → save the chosen facts to long-term memory.
+- Because facts are stored in a <strong>vector database as a hash vector</strong>, Roy uses <strong>semantic search</strong> to query them: <em>"What do you know about my work?"</em> → it recalls the ML/work facts and stack; <em>"What activities do I enjoy?"</em> → it recalls hiking/photography. The <strong>left side has no clue</strong>; the <strong>right side knows him</strong>.</p>
+<p><strong>TTLs in this demo:</strong>
+- <strong>Short-term memory:</strong> kept <strong>30 days</strong> — every conversation saved for 30 days.
+- <strong>Long-term memory:</strong> kept <strong>over a year</strong> — so a user who goes away for ~2 months is still recognized on return.</p>
+<h3 id="demo-2-how-it-works-under-the-hood-roy">Demo 2 — How it works under the hood (Roy)</h3>
+<p>Pipeline for a message like <em>"What are my hobbies?"</em>:
+1. <strong>Generate a query embedding</strong> using Azure OpenAI's <strong>text-embedding-3-small</strong> model.
+2. <strong>Vector search</strong> around that embedding.
+3. <strong>Build context</strong> from retrieved memory.
+4. <strong>Use AI to generate a response.</strong>
+5. <strong>Persist:</strong> any new facts saved as <strong>vectors (factor/vector hashes)</strong>; <strong>conversation history updated</strong>. Everything works together as a distinct flow.</p>
+<p><strong>Curating long-term memory (the key design idea):</strong> you <strong>don't save everything</strong>. The AI/agents are given a <strong>set of instructions / decision criteria</strong> and analyze every message:
+- Is this a <strong>permanent</strong> fact or <strong>temporary</strong>? (e.g. <em>"I'm feeling tired today"</em> → temporary → <strong>not saved</strong>; could feel fine tomorrow.)
+- Would it <strong>help personalize future conversations</strong>?
+- Is the fact <strong>about the user</strong> (not about the world)?
+- A <strong>special tag</strong> marks facts to save; the decision criteria then <strong>save or skip</strong> accordingly.</p>
+<p>Example: <em>"I'm a software developer at Microsoft and I love playing tennis on the weekends"</em> → the system <strong>identifies multiple facts</strong> and <strong>stores each</strong> in the vector database, creating embeddings (via the embeddings model) and storing them as <strong>vector/"factor" hashes</strong> per fact type.</p>
+<h3 id="demo-2-storage-view-multi-agent-sharing-roy">Demo 2 — Storage view &amp; multi-agent sharing (Roy)</h3>
+<p>From an <strong>AMR storage perspective</strong>:
+- <strong>Short-term memory:</strong> entries for different users (e.g. "Phil," "me and Thomas" talking to the AI), each with a visible <strong>TTL</strong>; opening one reveals the <strong>full conversation</strong>.
+- <strong>Fact store:</strong> all stored facts visible — tagged <strong>interest / personal / work</strong>.</p>
+<p>This lets <strong>multiple agents</strong> access durable or short-term information <strong>rapidly and in common</strong> — so a whole agentic workflow shares the same knowledge, boosting performance and the customer experience. <strong>Illustrative use case — a travel companion app:</strong> it already knows "I like Airbnbs and early flights," so the user never re-specifies preferences each session; booking is faster and feels personalized.</p>
+<h3 id="integration-wrap-up">Integration &amp; wrap-up</h3>
+<ul>
+<li>AMR's <strong>agent-memory capability fully integrates with the Microsoft Agent Framework</strong> — natively embedded and supported.</li>
+<li>Closing recap (Roy): the session covered <strong>semantic caching, semantic search, agent memory, and Azure Managed Redis as the foundation</strong> for all of them. Thanks to Phil and Shruti.</li>
+<li><strong>Resources:</strong> the team points to useful resources and <strong>sample demos on GitHub</strong>, and invites questions/feedback by email.</li>
+</ul>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Azure Managed Redis (AMR)</strong> — fully managed, first-party in-memory data store on Azure, built on Redis Enterprise; the foundation for every scenario in the talk.</li>
+<li><strong>Redis Enterprise</strong> — the software AMR is based on; source of its performance and TCO advantages.</li>
+<li><strong>Azure Cache for Redis</strong> — the prior/legacy Azure Redis offering; AMR is positioned as up to 15× more performant with better TCO.</li>
+<li><strong>Redis Search module</strong> — the "secret sauce"; enables <strong>vector similarity search</strong> over embeddings stored in Redis, configurable at no extra cost. Powers both semantic caching and agent memory.</li>
+<li><strong>Vector similarity search / cosine similarity</strong> — the matching mechanism behind semantic cache hits and memory retrieval; compared against a tunable threshold.</li>
+<li><strong>Semantic caching</strong> — embedding-based caching that returns stored answers for semantically-equivalent prompts, saving tokens and latency.</li>
+<li><strong>Agent memory (short-term &amp; long-term)</strong> — conversation/state vs durable facts/preferences/interests, stored in AMR as vector hashes.</li>
+<li><strong>Azure OpenAI — text-embedding-3-small</strong> — embedding model used in the memory demo to vectorize messages/facts.</li>
+<li><strong>GPT-5</strong> — the chat model whose pricing was used in the cost calculator.</li>
+<li><strong>Microsoft Agent Framework</strong> — natively integrates/supports AMR's agent-memory capability.</li>
+<li><strong>RAG (Retrieval-Augmented Generation)</strong> — AMR can power RAG scenarios and act as a lightweight vector store.</li>
+<li><strong>TTL (time-to-live)</strong> — used to expire short-term (~30 days) and long-term (&gt;1 year) memory.</li>
+<li><strong>Redis classic use cases</strong> — distributed cache, session management, leaderboards, pub/sub, time series, JSON data.</li>
+<li><strong>GitHub</strong> — hosts the sample demos referenced at the end.</li>
+<li><strong>Contoso</strong> — fictional e-commerce company used across the demos (personas: Merchandiser Mia, Platform Priya; an FAQ bot).</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p>None explicitly announced. The session is an overview + demo of existing Azure Managed Redis capabilities (semantic caching, vector similarity search via the Redis Search module, and agent memory with Microsoft Agent Framework integration) rather than a launch/preview/GA reveal. No preview or GA dates were stated.</p>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Demo 1 — Semantic caching (live, Phil):</strong> Split UI (plain LLM on left vs LLM + semantic cache on right, backed by a live AMR instance). Showed a rephrased-but-same-intent prompt triggering a <strong>semantic cache hit</strong> on the right — identical response, returned near-instantly, <strong>0 tokens</strong> — while the left LLM made a fresh ~126-token call. <strong>Proved:</strong> semantic equivalence (not exact string match) can be reused, saving tokens and time.</li>
+<li><strong>Demo 1a — Under-the-hood trace (Phil):</strong> Clicked into a query to reveal the pipeline (exact/hash lookup → generate embeddings → vector similarity search → cosine similarity clears threshold → cache hit), all in ~a millisecond. <strong>Proved:</strong> the matching logic and why hits are effectively free and instant.</li>
+<li><strong>Demo 1b — Threshold tuning (Phil):</strong> Swept the cosine similarity threshold (50% → top-4 prompts hit; 75% → one variation drops out; 90% → all miss; the exact prompt-hash always matches 100%). <strong>Proved:</strong> you control match strictness per scenario via a single threshold value.</li>
+<li><strong>Demo 1c — Per-user vs global cache (Phil):</strong> Personas Merchandiser Mia &amp; Platform Priya each got cache hits only on their own keys (per-user naming convention → no data leakage); a Contoso FAQ bot showed a global cache where unauthenticated users share hits. <strong>Proved:</strong> AMR supports both isolation and sharing depending on use case.</li>
+<li><strong>Demo 1d — Cost calculator (Phil):</strong> 200K daily queries, 70% hit rate, GPT-5 pricing → ~$300K/yr baseline cut to ~$90K (incl. embedding + Redis costs), saving <strong>$200K+/yr</strong>; break-even at ~1.2% hit rate. <strong>Proved:</strong> the economics are compelling even at very low hit rates.</li>
+<li><strong>Demo 2 — Personalization memory (live, Roy):</strong> Split UI (without vs with memory). Taught the AI facts about himself; only the right side analyzed, saved durable facts, and later recalled his work and hobbies via semantic search. Showed the agent activity log, TTLs (short-term 30 days, long-term &gt;1 year), the embedding pipeline (text-embedding-3-small), and the curation logic (permanent vs temporary, about-user vs about-world). <strong>Proved:</strong> AMR delivers selective, durable, retrievable agent memory for real personalization.</li>
+<li><strong>Demo 2a — AMR storage view (Roy):</strong> Inspected stored short-term conversations (per user, with TTLs) and tagged facts (interest/personal/work), illustrating how multiple collaborating agents share the same memory rapidly. <strong>Proved:</strong> the storage model and multi-agent context-sharing benefit.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>Up to 15× more performant</strong> than Azure Cache for Redis (corrected live from "15%" → "15 times").</li>
+<li><strong>Four-nines (99.99%)</strong> availability by default; <strong>five-nines</strong> with geo-replication; <strong>zone-redundant by default</strong>.</li>
+<li><strong>Gartner: 40% of enterprise applications will have task-specific AI agents by 2026</strong> (up from 2025).</li>
+<li><strong>Redis Search module: configurable at no extra cost.</strong></li>
+<li>Demo 1 token/timing: prompt 1 = <strong>118 tokens (left) / 131 tokens (right)</strong>, both <strong>~1–2 seconds</strong>; rephrased prompt = <strong>~126 tokens</strong> on the plain LLM vs <strong>0 tokens</strong> on the semantic-cache hit.</li>
+<li>Threshold sweep: <strong>50% → top 4 hits</strong>, <strong>75% → variation 4 drops</strong>, <strong>90% → all miss</strong>; exact prompt-hash = <strong>100% match</strong>.</li>
+<li>Cost calculator: <strong>200,000 daily queries</strong>, <strong>70% hit rate</strong>, <strong>GPT-5 pricing</strong> → <strong>~$300K/yr</strong> baseline → <strong>~$90K/yr</strong> after caching → <strong>&gt;$200K/yr saved</strong>; <strong>break-even ≈ 1.2% hit rate</strong> (~1 in 100 queries).</li>
+<li>Memory TTLs: <strong>short-term ~30 days</strong>, <strong>long-term &gt;1 year</strong>.</li>
+<li>Embedding model in memory demo: <strong>Azure OpenAI text-embedding-3-small</strong>.</li>
+<li><em>"Whatever your cache hit rate percentage is, that is your net savings."</em> — Phil, on the savings rule of thumb.</li>
+<li><em>"If you think about a travel companion type of application... it already knows this and it gives me a way better experience."</em> — Roy, on personalization via long-term memory.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Spin up an <strong>Azure Managed Redis</strong> instance and enable the <strong>Redis Search module</strong>; build a minimal semantic-cache wrapper (embed prompt → vector similarity search → threshold gate → store/serve).</li>
+<li>Experiment with the <strong>similarity threshold</strong> on real prompts to find the sweet spot between hit rate and false positives for a given app.</li>
+<li>Implement <strong>per-user key naming</strong> to validate the no-leakage pattern, and a separate <strong>global FAQ cache</strong> to compare hit rates.</li>
+<li>Build an <strong>agent-memory</strong> prototype with short-term (conversation) + long-term (curated facts) tiers, TTLs, and <code>text-embedding-3-small</code>, then wire it into the <strong>Microsoft Agent Framework</strong>.</li>
+<li>Find and clone the team's <strong>GitHub demo samples</strong> referenced at the end of the talk.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What exact pricing/SKU sizing makes the cost-calculator numbers hold (which AMR tier powers 200K daily queries)? </li>
+<li>How is the <strong>break-even 1.2%</strong> derived — what embedding + Redis cost assumptions underlie it?</li>
+<li>What's the recommended <strong>eviction/consistency</strong> strategy when cached answers go stale (e.g. FAQ data changes)?</li>
+<li>How does AMR's agent-memory module compare to other memory stores integrated with Microsoft Agent Framework?</li>
+<li>Is there guidance on <strong>embedding-model choice</strong> (dimensions/cost) vs cache-hit quality?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Any LLM/RAG app where <strong>token cost or latency</strong> is a concern — semantic caching is a quick win.</li>
+<li><strong>Agentic systems</strong> needing shared, durable, personalized memory across collaborating agents.</li>
+<li>Azure architecture decisions weighing <strong>AMR vs Azure Cache for Redis</strong> for AI workloads.</li>
+<li>Cost-optimization reviews for production GenAI workloads.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Azure Managed Redis">Azure Managed Redis</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Semantic Caching">Semantic Caching</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Vector Similarity Search">Vector Similarity Search</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Agent Memory">Agent Memory</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Agent Framework">Microsoft Agent Framework</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Azure OpenAI Embeddings">Azure OpenAI Embeddings</span></li>
+<li><span class="wikilink wikilink--unresolved" title="RAG - Retrieval Augmented Generation">RAG - Retrieval Augmented Generation</span></li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="OD822.html"><span class="pager-dir">← Previous</span><span class="pager-code">OD822</span><span class="pager-title">Smarter PostgreSQL migrations to power modern, intelligent apps</span></a>
+    <a class="pager pager-next" href="OD824.html"><span class="pager-dir">Next →</span><span class="pager-code">OD824</span><span class="pager-title">Scalable Applications Without Polyglot tax: Azure SQL Hyperscale</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

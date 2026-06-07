@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRK207 — GitHub Copilot in Visual Studio: Agents That Debug, Profile, and Test</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">BRK207</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=Nt87zSqfk-o" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">GitHub Copilot in Visual Studio: Agents That Debug, Profile, and Test</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Mads Kristensen (Visual Studio team), Nick (Visual Studio team, former profiler dev lead)</span>
+      <span class="meta-item">⏱️ 44m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="github-copilot">GitHub Copilot</span><span class="chip" data-tag="visual-studio">Visual Studio</span><span class="chip" data-tag="debugging">Debugging</span><span class="chip" data-tag="profiling">Profiling</span><span class="chip" data-tag="dotnet">.NET</span><span class="chip" data-tag="ai">AI</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Mads Kristensen (PM, Visual Studio team) &amp; Nick (Visual Studio team, former dev lead for the VS profiler)<br>
+<strong>Duration:</strong> ~44 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=Nt87zSqfk-o">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Visual Studio is positioning itself as <strong>the</strong> tool for professional C# and C++ developers on Windows in the new agentic world — built for teams who treat code as a long-lived <strong>asset</strong> (quality gates, security, compliance, governance) rather than a throwaway artifact. The talk is demo-heavy: the team dogfoods Copilot <em>on Visual Studio's own source</em> (the 160-project Diagnostics Hub / profiler solution) to fix a real crash via test-first development, then uses a new <strong>debugger agent</strong> and <strong>profiler agent</strong> to autonomously debug an off-by-one bug and nearly double the speed of a file-decode hot path. The core message is <em>guardrails + agents</em>: you write a failing test (or capture a profiling trace) to create a durable harness, then "let the agent cook" while staying in the loop — you steer, it executes against real runtime <strong>data</strong>, not guesses. The back half is a roadmap reveal: web-forms→Blazor modernization, auto-applied agent skills, AI merge-conflict resolution, faster builds, a move onto the shared <strong>GitHub Copilot CLI SDK</strong>, and <strong>bring-any-model</strong> support (local/on-prem/cloud) with enterprise lock-down — most landing in <strong>Visual Studio 2026 Insiders next week</strong>.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Visual Studio's identity in the agentic era:</strong> the premier tool for <em>professional C#/C++ developers on Windows</em>. Other stacks (Python, Node.js) are better served by VS Code and other tools — VS doubles down on the pro segment.</li>
+<li><strong>Asset vs. artifact framing:</strong> if code is an <strong>asset</strong> (maintained for years, by a team, where standards/formatting/quality matter) → Visual Studio is for you. If code is an <strong>artifact</strong> (a throwaway PoC/internal tool you don't need to read) → you may not need that rigor. This distinction frames all their investment.</li>
+<li><strong>Code quality matters <em>more</em> in agentic dev, not less:</strong> you may not write the code, but you definitely <strong>review</strong> it — VS focuses on quality gates, security, accessibility, compliance, governance, IT-admin control (group policy across a fleet).</li>
+<li><strong>Governance over YOLO:</strong> Copilot's MCP tool calls require explicit confirmation; it uses <em>your</em> credentials. Nick deliberately stays "in the loop" rather than autopilot — though full autopilot is available if you want it.</li>
+<li><strong>Test-first is reborn because of Copilot:</strong> Nick (a TDD skeptic for years) now writes a failing test <em>first</em> to reproduce a bug, creating a durable test harness/guardrail, then lets Copilot author the fix. The test stays in the repo as a durable artifact for future refactors.</li>
+<li><strong>New debugger agent:</strong> a specialized agent (distinct from regular agent mode) that <em>knows how to use the debugger</em> — sets/hits breakpoints, evaluates expressions, inspects memory, forms a hypothesis, applies a fix, then re-runs the test <strong>under the debugger</strong> to validate. Invoked via right-click → <strong>"Debug this test with Copilot."</strong></li>
+<li><strong>New profiler agent:</strong> right-click → <strong>"Profile with Copilot."</strong> It runs a unit test with the profiler attached (CPU/allocation, static + dynamic instrumentation), reads the trace, finds the hot path, proposes and applies a low-level optimization, then <strong>re-profiles to validate the improvement</strong> — a proper before/after scientific measurement.</li>
+<li><strong>"If you're not using data, you're not profiling — you're just refactoring."</strong> The agents optimize from <em>executed runtime data</em>, not by eyeballing code, which is a far stronger basis for a fix.</li>
+<li><strong>VS Test Performance Collector (NuGet):</strong> add it to your test runs and every CI/Azure DevOps run auto-captures a profiling trace (a <code>.diagsession</code>) as a test attachment — making performance regression detection part of the inner loop / CI instead of an afterthought.</li>
+<li><strong>Real, dogfooded wins:</strong> doubled <code>.diagsession</code> read perf via 6–7 PRs; the profiler agent found <strong>800,000 allocations</strong> in VS startup (XML deserialization of an Azure DevOps cache file) → trimmed <strong>~50 MB off the initial heap</strong>; also improved Azure App Service and the Roslyn compiler (a new switch-case optimization, found by an SDE2 as their first Roslyn contribution).</li>
+<li><strong>MCP servers in Copilot</strong> (esp. a new <strong>Azure DevOps / ADO</strong> connector) let Copilot fetch a work item from a pasted bug link, find a CI test run, locate its <code>.diagsession</code>, and analyze it — pulling external context directly into the loop.</li>
+<li><strong>Why VS gets Copilot features "late":</strong> VS has its <em>own</em> Copilot backend implementation (talks to the Copilot API itself) and must wire it into the profiler/debugger/modernization agents. Fix: moving onto the shared <strong>GitHub Copilot CLI SDK</strong> so VS, VS Code, and the CLI share one base and ship features in lockstep.</li>
+<li><strong>Your expertise still matters:</strong> "the better you are at your job as a developer, the better you are at managing your agent." The human steers; non-deterministic agents need a skilled hand.</li>
+<li><strong>Progressive enhancement model:</strong> like HTML5 → Ajax → React, the manual experience is the base layer — you can do everything by hand — and Copilot is the optional layer on top to push further. You choose when to use it.</li>
+<li><strong>Roadmap (mostly Insiders next week):</strong> web-forms→Blazor app modernization (with Aspire + cloud uplift), auto-applied agent skills authored by feature teams, AI merge-conflict resolution, smarter/faster builds, Copilot CLI SDK migration, and <strong>any-model</strong> support (local/on-prem/cloud) with an enterprise security/management layer. Also shipping next week: Git <strong>work tree</strong> support and <strong>Git submodule</strong> support.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-how-visual-studio-fits-the-agentic-world">Framing: How Visual Studio fits the agentic world</h3>
+<p>Mads opens by addressing the recurring booth/conference question: <em>where does Visual Studio fit now that agents are everywhere?</em> Answer — it works great, and it has a clear position: <strong>the tool for professional C# and C++ developers on Windows</strong>, today and tomorrow, whether you're hand-coding all day or orchestrating a fleet of agents. For Python/Node.js etc., Microsoft has other tools (VS Code is "fantastic") — VS isn't trying to be everything; it's laser-focused on the pro C#/C++ segment.</p>
+<p>What makes VS especially good for <em>professional</em> developers is the surrounding rigor that pros care about:
+- <strong>Quality gates</strong> — what does the code actually look like?
+- <strong>Security &amp; accessibility</strong>
+- <strong>Compliance &amp; governance</strong>
+- <strong>Administration</strong> — IT admins / group policy deciding how VS behaves across an org's fleet.</p>
+<p>This is a continuing high priority and is where investment is going.</p>
+<h3 id="asset-vs-artifact-the-central-mental-model">Asset vs. artifact — the central mental model</h3>
+<p>The talk's organizing idea. In agentic development you "don't always write the code, but you definitely review it." So how do you maintain quality, standards, and formatting when an agent wrote it? It depends on what the code <em>is</em>:
+- <strong>Code as an asset:</strong> something you maintain for years, possibly across a whole team. Coding standards, formatting, and quality all matter because the code itself has lasting value. → <strong>This is who Visual Studio is for.</strong>
+- <strong>Code as an artifact:</strong> proof-of-concepts or internal tools where the code is just <em>the thing you're producing</em>; you don't need to read it carefully or maintain it, and you're fine letting the agent own it. → Less of that rigor needed.</p>
+<p>VS's "very, very serious" investment is squarely aimed at developers who see <strong>code as an asset</strong>.</p>
+<h3 id="demo-1-fixing-a-real-crash-in-visual-studios-own-profiler-test-first">Demo 1 — Fixing a real crash in Visual Studio's own profiler (test-first)</h3>
+<p>Nick frames the demo around realism: rather than a toy app, he works <strong>on Visual Studio inside Visual Studio</strong>. The open solution is <strong>Diagnostics Hub</strong> — the code name for the <strong>Visual Studio profiler</strong> itself, which gets built and packaged into VS and powers all the profiling tools. It's a genuinely large, polyglot component: <strong>C++, C#, JavaScript, plus some assembly and IL</strong>, totaling <strong>160 projects</strong> (just for the profiler + the diagnostic-tools window). (When VS migrated from TFS to Git, the repo was ~<strong>400 GB</strong> of data.)</p>
+<p><strong>The bug:</strong> an internal telemetry crash — <code>IndexOutOfRange</code> in the <strong>hybrid dictionary enum keys iterator</strong>. A new profiler feature exercised a previously-unused code path, so internal dogfooders hit crashes that code review never caught (the path had no tests). The bug was filed and routed to Nick.</p>
+<p><strong>The agentic workflow:</strong>
+1. Nick copies the bug link into <strong>Copilot chat</strong> and leans on <strong>MCP servers</strong> — specifically a new <strong>Azure DevOps (ADO)</strong> connector — saying, in effect: <em>"We're getting this crash (here's the bug link) — write me a unit test that demonstrates it."</em>
+2. Copilot calls the MCP tool. Crucially it <strong>prompts for confirmation</strong> (<code>get work item</code>) — it can't go full autopilot/YOLO without permission, and it uses Nick's credentials (it grabs an auth token). Mads notes you <em>could</em> enable autopilot, but Nick prefers staying in the loop to understand what's happening — tying back to the governance theme.
+3. Copilot fetches the work item, reads the stack trace, inspects the <strong>HybridDictionary</strong> source and existing test structure, identifies the problem area, finds the relevant tests, and <strong>authors two new test methods</strong> (one enumerating keys, one enumerating values) in the <strong>data warehouse managed suites</strong> test project.
+4. First <strong>build fails (1 failed)</strong>: <em>"The type 'string' must be a non-nullable value type"</em> — the dictionary key needs a <strong>struct</strong>. Nick just tells Copilot "those don't compile, looks like the wrong key type," and it investigates the generic key constraints and fixes it. Build succeeds.</p>
+<p><strong>Why test-first (the discussion):</strong> Mads probes the approach. Nick admits he <em>"never believed in test-driven development until Copilot came along"</em> — it felt awkward; he preferred writing code then adding a few tests. Now he writes tests first to build a <strong>test harness / guardrail</strong>, then lets Copilot <strong>author the fix</strong> against those tests. Mads reframes it: the harness gives you the <em>safety</em> to "let loose the agent" on your code. Bonus — it's a <strong>durable artifact</strong> that lives with the repo, protecting future Copilot-driven refactors and dependency swaps.</p>
+<p><strong>Running the test — real-world messiness:</strong> Nick runs the new test expecting it to fail and reproduce the crash. On large enterprise software (hundreds of projects) nothing is instant. The test fails — <em>"This is a success!"</em> — but the <strong>test detail summary</strong> reveals it's failing in an <strong>assert</strong>, <em>not</em> throwing the expected <code>IndexOutOfRange</code>. This is the realistic moment: writing a repro reveals <em>other</em> problems. Nick iterates with Copilot. A telling slip: when he says "yes" to a suggested fix, Copilot starts <strong>fixing the code</strong> when he only wanted the <strong>test</strong> fixed — <em>"Not supposed to fix the code yet."</em> He re-steers: "fix the test so it fails with index out of range." Both speakers note the <strong>non-deterministic / probabilistic</strong> nature of agents — you get different runs each time, which is "the fun of it." Mads' key point: Nick's <strong>expertise</strong> let him see what was happening and guide the agent — <em>"the better you are at your job as a developer, the better you are at managing your agent."</em></p>
+<p><strong>Letting the agent cook with the debugger agent:</strong> With a solid failing test (now correctly throwing <code>IndexOutOfRange</code>) as a guardrail, Nick right-clicks the test → <strong>"Debug this test with Copilot."</strong> This switches from regular agent mode into the <strong>debugger agent</strong>, which <em>knows how to use the debugger</em>: set/hit breakpoints, evaluate expressions, inspect memory, and genuinely understand the code. It states a hypothesis — <em>"the bug is clear"</em> — pinpoints an <strong>off-by-one error</strong> (very specific about the element count in the collection), applies the fix, <strong>re-runs the unit test under the debugger</strong> (so it could catch any new problem), and confirms the test now passes.</p>
+<p><strong>Real impact:</strong> this was a genuine bug, caught internally (in the <strong>18.5 / April update</strong> range) before it reached customers; Copilot authored and pushed the fix. Mads underlines that off-by-one errors — simple but sometimes maddening to find — are exactly the kind of thing this accelerates.</p>
+<h3 id="demo-2-the-profiler-agent-nearly-doubling-a-hot-path-on-stage">Demo 2 — The profiler agent: nearly doubling a hot path on stage</h3>
+<p>Nick introduces the <strong>VS Test Performance Collector</strong>, a recently added <strong>NuGet package</strong> you add to your test runs. They added it to their <strong>Azure DevOps</strong> test runs so that <em>every</em> unit-test run <strong>automatically captures a profiling trace</strong> and attaches it to the test result.</p>
+<p><strong>What a profiling trace is (explained):</strong> when a test runs, the profiler turns on, periodically samples <em>where the program is</em> throughout the run, then at the end saves all that data plus auxiliary data — <strong>debugger symbols, .NET metadata</strong> — and produces a report of where the program spent the most time. It can capture <strong>CPU data and allocation/object-allocation data</strong>. The format of the trace file is a <strong><code>.diagsession</code></strong> (<code>.diagsession</code> files contain the ETL trace; opening one in VS reads it into memory). The demo uses both <strong>static instrumentation</strong> and <strong>dynamic instrumentation</strong> — the test hooks into the profiler, which <strong>instruments the code with start/stop around method calls</strong> to get exact per-method performance.</p>
+<p><strong>The target:</strong> a CI run flagged a <code>decode large file</code> / <code>verify my large file</code> unit test (which compresses/decompresses a <code>.diagsession</code> containing an ETL file) as spending most of its time in a particular spot. So Nick right-clicks → <strong>"Profile with Copilot"</strong> (again, the "make a clicky button for the thing we do over and over" theme — and again, you can just choose <strong>"Profile"</strong> to do it all yourself and get your hands dirty; Copilot doesn't <em>need</em> the UI to pop, but VS shows it so you can explore and <strong>steer the conversation</strong>).</p>
+<p><strong>A teaching superpower:</strong> after an optimization, you can ask Copilot <strong>"why is this faster?"</strong> and <em>learn</em> — about the <strong>JIT</strong>, the <strong>GC</strong>, why one collection/list/dictionary type beats another, unsafe C# tricks you wouldn't otherwise know. Mads (knows C# but not unsafe C#) calls this hugely helpful.</p>
+<p><strong>The run:</strong>
+- Initial trace: the test takes exactly <strong>3.88 seconds</strong>. The hot path is dominated by an <strong>Express stream</strong> frame repeatedly hitting a <strong><code>CheckReadEnoughBits</code></strong> function. Nick wrote this code himself, was the profiler dev lead, profiled it "over and over" for years — and there were <em>still</em> optimizations to find.
+- Copilot suggests: <em>"optimize this Express stream read block to buffer reads and reduce the binary reader overhead."</em> Nick clicks <strong>"go for it."</strong> It reads the source context, matches <strong>line information</strong> to the <strong>profiling report</strong>, and knows exactly what to optimize — i.e. it's grounded in <strong>actual executed data</strong>, not guessing from the code (a stronger scientific case for the change).
+- The change reads the input stream into a <strong>new byte array</strong> to read from directly, reducing calls into the <strong>byte/binary reader</strong> (already "the fastest way to access a byte stream in .NET" — yet the agent still improved it). It touches low-level <strong>Huffman table read</strong> / compression code used for these large <code>.diagsession</code> files.
+- <strong>Measure twice, optimize once:</strong> the agent then <strong>rebuilds, re-runs the tests</strong> (to ensure no regression in behavior), and <strong>re-profiles</strong> to validate. Mads stresses this is <em>the</em> scientific method for perf — establish a baseline, change, measure again to see real impact. ("Optimize twice / measure twice, optimize once.")
+- Real-world hiccups on stage: 160-project builds take a while; unrelated projects throw errors; <strong>Test Explorer also kicks off its own build</strong> — "as real as it gets."
+- <strong>Result:</strong> the new green-er chart shows <strong>~2 seconds</strong>, down from <strong>3.88s</strong> — they <strong>almost doubled</strong> the performance of decoding a large file, live on stage.</p>
+<p><strong>Inner loop, not afterthought:</strong> historically profiling was something you did <em>after</em> coding; even opening a trace took minutes, so it became an afterthought outside the build/run/test inner loop. Now it's fast enough to run <em>as part of the inner loop</em> — start a session, check for regressions, know within ~a minute. With the NuGet collector feeding CI, you get <code>.diagsession</code> files on every run, can spot regressions, download the file, and open it in VS to see exactly what's wrong — or use the <strong>ADO MCP tools</strong> to have Copilot <em>find</em> the diagnostic sessions from a pipeline/test-run URL and analyze them automatically. Mads' aside: improving performance is one of the few things developers can do <strong>without asking permission</strong> — no Jira/GitHub ticket needed; everyone just benefits.</p>
+<h3 id="real-world-results-beyond-the-demos">Real-world results beyond the demos</h3>
+<p>Switching back to slides, Nick recaps where they've pointed the <strong>profiler agent</strong>:
+- <strong>Visual Studio startup:</strong> found <strong>800,000 allocations</strong> caused by <strong>XML deserialization of an Azure DevOps cache file</strong> when loading the version-control library. He set up a rough loop — <em>"run devenv, allocation-profile it, see what you can do"</em> — and it <strong>trimmed ~50 MB off the initial heap</strong> and removed 800k allocations, dramatically reducing GC work.
+- <strong><code>.diagsession</code> reader:</strong> <strong>6–7 PRs</strong> that <strong>more than doubled</strong> the performance of reading these files in the latest VS.
+- <strong>Azure App Service:</strong> ran the agent against it (not just VS) to <strong>reduce the cost of running Azure App Services</strong> by optimizing performance.
+- <strong>Roslyn compiler (~2–3 weeks ago):</strong> Roslyn has tons of benchmarks and has been optimized for years, yet the agent found an optimization in <strong>switch-case evaluation</strong>. An <strong>SDE2</strong> downloaded Roslyn, ran the profiler agent over its tests, and landed their <strong>first-ever Roslyn contribution</strong>.</p>
+<p>Takeaway: this works across a wide variety of app types — UI, APIs, DLLs/libraries, <code>.NET</code>, C++ — "across the board."</p>
+<h3 id="roadmap-whats-coming-much-of-it-in-insiders-next-week">Roadmap — what's coming (much of it in Insiders next week)</h3>
+<p>Mads runs through upcoming features. (Git <strong>work tree</strong> support and <strong>Git submodule</strong> support are also landing next week but he sets those aside to focus on Copilot.)</p>
+<ul>
+<li><strong>App modernization: Web Forms → Blazor.</strong> A real pain point — fewer developers remain who can maintain old WinForms/Web Forms apps (some on <strong>.NET 3.0</strong>), and managers won't fund "6 months to convert to Blazor / .NET 10." Recent breakthroughs let the <strong>modernization agent</strong> convert Web Forms — including <strong>user controls, server controls, components</strong> — into <strong>Blazor</strong>, modernize onto a current stack, add <strong>Aspire</strong>, and even <strong>uplift to run in the cloud</strong>. Big for enterprises sitting on legacy apps.</li>
+<li><strong>Agent skills, auto-applied.</strong> Agent skills (just <strong>markdown files</strong> in plugin/marketplace repos) make agent workflows far more powerful, but discovery is a real problem — how do you know which skills apply to WinForms or a given <code>.NET</code> scenario? VS will <strong>automatically detect what you're working on</strong> and inject the relevant skills into context. These skills are authored by the <strong>actual feature teams</strong> (Azure team, WinForms team, etc.) — the absolute experts — are <strong>open source</strong>, take <strong>community contributions</strong>, and are "skills you can trust," applied automatically.</li>
+<li><strong>Faster builds during agent runs.</strong> Agents frequently trigger builds. Today VS may see errors in the error list yet still kick off a ~2-minute build before failing on an error it could have known about upfront. First optimization: <strong>check the error list and other indicators before kicking off a build</strong> — skip or defer the build when it's obviously going to fail. One of many perf optimizations coming to the chat window and broader experience.</li>
+<li><strong>AI merge-conflict resolution</strong> (one of Mads' favorites). Developers report real fear/anxiety/frustration around committing when they're behind HEAD and must pull first ("almost shaking moving the mouse to the pull button"). Soon: <strong>click a button and let the AI resolve merge conflicts.</strong> When they test "what would a human do?" vs. the agent, the agent is <em>very</em> capable and nearly matches a human; if it can't, you still do it manually. Often only one (or none) of several conflicts actually needs your input — it "takes the heartache away."</li>
+<li><strong>Why VS lagged on Copilot features — and the fix.</strong> Audience knows the pain: VS often gets Copilot features later. Reasons: VS has its <strong>own Copilot implementation</strong> — it talks to the <strong>Copilot API itself</strong> and must integrate with the <strong>profiler, debugger agent, app modernization</strong>, etc. that other tools lack; and it has its <strong>own backend implementation</strong>. <strong>Fix (rolling out next week on VS Insiders):</strong> move onto the <strong>GitHub Copilot CLI SDK</strong>, so <strong>Visual Studio, VS Code, and the CLI all share the same base/SDK</strong> and get features <strong>at the same time</strong>. They're still <em>implemented</em> differently — e.g. when the agent kicks off a build in VS, it uses VS to build (<strong>MSBuild already warm, Roslyn already running</strong>), which is <strong>faster than building on the command line</strong>. So VS keeps doing its VS-specific things atop the shared SDK. Mads has run it full-time for ~a month and "absolutely loves" it.</li>
+<li><strong>Bring any model.</strong> Today VS offers a model list — <strong>Opus, Sonnet, GPTs</strong>, plus add-your-own (<strong>xAI/Grok, Gemini</strong>, etc.) with <strong>bring-your-own-key</strong> from an approved provider list — but you must still sign in with <strong>GitHub Copilot credentials</strong>. Coming "very soon": use <strong>any model in Visual Studio</strong>, whether <strong>local, on-prem, or cloud, anywhere</strong> — huge for enterprises with strict security needs who can't use cloud models (run it on your machine, on-prem, your own server room, no restrictions). Because VS targets pro developers who care about <strong>trust boundaries</strong>, there's a <strong>security/management layer</strong>: orgs can <strong>lock it down</strong> and mandate only specific models/providers (e.g. only a local model, or only one cloud provider). Start checking it out <strong>next week in VS 2026 Insiders</strong>.</li>
+</ul>
+<h3 id="the-throughline-progressive-enhancement-human-in-the-loop">The throughline — progressive enhancement + human-in-the-loop</h3>
+<p>Mads ties it together with a <strong>progressive-enhancement</strong> analogy: like the web went from basic HTML (click a link, full page reload) → <strong>Ajax</strong> (partial page loads) → <strong>React/Angular</strong> and more on top — each layer usable only as browsers became more capable — Copilot in VS works the same way. The <strong>manual experience is the base layer</strong>: you can be the driver and do <em>everything</em> by hand, fully in control, exactly as you always have. Copilot is the <strong>optional layer on top</strong> to push the limits. Sometimes you want the Copilot experience; sometimes you don't — <strong>you decide</strong>. Combined with the recurring "your expertise makes you a better agent manager" point and the explicit, credential-scoped MCP confirmations, the consistent philosophy is <strong>agents as a powerful, opt-in enhancement under human control</strong>, anchored to real runtime data and durable guardrails (tests, profiling traces).</p>
+<p>Mads closes encouraging everyone to grab <strong>VS 2026 Insiders next week</strong> for the upcoming features.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Visual Studio (2026)</strong> — the IDE; positioned as the premier tool for professional C#/C++ developers on Windows.</li>
+<li><strong>GitHub Copilot in Visual Studio</strong> — the AI assistant; agent mode, chat, and specialized agents inside VS.</li>
+<li><strong>Copilot chat</strong> — conversational interface where Nick drives the bug-fix and profiling workflows.</li>
+<li><strong>Agent mode (regular)</strong> — the default Copilot agent that gathers context, writes tests/code, and applies changes.</li>
+<li><strong>Debugger agent</strong> — specialized agent that uses the debugger (breakpoints, expression eval, memory inspection) to diagnose/fix bugs and validate under the debugger.</li>
+<li><strong>Profiler agent</strong> — specialized agent that runs tests with the profiler attached, analyzes traces, applies perf optimizations, and re-profiles to validate.</li>
+<li><strong>MCP servers (Model Context Protocol)</strong> — pluggable tool endpoints Copilot can call; require user confirmation, use your credentials.</li>
+<li><strong>Azure DevOps (ADO) MCP connector</strong> — fetches work items from a bug link, finds CI test runs, locates <code>.diagsession</code> files, etc.</li>
+<li><strong>VS Test Performance Collector</strong> — NuGet package added to test runs that auto-captures a profiling trace as a test attachment on every (CI) run.</li>
+<li><strong><code>.diagsession</code></strong> — the Visual Studio profiler trace file format (contains the ETL trace + symbols + .NET metadata); opening one reads it into memory.</li>
+<li><strong>Diagnostics Hub</strong> — internal code name for the Visual Studio profiler itself (the demo solution; 160 projects; C++/C#/JS/assembly/IL).</li>
+<li><strong>Diagnostic Tools window</strong> — the debugging window with live graphs; part of the same component.</li>
+<li><strong>HybridDictionary</strong> — the .NET collection whose enum-keys iterator had the <code>IndexOutOfRange</code> crash.</li>
+<li><strong>Test Explorer</strong> — VS test runner UI used to run the repro test.</li>
+<li><strong>Static &amp; dynamic instrumentation</strong> — profiling techniques inserting start/stop around method calls for exact per-method timing.</li>
+<li><strong>CPU &amp; allocation profiling</strong> — trace types capturing time spent and object/memory allocations.</li>
+<li><strong>Express stream / Huffman table read</strong> — the low-level compression code path optimized in Demo 2.</li>
+<li><strong>Binary/byte reader (.NET)</strong> — "fastest way to access a byte stream" — yet further optimized via a direct byte-array read.</li>
+<li><strong>MSBuild</strong> — the build engine; kept "warm" inside VS so agent-triggered builds are faster than CLI builds.</li>
+<li><strong>Roslyn</strong> — the C#/VB compiler; profiler agent found a switch-case evaluation optimization.</li>
+<li><strong>JIT / GC</strong> — runtime internals Copilot can explain when you ask "why is this faster?".</li>
+<li><strong>App modernization / modernization agent</strong> — converts Web Forms (incl. user/server controls, components) → Blazor, adds Aspire, cloud uplift.</li>
+<li><strong>Web Forms / WinForms</strong> — legacy UI stacks (some on .NET 3.0) targeted by modernization.</li>
+<li><strong>Blazor</strong> — modern .NET web UI stack; modernization target.</li>
+<li><strong>.NET Aspire</strong> — added to modernized apps for cloud-ready composition.</li>
+<li><strong>.NET 10 / .NET 3.0</strong> — modern target vs. legacy starting point referenced.</li>
+<li><strong>Agent skills</strong> — markdown files in plugin/marketplace repos; VS auto-detects context and injects team-authored skills.</li>
+<li><strong>GitHub Copilot CLI SDK</strong> — shared base that VS, VS Code, and the CLI will all move onto for feature parity.</li>
+<li><strong>AI merge-conflict resolution</strong> — one-click AI resolution of Git merge conflicts (upcoming).</li>
+<li><strong>Git work tree support / Git submodule support</strong> — VS source-control features landing next week.</li>
+<li><strong>TFS → Git migration</strong> — historical context; the profiler repo was ~400 GB at conversion.</li>
+<li><strong>Models:</strong> Claude <strong>Opus</strong> &amp; <strong>Sonnet</strong>, OpenAI <strong>GPT</strong> models, <strong>xAI/Grok</strong>, <strong>Google Gemini</strong> — selectable; bring-your-own-key; upcoming any-model (local/on-prem/cloud) support.</li>
+<li><strong>Group policy / enterprise management layer</strong> — admin controls to mandate/restrict which models an org may use.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p><em>(Most items are roadmap/upcoming; many land in </em><em>Visual Studio 2026 Insiders next week</em><em>. Treat as previews unless noted.)</em>
+- <strong>Debugger agent</strong> — "Debug this test with Copilot" right-click flow; debugs, hypothesizes, fixes, validates under the debugger. <em>(Shown live; appears current/near-current.)</em>
+- <strong>Profiler agent</strong> — "Profile with Copilot" right-click flow; profiles → optimizes → re-profiles to validate. <em>(Shown live.)</em>
+- <strong>VS Test Performance Collector (NuGet)</strong> — auto-captures profiling traces in CI as test attachments. <em>("Recently added.")</em>
+- <strong>App modernization: Web Forms → Blazor</strong> (incl. controls/components, Aspire, cloud uplift) via the modernization agent. <em>(Recent breakthrough / upcoming.)</em>
+- <strong>Auto-applied agent skills</strong> — VS detects your project type and injects relevant team-authored, open-source skills automatically. <em>(Upcoming.)</em>
+- <strong>Faster agent builds</strong> — check the error list/indicators before kicking off a build to avoid doomed ~2-min builds; part of broader chat-window perf work. <em>(Upcoming.)</em>
+- <strong>AI merge-conflict resolution</strong> — one-click AI conflict resolution. <em>("Launching very soon.")</em>
+- <strong>Move to GitHub Copilot CLI SDK</strong> — shared SDK across VS / VS Code / CLI for simultaneous features; VS still builds via warm MSBuild/Roslyn. <em>(Rolling out next week on VS Insiders.)</em>
+- <strong>Bring any model</strong> — use any model (local / on-prem / cloud, anywhere) in VS, with an enterprise security/lock-down layer to mandate or restrict providers. <em>("Very soon"; check VS 2026 Insiders next week.)</em>
+- <strong>Git work tree support &amp; Git submodule support</strong> — landing <strong>next week</strong> in VS.</p>
+<h2 id="demos">💡 Demos</h2>
+<p><strong>Demo 1 — Fix a real crash in VS's own profiler (test-first + debugger agent).</strong> Working <em>on Visual Studio inside Visual Studio</em> (the 160-project Diagnostics Hub solution), Nick fixes a real <code>IndexOutOfRange</code> crash in the HybridDictionary enum-keys iterator. Copilot (via the ADO MCP connector, with explicit confirmation) fetches the bug work item, reads the stack trace, and writes two repro unit tests; a key-type/struct compile error is fixed by conversation; the test reveals an unexpected assert (not the expected exception), which Nick re-steers; once it correctly throws <code>IndexOutOfRange</code>, the <strong>debugger agent</strong> ("Debug this test with Copilot") pinpoints an <strong>off-by-one</strong> error, fixes it, and validates by re-running under the debugger. <strong>Proves:</strong> test-first creates a durable guardrail that lets agents safely "cook," the debugger agent can autonomously diagnose/fix/validate real bugs, governance (confirm MCP calls) is preserved, and developer expertise is what steers non-deterministic agents.</p>
+<p><strong>Demo 2 — Profiler agent nearly doubles a hot path live.</strong> A CI-flagged <code>decode large file</code> test (compress/decompress a <code>.diagsession</code>) takes <strong>3.88s</strong>, dominated by an Express stream <code>CheckReadEnoughBits</code> frame. Via "Profile with Copilot," the <strong>profiler agent</strong> matches profiling line data to source, optimizes the read path (direct byte-array read + Huffman table changes, reducing binary-reader calls), rebuilds, re-runs tests for no regression, and <strong>re-profiles</strong> to validate — dropping the test to <strong>~2s</strong> on stage. <strong>Proves:</strong> agents optimize from <em>real executed data</em> not guesses ("measure twice, optimize once"), find wins even seasoned experts miss, and keep guardrails (re-test + re-profile) so you can let them run.</p>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>160 projects</strong> in the profiler/Diagnostics Hub solution alone (C++, C#, JavaScript, assembly, IL).</li>
+<li><strong>~400 GB</strong> of repo data at the TFS→Git migration.</li>
+<li><strong>3.88s → ~2s</strong> — Demo 2 nearly <strong>doubled</strong> decode-large-file performance live.</li>
+<li><strong>800,000 allocations</strong> found by the profiler agent in VS startup (Azure DevOps cache-file XML deserialization) → <strong>~50 MB</strong> trimmed off the initial heap.</li>
+<li><strong>6–7 PRs</strong> more than <strong>doubled</strong> <code>.diagsession</code> read performance in latest VS.</li>
+<li>Roslyn: a <strong>switch-case evaluation</strong> optimization found by an <strong>SDE2</strong> as their <strong>first Roslyn contribution</strong>.</li>
+<li>Crash caught internally in the <strong>18.5 / April update</strong> range before reaching customers.</li>
+<li>Mads ran the new shared-SDK experience full-time for <strong>~1 month</strong>.</li>
+<li><em>"If you're not using data, you're not actually profiling or improving performance — you're just refactoring."</em> — Nick</li>
+<li><em>"The better you are at your job as a developer, the better you are at managing your agent."</em> — Mads</li>
+<li><em>"You measure to establish a baseline, then you make changes, then you measure again."</em> (measure twice, optimize once)</li>
+<li><em>"Let the agent cook"</em> — once guardrails (failing test / profiling trace) are in place.</li>
+<li><em>"This is literally what my day-to-day looks like."</em> — Nick, on the messy, iterative repro process.</li>
+<li>Improving performance is <em>"one of the few activities we can do as developers without having to ask permission first"</em> — no ticket required.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Add the <strong>VS Test Performance Collector</strong> NuGet to a project's CI test runs and inspect the auto-captured <code>.diagsession</code> attachments.</li>
+<li>Try the <strong>debugger agent</strong> (right-click test → "Debug this test with Copilot") and <strong>profiler agent</strong> ("Profile with Copilot") on a real repo.</li>
+<li>Wire up the <strong>Azure DevOps MCP connector</strong> in Copilot and have it fetch a work item from a bug link and analyze a pipeline's diagnostic sessions.</li>
+<li>Practice the <strong>test-first</strong> loop: write a failing repro test, then let Copilot author the fix; ask it <strong>"why is this faster?"</strong> after a perf change.</li>
+<li>Grab <strong>VS 2026 Insiders</strong> to try the Copilot CLI SDK build, any-model support, and merge-conflict resolution.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>When exactly does each roadmap item GA vs. stay in Insiders? (Talk only commits "next week" for several.)</li>
+<li>For "any model," what's the exact list of supported local/on-prem runtimes, and how does the org lock-down layer enforce it?</li>
+<li>Does the profiler agent support allocation + CPU traces equally in the agentic flow, and what overhead does dynamic instrumentation add?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Any C#/C++ team treating code as an <strong>asset</strong> (quality/compliance/governance) — internal tooling, perf-sensitive libraries, legacy modernization.</li>
+<li>Anyone maintaining legacy <strong>Web Forms/WinForms</strong> apps eyeing Blazor/.NET 10 + Aspire.</li>
+<li>CI/perf-regression strategy (shift profiling into the inner loop and PR gates).</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+<li>Microsoft Build 2026 — Visual Studio / GitHub Copilot sessions</li>
+<li>Topics: GitHub Copilot agents, debugger agent, profiler agent, app modernization (Web Forms → Blazor), MCP, Copilot CLI SDK</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="BRK205.html"><span class="pager-dir">← Previous</span><span class="pager-code">BRK205</span><span class="pager-title">Aspire for agents: Transform how you build and deploy distributed apps</span></a>
+    <a class="pager pager-next" href="BRK208.html"><span class="pager-dir">Next →</span><span class="pager-code">BRK208</span><span class="pager-title">Ensuring your code works when AI testing isn&#x27;t enough</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

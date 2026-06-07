@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OD857 — Connected Experience APIs for Windows apps</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">OD857</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=L9U0J3LJu6w" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Connected Experience APIs for Windows apps</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Sri Tejaswi, Avinash</span>
+      <span class="meta-item">⏱️ 14m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="windows">Windows</span><span class="chip" data-tag="apis">Apis</span><span class="chip" data-tag="app-development">App Development</span><span class="chip" data-tag="cross-device">Cross Device</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Sri Tejaswi (Product Manager, Windows Connected Experiences) · Avinash (Engineer, Windows Connected Experiences)<br>
+<strong>Duration:</strong> ~14 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=L9U0J3LJu6w">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Windows <strong>Connected Experiences</strong> is a platform that lets a third-party app stop being "just an app on Windows" and instead <strong>become part of Windows</strong> — surfacing inside first-party Windows surfaces (taskbar, widgets board, system search, the share sheet) to earn discovery, engagement, and net-new installs. The session goes deep on two of the three shipping APIs: <strong>Resume</strong> (cross-device continuity that hands an in-progress activity from a phone to the PC via a taskbar nudge, and can even drive an install if the app isn't on the PC yet) and the <strong>People API</strong> (donate contacts so they become first-class citizens in widgets, search, and share, with deep-link actions and relevance ranking). The headline pitch is <strong>value compounding</strong>: the more an app donates about a user's people and activities, the more Windows routes engagement, downloads, and trust back to that app — and it's all integrate-once. Resume offers two integration paths (Continuity SDK vs WNS push) with a clear decision matrix, and the whole model is privacy-scoped: contact data is readable only by Windows system surfaces, never app-to-app, and is removed on uninstall.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Connected Experiences = "your app becomes part of Windows."</strong> You write the integration once and Windows gives you surfaces, ranking, engagement, and installs back. The three APIs are <strong>Share, People, and Resume</strong>.</li>
+<li><strong>The model is already proven at scale.</strong> The story has gone from <em>announcing</em> three APIs at a prior Build to <em>shipping</em> them with real partners and real traction.</li>
+<li><strong>People API drives ~10M+ sessions/month from a single surface</strong> — share-sheet "people suggestions" alone — i.e. 10M monthly app-engagement opportunities.</li>
+<li><strong>Resume is a top taskbar performer</strong> just 3 months post-release: <strong>nearly 1 in 4 users</strong> who see a Resume taskbar nudge interact with it.</li>
+<li><strong>Combined reach: 50M+ devices/month</strong> across Share + People + Resume, driving <strong>over a billion sessions</strong> back to partner apps in the last year.</li>
+<li><strong>Resume = cross-device continuity.</strong> Start an activity on mobile (podcast, article, message), sit at the PC, and a taskbar badge (with a phone icon) lets you resume the exact state with one click.</li>
+<li><strong>Resume can install the app, not just resume it.</strong> If the user <em>doesn't</em> have the app on their PC, the Resume badge still appears and one click drives the install — Windows owns the whole funnel: awareness → install → engagement, all in a single click.</li>
+<li><strong>You define what "resume" means</strong> for your app (music, chat, or document continuity) and Windows routes it.</li>
+<li><strong>Resume has two integration paths: Continuity SDK (Android, LTW/CDH signaling) or WNS push notifications (any platform, cloud-driven).</strong> A decision matrix picks the right one; sometimes you use both.</li>
+<li><strong>Resiliency is the core pattern for the SDK path</strong> — stop publishing while disconnected, retry when the connection is restored.</li>
+<li><strong>People API makes app contacts first-class citizens</strong> across the people widget, system search, and share — with the app writing <strong>zero widget UI code</strong>; the API handles the UI, ranking, and surfacing.</li>
+<li><strong>Enrich contacts with two layers: interactions (communication URIs → message/audio/video, mapped to app-manifest protocols) and relevance (privacy-free interaction signals that drive ranking).</strong></li>
+<li><strong>Privacy is by design:</strong> contacts are scoped to <strong>system surfaces only</strong> (<code>other app read access = system only</code>), there is <strong>no app-to-app sharing</strong>, signals carry <strong>no PII</strong>, everything is <strong>removed on uninstall</strong>, and users can toggle visibility in Settings.</li>
+<li><strong>Resume is a Limited Access Feature</strong> — you must request access through Microsoft (links provided in-session).</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="what-connected-experiences-is-and-the-business-case">What "Connected Experiences" is — and the business case</h3>
+<p>Sri Tejaswi (PM on <strong>Windows Connected Experiences</strong>) frames the whole talk around one idea: Connected Experiences lets your app <strong>become part of Windows</strong> rather than merely run on it. The promise to developers is concrete — better <strong>discovery</strong>, more <strong>engagement</strong>, more <strong>installs</strong>, and <strong>seamless continuity across devices</strong>. The mechanism is that <strong>first-party Windows surfaces</strong> (taskbar, widgets board, system search, share sheet) will actively drive users back into partner applications.</p>
+<p>The narrative arc: at a previous Build, Microsoft <em>announced</em> three Connected Experiences APIs; since then they've moved to <em>shipping</em> them with real partners and measurable traction. The three APIs are <strong>Share, People, and Resume</strong>. This session zooms into two of them in depth — <strong>Resume</strong> and <strong>People</strong> (specifically two new People surfaces) — treating Share as the already-established baseline.</p>
+<h3 id="proof-points-why-a-developer-should-care-the-scale-numbers">Proof points / why a developer should care (the scale numbers)</h3>
+<p>Before any code, Sri makes the ROI case with usage data:
+- <strong>People API</strong> — from <strong>just one surface</strong> (share-sheet "people suggestions"), it drives <strong>over 10 million sessions per month</strong>. Framed as "10 million times app-engagement opportunities."
+- <strong>Resume</strong> — only <strong>3 months</strong> into release and already <strong>one of the top performers on the taskbar</strong>: <strong>nearly 1 in 4 users</strong> who see a Resume taskbar nudge interact with it (an unusually high click-through for a taskbar surface).
+- <strong>Combined</strong> — Share + People + Resume together <strong>reach over 50 million devices in a month</strong>, and in the <strong>last year</strong> these experiences have <strong>driven over a billion sessions back to partner applications</strong>.</p>
+<p>The takeaway Sri draws: <em>the model works.</em> Windows surfaces reliably drive discovery, engagement, and installs back to the app — so integrating is a growth lever, not a checkbox.</p>
+<h3 id="windows-resume-what-it-does">Windows Resume — what it does</h3>
+<p><strong>Resume gives your app continuity across devices and can drive net-new installs.</strong> The user scenario: a person is doing something in your app on mobile — listening to a podcast, reading an article, writing a message — then sits down at their PC. <strong>Windows Resume</strong> lets them continue that exact activity on the PC.</p>
+<p><strong>Demo 1 — media continuity (Spotify on a Pixel 8 → PC):</strong>
+- A user listens to music on Spotify during a morning commute on a Pixel 8.
+- She sits at a PC where <strong>Spotify is integrated with the Continuity SDK</strong>.
+- When the <strong>device is in proximity</strong> of the Windows PC, <strong>Spotify publishes a "resume context."</strong>
+- Spotify appears on the taskbar <strong>with a phone badge</strong> — that badge shows up <em>because</em> Spotify published the resume context; <strong>Windows received it and surfaced the nudge.</strong>
+- <strong>One click</strong> resumes the <strong>same album at the same timestamp</strong>, now playing on the PC.</p>
+<p><strong>The install funnel (the part that's "really interesting for you as a developer"):</strong>
+- What if the user <strong>doesn't have Spotify on their PC</strong>? The <strong>Resume badge still appears.</strong>
+- One click <strong>drives the user to install the app</strong> — "user's phone activity just drove a PC app to install."
+- The user <strong>neither browsed nor visited the Store</strong>; <strong>Windows handled the entire funnel</strong> — awareness → install → engagement — <strong>in a single click</strong>, and is then ready to resume on subsequent uses.</p>
+<p><strong>Demo 2 — chat continuity (WhatsApp):</strong>
+- A user is texting a friend on WhatsApp about shopping items and, mid-conversation, sends a bunch of links to look at.
+- They sit at the PC; <strong>WhatsApp publishes a resume context</strong>, Windows receives it, the badge appears.
+- The <strong>same conversation is picked up exactly where they left off</strong>, now in the desktop app.</p>
+<p><strong>Generalisation:</strong> Resume isn't just media. "<strong>Music continuity, chat continuity, or document continuity</strong> — <em>you</em> define what resume means for your app, and <strong>Windows routes it.</strong>"</p>
+<h3 id="resume-integration-two-paths-avinash">Resume integration — two paths (Avinash)</h3>
+<p>Engineer Avinash takes over the "under the hood." Resume supports <strong>two integration paths</strong>, and the right choice depends on your <strong>platform, connectivity model, and engagement scenario</strong>:
+1. <strong>Continuity SDK</strong>
+2. <strong>Windows Push Notifications (WNS)</strong></p>
+<h4 id="path-1-continuity-sdk-end-to-end-flow">Path 1 — Continuity SDK (end-to-end flow)</h4>
+<ol>
+<li>The app <strong>publishes a resumable activity</strong> through the <strong>Continuity SDK on Android</strong>.</li>
+<li>Windows <strong>receives it via LTW CDH signaling</strong> (Link to Windows / Cross-Device Host signaling).</li>
+<li>It <strong>surfaces on the taskbar</strong> as a <strong>Resume entry point</strong>.</li>
+<li>When the user clicks Resume, <strong>Windows activates the desktop app using an app-provided deep link</strong>, restoring the experience exactly where the user left off.</li>
+</ol>
+<p><strong>Five integration steps with the SDK:</strong>
+- <strong>Step 1 — Add a dependency</strong> to your Gradle file. The <strong>Continuity SDK is now published to Maven and GitHub.</strong>
+- <strong>Step 2 — Declare in your manifest</strong> that the app is a <strong>resume activity provider</strong> (the value <strong><code>4</code> maps to "resume activity"</strong>).
+- <strong>Step 3 — Initialize the SDK and register event handlers.</strong> Two callbacks come back:
+  - <strong><code>onContextRequestReceived</code></strong> — indicates the <strong>connection is established</strong>; the app can now send resume app context to <strong>LTW (Link to Windows)</strong>.
+  - <strong><code>onSyncServiceDisconnected</code></strong> — your <strong>signal to stop</strong> (device disconnected or sync channel down).
+  - Then call <strong><code>appContextManager.initialize</code></strong> — from here your app is wired into the continuity platform.
+- <strong>Step 4 — Create an <code>AppContext</code> object</strong> representing a resume intent:
+  - <strong><code>contextId</code></strong> uniquely identifies this activity instance.
+  - <strong><code>type = resume activity</code></strong> — <em>the important line</em> — tells Windows the payload should <strong>participate in cross-device resume experiences.</strong>
+  - Finally <strong><code>sendUpContext</code></strong> publishes the activity into the continuity platform.
+- <strong>Step 5 — Handle callbacks:</strong>
+  - <strong><code>onContextResponseSuccess</code></strong> — the resume activity was <strong>accepted by LTW.</strong>
+  - <strong><code>onContextResponseError</code></strong> — something failed (connectivity dropped / sync service unavailable).
+  - <strong>Key pattern = resiliency:</strong> apps should <strong>stop publishing while disconnected and retry once the connection is restored.</strong></p>
+<h4 id="path-2-wns-windows-notification-service">Path 2 — WNS (Windows Notification Service)</h4>
+<p>This path <strong>does NOT require Link to Windows or the Continuity SDK.</strong> Instead, your <strong>app's cloud backend communicates directly with Windows via the WNS channel</strong> using push notifications. It still <strong>surfaces on the taskbar as a Resume entry point</strong>, and a click <strong>activates the desktop app</strong>, restoring state.</p>
+<p><strong>Trade-off:</strong> No Link to Windows needed, and it <strong>works for any platform (Android or iOS)</strong> — <em>but</em> the <strong>app must already be installed on Windows</strong>: <strong>there is no Store installation flow on this path.</strong></p>
+<p><strong>Steps for the WNS path:</strong>
+- <strong>Register your channel URI:</strong> the PC requests a <strong>WNS channel URI</strong> and sends it to the server. The <strong>channel URI becomes the address</strong> for communicating with Windows from your app.
+- <strong>Build the resume request and send the WNS notification</strong> (sample code shown), including some <strong>mandatory headers</strong> when sending the request.</p>
+<h4 id="the-decision-matrix">The decision matrix</h4>
+<p>Pick the path that fits the scenario:
+- <strong>Deep mobile→PC integration <em>with</em> an installation flow → Continuity SDK.</strong>
+- <strong>Broad reach, cloud-driven, app <em>already on</em> Windows → WNS.</strong>
+- Both paths yield the <strong>same end result</strong>: a <strong>taskbar badge + a deep link + a "pick up where you left off" experience.</strong> Sometimes you use <strong>both</strong>.</p>
+<h4 id="access-model">Access model</h4>
+<p><strong>Resume is a Limited Access Feature.</strong> You must <strong>request access through Microsoft</strong> (the session shows the links to do so).</p>
+<h3 id="people-in-windows-making-contacts-first-class-citizens">People in Windows — making contacts first-class citizens</h3>
+<p>Back to Sri for the second concept: <strong>People</strong>. App contacts can become <strong>first-class citizens across Windows</strong>, with the potential to show up on <strong>widgets</strong> and even the <strong>search box</strong>. The example app is again <strong>WhatsApp</strong>, integrated with the <strong>People API</strong>, having <strong>"donated" its users' contacts</strong> to Windows.</p>
+<p><strong>Demo 3 — the People widget (widgets board):</strong>
+- The <strong>people widget</strong> shows contacts that all came from WhatsApp (donated via the People API; Windows renders them).
+- <strong>Ordering is not random:</strong> WhatsApp also <strong>donated interaction signals</strong>, which <strong>help ranking</strong> — <em>the app feeds the signals, Windows does the math.</em>
+- <strong>Clicking a contact opens WhatsApp directly to that conversation</strong> — because WhatsApp <strong>registered a communication URI</strong> for that contact; when clicked, <strong>Windows fires that URI</strong> and launches the chat.
+- Crucially, <strong>WhatsApp wrote zero lines of widget UI code</strong> — the <strong>People API handled everything.</strong></p>
+<p><strong>Demo 4 — system search:</strong>
+- A user searches for <strong>someone</strong> in Windows system search. If the app has donated contacts with the right signals, <strong>Windows matches</strong> and shows that contact as a <strong>"people result" right alongside apps, files, and web results.</strong>
+- <strong>WhatsApp attribution</strong> is shown on the result, plus <strong>action buttons: message, call, and video call.</strong>
+- "<strong>Donate contacts once and it shows up here in search with actions ready to go.</strong>"</p>
+<h3 id="people-api-how-to-build-it-code-walkthrough-avinash">People API — how to build it (code walkthrough, Avinash)</h3>
+<p>Full integration "from zero to contacts showing up in widgets, search, and share":</p>
+<ol>
+<li><strong>Create a user data account.</strong> Third-party apps must create a user data account with <strong><code>com.microsoft.peoplecontract</code></strong> — this is the <strong>opt-in to People</strong>, a <strong>one-time setup per app.</strong></li>
+<li><strong>Store contacts.</strong> Create a <strong>contact list</strong> and <strong>set <code>otherAppReadAccess = systemOnly</code></strong> — <em>this last line is very important</em>: it means <strong>only Windows system services (widget, search, share) can read these contacts; no other app on the device can see them.</strong> User contact data stays controlled.</li>
+<li><strong>Create a contact object.</strong> The <strong><code>remoteId</code></strong> is the <strong>app's unique identifier for that contact</strong>; then <strong>save</strong> it. Windows now knows about the contact, making it <strong>eligible as share suggestions, widgets, and search experiences.</strong></li>
+<li><strong>Enrich the contact</strong> (where it gets interesting — so far the app only donated a bare contact). Enrichment adds <strong>capabilities, deep links, and interaction semantics</strong> via <strong>annotations</strong> — annotations are how you tell Windows <strong>what action your app supports</strong> for a contact. Two layers:
+   - <strong>Layer 1 — Interactions (communication URI annotations):</strong> declare the <strong>operations your app supports</strong> for a contact — <strong>message, audio call, video call</strong>. For <strong>each operation, register a corresponding protocol in your app manifest.</strong> Windows then surfaces interaction with contacts directly through the app's communication capabilities using those protocols.
+   - <strong>Layer 2 — Relevance (donating signals):</strong> <strong>signals</strong> are <strong>lightweight interaction events</strong> with your app's contacts, <strong>donated without any PII.</strong> Windows uses signals to <strong>rank and surface the most relevant contacts</strong> across <strong>widget, search, and share.</strong></li>
+</ol>
+<h3 id="the-core-thesis-value-compounding-privacy-by-design">The core thesis — value compounding + privacy by design</h3>
+<p>Sri closes on the central mental model: the value of the Connected Experiences API <strong>isn't one-time integration — it's value compounding.</strong> The "real moat" for apps on the platform is that <strong>the more your app donates about users' people and activities, the more engagement Windows drives back</strong> — which in turn yields <strong>more downloads</strong> and <strong>more user trust in your desktop app.</strong></p>
+<p>And <strong>throughout, user data stays in control:</strong>
+- Contacts are <strong>scoped to system surfaces only.</strong>
+- <strong>No app-to-app sharing.</strong>
+- <strong>Everything is removed on uninstall</strong> of the app.
+- Users can <strong>toggle contact visibility anytime in Settings.</strong>
+- All of this is <strong>built into the platform by design.</strong></p>
+<h3 id="how-to-get-started-the-call-to-action">How to get started (the call to action)</h3>
+<ul>
+<li><strong>For People:</strong> integrate with the <strong>cross-device People API</strong>, <strong>donate your contacts</strong>, <strong>add communication URIs</strong>, and <strong>donate activity signals</strong> so contacts <strong>rank higher</strong> across widget, search, and share.</li>
+<li><strong>For Resume:</strong> integrate with <strong>Continuity SDK or WNS (sometimes both)</strong> to make your app's activity work across <strong>Android <em>and</em> iOS</strong> apps with Windows.</li>
+<li><strong>Start at <code>learn.microsoft.com</code></strong> — links are presented in-session for each area.</li>
+<li>Closing line: "<strong>Connected Experiences is how your app not just be an app on Windows, but actually become a part of Windows. You write the integration once, and Windows gives you surfaces, ranking, engagement, and installs.</strong>"</li>
+</ul>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Windows Connected Experiences</strong> — the platform that lets third-party apps surface inside first-party Windows surfaces to gain discovery, engagement, and installs. Built on three APIs: Share, People, Resume.</li>
+<li><strong>Connected Experiences APIs (Share / People / Resume)</strong> — the three shipping APIs; this session covers Resume and People in depth.</li>
+<li><strong>Windows Resume</strong> — cross-device continuity feature: hand an in-progress mobile activity to the PC via a taskbar badge + deep link; can also drive an install. A <strong>Limited Access Feature</strong> (request access via Microsoft).</li>
+<li><strong>People API (cross-device People API)</strong> — donate app contacts so they become first-class citizens in the people widget, system search, and share, with ranking and deep-link actions.</li>
+<li><strong>Continuity SDK</strong> — Android SDK for the Resume "deep integration" path; publishes resumable activities; <strong>now published to Maven and GitHub.</strong></li>
+<li><strong>WNS (Windows Notification Service / Windows Push Notifications)</strong> — the cloud-driven Resume path; app backend pushes resume requests to Windows via a WNS channel URI; works on any platform but requires the app already installed on Windows.</li>
+<li><strong>Link to Windows (LTW) / Cross-Device Host (CDH) signaling</strong> — the transport by which Windows receives Continuity-SDK-published activities ("LTW CDH signaling").</li>
+<li><strong>Taskbar (Resume entry point / phone badge)</strong> — the surface where Resume nudges appear.</li>
+<li><strong>Widgets board / People widget</strong> — surfaces donated contacts (zero widget UI code from the app).</li>
+<li><strong>Windows system search</strong> — surfaces donated contacts as "people results" alongside apps, files, and web, with message/call/video actions.</li>
+<li><strong>Share sheet (people suggestions)</strong> — the People surface already driving 10M+ sessions/month.</li>
+<li><strong><code>com.microsoft.peoplecontract</code></strong> — the user-data-account contract an app creates to opt into People (one-time per app).</li>
+<li><strong>Communication URIs</strong> — registered per-contact to deep-link actions (message/audio/video) into the app via manifest-declared protocols.</li>
+<li><strong>Spotify</strong> — partner used in the media-continuity Resume demo (Pixel 8 → PC).</li>
+<li><strong>WhatsApp</strong> — partner used in the chat-continuity Resume demo and in both People demos (widget + search).</li>
+<li><strong>Google Pixel 8</strong> — the Android phone used in the Spotify Resume demo.</li>
+<li><strong>learn.microsoft.com</strong> — where the documentation/getting-started links live for each area.</li>
+<li><strong>Gradle / Maven / GitHub</strong> — build/distribution surfaces for the Continuity SDK dependency.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Continuity SDK is now published to Maven and GitHub</strong> — developers can add it as a Gradle dependency (a "now available" distribution milestone called out explicitly).</li>
+<li><strong>Two new People surfaces</strong> beyond the existing share-sheet suggestions: contacts can now appear in the <strong>people widget (widgets board)</strong> and in <strong>Windows system search</strong> as first-class people results with message/call/video actions.</li>
+<li><strong>Progression from "announced" to "shipping with real partners"</strong> — the three Connected Experiences APIs (Share/People/Resume) have moved from a prior Build's <em>announcement</em> to shipping at scale (50M+ devices/month).</li>
+<li><strong>Resume remains a Limited Access Feature</strong> requiring access requests through Microsoft (status/access model reiterated, not newly GA'd).</li>
+<li>No explicit GA-vs-preview labels were stated for the individual surfaces in this talk beyond the Continuity SDK distribution and the live partner traction; the session frames the platform as in-market and scaling rather than newly previewed.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Demo 1 — Spotify media continuity + install funnel (Pixel 8 → PC).</strong> Music playing on a Pixel 8; sitting at a PC in proximity, Spotify publishes a resume context; a taskbar badge with a phone icon appears; one click resumes the same album at the same timestamp on the PC. Variant shown: if Spotify isn't on the PC, the badge still appears and one click installs the app — <strong>proving Windows owns the full awareness→install→engagement funnel in one click.</strong></li>
+<li><strong>Demo 2 — WhatsApp chat continuity.</strong> A mobile WhatsApp conversation (shopping links sent mid-chat) is resumed on the PC desktop app exactly where it left off via the taskbar badge — <strong>proving Resume generalises beyond media to chat continuity.</strong></li>
+<li><strong>Demo 3 — People widget.</strong> WhatsApp-donated contacts render in the widgets board people widget, ordered by donated interaction signals; clicking a contact opens that exact WhatsApp conversation via a registered communication URI — <strong>proving the People API delivers ranking + deep-link actions with zero widget UI code from the app.</strong></li>
+<li><strong>Demo 4 — People in system search.</strong> Searching a person in Windows search returns the donated contact as a people result alongside apps/files/web, with WhatsApp attribution and message/call/video action buttons — <strong>proving "donate once, surface everywhere with actions ready."</strong></li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>10M+ sessions/month</strong> driven by the People API from a single surface (share-sheet people suggestions) — "10 million times app-engagement opportunities."</li>
+<li><strong>~1 in 4 (nearly 25%)</strong> of users who see a Resume taskbar nudge interact with it — and Resume is <strong>a top taskbar performer just 3 months post-release.</strong></li>
+<li><strong>50M+ devices/month</strong> reached by Share + People + Resume combined.</li>
+<li><strong>Over a billion sessions</strong> driven back to partner applications in the last year by these experiences.</li>
+<li><strong>"Windows handled the entire funnel — from awareness to install to engagement — all within a single click."</strong></li>
+<li><strong>"You define what resume means for your app, and Windows routes it."</strong> (music / chat / document continuity)</li>
+<li><strong>"WhatsApp didn't write a single line of widget UI code here. The People API handled everything."</strong></li>
+<li><strong>"The key idea of Connected Experiences API isn't just one-time integration. It's value compounding."</strong></li>
+<li><strong>"Connected Experiences is how your app not just be an app on Windows, but actually become a part of Windows."</strong></li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Pull the <strong>Continuity SDK</strong> from Maven/GitHub and stand up the <strong>5-step Resume flow</strong> on an Android test app (Gradle dep → manifest provider value <code>4</code> → init + handlers → <code>AppContext</code> with <code>type=resume activity</code> → <code>sendUpContext</code> + success/error callbacks). Verify the taskbar badge + deep-link resume.</li>
+<li>Prototype the <strong>WNS Resume path</strong> end-to-end (register WNS channel URI → build resume request with mandatory headers → push to Windows) for an iOS or cloud-driven app where the desktop app is already installed.</li>
+<li>Implement the <strong>People API</strong> integration: create a <code>com.microsoft.peoplecontract</code> user data account, store contacts with <code>otherAppReadAccess = systemOnly</code>, set <code>remoteId</code>, then enrich with <strong>communication URI annotations</strong> (message/audio/video + manifest protocols) and <strong>PII-free signals</strong>, and confirm contacts appear in widget + search + share with working actions.</li>
+<li>Validate the <strong>install funnel</strong>: confirm a Resume badge appears (and triggers a Store/app install) when the desktop app is <em>not</em> present — Continuity SDK path only.</li>
+<li>Test the <strong>resiliency pattern</strong> (stop publishing on <code>onSyncServiceDisconnected</code>, retry on reconnect) against flaky connectivity.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What exactly are the <strong>mandatory WNS headers</strong> for a resume request, and what's the payload schema for the deep link?</li>
+<li>What's the <strong>Limited Access Feature approval</strong> turnaround and eligibility bar for Resume? Any cost/partner-tier gating?</li>
+<li>Does the <strong>manifest provider value <code>4</code></strong> have other documented values (i.e. what activity types beyond "resume activity" exist)?</li>
+<li>How are <strong>interaction signals weighted</strong> for ranking — recency vs frequency? Any rate limits on signal donation?</li>
+<li>For WNS path on iOS, how does Windows associate the pushed resume with the correct installed desktop app identity?</li>
+<li>What's the user-facing <strong>Settings toggle</strong> path for contact visibility, and does revoking remove already-surfaced data immediately?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Any first-party/partner <strong>Windows desktop app</strong> wanting cross-device continuity or store install lift (media, messaging, docs).</li>
+<li><strong>Phone Link / Link to Windows</strong> integration work and cross-device strategy.</li>
+<li><strong>Growth/engagement</strong> initiatives looking for zero-/low-UI surfaces (taskbar, widgets, search) to drive installs and DAU.</li>
+<li>Privacy/compliance review of contact donation (system-only scope, no PII signals, uninstall cleanup).</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><a class="wikilink wikilink--resolved" href="BRK261.html">BRK261 - Build and ship faster with a developer-optimized experience on Windows</a> — broader Windows developer platform / experience story this Connected Experiences work sits within.</li>
+<li><a class="wikilink wikilink--resolved" href="DEM345.html">DEM345 - From prompt to app build AI powered apps on Windows</a> — companion Windows app-building session; complementary surface for app developers targeting Windows.</li>
+<li><a class="wikilink wikilink--resolved" href="DEM346.html">DEM346 - WSL improvements and the new Containers CLI and APIs</a> — sibling Windows-platform developer session from the same event track.</li>
+<li><a class="wikilink wikilink--resolved" href="ODSP916.html">ODSP916 - Design systems for every user including people and LLMs</a> — design-system context relevant to surfacing contacts/people consistently across Windows surfaces.</li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="OD854.html"><span class="pager-dir">← Previous</span><span class="pager-code">OD854</span><span class="pager-title">Building WinUI Apps with C# First Patterns and AI Assisted Workflows</span></a>
+    <a class="pager pager-next" href="OD870.html"><span class="pager-dir">Next →</span><span class="pager-code">OD870</span><span class="pager-title">Azure Storage for AI workloads</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OD822 — Smarter PostgreSQL migrations to power modern, intelligent apps</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">OD822</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=GbjjE9_3lWQ" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Smarter PostgreSQL migrations to power modern, intelligent apps</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Guy Bowerman (with demos by Jonathan Frost)</span>
+      <span class="meta-item">⏱️ 28m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="postgresql">Postgresql</span><span class="chip" data-tag="migration">Migration</span><span class="chip" data-tag="azure-database">Azure Database</span><span class="chip" data-tag="oracle-migration">Oracle Migration</span><span class="chip" data-tag="ai">AI</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Guy Bowerman (Product Manager, Azure Database for PostgreSQL Flexible Server); demos presented by Jonathan Frost (Program Manager, Azure Postgres team)<br>
+<strong>Duration:</strong> ~28 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=GbjjE9_3lWQ">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>PostgreSQL migration tooling on Azure is in a phase of rapid improvement — it's more accessible and cheaper than ever. This session makes the case for consolidating database workloads onto PostgreSQL (mature, open-source, no license fee, extensible for AI/GIS), and specifically onto <strong>Azure Database for PostgreSQL Flexible Server</strong> as a managed service that removes the total-cost-of-ownership burden of self-hosting. Guy Bowerman walks through recent performance/scale features (Premium SSD v2, V6 compute SKUs, cascading read replicas, elastic clusters/Citus) and Build 2026 announcements across migrate/maintain/monitor/build categories. The headline is the <strong>AI-assisted Oracle-to-PostgreSQL migration tool</strong> now in the VS Code Postgres extension — a multi-agent, self-correcting system that converts Oracle schema, database code, and application code at scale (validated on 2,000+ objects), demonstrated live by Jonathan Frost on schema conversion and a Java application migration.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Industry trend toward Postgres consolidation is accelerating</strong> — driven by Postgres being a mature DB with a highly optimized query engine, an extension model suited to AI and industry-specific tech (e.g. GIS), open-source backing by an independent community, and <strong>no license fee</strong>.</li>
+<li><strong>Azure runs open-source Postgres "as is"</strong> as a managed service with enterprise features — major customers like <strong>OpenAI bet production workloads on managed Postgres on Azure</strong>.</li>
+<li><strong>Total cost of ownership argument vs self-hosting on a VM/Kubernetes</strong> — managed service removes overhead of HA, DR, scalability, configuration, security, compliance, maintenance, and major version upgrades. A <strong>TechTarget study</strong> found companies moving from self-managed to Azure Database for Postgres both saved cost AND got better application performance.</li>
+<li><strong>Microsoft contributes upstream</strong> — has a team of independent Postgres committers; significant Postgres 18 features (query execution, async I/O, observability) were contributed by Microsoft committers, giving customers direct access to top experts.</li>
+<li><strong>VS Code Postgres extension is free and crossed 500K+ downloads</strong> a few months ago; it's evolving from a dev environment into a full <strong>database operations platform</strong> (deploy, manage, monitor, troubleshoot, visualize).</li>
+<li><strong>Premium SSD v2 is now GA</strong> — up to <strong>80K IOPS</strong>, <strong>1.2 GiB/s throughput</strong>, incremental space additions (pay only for what you need), ~4× transaction rate over SSD v1 with sub-millisecond latency.</li>
+<li><strong>Intel &amp; AMD V6 compute SKUs now GA</strong> — up to <strong>3× memory</strong> and <strong>2× vCores</strong> of V5, better per-core and price-performance; combined with upcoming <strong>Ultra Disk</strong> storage can reach <strong>up to 400K IOPS</strong>.</li>
+<li><strong>Cascading read replicas now GA</strong> — a primary can replicate to read replicas that themselves replicate to another layer, up to <strong>30 replicas</strong> from one primary, supporting read scale-out and cross-region DR.</li>
+<li><strong>Elastic clusters (GA, uses the Citus extension)</strong> — shard data across multiple Postgres nodes behind a single endpoint (shard by row or by schema); unique to Postgres on Azure among managed services and unlocks massive scale.</li>
+<li><strong>Postgres 18 + major version upgrade support added</strong>, plus a <strong>pre-upgrade validation check</strong> to simulate upgrades and fix issues beforehand ("no surprises").</li>
+<li><strong>Maintenance control improvements</strong> — defer a maintenance update for up to <strong>two weeks</strong> and apply updates <strong>on demand</strong> rather than waiting for a predefined window.</li>
+<li><strong>The flagship: AI-assisted Oracle-to-Postgres migration tool</strong> in the VS Code Postgres extension — multi-agent, self-correcting schema/code/app conversion validated on <strong>2,000+ objects</strong>, addressing the historically complex and costly cross-database migration problem.</li>
+<li><strong>Postgres-to-Postgres migration is a one-step service</strong> — point it at any source endpoint (VM, other services, and newly <strong>EDB and Huawei</strong> sources); supports online (minimal downtime) and offline (fewer limitations) migrations.</li>
+<li><strong>New monitoring/security additions</strong> — Grafana dashboards in the Azure portal, free data mirroring to Microsoft Fabric, and Defender security assessments (public access, public schema/role access, PG audit settings).</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="agenda-framing">Agenda &amp; framing</h3>
+<p>Guy Bowerman (PM for Azure Database for PostgreSQL Flexible Server) structures the session around: (1) <strong>why migrate</strong> to Postgres, (2) <strong>why on Azure</strong> plus recent features and Build 2026 announcements, (3) <strong>tooling for migrating Postgres workloads</strong> to Azure, and (4) <strong>migrating Oracle workloads</strong> (schema, database code, apps) to Postgres on Azure. His thesis: migration tooling is improving rapidly, the technology is more accessible, and the cost is lower than ever.</p>
+<h3 id="why-migrate-to-postgresql">Why migrate to PostgreSQL</h3>
+<p>The industry trend to <strong>consolidate database workloads onto Postgres is accelerating</strong>, for several reasons:
+- <strong>Mature database service</strong> with a <strong>highly optimized query engine</strong>.
+- <strong>Extension model</strong> is "perfectly suited" to adapt to new technologies — whether the latest AI innovations or industry-specific tech like <strong>GIS</strong>.
+- <strong>Open source</strong>, backed by an <strong>independent community</strong> with <strong>no license fee</strong> — cost is a key driver.</p>
+<h3 id="why-postgresql-on-azure">Why PostgreSQL on Azure</h3>
+<p>Azure takes <strong>open-source Postgres just as-is, with no changes</strong>, and runs it as a <strong>managed service</strong> with the enterprise features needed for critical workloads. Evidence and rationale:
+- Works with household-name customers; <strong>OpenAI</strong> is cited as willing to bet <strong>production workloads on managed Postgres on Azure</strong>.
+- Microsoft builds the <strong>enterprise features customers ask for</strong> plus enterprise fundamentals (performance, security, reliability), while also investing heavily in the <strong>developer community</strong> — e.g. the <strong>VS Code extension</strong>, the <strong>Azure AI extension</strong>, and <strong>Microsoft Foundry integration</strong>.</p>
+<h3 id="the-self-host-vs-managed-cost-argument">The self-host vs managed cost argument</h3>
+<p>Addressing "why not just self-host on a VM (or Kubernetes) in Azure?", Guy frames it around <strong>total cost of ownership for a production workload</strong>. Self-hosting in production carries ongoing overhead to "stay online" and meet requirements including: <strong>high availability, disaster recovery, scalability, configuration, integration, security, compliance, maintenance updates, and major version upgrades</strong> (and more). </p>
+<p>A <strong>TechTarget study</strong> measured before/after costs of self-managed vs Azure Database for PostgreSQL. In a managed environment where you can <strong>scale compute and disk resources</strong> and use features like the <strong>built-in connection pooler</strong>, companies were able to <strong>not just save costs but also get better application performance</strong> than running on-premises.</p>
+<h3 id="responsibility-to-the-open-source-community">Responsibility to the open-source community</h3>
+<p>Hosting an open-source database isn't only about cost — Azure has a responsibility to the <strong>upstream open-source community</strong>:
+- Microsoft employs a team of <strong>independent Postgres committers</strong> — Microsoft doesn't tell them what to work on; they contribute to upstream open-source Postgres.
+- In <strong>Postgres 18</strong>, significant features for <strong>query execution, async I/O, and observability</strong> were contributed by Microsoft committers.
+- Benefit for customers: if they hit problems, Microsoft can reach out to <strong>the top experts in the world</strong> on these topics for help.</p>
+<h3 id="developer-experience-the-vs-code-postgres-extension">Developer experience: the VS Code Postgres extension</h3>
+<ul>
+<li><strong>Free to use</strong> and "rapidly becoming a standard for Postgres developers" — it <strong>passed half a million (500K+) downloads a few months ago</strong>.</li>
+<li>More than a dev environment — becoming a <strong>database operations platform</strong>: deploy and manage Postgres, performance monitoring, troubleshooting, and visualization.</li>
+<li>Receives <strong>regular updates / continuous improvement</strong>, and is revisited later in the session in the <strong>migration</strong> context (it hosts the Oracle migration tooling).</li>
+</ul>
+<h3 id="staying-current-the-postgres-tech-community-blog">Staying current: the Postgres tech community blog</h3>
+<p>There is a tech community blog — <strong>"Microsoft blog for Postgres"</strong> — that <strong>recaps the latest features every month</strong>. It's positioned as a great resource for keeping up with the product/engineering teams, demonstrates the pace of development (a new set of features monthly), and includes guidance on where to find more information and how to use features.</p>
+<h3 id="performance-scale-updates">Performance &amp; scale updates</h3>
+<p><strong>Premium SSD v2 (recently made Generally Available):</strong>
+- Enables <strong>up to 80K IOPS</strong> and <strong>1.2 GiB/s throughput</strong>; ideal for <strong>I/O-intensive workloads</strong>.
+- <strong>Incremental space additions</strong> — if you need more space you add it and <strong>pay only for what you need</strong> (no need to double size and pay for all of it).
+- A <strong>PG bench test across five workload profiles (32 → 256 concurrent clients)</strong> showed <strong>SSD v1 maxing out at 20K IOPS</strong> as concurrency rises, while <strong>SSD v2 continues to scale to ~4× the transaction rate with sub-millisecond latency</strong>.
+- <strong>Ultra Disk</strong> (even higher-IOPS / more powerful storage) is <strong>coming soon</strong>.</p>
+<p><strong>Intel &amp; AMD V6 compute SKUs (now Generally Available):</strong>
+- Up to <strong>3× the memory</strong> and <strong>double the vCores of V5</strong>, with better per-core performance and better price-performance.
+- Based on <strong>5th-gen Intel Xeon</strong> and <strong>4th-gen AMD EPIC 9004</strong>.
+- With V6 SKUs + the upcoming <strong>high-performance Ultra Disk</strong> storage option, you can reach <strong>up to 400K IOPS</strong>.</p>
+<p><strong>Scaling out — cascading read replicas (recently GA):</strong>
+- A Postgres <strong>primary</strong> can replicate to <strong>read replicas</strong>, which can in turn replicate to <strong>another layer of read replicas</strong>.
+- Supports <strong>up to 30 replicas from one primary</strong> for read-heavy workloads, with flexibility to place replicas in <strong>other regions</strong> for <strong>cross-region disaster recovery</strong>.
+- This is how customers like <strong>OpenAI</strong> achieve massive scale.</p>
+<p><strong>Scaling out data — elastic clusters (GA for a while):</strong>
+- Uses the <strong>Citus Postgres extension</strong> — your app talks to <strong>one Postgres endpoint</strong> while data is <strong>sharded across multiple Postgres nodes</strong>.
+- Overcomes the <strong>storage and processing limits of a standalone server</strong>; you can <strong>shard by rows or by schema</strong> depending on whether you want app changes and the level of parallelization desired.
+- Can lead to <strong>massive performance improvements</strong>; this managed feature is <strong>unique to Postgres on Azure</strong>, is <strong>tried and tested</strong> (powering other Microsoft services behind the scenes), and "unlocks scale."
+- Related recent additions: <strong>Postgres 18</strong> and <strong>major version upgrade support</strong>.</p>
+<h3 id="build-2026-announcements-organized-migrate-maintain-monitor-build">Build 2026 announcements (organized: Migrate / Maintain / Monitor / Build)</h3>
+<p><strong>Migrate:</strong>
+- Deeper <strong>AI-assisted migration features</strong> (detailed later in the session).
+- <strong>Azure Migrate</strong> added <strong>PostgreSQL server discovery</strong> and improvements — helps the <strong>first phase of migration</strong> (understanding what you have and need to migrate).</p>
+<p><strong>Maintain:</strong>
+- A managed service needs maintenance (minor version updates to Postgres, security patches to the container OS). New controls give more say over timing:
+  - <strong>Defer a maintenance update for up to two weeks.</strong>
+  - <strong>Apply an update on demand</strong> instead of waiting for a predefined window — useful to avoid inconveniencing a production workload.
+- For <strong>major version upgrades</strong>: extended <strong>pre-upgrade validation check</strong> so you can <strong>simulate an upgrade and fix issues before applying</strong>, targeting an upgrade "with no surprises."</p>
+<p><strong>Monitor:</strong>
+- New <strong>Grafana dashboard option</strong> for Postgres in the <strong>Azure portal</strong> — easier, customizable monitoring.
+- If you run analytics/reporting in <strong>Microsoft Fabric</strong>, you can <strong>mirror your data from Postgres for free</strong>; added support for more scenarios (e.g. <strong>empty tables</strong>, more <strong>DDL data-definition-language operations</strong>) for robustness.
+- Added <strong>Defender security assessments</strong> to audit security posture — e.g. does the database have <strong>public access</strong>, <strong>public schema access</strong>, <strong>public role access</strong> (needing lockdown), or the <strong>recommended PG audit settings</strong>.</p>
+<p><strong>Build:</strong>
+- Multiple improvements to the <strong>VS Code Postgres extension</strong>: <strong>query plan visualization</strong>, an <strong>enhanced performance dashboard</strong> (work with the <strong>query store</strong> to troubleshoot top queries), and more operations like <strong>backup and restore</strong>.
+- Links provided to Build sessions showcasing these, and to the high-performance <strong>Horizon DB</strong> service (in <strong>preview</strong>).</p>
+<h3 id="postgres-to-postgres-migration-tooling">Postgres-to-Postgres migration tooling</h3>
+<p>For moving an existing Postgres workload (on-premises, in a VM, etc.) to Azure:
+- A <strong>migration service</strong> moves it <strong>in one step</strong> — point it at the <strong>source endpoint</strong> and move it.
+- Broad source support, including a VM and various services; <strong>EDB and Huawei</strong> were <strong>recently added as sources</strong>.
+- <strong>Online migration</strong> (minimize downtime) or <strong>offline migration</strong> (fewer limitations, very easy setup).
+- Supports <strong>flexible server → flexible server</strong> migration — not officially a supported option, but it works and can be useful for certain configuration changes that would otherwise require a point-in-time restore.</p>
+<p><strong>How to reach/run it:</strong>
+- Run from the <strong>Azure portal</strong> or the <strong>command line via Azure CLI</strong>.
+- Portal path: <strong>create a new flexible server → select the migration option</strong>, then select your source; it walks you <strong>step by step</strong> and lists <strong>prerequisites</strong>. The <strong>list of checks is worth careful attention</strong> and links to docs/tutorials.
+- CLI has <strong>full support built in</strong>. If you hit limitations, you can fall back to open-source <strong>pg_dump / restore</strong> (a link to such scenarios is promised).</p>
+<h3 id="migrating-oracle-workloads-to-postgres-on-azure">Migrating Oracle workloads to Postgres on Azure</h3>
+<ul>
+<li><strong>Number one driver: license cost.</strong> Example shown is the list price of a <strong>16-processor Oracle license</strong> vs the <strong>Postgres license cost of zero</strong> — a "really compelling" reason. (Even with a discount, the contrast is stark.)</li>
+<li><strong>The historical blocker:</strong> cross-database migration has always been <strong>complex and therefore costly</strong>, which stopped many from migrating.</li>
+<li><strong>Migration journey phases:</strong> starts with <strong>discovery and assessment</strong>, but the most challenging/complex phases are:
+  1. <strong>Database schema</strong> migration
+  2. <strong>Database code</strong> migration (stored procedures, packages, triggers, etc.)
+  3. <strong>Application</strong> migration (e.g. Spring Boot, Hibernate, .NET, Python apps)
+  4. <strong>Data</strong> migration</li>
+<li>After landing in Postgres on Azure, there's substantial <strong>performance tuning and cloud optimization</strong> opportunity.</li>
+<li>Microsoft has added <strong>its own tooling specifically for the first three complex phases</strong> (schema, database code, application) to reduce complexity and cost.</li>
+</ul>
+<h3 id="the-ai-assisted-oracle-to-postgres-migration-tool">The AI-assisted Oracle-to-Postgres migration tool</h3>
+<ul>
+<li>Available <strong>now in the VS Code Postgres extension</strong>.</li>
+<li>Handles the <strong>Oracle schema, database code, and application code</strong> phases of migration.</li>
+</ul>
+<p><strong>How schema conversion works:</strong>
+1. <strong>Extracts the Oracle schema</strong> and <strong>groups it into related objects</strong>.
+2. Uses an <strong>LLM to create related chunks</strong>.
+3. Deploys a set of <strong>schema conversion agents</strong> that interact with the LLM to <strong>generate the SQL code for Postgres</strong>, <strong>validate the code</strong>, then make <strong>further iterative improvements</strong>.
+4. The <strong>final schema output</strong> is available to review; <strong>notes from this phase</strong> are captured for the AI tooling to reuse in the <strong>code conversion phases</strong>.</p>
+<p><strong>How application conversion works:</strong>
+- You create a <strong>VS Code workspace migration project</strong> and copy the application files locally.
+- The extension leverages <strong>GitHub Copilot agent mode</strong> with <strong>custom conversion blueprints and report templates</strong> carried over from the schema conversion phase.
+- Agents use <strong>LMTs (large-language-model-based translation layers)</strong> to convert code, queries, and application logic across technology stacks.
+- It also uses an <strong>Azure Database for PostgreSQL instance</strong> to <strong>validate versions and extensions</strong> as it goes.</p>
+<h3 id="recap-speakers-closing">Recap (speaker's closing)</h3>
+<p>The session recapped: reasons behind the industry trend to consolidate on Postgres; why Postgres on Azure; latest performance/scale features and Build 2026 announcements; Postgres-to-Postgres migration tooling; and the AI-assisted Oracle-to-Postgres tooling. Next steps/links were promised, including Build 2026 sessions (some only available at Build, others online) via the short link <strong>aka.ms/postgres-on-azure-build-2026 (as spoken: "ak.ms postgres on azure build 2026")</strong>, plus links to <strong>Postgres documentation on migration and migration tools</strong>.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Azure Database for PostgreSQL Flexible Server</strong> — the managed Postgres service at the center of the session.</li>
+<li><strong>VS Code PostgreSQL extension</strong> — free; 500K+ downloads; dev + database operations platform; hosts the Oracle migration tool; query plan visualization, enhanced performance dashboard, query store, backup/restore.</li>
+<li><strong>Azure AI extension</strong> &amp; <strong>Microsoft Foundry integration</strong> — developer-experience investments for Postgres.</li>
+<li><strong>Premium SSD v2</strong> — storage tier (80K IOPS, 1.2 GiB/s, incremental sizing). <strong>SSD v1</strong> (20K IOPS) referenced for comparison. <strong>Ultra Disk</strong> — higher-performance storage, coming soon.</li>
+<li><strong>V6 compute SKUs (Intel &amp; AMD)</strong> — 5th-gen Intel Xeon, 4th-gen AMD EPIC 9004; up to 3× memory / 2× vCores of <strong>V5</strong>.</li>
+<li><strong>Cascading read replicas</strong> — up to 30 replicas, multi-layer, cross-region DR.</li>
+<li><strong>Elastic clusters</strong> — built on the <strong>Citus</strong> Postgres extension; sharding by row or schema.</li>
+<li><strong>PostgreSQL 18</strong> — with major-version-upgrade support; pre-upgrade validation check.</li>
+<li><strong>Azure Migrate</strong> — PostgreSQL server discovery for the assessment phase.</li>
+<li><strong>Grafana dashboards</strong> (in Azure portal) — monitoring.</li>
+<li><strong>Microsoft Fabric</strong> — free data mirroring from Postgres for analytics/reporting.</li>
+<li><strong>Microsoft Defender</strong> — security assessments (public access, public schema/role access, PG audit).</li>
+<li><strong>PostgreSQL migration service</strong> — one-step Postgres-to-Postgres migration; online/offline; EDB &amp; Huawei sources.</li>
+<li><strong>pg_dump / restore</strong> — open-source fallback for migration edge cases.</li>
+<li><strong>GitHub Copilot agent mode</strong> — drives application conversion with custom blueprints/templates.</li>
+<li><strong>LLM / LMTs (LLM-based translation layers)</strong> — power schema/code/app conversion.</li>
+<li><strong>Azure OpenAI endpoint</strong> — used in agent mode to scale migration to thousands of objects (per demo).</li>
+<li><strong>Java App Mod extension</strong> — provides LMTs (build Java project, generate unit tests) leveraged during Java app conversion.</li>
+<li><strong>Horizon DB</strong> — high-performance Postgres service, in <strong>preview</strong>.</li>
+<li><strong>Built-in connection pooler</strong> — referenced in the TCO/cost study.</li>
+<li><strong>Citus</strong>, <strong>GIS</strong>, <strong>PG bench</strong>, <strong>Spring Boot / Hibernate / .NET / Python</strong> — ecosystem/tech references.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Premium SSD v2 — Generally Available</strong> (80K IOPS, 1.2 GiB/s, incremental sizing).</li>
+<li><strong>Intel &amp; AMD V6 compute SKUs — Generally Available</strong> (up to 3× memory, 2× vCores of V5).</li>
+<li><strong>Cascading read replicas — Generally Available</strong> (up to 30 replicas, multi-layer, cross-region DR capable).</li>
+<li><strong>PostgreSQL 18 support + major version upgrade support</strong> added.</li>
+<li><strong>Pre-upgrade validation check</strong> (extended) — simulate major version upgrades and fix issues first.</li>
+<li><strong>Maintenance controls</strong> — defer maintenance updates up to two weeks; apply updates on demand.</li>
+<li><strong>Azure Migrate</strong> — added PostgreSQL server discovery and improvements.</li>
+<li><strong>Grafana dashboard option</strong> for Postgres in the Azure portal.</li>
+<li><strong>Microsoft Fabric mirroring</strong> — free data mirroring with expanded scenario support (empty tables, more DDL operations).</li>
+<li><strong>Microsoft Defender security assessments</strong> for Postgres.</li>
+<li><strong>VS Code Postgres extension</strong> build improvements — query plan visualization, enhanced performance dashboard / query store troubleshooting, backup &amp; restore operations.</li>
+<li><strong>AI-assisted Oracle-to-PostgreSQL migration tool</strong> — available now in the VS Code Postgres extension (schema, database code, and application code conversion).</li>
+<li><strong>EDB and Huawei</strong> added as <strong>migration sources</strong> for the Postgres migration service.</li>
+<li><strong>Ultra Disk</strong> storage and <strong>Horizon DB</strong> service flagged as <strong>coming soon / in preview</strong> (forward-looking).</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<h3 id="demo-1-oracle-postgresql-schema-conversion-presented-by-jonathan-frost">Demo 1 — Oracle → PostgreSQL schema conversion (presented by Jonathan Frost)</h3>
+<ul>
+<li><strong>Create a migration project</strong> in the Postgres extension and name it.</li>
+<li><strong>Connect to an Oracle server</strong> via connection parameters — in this case <strong>Oracle 19c</strong>; list available schemas and select one or more to convert to Postgres.</li>
+<li><strong>Configure a scratch Postgres database</strong> — used to <strong>test each converted schema object and automatically fix discovered issues</strong>. This <strong>agentic self-correction approach against a live Postgres database significantly improves reliability</strong>.</li>
+<li><strong>Connect to an Azure OpenAI endpoint</strong> — used with <strong>agent mode to scale migration to thousands of objects</strong>, "something Copilot agent mode cannot do out of the box."</li>
+<li>Click <strong>Migrate</strong>: </li>
+<li><strong>Stage 1 — extract Oracle DDL</strong> (shown via top progress bar).</li>
+<li><strong>Stage 2 — convert each DDL chunk</strong> via the <strong>multi-agent orchestration workflow</strong>; chunks are <strong>compiled against the Postgres scratch database</strong>. When <strong>errors occur</strong>, the <strong>conversion agent takes them into account, reconverts, and recompiles</strong> until successful, then applies the chunk.</li>
+<li><strong>Coding notes</strong> were captured (e.g. two notes) as <strong>context items</strong> that the <strong>application conversion tooling later consumes</strong>.</li>
+<li>A <strong>comprehensive migration report</strong> is generated showing <strong>objects converted, object types, and Postgres extensions detected/used</strong> for conversion context. This <strong>test run processed 34 objects</strong>; <strong>customers have successfully tested at a scale of 2,000+ objects</strong>.</li>
+<li>Use the extension's <strong>visualize schema feature</strong> to validate tables/relationships; <strong>right-click a table (e.g. addresses) to compare the Oracle vs generated Postgres DDL side by side</strong>.</li>
+<li><strong>Interactive mode</strong>: after the initial conversion, for <strong>every conversion issue that couldn't be resolved automatically</strong>, the tool <strong>creates a follow-up task for the developer</strong> (shown as a table of tasks). For a <strong>complex trigger</strong> task, clicking <strong>Run Task</strong> generates a <strong>custom prompt giving full context to agent mode</strong>, which <strong>recognizes the issue and provides a correction</strong>; review the modified files, keep the changes, and <strong>finalize the migration</strong>.</li>
+<li><strong>Outcome:</strong> connected to Oracle, converted its schema to Postgres format <strong>at scale</strong>, and <strong>tracked/resolved complex issues in interactive mode</strong>.</li>
+</ul>
+<h3 id="demo-2-oracle-postgresql-application-code-migration-java-app-presented-by-jonathan-frost">Demo 2 — Oracle → PostgreSQL application code migration (Java app, presented by Jonathan Frost)</h3>
+<ul>
+<li>Continuing from an existing <strong>schema conversion project</strong>, proceed to the wizard's <strong>Application Conversion</strong> step and click <strong>Convert Application</strong>.</li>
+<li><strong>Select the application codebase location</strong> (a copy is in the root of the VS Code workspace) and a <strong>Postgres database connection</strong> to provide database context.</li>
+<li>This starts a <strong>composite prompt</strong> that invokes a <strong>custom LMT</strong> to convert the Oracle client application code to Postgres equivalents using the <strong>target Postgres database context</strong>. Along the way, additional <strong>LMTs obtain the Postgres version and installed extensions</strong>.</li>
+<li><strong>Coding notes from the recent schema migration are read in</strong> to provide valuable context to the application conversion flow.</li>
+<li>The tool makes <strong>resource and database connection changes</strong> to the codebase, then <strong>changes the ORM code to align with the Postgres table data types</strong>.</li>
+<li>Calls the <strong>Build Java Project LMT</strong> (provided by the <strong>Java App Mod extension</strong>) — referencing this LMT in the blueprints lets the tool <strong>leverage capabilities across related extensions</strong>; the <strong>build succeeds on the first try</strong>.</li>
+<li>Calls the <strong>Generate Unit Test LMT</strong> (also from the Java App Mod extension) — <strong>successfully generated and ran 30+ tests with a 100% passing rate</strong>.</li>
+<li>A <strong>comprehensive report</strong> is generated and <strong>opened automatically</strong> when the flow completes.</li>
+<li><strong>Outcome:</strong> converted an Oracle client application codebase to Postgres equivalents using a <strong>combination of custom LMTs for code conversion and database context</strong>, with the tool <strong>detecting it was a Java app</strong> and <strong>leveraging the Java App Mod extension LMTs</strong> for enhanced cross-extension capabilities.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>VS Code Postgres extension passed half a million (500K+) downloads</strong> a few months ago.</li>
+<li><strong>Premium SSD v2:</strong> up to <strong>80K IOPS</strong>, <strong>1.2 GiB/s throughput</strong>; <strong>SSD v1 maxes at 20K IOPS</strong>; SSD v2 reaches <strong>~4× the transaction rate with sub-millisecond latency</strong> (PG bench, 32–256 concurrent clients).</li>
+<li><strong>V6 compute SKUs:</strong> up to <strong>3× memory</strong> and <strong>2× vCores</strong> of V5; with upcoming Ultra Disk, <strong>up to 400K IOPS</strong>.</li>
+<li><strong>Cascading read replicas:</strong> up to <strong>30 replicas</strong> from one primary.</li>
+<li><strong>Oracle license example:</strong> <strong>16-processor license</strong> list price vs <strong>Postgres license cost = $0</strong> — a "really compelling reason to look into migration."</li>
+<li><strong>Schema demo:</strong> test run processed <strong>34 objects</strong>; <strong>customers have tested at 2,000+ objects</strong> scale.</li>
+<li><strong>App demo:</strong> <strong>30+ generated unit tests, 100% passing rate</strong>, <strong>build succeeded on the first try</strong>.</li>
+<li>
+<blockquote>
+<p>"OpenAI is a good example… they're willing to bet their production workloads on managed Postgres running on Azure." — Guy Bowerman</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>"The Postgres license cost of zero — there's a really compelling reason to look into migration." — Guy Bowerman (on Oracle→Postgres license savings)</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>"The agentic self-correction approach using this live Postgres database significantly improves reliability of the migration process." — Jonathan Frost</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>"This endpoint is used in combination with agent mode to scale migration to thousands of objects, something Copilot agent mode cannot do out of the box." — Jonathan Frost</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Install/update the <strong>VS Code PostgreSQL extension</strong> and explore the new <strong>query plan visualization</strong>, <strong>performance dashboard / query store</strong>, and <strong>backup &amp; restore</strong> operations.</li>
+<li>Spin up an <strong>Oracle 19c</strong> test instance and run the <strong>AI-assisted Oracle→Postgres schema conversion</strong> end-to-end (scratch DB + Azure OpenAI endpoint), then try <strong>interactive mode</strong> on a complex trigger.</li>
+<li>Try the <strong>Java application conversion</strong> flow with the <strong>Java App Mod extension</strong> to see the build + unit-test LMTs in action.</li>
+<li>Benchmark <strong>Premium SSD v2</strong> vs <strong>SSD v1</strong> with <strong>pg_bench</strong> on a flexible server; test <strong>V6 SKU</strong> price-performance.</li>
+<li>Stand up <strong>cascading read replicas</strong> and an <strong>elastic cluster (Citus)</strong> to evaluate read scale-out and sharding-by-schema vs sharding-by-row.</li>
+<li>Configure <strong>Grafana dashboards</strong>, <strong>Fabric mirroring</strong>, and <strong>Defender security assessments</strong> on a test server.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What LLM/model backs the schema conversion agents by default, and can the <strong>Azure OpenAI endpoint</strong> model be chosen/tuned? (App conversion is noted to use a Claude model via Copilot agent mode.)</li>
+<li>What are the <strong>cost implications</strong> of the AI-assisted migration (Azure OpenAI token usage) at the 2,000+ object scale?</li>
+<li>Where does <strong>Ultra Disk</strong> and <strong>Horizon DB</strong> sit on the roadmap (GA dates) and how do they compare to SSD v2 / standard flexible server?</li>
+<li>Is <strong>flexible-server → flexible-server</strong> migration moving toward officially supported status?</li>
+<li>Which exact source platforms are supported by the migration service beyond VM, <strong>EDB</strong>, and <strong>Huawei</strong>?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Any <strong>Oracle→Postgres</strong> modernization or license-cost-reduction initiative.</li>
+<li><strong>Azure Database for PostgreSQL Flexible Server</strong> planning, sizing, and performance/scale decisions.</li>
+<li>Customers evaluating <strong>managed vs self-hosted</strong> Postgres TCO.</li>
+<li>AI-assisted <strong>database migration</strong> demos and POCs.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li>aka.ms/postgres-on-azure-build-2026 — Build 2026 session links (some Build-only, some online)</li>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Build 2026">Microsoft Build 2026</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Azure Database for PostgreSQL">Azure Database for PostgreSQL</span></li>
+<li><span class="wikilink wikilink--unresolved" title="PostgreSQL">PostgreSQL</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Oracle to PostgreSQL migration">Oracle to PostgreSQL migration</span></li>
+<li><span class="wikilink wikilink--unresolved" title="VS Code PostgreSQL extension">VS Code PostgreSQL extension</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Citus">Citus</span></li>
+<li><span class="wikilink wikilink--unresolved" title="GitHub Copilot agent mode">GitHub Copilot agent mode</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="OD821.html"><span class="pager-dir">← Previous</span><span class="pager-code">OD821</span><span class="pager-title">Building Azure DocumentDB on Open-Source Foundations</span></a>
+    <a class="pager pager-next" href="OD823.html"><span class="pager-dir">Next →</span><span class="pager-code">OD823</span><span class="pager-title">Faster AI Responses with Semantic Caching in Azure Managed Redis</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

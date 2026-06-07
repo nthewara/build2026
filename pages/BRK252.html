@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRK252 — From observability to ROI for AI agents on any framework</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">BRK252</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=a7FELS8hQAE" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">From observability to ROI for AI agents on any framework</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Abishek (PM, Microsoft Foundry Observability), Sebastian (PM, Microsoft Foundry Observability), Felicia (PM, Microsoft Foundry), Vivek (PM, Microsoft Foundry)</span>
+      <span class="meta-item">⏱️ 35m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="observability">Observability</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="azure-monitor">Azure Monitor</span><span class="chip" data-tag="opentelemetry">Opentelemetry</span><span class="chip" data-tag="ai">AI</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Abishek, Sebastian, Felicia &amp; Vivek (Microsoft Foundry / Foundry Observability PM team)<br>
+<strong>Duration:</strong> ~35 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=a7FELS8hQAE">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Microsoft Foundry observability gives you an end-to-end <strong>agent DevOps life cycle</strong> built on four pillars — <strong>tracing → evaluation → monitoring → optimization</strong> — that works for <em>any</em> agent on <em>any</em> framework (LangChain, LangGraph, OpenAI SDK, Microsoft Agent Framework), not just Foundry-native agents. The session walks the full inner-loop/outer-loop journey through four live demos on a real "vendor history analyst" data-center agent: getting-started evaluation in the portal (with the new <strong>rubric evaluator</strong>), code-first observability via the <strong>Foundry MCP server + Foundry skill</strong> in VS Code, automated <strong>AI Agent Optimize</strong> that hill-climbs your system prompt / tools / model, and finally <strong>Agent ROI</strong> that proves business value by netting agent value against token + tool cost. Everything is grounded in <strong>OpenTelemetry GenAI semantic conventions</strong> (Microsoft is actively contributing, e.g. new memory semantics) and flows to <strong>Azure Monitor</strong> for full-stack visibility, then back into Foundry for centralized AI observability. The throughline: agents are non-deterministic, so you need observability to make them reliable, continuously improve them, and prove they're worth the spend.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li>Foundry observability rests on <strong>four pillars</strong>: tracing (full end-to-end execution workflow), evaluation (quality/safety run <em>off the traces</em>), monitoring (run the same offline evals online to catch issues in real time), and optimization (continuously improve).</li>
+<li>Observability is part of Foundry's <strong>control plane</strong> that spans the agent service, models, IQ for knowledge, tools, and ML capabilities like fine-tuning.</li>
+<li><strong>Open ecosystem support</strong> is the headline: you can trace and evaluate <strong>non-Foundry agents built with any framework</strong> — LangChain, LangGraph, OpenAI SDK, Microsoft Agent Framework — getting full execution visibility and eval signals from the traces.</li>
+<li>The <strong>rubric evaluator</strong> (public preview) auto-generates a <strong>multi-dimensional</strong> evaluator (the demo produced 8 weighted dimensions) from just your system prompt + agent, usable for both offline testing and online evaluation — even with <strong>zero existing data</strong>.</li>
+<li>Evals run continuously against <strong>production traces pulled from Application Insights</strong>; low-scoring traces are drillable down to the exact prompt/response to root-cause hallucinations.</li>
+<li><strong>Full-stack observability</strong> comes from Foundry's partnership with <strong>Azure Monitor</strong>: Foundry observes apps/agents/AI-platform components, ships the data to Azure Monitor for a cross-resource view, then reads it back into Foundry for centralized AI observability.</li>
+<li><strong>Code-first observability</strong>: the <strong>Foundry MCP server + Foundry skill</strong> ship in the <strong>Foundry toolkit</strong> (a VS Code extension) so you can fetch eval results, get grounded explanations, and take actions on Foundry from your IDE / GitHub Copilot Chat / CLI.</li>
+<li>A <strong>skill</strong> is an <em>opinionated flow</em> authored by the Foundry team — it knows which part of the observability loop you're in, grounds analysis in your <strong>repo context + Foundry skill context</strong> (more trustworthy than a generic LLM), and connects client-side vs server-side issues.</li>
+<li><strong>Multi-turn evaluation</strong> (public preview): evaluate across an entire session, not just single turns — e.g. a session that succeeds but takes 20 min when 5 was expected is <em>not</em> a success.</li>
+<li><strong>User simulation</strong> (public preview): auto-generate realistic conversations to bootstrap multi-turn evaluation when you lack real multi-turn data.</li>
+<li><strong>Traces → datasets with smart filtering</strong> lets you feed production traces back into the inner loop to expand test coverage beyond your initial handful of cases (20 test cases won't cover production).</li>
+<li>The <strong>evaluator catalog</strong> spans quality, risk, safety, and agent evaluators; many are now multi-turn (groundedness, coherence, task completion, customer satisfaction, rubric). Use a mix — <strong>code-based evaluators</strong> (regex, DB lookups) are recommended for deterministic checks instead of an LLM-as-judge.</li>
+<li><strong>AI Agent Optimize</strong> (private preview, public preview soon) automatically creates and deploys new agent versions, hill-climbs the system prompt / skills / tool descriptions / model against your dataset + rubrics, and keeps what works — demo got a <strong>24% boost</strong> and went <strong>38/40 → 40/40</strong> tasks, lifting score <strong>0.577 → 0.7</strong> in <strong>25 minutes</strong>.</li>
+<li><strong>Agent ROI</strong> (private preview, public preview soon) proves business value: assign a dollar business value to an evaluator, auto-pull token cost, add tool cost, and track <strong>net value per agent version</strong> over time — revealing, e.g., that <strong>tool calls cost more than the LLM</strong> and surfacing low-ROI/failed invocations to drill into.</li>
+<li>Microsoft is <strong>deeply invested in OpenTelemetry</strong> as the standard underpinning both tracing and evaluation — engineers actively contribute to the open-source community (newly contributed <strong>memory semantics</strong> coming to Foundry soon).</li>
+<li>Customer proof point: <strong>NTT Data</strong> uses Foundry + Azure Monitor to turn AI into an enterprise-grade, production-ready system.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="why-observability-for-agents-the-non-determinism-problem">Why observability for agents — the non-determinism problem</h3>
+<p>Agents are <strong>non-deterministic</strong>, which creates new reliability and consistency challenges for both developers and operators. A traditional deterministic app behaves predictably; an agent may answer the same class of question differently, hallucinate, or take an unexpectedly long path to a correct answer. Observability is the discipline that lets you <em>see</em> what your agent actually did, <em>assess</em> whether it was good, <em>catch</em> regressions in production, and <em>improve</em> over time. The session frames this as the reason the whole agent DevOps life cycle has to evolve.</p>
+<h3 id="the-four-pillars-of-foundry-observability">The four pillars of Foundry observability</h3>
+<p>Foundry observability is structured as four pillars that build on each other:
+1. <strong>Tracing</strong> — view the <strong>full end-to-end execution workflow</strong> of your agents (every step, tool call, model invocation).
+2. <strong>Evaluation</strong> — assess <strong>quality and safety</strong>; crucially, evaluations are <strong>run off of the traces</strong>, so the same captured execution data feeds the scoring.
+3. <strong>Monitoring</strong> — run the <strong>same evaluations you ran offline, now in an online setting</strong>, so you detect issues in <strong>real time</strong> in production.
+4. <strong>Optimization</strong> — <strong>continuously improve</strong> your agents using the signals from the first three pillars.</p>
+<p>The key architectural idea repeated throughout: <strong>traces are the substrate</strong>. Evals, monitoring, ROI, and optimization all read from traces rather than requiring separate instrumentation.</p>
+<h3 id="observability-as-part-of-the-foundry-control-plane">Observability as part of the Foundry control plane</h3>
+<p>Foundry positions observability not as a bolt-on but as part of the <strong>control plane</strong> that spans every capability you need to build production agents: the <strong>agent service</strong>, <strong>models</strong>, <strong>IQ for knowledge</strong> (retrieval/grounding), <strong>tools</strong>, and <strong>ML capabilities such as fine-tuning</strong>. Observability cuts across all of them, giving a single lens over the agent platform rather than per-component silos.</p>
+<h3 id="the-agent-devops-life-cycle-inner-loop-outer-loop">The agent DevOps life cycle: inner loop ↔ outer loop</h3>
+<p>The organizing metaphor is <strong>traditional DevOps evolving for the age of AI agents</strong>:
+- <strong>Getting started</strong> — out-of-the-box observability with no setup.
+- <strong>Inner loop</strong> — where developers <strong>plan, code, test, and release</strong>, all with observability <strong>at their fingertips directly within the IDE</strong>.
+- <strong>Outer loop</strong> — the same observability capabilities used to <strong>monitor</strong> agents in production, <strong>analyze results and get insights</strong>, and <strong>optimize</strong>.
+- <strong>The feedback cycle</strong> — outer-loop signals (production traces, eval results) feed <strong>back into the inner loop</strong> for continuous improvement. This bidirectional flow is the heart of the talk.</p>
+<h3 id="the-demo-scenario-vendor-history-analyst-agent">The demo scenario: vendor history analyst agent</h3>
+<p>All demos build on the <strong>data-center operations scenario</strong> introduced in <strong>BRK241</strong> ("developing production agents"). The agent is a <strong>vendor history analyst</strong> for Microsoft's data center operations. Use case: a <strong>vendor manager</strong> oversees vendors that fix/address issues in data centers and wants data-driven insight before conversations with those vendors. The agent <strong>summarizes vendor job history, surfaces insights, and highlights key learnings</strong> so the manager can have an evidence-based conversation that drives outcomes. This concrete, relatable scenario anchors every feature shown.</p>
+<h3 id="demo-1-felicia-getting-started-evaluation-in-the-portal">Demo 1 (Felicia) — getting-started evaluation in the portal</h3>
+<p>Felicia starts from an <strong>existing hosted agent</strong> (the vendor analyst), referencing earlier sessions by Jeff and Tina on how hosted agents are deployed. In the <strong>portal playground</strong> she sends a basic user-style query and the <strong>logs stream in on the right</strong> in real time, confirming the request reached the agent.</p>
+<p>The core challenge she calls out: when you first play with agents it's <strong>hard to assess whether they're trustworthy or healthy</strong> — how do you actually <em>evaluate</em> an agent? Her answer: <strong>evaluation</strong> is the keyword, and the goal is to set the agent up so you can evaluate across <strong>a wide range of question types</strong> a user might ask, covering many cases rather than one happy path.</p>
+<h3 id="the-rubric-evaluator-new-in-foundry">The rubric evaluator (new in Foundry)</h3>
+<p>While the agent "thinks," Felicia introduces the <strong>rubric evaluator</strong> — a new Foundry feature that produces a <strong>multi-dimensional evaluation score</strong> rather than a single pass/fail. To create one with <strong>no existing data</strong>, she:
+1. Names the rubric and selects the <strong>rubric type</strong>.
+2. Pastes in the <strong>system prompt the agent uses</strong>.
+3. Selects a <strong>model</strong>.
+4. Sets the <strong>target</strong> to the hosted agent shown earlier.
+5. Clicks <strong>Generate the rubric</strong>.</p>
+<p>Foundry then auto-generates a rubric across <strong>eight different dimensions, each with different weights</strong>, derived from the prompt + agent. She notes you can also <strong>upload additional context files from your code</strong>, and that everything done in the portal can equally be done <strong>in code</strong>. The payoff: evaluation is dramatically simplified because you see quality <strong>across a whole set of dimensions inside a single evaluator</strong>.</p>
+<h3 id="reading-traces-and-root-causing-a-low-score">Reading traces and root-causing a low score</h3>
+<p>Back on the agent, the reply comes back <strong>contradictory</strong> — it's unsure whether the vendor needs management, but still issues a recommendation — exactly the kind of thing worth investigating. Felicia opens the <strong>Traces</strong> view, which shows traces from <strong>other query types</strong> too because <strong>continuous evaluations and jobs</strong> have been set up: it <strong>pulls production traces from Application Insights</strong> and runs the previously-created evaluator against them, scoring each trace as it populates. Scores <strong>vary by the kind of question</strong> asked.</p>
+<p>She spots a <strong>low score</strong>, clicks the <strong>trace ID</strong>, and gets a <strong>rich trace view</strong> showing the evaluations against the agent invocation. The detailed view reveals <strong>both task completion and the vendor-history rubric score are low</strong>. Switching to the <strong>user view</strong> to see what actually happened: the user asked a <strong>very specific question</strong> and the agent <strong>lacked the exact data it was supposed to provide</strong> (data the user explicitly referenced). Conclusion: the agent is <strong>hallucinating</strong> — claiming the vendor is "performing well" without giving the correct, context-grounded response. This demonstrates the full loop: trace → eval score → drill into the offending prompt → diagnose the failure mode.</p>
+<h3 id="recap-1-open-ecosystem-azure-monitor-rubric-ga-status">Recap 1 — open ecosystem + Azure Monitor + rubric GA status</h3>
+<p>The team recaps three things from Demo 1:
+- <strong>Open ecosystem support</strong> (the exciting announcement): the tracing experience and evals-off-traces work for <strong>Foundry <em>and</em> non-Foundry agents on any framework</strong> — <strong>LangChain, LangGraph, OpenAI SDK, Microsoft Agent Framework</strong> — giving complete visibility into the full agent execution workflow plus eval signals straight from the traces.
+- <strong>Full-stack observability via Azure Monitor partnership</strong>: inside Foundry you observe your <strong>apps, agents, and all AI platform components</strong>; all that data goes to <strong>Azure Monitor</strong> for a <strong>full-stack view across all Azure resources, data, and infrastructure</strong>; then that data is <strong>read back into Foundry</strong> for <strong>centralized observability of all AI workloads</strong>.
+- <strong>Rubric evaluator is now in public preview</strong> — out-of-the-box <em>and</em> context-specific observability, for both the no-data (new agent) and existing-traces cases, usable offline and online.</p>
+<h3 id="demo-2-felicia-code-first-observability-with-the-foundry-mcp-skill">Demo 2 (Felicia) — code-first observability with the Foundry MCP + skill</h3>
+<p>Felicia moves from the portal to her <strong>editor (VS Code)</strong> to show <strong>code-first</strong> observability. She uses the <strong>Foundry MCP server</strong> and the <strong>Foundry skill</strong> to understand, analyze, and even <strong>take actions on behalf of Foundry</strong> from the developer environment.</p>
+<p><strong>How to get access:</strong> the Foundry MCP and Foundry skill are both packaged under the <strong>Foundry toolkit</strong>, a <strong>VS Code extension</strong>. (Roadmap: support for other coding agents and editors is coming; today it's the VS Code extension.)</p>
+<p>She prompts <strong>Copilot Chat inside VS Code</strong> to fetch the <strong>eval result</strong> she'd hooked up earlier in the portal and explain <strong>why the 0.4 score (pulled from the traces) is low</strong> and <strong>what the opportunities for improvement are</strong>.</p>
+<h3 id="what-a-foundry-skill-is-and-why-its-trustworthy">What a Foundry "skill" is and why it's trustworthy</h3>
+<p>A <strong>skill</strong> is an <strong>opinionated flow</strong> authored by the Foundry team that encodes "here's how you should observe, analyze, and optimize your agent — the recommended loop." Because the skill knows <strong>which part of the observability loop you're in</strong>, it can suggest next steps, and it distinguishes whether an issue is a <strong>client-side</strong> or <strong>server-side</strong> problem, connecting both layers to recommend improvements. Critically, its analysis is <strong>grounded in your repo context + the Foundry skill context</strong>, which makes it <strong>more trustworthy and actionable than dropping the result into a generic LLM</strong>. It also means you <strong>don't have to manually wade through hundreds of traces and eval results</strong>.</p>
+<h3 id="reading-the-analysis-and-drafting-a-fix">Reading the analysis and drafting a fix</h3>
+<p>Felicia shows a <strong>previous run</strong> (since the live one takes a moment): the same query she sent hours earlier, where the Foundry MCP retrieved the <strong>evaluator definition + last run</strong> and produced a <strong>last-8-hour evaluation analysis</strong> with a full summary. Because the whole team was testing the agent, it shows <strong>everyone's evaluation runs</strong> — with a <strong>per-dimension breakdown</strong> that calls out the <strong>weakest dimension</strong> (she jokes her runs did worse than Vivek's).</p>
+<p>The key value: monitoring telling you "something's off" isn't enough — you need to know <strong>what to do about it</strong>. The skill gives a <strong>detailed explanation of what went wrong, the patterns, and recommended improvements</strong>, grounded so it's actionable. It recommends a <strong>system prompt change</strong> (with reasons) and how to <strong>change the harness and evaluator</strong>. She asks it to <strong>"draft the system prompt,"</strong> and it produces a <strong>new system prompt</strong> that, notably, addresses the <strong>exact trace issue (the hallucinated vendor detail) via a metric-definition block</strong>.</p>
+<h3 id="doing-it-at-scale-traces-back-into-datasets-for-regression-proofing">Doing it at scale: traces back into datasets for regression-proofing</h3>
+<p>To move beyond one-off fixes, Felicia highlights that because Foundry is <strong>all-in-one</strong>, you can <strong>pull traces back into your dataset</strong>. This lets you <strong>regression-proof</strong> changes: a developer in the inner loop can run <strong>locally-staged agent changes against that dataset</strong>, then push the code to production with confidence. This is the concrete mechanism of the inner-loop ↔ outer-loop feedback.</p>
+<h3 id="recap-2-code-first-capabilities-multi-turn-eval-user-simulation-tracesdatasets">Recap 2 — code-first capabilities, multi-turn eval, user simulation, traces→datasets</h3>
+<p>The team recaps the code-first capabilities and announces several <strong>additional public preview</strong> features:
+- <strong>Code-first observability for Foundry agents</strong> with the <strong>skill-based guided UX</strong>: run evaluations, <strong>analyze</strong> results, do <strong>comparisons</strong>, look at <strong>traces</strong>, and seamlessly transition to <strong>optimization</strong> — all available in <strong>VS Code, GitHub Copilot Chat, and CLI</strong>.
+- <strong>Multi-turn evaluation</strong> (public preview): previously everything was <strong>single-turn</strong>; now you evaluate <strong>across an entire session</strong>. The motivating example: an agent might succeed at the end of a session, but if that session took <strong>20 minutes when 5 was expected</strong>, it's <strong>not a successful session</strong>.
+- <strong>User simulation</strong> (public preview): <strong>automatically generate realistic conversations</strong> so that if you lack multi-turn data, you can still run your first multi-turn evaluation.
+- <strong>Traces → datasets with smart filtering</strong>: feed production traces back into the inner loop to <strong>improve test coverage</strong>. Initial coverage only goes so far — <strong>20 test cases won't cover everything you see in production</strong> — so select traces and add them to your datasets.</p>
+<h3 id="the-evaluator-catalog">The evaluator catalog</h3>
+<p>Foundry ships a <strong>comprehensive evaluator catalog</strong> with <strong>built-in evaluators spanning quality, risk, safety, and agent</strong> evaluation. Several are now <strong>multi-turn</strong>: <strong>groundedness, coherence, task completion, customer satisfaction</strong>, and the <strong>rubric evaluators</strong> are also multi-turn. You can create <strong>custom LLM-as-a-judge</strong>, <strong>code-based</strong>, and <strong>rubric</strong> evaluators and make them multi-turn. Guidance: use a <strong>variety</strong> of evaluators — rubric for multi-dimension, but <strong>custom/code-based evaluators are highly recommended for non-deterministic scenarios</strong>. Example: for a <strong>regex check</strong> or a <strong>database lookup</strong>, use a <strong>code-based evaluator</strong> — you <strong>don't need an LLM-as-judge</strong> for that.</p>
+<h3 id="demo-3-vivek-ai-agent-optimize">Demo 3 (Vivek) — AI Agent Optimize</h3>
+<p>Vivek (handed off with "Thanks, Abishek") recaps the setup: a <strong>working hosted agent</strong>, a <strong>dataset</strong> of representative tasks the agent should do, and <strong>rubrics</strong> that score how good it is. The question: how do you <strong>improve</strong> it and <strong>fix specific gaps</strong> so it does well <strong>across all tasks</strong>? Answer: <strong>AI Agent Optimize</strong>, a new feature, shown live.</p>
+<p>It opens with a <strong>warning</strong>: <em>optimization will create new versions of your agent</em>. This is the key behavior — it doesn't just <strong>recommend</strong> your next system prompt, it <strong>deploys those versions</strong>, <strong>tries them across the tasks</strong>, <strong>assesses on rubrics</strong>, and <strong>iterates</strong>: the prompt/context that works it <strong>doubles down on</strong>; what doesn't, it <strong>tries another strategy</strong>. It is <strong>real, live, and iterative</strong>.</p>
+<p><strong>What it needs to start</strong> (<code>eval.yaml</code>): a <strong>hosted agent</strong>, a <strong>dataset</strong> (here a <strong>40-query dataset</strong>), and an <strong>evaluator</strong> (the rubrics Felicia built). What it can <strong>iterate on</strong>:
+- the <strong>instructions file / system prompt</strong>,
+- <strong>skills</strong> (not configured for this agent, so skipped),
+- <strong>tool descriptions and parameter descriptions</strong> (these go into the agent's context and affect tool use),
+- optionally a <strong>list of models</strong> — it can recommend the <strong>best-performing model</strong> for your tasks. Why that matters: new models ship constantly with <strong>cost/latency tradeoffs</strong>, and you'd otherwise re-run evaluations many times manually across tasks; this finds the <strong>best combination of model + prompt + tool definition + skills together</strong>.</p>
+<p>A separate <strong>optimization model</strong> is selected — distinct from the agent model — used by the optimization job to <strong>self-reflect, read traces, read evaluation rubrics, and decide what to change</strong>. A <strong>better reflection model helps even if your agent runs a smaller model</strong>.</p>
+<h3 id="optimization-results-hill-climbing-the-agent">Optimization results: hill-climbing the agent</h3>
+<p>The live job can take <strong>minutes to tens of minutes</strong> ("I can walk my dog and get coffee"), so Vivek opens a <strong>prior completed run</strong> on the same agent Felicia used. Results:
+- A <strong>24% boost</strong> over the base system prompt + tool definitions, <strong>with just context engineering</strong> — and <strong>without</strong> a human reading prompts/traces or spending evaluation time.
+- Completed in <strong>25 minutes</strong>.
+- It created <strong>four candidates</strong>:
+  - <strong>Candidate 1</strong> — a system-prompt change making <strong>38/40 tasks</strong> work.
+  - <strong>Candidate 2</strong> — system prompt + tools.
+  - <strong>Candidate 3</strong> — tools.
+  - <strong>Candidate 4</strong> — works <strong>40/40 (all the time)</strong>, raising the baseline score from <strong>0.577 → 0.7</strong>.
+It <strong>keeps trying new things and adjusting</strong>: figuring out the right thing to change, trying it, learning, iterating, then suggesting new changes.</p>
+<p>The <strong>change view</strong> shows the <strong>system prompt rewritten</strong> (grounded more on the traces, data, and rubrics) <strong>and tool definitions changed</strong> (the tool <em>description</em> changed). Crucially, the earlier <strong>hallucinated vendor detail</strong> is exactly what the optimizer <strong>addressed</strong>. You can drill into <strong>score details</strong> and see <strong>real evaluation results</strong> for that agent iteration — per-task, with <strong>rubric details</strong> explaining why each task was scored and an analysis.</p>
+<p><strong>Not set-and-done:</strong> you optimized on 40 tasks, but the agent does many more. You must <strong>keep looking at traces</strong> (smart filtering helps pick the right ones) and <strong>keep hill-climbing</strong> as users' queries, domains, models, and tool definitions/implementations change. <strong>Agent Optimizer is now in private preview, public preview soon.</strong></p>
+<h3 id="demo-4-abishek-agent-roi-proving-business-value">Demo 4 (Abishek) — Agent ROI: proving business value</h3>
+<p>The final step: once the inner and outer loops are set up, <strong>how do you prove the business value</strong> of your agents? You have to <strong>do math</strong> to decide whether agents generate enough value to justify their cost. The new <strong>Agent ROI</strong> feature (private preview, public preview soon) does this by looking at <strong>all agent invocations</strong> based on settings you specify:
+1. In <strong>settings</strong>, enable the feature, <strong>select an evaluator</strong>, and <strong>assign a business value</strong> to that evaluator. <em>You</em> must do the math — Foundry doesn't have that info. Example: every time the vendor analyst <strong>successfully completes its task</strong> and gives an analysis, it <strong>saves $5</strong> of time vs. running the query / looking it up elsewhere — that's the business value generated.
+2. In <strong>optional settings</strong>, the feature <strong>automatically pulls in the token cost</strong> of your agents. You then specify the <strong>tool cost</strong> (Foundry can't provide it; you <strong>average it across invocations</strong>).</p>
+<p>Once enabled, you <strong>track the net value</strong> the agent generates <strong>over time</strong>. The demo shows <strong>three different agent versions</strong> and, over time, the <strong>difference between value, cost, and net value</strong>. A standout insight: the <strong>tool calls actually cost more than the LLM</strong> — something you could then optimize. At the bottom you see <strong>how ROI changes across versions</strong>.</p>
+<p>A forthcoming capability: <strong>drill into low-ROI traces</strong>. The clearest example — an <strong>agent invocation that just doesn't succeed</strong> is <strong>all negative cost</strong>, so you'll want to drill in and use the <strong>code-first capabilities</strong> to <strong>root-cause</strong> what happened. <strong>Agent ROI is now in private preview</strong>, with <strong>public preview soon</strong> as feedback is collected; interested customers can engage via their <strong>sales team</strong> to try it and give feedback.</p>
+<h3 id="end-to-end-recap-of-the-journey">End-to-end recap of the journey</h3>
+<p>The team ties the whole arc together:
+1. <strong>Build reliable agents</strong> — test in the <strong>playground</strong>, create a <strong>context-specific rubric evaluator</strong>, look at <strong>traces</strong> and <strong>eval scores</strong>.
+2. <strong>Go to the IDE</strong> — <strong>code-first</strong> debugging with the <strong>Foundry toolkit + Foundry skills</strong>.
+3. <strong>Optimize</strong> — with <strong>AI Agent Optimize</strong>.
+4. <strong>Prove value</strong> — the broader view via <strong>Agent ROI</strong>.
+Foundry observability broadly covers the <strong>tracing, evaluation, monitoring, and optimization</strong> you need to <strong>ship agents with confidence</strong>.</p>
+<h3 id="opentelemetry-monitoring-depth-and-single-shot-optimization">OpenTelemetry, monitoring depth, and single-shot optimization</h3>
+<p>Key capability emphases in the wrap-up:
+- <strong>Tracing</strong>: Foundry <strong>continues to invest heavily in OpenTelemetry</strong> as the standard underpinning <strong>both tracing and evaluation</strong>. Microsoft engineers are <strong>heavily involved in the open-source community</strong> and are <strong>contributing new semantics</strong> — notably <strong>new memory semantics</strong> just contributed and <strong>coming soon to Foundry</strong>. This is a stated open-source commitment.
+- <strong>Evaluation</strong>: beyond the rubric evaluator and built-in catalog, Foundry offers <strong>red-teaming agents</strong> and <strong>CI/CD integration</strong>.
+- <strong>Monitoring</strong>: in addition to running evaluations in production, you get access to <strong>all the operational metrics</strong> needed to understand how your AI apps/agents are performing.
+- <strong>Optimization</strong>: beyond the agent optimizer, there's also <strong>single-shot optimization</strong> as another option.</p>
+<h3 id="customer-proof-labs-and-the-broader-platform-story">Customer proof, labs, and the broader platform story</h3>
+<p><strong>NTT Data</strong> is cited as a customer already using these observability capabilities — <strong>Foundry together with Azure Monitor</strong> — to transform AI into an <strong>enterprise-grade, production-ready system</strong>. There's a <strong>hands-on lab</strong> (takeable with you; everything available online). The closing platform framing: Microsoft provides the <strong>building blocks for the agent platform</strong> — <strong>start building in GitHub</strong>, get all the run/evaluate/optimize/<strong>governance</strong> capabilities <strong>within Foundry</strong>, and <strong>distribute agents to users via M365 Copilot, Teams, apps, and APIs</strong>.</p>
+<h3 id="whats-next-follow-on-sessions">What's next (follow-on sessions)</h3>
+<p>The speakers point to upcoming sessions: a <strong>breakout on A365</strong> covering how Foundry observability <strong>aligns with A365</strong>; a <strong>demo session</strong> with more detail on the <strong>interoperability story</strong> (the any-framework story); and a <strong>lightning talk</strong> on <strong>how Azure Monitor fits into the picture</strong>.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Microsoft Foundry</strong> — the AI platform providing the building blocks (agent service, models, knowledge, tools, fine-tuning) and the observability control plane.</li>
+<li><strong>Foundry Observability</strong> — the four-pillar (tracing/evaluation/monitoring/optimization) observability suite for agents.</li>
+<li><strong>Tracing</strong> — full end-to-end agent execution workflow capture; the substrate evals/monitoring/ROI/optimization read from.</li>
+<li><strong>Evaluation</strong> — quality/safety assessment run off traces (offline and online).</li>
+<li><strong>Monitoring</strong> — running offline evals online to catch issues in real time, plus operational metrics.</li>
+<li><strong>Optimization</strong> — continuous improvement of agents from observability signals.</li>
+<li><strong>Rubric evaluator</strong> — auto-generates a multi-dimensional, weighted evaluator (8 dimensions in demo) from your system prompt + agent; offline + online; multi-turn capable.</li>
+<li><strong>Evaluator catalog</strong> — built-in evaluators across quality, risk, safety, agent; many multi-turn (groundedness, coherence, task completion, customer satisfaction).</li>
+<li><strong>Custom / code-based evaluators</strong> — LLM-as-judge or deterministic code (regex, DB lookups) evaluators; recommended for non-deterministic checks.</li>
+<li><strong>Multi-turn evaluation</strong> — evaluate across a whole session, not just single turns.</li>
+<li><strong>User simulation</strong> — auto-generates realistic conversations to bootstrap multi-turn eval.</li>
+<li><strong>Traces → datasets (smart filtering)</strong> — feed production traces back into the inner loop to grow test coverage.</li>
+<li><strong>Application Insights</strong> — source of the production traces pulled into Foundry evals.</li>
+<li><strong>Azure Monitor</strong> — partner platform for full-stack observability; receives Foundry data and is read back into Foundry.</li>
+<li><strong>Foundry MCP server</strong> — lets you fetch evals/definitions/runs and take Foundry actions from the IDE.</li>
+<li><strong>Foundry skill</strong> — an opinionated, loop-aware analysis/optimization flow grounded in repo + Foundry context.</li>
+<li><strong>Foundry toolkit</strong> — the <strong>VS Code extension</strong> packaging the Foundry MCP server + Foundry skill.</li>
+<li><strong>GitHub Copilot Chat / VS Code / CLI</strong> — surfaces where code-first observability is available.</li>
+<li><strong>AI Agent Optimize (AGD AI Agent Optimize)</strong> — creates/deploys new agent versions and hill-climbs prompt/skills/tools/model against dataset + rubrics.</li>
+<li><strong>Single-shot optimization</strong> — an alternative one-pass optimization option.</li>
+<li><strong>Agent ROI</strong> — nets agent business value against token + tool cost to track net value/ROI per version.</li>
+<li><strong>OpenTelemetry (GenAI semantic conventions)</strong> — the open standard underpinning tracing + evaluation; Microsoft contributing new memory semantics.</li>
+<li><strong>Red-teaming agents</strong> — evaluation capability for safety/adversarial testing.</li>
+<li><strong>CI/CD integration</strong> — wiring evaluation into pipelines.</li>
+<li><strong>Agent frameworks supported</strong> — LangChain, LangGraph, OpenAI SDK, Microsoft Agent Framework.</li>
+<li><strong>IQ for knowledge / fine-tuning / agent service / models</strong> — Foundry control-plane components observability spans.</li>
+<li><strong>M365 Copilot, Teams, apps, APIs</strong> — agent distribution channels.</li>
+<li><strong>GitHub</strong> — starting point for building agents in the platform story.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Open ecosystem support</strong> — trace + evaluate <strong>non-Foundry agents on any framework</strong> (LangChain, LangGraph, OpenAI SDK, Microsoft Agent Framework). (Announced as the exciting new capability.)</li>
+<li><strong>Rubric evaluator</strong> — <strong>now in public preview</strong>. Auto-generates a multi-dimensional evaluator; works with no data or existing traces; offline + online.</li>
+<li><strong>Multi-turn evaluation</strong> — <strong>public preview</strong>. Evaluate across an entire session.</li>
+<li><strong>User simulation</strong> — <strong>public preview</strong>. Auto-generate realistic conversations to bootstrap multi-turn eval.</li>
+<li><strong>Traces → datasets with smart filtering</strong> — <strong>public preview</strong> capability to feed production traces back into the inner loop.</li>
+<li><strong>Code-first observability for Foundry agents</strong> (Foundry toolkit + skills in VS Code / GitHub Copilot Chat / CLI) — highlighted as newly available preview capabilities.</li>
+<li><strong>AI Agent Optimize</strong> — <strong>private preview now, public preview soon</strong>.</li>
+<li><strong>Agent ROI</strong> — <strong>private preview now, public preview soon</strong> (customers can engage via sales to try it).</li>
+<li><strong>OpenTelemetry memory semantics</strong> — newly contributed to the open-source spec, <strong>coming soon to Foundry</strong>.</li>
+<li><strong>Hands-on lab</strong> — available at Build and takeable with you; resources available online.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Demo 1 — Getting-started evaluation (Felicia, portal):</strong> Ran a query against the hosted vendor analyst agent in the playground (logs streaming live), created a <strong>rubric evaluator</strong> from scratch (8 weighted dimensions auto-generated), then used <strong>continuous evals on production traces from App Insights</strong> to find a <strong>low-scoring trace</strong>, drilled into the trace ID, and root-caused a <strong>hallucination</strong> (agent claimed a vendor was performing well without the requested data). <em>Proved:</em> you can evaluate trustworthiness across many dimensions and trace a bad score to the exact prompt.</li>
+<li><strong>Demo 2 — Code-first observability (Felicia, VS Code):</strong> Used the <strong>Foundry MCP + Foundry skill</strong> via Copilot Chat to fetch the eval result, get a grounded <strong>last-8-hour analysis</strong> with per-dimension breakdown (showing the whole team's runs + weakest dimension), then had it <strong>draft a new system prompt</strong> that fixed the exact hallucination via a metric-definition block, and pulled traces back into a dataset to <strong>regression-proof</strong> changes. <em>Proved:</em> skill-grounded, repo-aware analysis turns monitoring signals into concrete, trustworthy fixes without reading hundreds of traces.</li>
+<li><strong>Demo 3 — AI Agent Optimize (Vivek, VS Code):</strong> Configured <code>eval.yaml</code> (hosted agent + 40-query dataset + rubric evaluator), chose what to optimize (system prompt, tool definitions, model) and a separate reflection model, then reviewed a completed run: <strong>4 candidates</strong>, <strong>+24%</strong> via context engineering, <strong>38/40 → 40/40</strong> tasks, score <strong>0.577 → 0.7</strong> in <strong>25 min</strong>, with prompt + tool-description changes addressing the earlier hallucination. <em>Proved:</em> automated, iterative hill-climbing finds the best prompt/tool/model combo without manual trial-and-error.</li>
+<li><strong>Demo 4 — Agent ROI (Abishek, portal):</strong> Enabled ROI, picked an evaluator, assigned <strong>$5</strong> business value per successful task, auto-pulled token cost + added tool cost, then tracked <strong>net value across 3 versions</strong> — revealing <strong>tool calls cost more than the LLM</strong> and that failed invocations are pure negative cost to drill into. <em>Proved:</em> you can quantify whether an agent is worth its spend and where to optimize cost.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>Four pillars</strong>: tracing → evaluation → monitoring → optimization (the organizing model).</li>
+<li>Rubric evaluator generated <strong>8 weighted dimensions</strong> automatically.</li>
+<li>A flagged trace scored <strong>~0.4</strong> (low), traced to a hallucination.</li>
+<li><strong>AI Agent Optimize</strong>: <strong>+24%</strong> boost via context engineering; <strong>4 candidates</strong>; <strong>38/40</strong> then <strong>40/40</strong> tasks; score <strong>0.577 → 0.7</strong>; <strong>25 minutes</strong>.</li>
+<li>Optimization dataset = <strong>40 queries</strong>; the all-pass candidate solved <strong>40/40</strong>.</li>
+<li><strong>Agent ROI</strong>: <strong>$5</strong> assumed business value per successful task; <strong>3 agent versions</strong> tracked; insight that <strong>tool calls cost more than the LLM</strong>.</li>
+<li>“Agents are non-deterministic, creating new reliability and consistency challenges for developers and operators.”</li>
+<li>“We continue to invest heavily in OpenTelemetry as the standard that underpins both tracing and evaluation… we just contributed new semantics for memory.”</li>
+<li>“If you have 20 test cases, that's not going to cover everything that you see in production.”</li>
+<li>“It's worth the cost that you're spending on your agent workloads… you have to do math.”</li>
+<li>Customer: <strong>NTT Data</strong> using Foundry + Azure Monitor for an enterprise-grade, production-ready AI system.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Enable Foundry tracing + rubric evaluator on a non-Foundry agent (LangGraph / OpenAI SDK) and confirm evals run off the OTel traces; wire continuous evals against App Insights traces; install the <strong>Foundry toolkit</strong> VS Code extension and drive the Foundry MCP/skill from Copilot Chat; pilot <strong>AI Agent Optimize</strong> on a small (~40-query) dataset + rubric; stand up <strong>Agent ROI</strong> with a real $-per-success value and compare token vs tool cost.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: Which OTel GenAI semantic conventions are covered today vs. coming (esp. the new <strong>memory</strong> semantics)? How does the Azure Monitor ↔ Foundry round-trip bill (data egress/ingestion)? What model families can the optimizer recommend across, and what are the private-preview access criteria for <strong>Agent ROI</strong> / <strong>AI Agent Optimize</strong>? How is tool cost averaged — manual only, or any assist?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: Any team running production agents who needs reliability + cost/quality proof; platform/observability owners standardizing on OpenTelemetry; FinOps for AI workloads; framework-agnostic agent teams (LangChain/LangGraph/OpenAI SDK/Microsoft Agent Framework).</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="BRK241 - Developing production agents">BRK241 - Developing production agents</span> — the companion session whose data-center vendor scenario this builds on</li>
+<li><a class="wikilink wikilink--resolved" href="ODSP933.html">ODSP933 - Agentic infrastructure needs agentic observability</a> — sibling take on why agents demand purpose-built observability</li>
+<li><a class="wikilink wikilink--resolved" href="ODSP907.html">ODSP907 - Monitor GenAI applications beyond golden signals</a> — deeper monitoring angle for GenAI apps</li>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Foundry">Microsoft Foundry</span> — the platform hosting agents, evaluation, optimization, and observability</li>
+<li><span class="wikilink wikilink--unresolved" title="OpenTelemetry GenAI semantic conventions">OpenTelemetry GenAI semantic conventions</span> — the open standard underpinning Foundry tracing + evaluation</li>
+<li><span class="wikilink wikilink--unresolved" title="Azure Monitor">Azure Monitor</span> — full-stack observability partner that round-trips data with Foundry</li>
+<li><span class="wikilink wikilink--unresolved" title="AI agent evaluation">AI agent evaluation</span> — rubric / multi-turn / code-based evaluators and the evaluator catalog</li>
+<li><span class="wikilink wikilink--unresolved" title="Agent DevOps inner loop and outer loop">Agent DevOps inner loop and outer loop</span> — the lifecycle model this session is organized around</li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="BRK251.html"><span class="pager-dir">← Previous</span><span class="pager-code">BRK251</span><span class="pager-title">Build secure and enterprise-ready agents with Agent 365</span></a>
+    <a class="pager pager-next" href="BRK261.html"><span class="pager-dir">Next →</span><span class="pager-code">BRK261</span><span class="pager-title">Build and ship faster with a developer-optimized experience on Windows</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

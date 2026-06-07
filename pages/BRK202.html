@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRK202 — Azure DevOps meets GitHub, the path to AI powered SDLC</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">BRK202</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=flf2nfwDcJE" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Azure DevOps meets GitHub, the path to AI powered SDLC</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Dave Burnison (GitHub), Dan Helm (Azure DevOps)</span>
+      <span class="meta-item">⏱️ 44m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="devops">DevOps</span><span class="chip" data-tag="github">GitHub</span><span class="chip" data-tag="azure-devops">Azure Devops</span><span class="chip" data-tag="ai">AI</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Dave Burnison — Senior DevOps Advocate, GitHub (former Azure DevOps advocate at Microsoft); Dan Helm — Program/Project Manager, Azure DevOps (Repos, Boards, Wiki, AI)<br>
+<strong>Duration:</strong> ~44 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=flf2nfwDcJE">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Azure DevOps and GitHub have long been treated as separate platforms, but Microsoft is positioning their integration as the on-ramp to an agentic, AI-powered SDLC. The core message: let teams pick the best tool chain for their workflow — small green-field teams may live entirely in GitHub, while enterprises with heavily customised Azure Boards, Pipelines, and Test Plans can keep those investments while moving code to GitHub to unlock GitHub Copilot Cloud Agent. Dave demos driving Azure DevOps from the GitHub Copilot app/CLI via the Azure DevOps MCP server (querying work items, refining backlogs, linking GitHub security alerts to Azure Boards). Dan announces a wave of new capabilities for teams that <em>stay</em> in Azure DevOps: an <strong>Enterprise Live Migrator</strong> (low-downtime repo migration to GitHub), <strong>Copilot code reviews for Azure Repos</strong>, <strong>Copilot Autofix for GitHub Advanced Security (GHAzDO)</strong> — all billed to your Azure subscription, no GitHub account/Copilot licence required — plus model selection for the Copilot agent and pay-as-you-go Microsoft-hosted agents.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Positioning:</strong> Integrating Azure DevOps with GitHub is "your path to Agentic AI" — keep Boards/Pipelines/Test Plans investments while harnessing GitHub Copilot Cloud Agent.</li>
+<li><strong>Tool-chain choice is the message:</strong> small startup/green-field teams can use GitHub Issues + Projects for everything; enterprises with customised Boards/Pipelines should integrate rather than fully migrate.</li>
+<li><strong>Two Azure DevOps MCP servers exist</strong> — <strong>local</strong> (best/"platinum" from VS Code + GitHub Copilot) and <strong>remote</strong> (built on Entra). Both expose the same tools: work items, repos, wiki, test plans, pipelines.</li>
+<li><strong>Why two MCP servers:</strong> the remote server runs on Entra, which restricts non-Microsoft clients — Claude, Cursor, Codex currently won't work against the remote server, so the local server stays until Entra restrictions are resolved.</li>
+<li><strong>GitHub Copilot app + CLI</strong> can drive Azure DevOps via the ADO remote MCP server — a low-barrier entry point for non-technical PMs who live in Azure Boards, not VS Code. The same local config is also valid for the Copilot CLI.</li>
+<li><strong>Wiki → agents/instructions:</strong> Copilot can read Azure DevOps wiki pages (e.g. "what makes a good epic/feature/user story") and convert them into a custom <strong>backlog manager agent</strong> and <strong>work-item quality custom instructions</strong> (markdown files).</li>
+<li><strong>Security campaigns ↔ Azure Boards:</strong> GitHub Advanced Security campaigns can be linked into Azure Boards — Copilot can auto-create a feature + a user story per alert, with assignee parity, so security work is tracked alongside everything else.</li>
+<li><strong>Enterprise Live Migrator (public preview):</strong> full-fidelity, low-downtime (~20–30 min cut-over) migration of Azure Repos → GitHub, bringing all commits, PRs, branches and full history, and auto-reconnecting Pipelines and Boards.</li>
+<li><strong>Copilot code reviews for Azure Repos (announced, preview):</strong> brings GitHub Copilot PR code review to Azure Git Repos with <strong>no Copilot licence and no GitHub account required</strong>; spins up a dynamic background pipeline, shallow-clones, sends diffs to Copilot, appends suggestions to the PR. <strong>TFVC not supported</strong> (no plans).</li>
+<li><strong>Copilot Autofix for GHAzDO (announced, preview):</strong> auto-generates fixes for CodeQL alerts (creates a PR); starting with CodeQL, expanding to all scanning alerts incl. third-party tools, and to security campaigns.</li>
+<li><strong>Billing model for the new Azure-Repos AI features:</strong> consumption-based, <strong>billed to your Azure subscription</strong> as an "AI credit for ADO" meter — visible in Cost Management; runs can be a few cents each. Advice: start slow with a few repos.</li>
+<li><strong>Scale work:</strong> repos-per-project-connection limit raised from <strong>500 → 2,000</strong>; real customer asks of <strong>30,000</strong> and <strong>80,000</strong> repos per project show this is an ongoing challenge. ~<strong>2.8 million</strong> repos are active in Azure DevOps today.</li>
+<li><strong>Copilot Cloud Agent improvements:</strong> you can now <strong>pick the model</strong> the agent uses (rolling out during the session), and the choice is "sticky" per selection.</li>
+<li><strong>Licensing friction reduced:</strong> buying a <strong>GitHub Enterprise</strong> licence now includes a <strong>Basic</strong> Azure DevOps licence; integration + scale improvements are included with <strong>GitHub Enterprise Cloud with data residency</strong>.</li>
+<li><strong>Dogfooding:</strong> Microsoft (specifically the Copilot agents &amp; platform org) is actively migrating internal repos to GitHub and working there — AI is a "forcing function"; some repos move, some stay in Azure Repos.</li>
+<li><strong>Bonus capability:</strong> Copilot can edit project <em>metadata</em> — e.g. it generated <strong>56 sprints</strong> (sprint schedule for two fiscal years) from a single user-story prompt instead of manual point-and-click.</li>
+<li><strong>Pay-as-you-go Microsoft-hosted agents</strong> (incl. Apple/Mac for pay-per-minute billing) in Azure Pipelines are now available for sign-up.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-strategy-choose-your-tool-chain">Framing &amp; Strategy — "Choose your tool chain"</h3>
+<p>Azure DevOps and GitHub were historically seen as separate platforms. Over the last few years Dan's team has built deeper, better integrations, and the session reframes that integration as the on-ramp to agentic AI. The guiding principle: whether you're a small startup or an enterprise with thousands of developers, Microsoft wants you to choose the best tool chain for your team's workflow and project requirements.</p>
+<ul>
+<li><strong>Small / green-field team:</strong> GitHub alone may have everything you need — Issues and Projects for planning/tracking, plus repos.</li>
+<li><strong>Enterprise with heavy ADO customisation:</strong> if you have heavily customised Azure Boards, lots of Azure Pipelines templates, portfolio roll-ups across team projects, etc., integrate Azure DevOps with GitHub. This "supercharges" teams with AI — you fully harness GitHub Copilot's agent power while continuing to leverage Azure Boards, Azure Pipelines, Test Plans, and more.</li>
+<li><strong>Teams that should stay in Azure DevOps for now:</strong> e.g. sustaining-engineering projects in Azure Repos needing stability/continuity. Microsoft is continuing to invest in Boards, Repos, Pipelines, and Test Plans for these teams (this is the bulk of Dan's segment).</li>
+</ul>
+<h3 id="driving-azure-devops-from-the-github-copilot-app-daves-demos">Driving Azure DevOps from the GitHub Copilot app (Dave's demos)</h3>
+<p>Dave used a series of pre-recorded videos (to avoid waiting on Copilot live). Starting point: a normal Azure DevOps environment using Boards, with a work-item hierarchy/backlog shown on the dashboard.</p>
+<p><strong>Setup — MCP configuration.</strong> In the GitHub Copilot app <strong>Settings → MCP servers</strong>, the <strong>Azure DevOps remote MCP server</strong> is configured by:
+1. Plugging in the server name.
+2. Plugging in the URL to your organisation.
+3. Specifying which tools to enable — e.g. work items, Azure Pipelines, Test Plans, Wiki. (Dave deliberately <em>didn't</em> enable repo tools because his repos are in GitHub.)</p>
+<p>He then connected the app to his GitHub repo and asked which Azure DevOps projects he could access — Copilot reached out via the <strong>ADO remote MCP server</strong> and listed team projects.</p>
+<p><strong>Querying work items.</strong> Prompt: <em>"Are there any user stories or bugs recently assigned to me where state = New or Active in the Tailspin Shelter project? If so, show details."</em> It returned the user stories, and because of the configured instructions, included a link straight to each user story so he could open it.</p>
+<p><strong>Querying pipelines &amp; repo status.</strong> He asked for pipeline run status and saw multiple pipelines — PR checks plus a build-and-deploy pipeline — all currently succeeding. He could also see the connected Tailspin Shelter repo, the last commit, jump into the latest PR, and view unit-test results — all from inside the Copilot app via the MCP server.</p>
+<h3 id="wiki-pages-copilot-agents-custom-instructions">Wiki pages → Copilot agents &amp; custom instructions</h3>
+<p>A recurring theme: turn existing Azure DevOps <strong>wiki</strong> content into reusable AI assets. At Ignite the previous fall, Dan had built a wiki defining what makes a good <strong>epic / feature / user story</strong>, including sample markdown.</p>
+<ul>
+<li>Prompt: <em>"Do we have any information in Azure DevOps that would make for a good Copilot custom agent or skill?"</em> Copilot identified the wiki pages.</li>
+<li>Dave had it <strong>create a user story</strong> ("Convert wiki contents into Copilot agents") and <strong>a pull request</strong> for it. The agent generated:</li>
+<li>a <strong>backlog manager custom agent</strong>, and</li>
+<li>a set of <strong>work-item quality custom instructions</strong>.</li>
+<li>Both are just <strong>markdown files</strong> — the agent pulled the wiki content and produced the agent + instructions automatically.</li>
+</ul>
+<h3 id="refining-a-backlog-item-with-the-custom-agent">Refining a backlog item with the custom agent</h3>
+<p>Scenario: a dog-adoption website with a basic user story (you can pick dogs; goal is to filter by breed).
+- Dave asked for user stories assigned to him → found <strong>user story 42</strong>.
+- Asked <em>"Does this user story follow our standards?"</em> → Copilot said no (weak acceptance criteria, etc.).
+- Prompt: <em>"Use that backlog manager agent to help me refine this work item."</em> → it applied significant refinements.
+- Opening the work item's <strong>history</strong> showed every change the agent made — a clear audit trail of the refinement.</p>
+<h3 id="assigning-work-to-the-copilot-cloud-agent-security-gates">Assigning work to the Copilot Cloud Agent + security gates</h3>
+<p>He then assigned the refined user story to <strong>Copilot</strong> to do the work. When selecting the agent, alongside the backlog agent he also had agents for <strong>Bicep</strong>, <strong>Azure Pipelines</strong>, and others.</p>
+<p>Key benefit highlighted of having code in GitHub: the agent's changes are automatically checked with <strong>Copilot code review</strong> and <strong>CodeQL</strong> security scanning:
+- Based on code-review comments, the agent made a couple of follow-up updates.
+- Evidence of the security scans was visible in the session (no findings this time).
+- Important point: <em>"You don't have to have licenses for code… to run code on the code that the agents are generating"</em> — i.e. the goal is to keep agent-written code as secure as possible by default.</p>
+<p>He then opened the result in a <strong>Codespace</strong>, ran it locally, and verified the <strong>breed filter</strong> worked (e.g. selecting "American Staffordshire Terrier") — "a good start," more refinements to come.</p>
+<h3 id="connecting-github-advanced-security-campaigns-to-azure-boards">Connecting GitHub Advanced Security campaigns to Azure Boards</h3>
+<p>Presented as a "really cool" way to tie GitHub and Azure DevOps together.
+- In <strong>GitHub Advanced Security</strong>, at the org level he had multiple <strong>campaigns</strong>, including one for Tailspin Shelter scoped to <em>all critical and high alerts</em> with a deadline of <strong>Monday, June 15th</strong>. Both alerts could be fixed by <strong>Copilot Autofix</strong>.
+- Back in the Copilot app: <em>"Are there security campaigns that include this repo?"</em> → it listed campaigns and highlighted the repo-specific one.
+- Prompt (for security campaign 14): <em>"Create an Azure Boards feature, create a user story for each of those alerts, and link the campaigns/alerts into the work items so I can track them where I track all my other project work,"</em> plus <em>"assign the work items the same way the alerts are assigned in the campaign."</em>
+- Result: a new <strong>feature</strong> + <strong>two user stories</strong>, with <strong>links back to the security campaign</strong>, assignee parity, and the items appearing in the Azure Boards backlog.
+- One alert's autofix wasn't a one-line change — it touched several lines — demonstrating the agent can handle more sophisticated fixes.</p>
+<h3 id="copilot-cli-parity">Copilot CLI parity</h3>
+<p>When you configure the GitHub Copilot app locally, that configuration is <strong>also valid for the Copilot CLI</strong>. From the CLI Dave could see the same <strong>ADO remote MCP</strong> configuration and query both Azure DevOps and GitHub:
+- <em>"What does the code in this repo do? What's the tech stack?"</em> → a summary that also noted <strong>Azure Pipelines for CI/CD</strong> and <strong>Azure Boards for project management</strong>.
+- <em>"Show me active or resolved user stories assigned to me"</em> → found the "filter pet listings by breed (multi-select dropdown)" story.
+- <em>"What's the status of the filter-by-breed user story in the related code?"</em> — notably he <strong>didn't have to specify the ID (AB42)</strong>; it resolved by description and showed the PR waiting to be merged/deployed. Conclusion: even from the command line you can bring Azure DevOps and GitHub together.</p>
+<h3 id="mcp-servers-deeper-detail-dan">MCP servers — deeper detail (Dan)</h3>
+<p>Azure DevOps now has <strong>two MCP servers</strong>: <strong>local</strong> and <strong>remote</strong>, both with essentially the same tools (work items, repos, wiki, test plans, etc.).
+- <strong>Local</strong> = the "platinum experience," especially when driven from <strong>VS Code + GitHub Copilot</strong>.
+- <strong>Remote</strong> = consolidated a bunch of tools; now supports <strong>service principals</strong> and <strong>managed identities</strong>; you can create an agent in <strong>Azure AI Foundry</strong> (ADO is part of that catalog).
+- <strong>In progress:</strong> integration with <strong>Copilot Studio</strong> — worked on for several months, hoped to ship in the "next few weeks."
+- <strong>Why two servers:</strong> the remote server is built on <strong>Entra</strong>, which imposes restrictions on which other clients can use it. Right now <strong>Claude, Cursor, and Codex won't work</strong> against the remote MCP server. Microsoft is working with the Entra team to remove these limits; until then the <strong>local server stays</strong> so non-Microsoft clients have a path.</p>
+<h3 id="integration-maturity-traceability-scale-dan">Integration maturity, traceability &amp; scale (Dan)</h3>
+<p>For teams that move repos to GitHub but keep Boards/Pipelines/Test Plans, Microsoft has invested heavily over the last couple of years — much of it not new, but solidified:
+- <strong>Full traceability</strong> between work items and GitHub commits, pull requests, and branches.
+- <strong>Scale improvements:</strong> repos-per-project-per-connection raised from <strong>500 → 2,000</strong>, driven by larger orgs moving repos to GitHub.
+- <strong>Ongoing scale challenge:</strong> a customer "today" wanted to connect <strong>30,000</strong> repos to a single project; one "last week" wanted <strong>80,000</strong> (≈ 1.5 repos per person in the company). This is something the team expects to keep working on "forever."
+- <strong>Pipelines:</strong> with the integration you can open a pipeline and connect it to the moved repo — no need to rework pipelines.
+- <strong>Licensing friction reduced:</strong> buying a <strong>GitHub Enterprise</strong> licence gets you a <strong>Basic</strong> ADO licence as part of that purchase. <strong>GitHub Enterprise Cloud with data residency</strong> (released by GitHub ~1.5–2 years ago) includes the integration and scale improvements discussed.</p>
+<h3 id="copilot-cloud-agent-model-selection-dan">Copilot Cloud Agent — model selection (Dan)</h3>
+<p>Improvement to the work-item ↔ Copilot Cloud Agent integration Dave showed:
+- You can create and pick your own agent (as demoed), and <strong>now also pick the model</strong> the agent uses.
+- Rationale: certain models work better in certain repos depending on the agent, instructions, and how much you want to pay.
+- Feature was <strong>rolling out "as we speak"</strong>, and the selection is <strong>sticky</strong> — once chosen it persists for subsequent runs.</p>
+<h3 id="enterprise-live-migrator-azure-repos-github-dan">Enterprise Live Migrator — Azure Repos → GitHub (Dan)</h3>
+<p>For teams with hundreds/thousands of repos in Azure Repos, the next big challenge after deciding to move is the migration itself. Microsoft's answer is a tool in <strong>public preview</strong> called the <strong>Enterprise Live Migrator (ELM)</strong>.
+- <strong>Full fidelity:</strong> moves the whole repo — all pull requests, all commits, the <strong>entire history</strong>.
+- <strong>Seamless, low-downtime cut-over:</strong> ~<strong>30 minutes</strong> of downtime. Contrast with the existing <strong>GitHub Enterprise Importer</strong>, where some very large repos saw <strong>4–5 days</strong> of downtime — unacceptable for most customers.
+- <strong>Auto-reconnects</strong> Pipelines and Boards when the repo moves, so those aren't extra manual steps.</p>
+<p><strong>CLI workflow shown</strong> (UX is coming in the preview; commands are also exposed via the MCP server so an agent can assist):
+1. <strong>Create the migration</strong> — supply org, repository, target destination (e.g. GitHub Enterprise Cloud with data residency), user ID, agent pool, etc. This <strong>queues</strong> the migration.
+2. <strong>Check status</strong> repeatedly. First step is <strong>validation</strong> — checks file sizes, push packs, legitimacy; reports problems if any. Usually quick.
+3. <strong>Synchronisation</strong> — copies all files, the whole repo, the entire history. Can take <strong>hours or days</strong>, but you can <strong>keep working on the repo in Azure DevOps during sync</strong>. Sync continues on a recurring basis (every few hours) to stay up to date.
+4. <strong>Cut-over</strong> — once synced and caught up, schedule a cut-over date. At cut-over the repo becomes <strong>read-only</strong> in Azure DevOps (you can no longer work on it there); cut-over itself is ~<strong>20–30 minutes</strong>, then it's marked <strong>migrated</strong>.
+5. Verify in GitHub — repo, all PRs, all branches, full history are present.</p>
+<p><strong>UX preview:</strong> a dedicated "migrating to GitHub" page (left nav) shows per-repo status — migrated, in synchronisation, in cut-over, plus any errors — and lets you queue repos and start migrations, mirroring the CLI.</p>
+<h3 id="keeping-azure-repos-only-teams-happy-dan">Keeping Azure-Repos-only teams happy (Dan)</h3>
+<p>There are ~<strong>2.8 million</strong> active repos in Azure DevOps; many can't move short-term (compliance, tooling, etc.). Microsoft's stated goal: bring Copilot/AI features <strong>into Azure DevOps</strong> so those teams stay productive and don't leave the Microsoft/GitHub ecosystem for other tools.</p>
+<h3 id="copilot-code-reviews-for-azure-repos-dan-announced">Copilot code reviews for Azure Repos (Dan — announced)</h3>
+<p>Announced on the blog "yesterday." Brings GitHub Copilot <strong>PR code review</strong> to <strong>Azure Git Repos</strong>:
+- <strong>No Copilot licence and no GitHub account required</strong> — "it just magically works on the back end."
+- Code must be in <strong>Azure Repos</strong>; <strong>billed to your Azure subscription</strong>.
+- <strong>Two control levels</strong> (a third is likely coming): enable at the <strong>organisation</strong> level, then flip on per <strong>repo</strong> — deliberately gated so big orgs don't enable it everywhere and get a "monster bill," especially during preview.</p>
+<p><strong>How it works:</strong> request a review on a PR → it <strong>spins up a dynamic pipeline in the background</strong> → does a <strong>shallow clone</strong> → collects <strong>diffs</strong> → sends a package to <strong>Copilot</strong> → Copilot reviews and <strong>appends suggestions</strong> to the PR. The interface lets you view critical bugs/suggestions, <strong>apply changes</strong>, commit, and <strong>re-request</strong> in a loop.</p>
+<p><strong>Known gaps before GA:</strong>
+- <strong>Doesn't yet honour Copilot instructions</strong> in your repo (it's a "generic" reviewer for now) — this <em>will change</em> before GA.
+- <strong>Doesn't handle previous suggestions well</strong> — Dan hit loops where fixing one suggestion produced a different suggestion on the same line. Adding prior-run context is planned to improve decisions.
+- <strong>Scope:</strong> Azure <strong>Git</strong> Repos only — <strong>TFVC is not supported, with no plans</strong> to support it.</p>
+<p><strong>Tracking/observability:</strong> runs are tracked under <strong>Agent Pools</strong> in Azure Pipelines — you can find code-review runs there (currently raw JSON; the interface is planned to improve).</p>
+<h3 id="billing-for-the-new-azure-repos-ai-features-dan">Billing for the new Azure-Repos AI features (Dan)</h3>
+<ul>
+<li>Consumption is <strong>billed to your Azure subscription</strong>. In <strong>Cost Management → Cost Analysis</strong> you can see daily cost per run; runs can be <strong>a couple of cents</strong> each (e.g. a busy day on the 14th), scaling with PR complexity/size and reasoning required.</li>
+<li>Under <strong>Resources</strong> you can break cost down per organisation; the meter is the <strong>"AI credit for ADO."</strong> Example shown: ~<strong>0.5 cents</strong> for the month.</li>
+<li><strong>Guidance:</strong> billing is part of the preview (not free). Start slow — a few repos — to understand value and pricing limits before scaling.</li>
+</ul>
+<h3 id="copilot-autofix-for-github-advanced-security-ghazdo-dan-announced">Copilot Autofix for GitHub Advanced Security (GHAzDO) (Dan — announced)</h3>
+<p>Brings GitHub Copilot <strong>Autofix</strong> to <strong>GHAzDO</strong> customers:
+- Demo: a repo with <strong>CodeQL</strong> scans already finding issues (e.g. <strong>SQL injection</strong>) showing severity, description, and recommendation. Previously you'd open VS Code, fix manually, raise a PR.
+- Enable via <strong>Manage repositories → Code security plan → Autofix</strong>. Then a <strong>"Generate fix"</strong> button appears (top-right). Like Copilot code reviews, it <strong>spins up a background dynamic pipeline</strong>, applies the changes, and <strong>creates a PR</strong>. These fixes take longer — roughly <strong>3–5 minutes</strong>.
+- <strong>Roadmap:</strong> starting with <strong>CodeQL alerts</strong>; plan to expand to <strong>all scanning alerts</strong>, including <strong>bring-your-own third-party tools</strong>; and to add <strong>autofix to security campaigns</strong> (campaigns were a GHAzDO feature released "a couple of sprints ago").</p>
+<h3 id="technical-previews-sign-up-dan">Technical previews &amp; sign-up (Dan)</h3>
+<p>There are <strong>three technical previews</strong> (ELM, Copilot code reviews for Azure Repos, GHAzDO Autofix). A blog post went out "yesterday," with more per-feature posts to follow.
+- Sign up via the link on the slide — they collect your <strong>organisation name</strong> and a bit of your <strong>email</strong>.
+- Rollout is <strong>wave-based</strong>: enable a wave, observe, add the next wave. You'll get an <strong>email from the product team</strong> when your access is ready.</p>
+<h3 id="microsoft-dogfooding-dan-dave">Microsoft dogfooding (Dan + Dave)</h3>
+<p>Microsoft is "practicing what we preach": internal teams are actively <strong>migrating repos to GitHub</strong> and working there. The migration need was a big driver for building ELM. AI is a "forcing function" internally just as it is for customers — pushing teams to adopt more AI and do more. As with everyone else, some Microsoft repos move easily and some don't, so some teams migrate while others stay in Azure Repos. Dave clarified this is <strong>not all of Microsoft</strong> — it's one slice: the <strong>Copilot agents &amp; platform</strong> org — and it's "just getting started." The point: Microsoft is adding tools to make migration easier for itself <em>and</em> for external customers.</p>
+<h3 id="bonus-copilot-editing-project-metadata-dave">Bonus — Copilot editing project metadata (Dave)</h3>
+<p>A capability Dave fit in at the end: using Copilot/AI to manage <strong>team-project metadata</strong>, not just code/work items. He wrote a user story containing all the prompt detail, then told the Copilot app: <em>"Go do the work for user story number three"</em> ("Create sprint schedule"). The agent generated <strong>56 sprints</strong> — a sprint schedule for the next <strong>two fiscal years</strong> — which then appeared in Azure DevOps <strong>project configuration</strong>. Done in a few minutes instead of repetitive point-and-click (or hand-rolling the APIs).</p>
+<h3 id="bonus-pay-as-you-go-microsoft-hosted-agents-dan">Bonus — pay-as-you-go Microsoft-hosted agents (Dan)</h3>
+<p>One more new release noted from the blog post: the ability to do <strong>Apple/Mac pay-per-minute (pay-as-you-go) billing</strong> is included for sign-up. This gives customers the long-requested capability for <strong>Microsoft-hosted agents in Azure Pipelines</strong> on pay-per-minute billing.</p>
+<h3 id="resources-wrap-up">Resources &amp; wrap-up</h3>
+<ul>
+<li>The team created a <strong>repo of resources</strong> for the session: link to the blog post with key info, plus a <strong>release containing all of Dave's demo videos</strong> (including a couple not shown live).</li>
+<li>References the big <strong>GitHub blog post</strong> ("yesterday") covering the Copilot app, sandboxes, and more; a <strong>direct link to Enterprise Live Migrations</strong>; and links to docs for the new features.</li>
+<li><strong>Slides will be made available</strong> after the session (they contain URLs to dive deeper).</li>
+<li>The speakers also offered to demo adding the <strong>MCP server to Azure AI Foundry</strong>.</li>
+<li>Follow-up: they'd be at <strong>Ship &amp; Tell</strong> in the other pavilion ~<strong>3:00 pm</strong> for questions.</li>
+</ul>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Azure DevOps</strong> — Microsoft's ALM suite (Boards, Repos, Pipelines, Test Plans, Wiki).</li>
+<li><strong>GitHub</strong> — code hosting + the agentic AI layer (Copilot) this session integrates with ADO.</li>
+<li><strong>Azure Boards</strong> — work tracking (epics/features/user stories/bugs, backlogs, portfolio roll-ups).</li>
+<li><strong>Azure Repos</strong> — Git (and legacy TFVC) repositories in Azure DevOps.</li>
+<li><strong>Azure Pipelines</strong> — CI/CD; also hosts the dynamic background pipelines for code reviews/autofix and pay-as-you-go hosted agents.</li>
+<li><strong>Azure Test Plans</strong> — manual/automated test management in ADO.</li>
+<li><strong>Azure DevOps Wiki</strong> — markdown docs; here used as a source to generate Copilot agents/instructions.</li>
+<li><strong>GitHub Copilot</strong> — the AI assistant powering reviews, autofix, and the cloud agent.</li>
+<li><strong>GitHub Copilot Cloud Agent</strong> — autonomous agent that does work items end-to-end (code, PRs).</li>
+<li><strong>GitHub Copilot app</strong> — client where you configure MCP servers and chat to drive ADO/GitHub; low barrier for PMs.</li>
+<li><strong>GitHub Copilot CLI</strong> — command-line Copilot; reuses the local Copilot app's MCP config.</li>
+<li><strong>Copilot custom agents</strong> — user-defined agents (e.g. backlog manager, Bicep, Azure Pipelines) selectable for work.</li>
+<li><strong>Copilot custom instructions</strong> — markdown instruction files (e.g. work-item quality standards).</li>
+<li><strong>Copilot code review</strong> — AI PR review producing inline suggestions; now coming to Azure Repos.</li>
+<li><strong>Copilot Autofix</strong> — AI-generated fixes (as PRs) for security alerts.</li>
+<li><strong>Azure DevOps MCP server (local)</strong> — best from VS Code + Copilot; works with non-Microsoft clients.</li>
+<li><strong>Azure DevOps MCP server (remote)</strong> — Entra-based; supports service principals/managed identities; in Foundry catalog; Entra restricts other clients.</li>
+<li><strong>Model Context Protocol (MCP)</strong> — protocol exposing ADO tools (work items, repos, wiki, test plans, pipelines) to AI clients.</li>
+<li><strong>GitHub Advanced Security (GHAS / GHAzDO)</strong> — security scanning; "GHAzDO" = GHAS for Azure DevOps.</li>
+<li><strong>CodeQL</strong> — static analysis / code-scanning engine surfacing alerts (e.g. SQL injection).</li>
+<li><strong>Security campaigns</strong> — GHAS feature grouping alerts with deadlines; linkable to Azure Boards.</li>
+<li><strong>Enterprise Live Migrator (ELM)</strong> — public-preview tool for low-downtime, full-fidelity Azure Repos → GitHub migration.</li>
+<li><strong>GitHub Enterprise Importer</strong> — existing migration tool (the slower, higher-downtime contrast to ELM).</li>
+<li><strong>GitHub Enterprise Cloud with data residency</strong> — GHEC variant; includes the ADO integration + scale improvements.</li>
+<li><strong>Azure AI Foundry</strong> — agent platform/catalog where the ADO remote MCP can be added.</li>
+<li><strong>Copilot Studio</strong> — agent-building platform; ADO MCP integration in progress.</li>
+<li><strong>GitHub Codespaces</strong> — cloud dev environments; used to run/test the breed-filter feature.</li>
+<li><strong>Entra (Microsoft Entra ID)</strong> — identity platform underpinning the remote MCP server (and its client restrictions).</li>
+<li><strong>Azure Cost Management</strong> — where consumption-based AI billing ("AI credit for ADO" meter) is viewed.</li>
+<li><strong>Agent Pools</strong> — where code-review/autofix runs are tracked in Azure Pipelines.</li>
+<li><strong>Claude / Cursor / Codex</strong> — third-party AI clients that currently can't use the <em>remote</em> ADO MCP server.</li>
+<li><strong>Bicep</strong> — Azure IaC language; a Copilot agent for it was shown in the agent picker.</li>
+<li><strong>TypeScript</strong> — language of the sample PR used in the Azure Repos code-review demo.</li>
+<li><strong>Tailspin Shelter / Tailspin Toys</strong> — sample projects/repo used throughout the demos.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Enterprise Live Migrator (ELM)</strong> — <em>Public preview (sign-up).</em> Full-fidelity, low-downtime (~20–30 min cut-over) Azure Repos → GitHub migration; brings all PRs/commits/branches/history; auto-connects Pipelines and Boards; CLI today (UX in preview), commands also in the MCP server.</li>
+<li><strong>Copilot code reviews for Azure Repos</strong> — <em>Announced (blog) + technical preview (sign-up).</em> GitHub Copilot PR review for Azure Git Repos with no Copilot licence / no GitHub account; billed to Azure subscription; org + repo level enablement (third control likely). Gaps before GA: doesn't yet honour Copilot instructions; weak handling of prior suggestions. TFVC unsupported.</li>
+<li><strong>Copilot Autofix for GHAzDO</strong> — <em>Announced + technical preview (sign-up).</em> Autofix for CodeQL alerts (generates a PR); roadmap: all scanning alerts incl. third-party tools, and autofix for security campaigns.</li>
+<li><strong>Copilot Cloud Agent model selection</strong> — <em>Rolling out during the session.</em> Pick the model the agent uses (per-repo/per-agent/cost trade-offs); choice is sticky.</li>
+<li><strong>Repos-per-project-connection scale</strong> — <em>Increased 500 → 2,000.</em></li>
+<li><strong>MCP remote server enhancements</strong> — service principals, managed identities, Foundry catalog presence; <strong>Copilot Studio</strong> integration <em>in progress</em> ("next few weeks").</li>
+<li><strong>Licensing</strong> — GitHub Enterprise purchase now includes a <strong>Basic</strong> ADO licence.</li>
+<li><strong>Pay-as-you-go Microsoft-hosted agents (incl. Apple/Mac pay-per-minute)</strong> in Azure Pipelines — <em>available for sign-up.</em></li>
+<li><strong>Security campaigns ↔ Azure Boards linking</strong> + Copilot auto-creating linked work items — shown as a working integration.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Configure ADO remote MCP in the Copilot app</strong> — proved a PM can connect to ADO and list team projects without VS Code.</li>
+<li><strong>Query work items / pipelines / repo from the Copilot app</strong> — showed conversational access to user stories, succeeding pipeline runs, last commit/PR, and unit-test results via MCP.</li>
+<li><strong>Wiki → backlog manager agent + work-item quality instructions</strong> — proved existing ADO wiki standards can be auto-converted into reusable Copilot agents/instructions (markdown), via an auto-created user story + PR.</li>
+<li><strong>Refine user story 42 with the backlog manager agent</strong> — proved AI can enforce backlog quality standards, with full change history/audit trail in the work item.</li>
+<li><strong>Assign work to Copilot Cloud Agent with security gates</strong> — proved agent-written code is auto-checked by Copilot code review + CodeQL; sophisticated multi-line autofix; result validated by running the breed filter in a Codespace.</li>
+<li><strong>Security campaign 14 → Azure Boards</strong> — proved Copilot can create a feature + a user story per alert, link them to the campaign, and mirror assignees, unifying security tracking in Boards.</li>
+<li><strong>Copilot CLI driving ADO + GitHub</strong> — proved CLI reuses the app's MCP config and can resolve a work item by description (no ID), surfacing the PR awaiting merge/deploy.</li>
+<li><strong>Copilot code reviews for Azure Repos</strong> — proved enabling the feature (org + repo) lets you request a review on a PR; background dynamic pipeline shallow-clones, sends diffs, and appends critical-bug suggestions you can apply/commit/re-request.</li>
+<li><strong>Azure Cost Management view</strong> — proved per-day/per-run consumption visibility (cents per run; ~0.5¢/month example) under the "AI credit for ADO" meter.</li>
+<li><strong>Copilot Autofix for GHAzDO (CodeQL)</strong> — proved enabling Autofix adds a "Generate fix" button that creates a fix PR for a CodeQL alert (e.g. SQL injection) in ~3–5 min.</li>
+<li><strong>Enterprise Live Migrator (CLI + UX)</strong> — proved the create→validate→synchronise→cut-over flow with continued work during sync, read-only at cut-over, and full repo/PR/branch/history arriving in GitHub.</li>
+<li><strong>Sprint schedule generation</strong> — proved Copilot can edit project metadata, generating 56 sprints (two fiscal years) from one user-story prompt.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>~2.8 million</strong> active repos in Azure DevOps today.</li>
+<li>Repos-per-project-connection limit: <strong>500 → 2,000</strong>.</li>
+<li>Real customer asks: <strong>30,000</strong> repos to one project (today) and <strong>80,000</strong> (last week, ≈ 1.5 repos/person).</li>
+<li><strong>56 sprints</strong> generated (two fiscal years) from a single prompt.</li>
+<li>ELM cut-over downtime: <strong>~20–30 minutes</strong> vs <strong>4–5 days</strong> seen with the GitHub Enterprise Importer for very large repos.</li>
+<li>Autofix duration: <strong>~3–5 minutes</strong> per fix; code-review runs: <strong>cents per run</strong> (e.g. ~0.5¢ for a month in the demo).</li>
+<li>Session length: only <strong>~45 minutes</strong> for a lot of material ("I covered a lot of information in a short time").</li>
+<li><em>"Integrating GitHub with Azure DevOps is your path to Agentic AI."</em> — Dave Burnison.</li>
+<li>Copilot code reviews for Azure Repos need <strong>no Copilot licence and no GitHub account</strong> — <em>"it just magically kind of works on the back end."</em></li>
+<li>On dogfooding: <em>"AI is a forcing function for us internally just like it is probably for all of you."</em></li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Configure the <strong>Azure DevOps remote MCP server</strong> in the GitHub Copilot app (and confirm it carries to the Copilot CLI) against a test ADO org.</li>
+<li>Convert an existing ADO <strong>wiki</strong> standards page into a <strong>backlog manager agent</strong> + <strong>work-item quality instructions</strong>.</li>
+<li>Sign up for the three previews: <strong>ELM</strong>, <strong>Copilot code reviews for Azure Repos</strong>, <strong>GHAzDO Autofix</strong> (via the blog post links).</li>
+<li>Pilot <strong>Copilot code reviews for Azure Repos</strong> on 1–2 repos and watch the <strong>Azure Cost Management</strong> "AI credit for ADO" meter to gauge cost.</li>
+<li>Try linking a <strong>GHAS security campaign</strong> to <strong>Azure Boards</strong> and have Copilot create linked work items per alert.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>Timeline for the remote MCP server to support <strong>Claude/Cursor/Codex</strong> (Entra restrictions) — and for <strong>Copilot Studio</strong> GA?</li>
+<li>When do <strong>Copilot instructions</strong> start being honoured by Azure Repos code review (the named pre-GA item)?</li>
+<li>Pricing detail/limits for the "AI credit for ADO" meter beyond "start slow"?</li>
+<li>Does ELM support <strong>TFVC → GitHub</strong> or Git only? (Code review explicitly excludes TFVC.)</li>
+<li>What's the practical ceiling for repos-per-project today vs the 30k/80k asks?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Enterprise teams on Azure Boards/Pipelines/Test Plans evaluating a move to GitHub for Copilot agents.</li>
+<li>Platform/DevEx teams planning large-scale <strong>Azure Repos → GitHub</strong> migrations (ELM).</li>
+<li>Security teams wanting <strong>Autofix</strong> + campaign-to-Boards traceability without per-dev GitHub licences.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<h2 id="-build2026">- <span class="wikilink wikilink--unresolved" title="Build2026">Build2026</span></h2>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="BRK200.html"><span class="pager-dir">← Previous</span><span class="pager-code">BRK200</span><span class="pager-title">Why your AI code doesn&#x27;t ship: Closing the gap to production</span></a>
+    <a class="pager pager-next" href="BRK203.html"><span class="pager-dir">Next →</span><span class="pager-code">BRK203</span><span class="pager-title">From CLI to PR: Automating the path to merged code</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

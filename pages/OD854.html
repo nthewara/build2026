@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OD854 — Building WinUI Apps with C# First Patterns and AI Assisted Workflows</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">OD854</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=tPO3vwRVB-M" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Building WinUI Apps with C# First Patterns and AI Assisted Workflows</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Chris Anderson (Engineer, Windows UI team)</span>
+      <span class="meta-item">⏱️ 27m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="winui">Winui</span><span class="chip" data-tag="dotnet">.NET</span><span class="chip" data-tag="csharp">Csharp</span><span class="chip" data-tag="windows-app-sdk">Windows App Sdk</span><span class="chip" data-tag="ai">AI</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Chris Anderson — Engineer, Windows UI team (working on new experimental framework features)<br>
+<strong>Duration:</strong> ~27 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=tPO3vwRVB-M">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Chris Anderson from the Windows UI team makes the case that WinUI is here to stay — the team is dropping the version number (it's now just "WinUI", not "WinUI 3"), there is <strong>no new framework coming</strong>, and Microsoft is putting real muscle behind closing the platform's known gaps. The first half is a state-of-the-union on the fundamentals developers keep asking for: performance (memory wins + a new system compositor), quality/bug fixes, new controls (DataGrid, charting), completing the open-source journey (moving the team to work primarily in the public repo), and credible migration/interop stories for WinForms and WPF. The second half pivots to where development is heading — AI-assisted coding and <strong>code-first / C#-first</strong> workflows — and introduces a brand-new experimental open-source project, <strong>Microsoft UI Reactor</strong>, a React/SwiftUI/Compose-style functional reactive projection of WinUI controls into C#. The bulk of the talk is a live demo building a reactive WinUI app entirely in C# with hot reload, state, collections, async data, a diffing reconciler with dev-tools visualization, and an experimental pie-chart control. Reactor is explicitly a high-churn playground for ideas that, once proven, get pushed down into production WinUI.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>WinUI is not being replaced.</strong> The team has "no intention of building a new framework" — they're dropping the "3" and calling it just <strong>WinUI</strong>, signaling commitment and no massive breaking shift.</li>
+<li><strong>Performance fundamentals first.</strong> Heavy investment in <strong>memory usage</strong> improvements and a switch to a <strong>system compositor</strong> for better performance; these changes have already hit the public Git repo and will land in experimental/preview Windows App SDK builds shortly.</li>
+<li><strong>New controls coming:</strong> <strong>DataGrid</strong> and <strong>charting</strong> are up next, shipping in the core WinUI bits to unlock data-oriented scenarios.</li>
+<li><strong>Open source is nearly complete.</strong> Phase 3 (run tests in public) is done; <strong>Phase 4</strong> moves the team off internal source repos to work <strong>almost exclusively in the public repo</strong>, landing all PRs publicly so the community can see and contribute in real time.</li>
+<li><strong>First-party adoption is accelerating</strong> — WinUI is being integrated into the Windows <strong>shell</strong> faster, so more Microsoft features will be built on it.</li>
+<li><strong>Feature-gap backlog is being worked through</strong> — long-standing gaps (e.g. system tray, limited windowing) that today force devs to lean on open-source libraries.</li>
+<li><strong>Migration/interop is a priority:</strong> make <strong>WinForms ↔ WinUI</strong> interop "bulletproof" in both directions, and bring <strong>WPF ↔ WinUI</strong> mix-and-match to parity ("no problems").</li>
+<li><strong>AI has changed how code is written</strong> — Chris says he "rarely types semicolons anymore," using AI for most code, plus code reviews, tests, and specs. The platform is being shaped around this shift.</li>
+<li><strong>Code-first is the new default.</strong> CLI coding tools (Claude Code, GitHub Copilot) + VS Code + a terminal make code the de-facto way to build; WinUI wants <strong>C# elevated from "code-behind" to a first-class way to write an entire app</strong>.</li>
+<li><strong>C#-first parity goal:</strong> controls, templates, and features currently locked behind <strong>XAML</strong> should be fully reachable from a C#-first experience.</li>
+<li><strong>New experimental framework announced: Microsoft UI Reactor</strong> — an open-source functional/reactive C# projection of WinUI controls, inspired by SwiftUI, Jetpack Compose, and React.</li>
+<li><strong>Reactor ≠ how things will ship.</strong> It's a deliberate <strong>high-churn experimental playground</strong>; even controls written in Reactor's syntax (e.g. DataGrid) will likely ship in core WinUI written in C++ on the same WinRT frameworks.</li>
+<li><strong>Good ideas graduate.</strong> As Reactor experiments "bake," they get pushed down into production WinUI so they become consistent across the stack.</li>
+<li><strong>Community participation is the point</strong> — Reactor already has external contributors and PRs; the explicit ask is clone it, build something, file feedback, send PRs.</li>
+<li><strong>The reactive model demoed end-to-end:</strong> components + <code>render</code>, <code>useState</code>/<code>useReducer</code>, keyed list virtualization, a diffing <strong>reconciler</strong> with opt-in <strong>dev tools</strong> that highlight per-frame changes, and first-class <strong>async resources</strong> with loading/error/data states and dependency-triggered refetch.</li>
+<li><strong>Primary call to action:</strong> keep using and building on WinUI (it's the supported path forward) <strong>and</strong> go try Reactor to influence the future direction.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-earn-the-right-to-build-the-shiny-things-first">Framing: earn the right to build the shiny things first</h3>
+<p>Chris opens by deliberately <em>not</em> leading with the new and shiny. Before talking about attractive future "baubles," he wants to cover the foundational work the team needs to do to "earn the right" to build them. These are the core features people have repeatedly asked for and genuinely need to be productive on WinUI. The throughline of the whole first half: credibility and fundamentals before novelty.</p>
+<h3 id="performance-fundamentals-quality">Performance fundamentals &amp; quality</h3>
+<p>The first priority is <strong>performance and quality</strong> — fixing a lot of bugs and investing heavily in:
+- <strong>Memory usage</strong> improvements.
+- Switching over to a <strong>system compositor</strong>, which should yield even better performance improvements.</p>
+<p>Crucially, this work has <strong>already hit the public Git repo</strong> and is available to play with today. <strong>Windows App SDK (WinAppSDK)</strong> versions incorporating these changes will be available shortly through the <strong>experimental and preview branches</strong>. The message: this isn't a roadmap promise — the code is public now.</p>
+<h3 id="new-controls-datagrid-and-charting">New controls: DataGrid and charting</h3>
+<p>The team is adding a lot of new controls. Specifically called out:
+- <strong>DataGrid</strong>
+- <strong>Charting</strong></p>
+<p>Both are "up and coming" and should be out relatively shortly, showing up in the <strong>core WinUI bits</strong>. The goal is to let developers go after far more <strong>data-oriented scenarios</strong> that the platform couldn't serve well before.</p>
+<h3 id="completing-the-open-source-journey">Completing the open-source journey</h3>
+<p>Open-sourcing WinUI has been a long, phased path that Chris is personally excited to finish:
+- <strong>Phase 3 (recently hit):</strong> tests can now run <strong>in public</strong>. Anyone can grab the bits, <strong>compile WinUI</strong>, and run the test suite to confirm they have something fully functional. If they make changes, they can run the tests to confirm they haven't broken anything — an essential property of a real open-source library.
+- <strong>Phase 4 (the big next step):</strong> move the team from <strong>internal source repos</strong> to working <strong>primarily and almost exclusively in the public repos</strong>. The team will start landing <strong>all of their pull requests</strong> on the public side.</p>
+<p>The point of Phase 4 is to reach a place where Microsoft can <strong>accept changes from the community</strong>, <strong>engage</strong> with the community, and let the community <strong>see the work instantly</strong> as it happens — not on a delayed mirror.</p>
+<h3 id="the-themes-the-team-keeps-hearing-and-the-answers">The themes the team keeps hearing (and the answers)</h3>
+<p>Chris explicitly addresses the recurring community feedback:</p>
+<p><strong>1. "Are you actually serious this time? Will you stick with this framework?"</strong>
+WinUI 3 is ~4 years old, and people fear each year might bring yet another brand-new framework announcement. The answer is emphatic: <strong>no new framework.</strong> In fact, the team is <strong>dropping the number</strong> — referring to it as just <strong>WinUI</strong> — because there is no intention of a massive breaking shift. They want to <strong>stretch WinUI to be accessible for any use case</strong>, are integrating it into the <strong>shell</strong> at a faster rate, and expect <strong>first-party Microsoft features</strong> to be built on WinUI. They acknowledge enterprise adoption of a new UI framework takes a long time, and frame <em>now</em> as the moment to show they're committed and putting their "muscle" behind it.</p>
+<p><strong>2. "There are too many feature gaps beyond DataGrid and charting."</strong>
+Developers point to missing capabilities like proper <strong>system tray</strong> support and <strong>limited windowing</strong>, which force many to rely on <strong>open-source libraries</strong> to patch the platform. Chris acknowledges a <strong>large backlog</strong> and commits to working through it to address the called-out feature gaps — framed as one of the biggest issues holding the platform back.</p>
+<p><strong>3. "How do we migrate? Is it all-or-nothing?"</strong>
+People worry about moving off their current frameworks: can they <strong>incrementally adopt</strong> WinUI, or must they rewrite everything? Today there's a <em>reasonable</em> <strong>WinForms interop</strong> story — "not great, but reasonable," and it works pretty well. The team wants to make it <strong>bulletproof</strong>: WinForms ↔ WinUI interop should be <strong>super easy in either direction</strong>. They also want <strong>WPF migration to be equally good</strong> — you should be able to <strong>mix and match WPF and WinUI with no problems</strong>. This is acknowledged as a big chunk of future work.</p>
+<h3 id="the-two-industry-shifts-shaping-the-platforms-future">The two industry shifts shaping the platform's future</h3>
+<p>Chris pivots from "fix the fundamentals" to "where is software development going," naming two big trends:</p>
+<p><strong>Shift 1 — AI assistance has transformed how code is written.</strong> It changed the way <em>he</em> writes software: he "rarely types semicolons anymore" and is "almost always using AI to drive most of the code." He uses AI for <strong>writing code, code reviews, writing tests, and help with specs</strong>. This AI shift has "really transformed the way you write all the code," and the platform direction has to account for it.</p>
+<p><strong>Shift 2 — more dynamic UI, expressed as code-first.</strong> Two sub-trends:
+- <strong>Dynamic UI has accelerated.</strong> He cites <strong>SwiftUI, Jetpack Compose, and React</strong> as the industry's current best practices for building dynamic UI — making it "super straightforward" to build things that are incredibly <strong>flexible and responsive</strong> to what the user does.
+- <strong>Code as the primary way to build.</strong> The move to <strong>CLI-based coding tools</strong> (he names <strong>Claude Code</strong> and <strong>GitHub Copilot</strong>) has made <strong>VS Code + a terminal window</strong> "one of the most productive places to be." This pushes toward a world where <strong>code-first becomes the de-facto standard.</strong></p>
+<h3 id="the-c-first-goal-for-winui">The C#-first goal for WinUI</h3>
+<p>The concrete ambition: elevate <strong>C#</strong> to be a <strong>primary way to target WinUI</strong>. Today C# is largely a way to write <strong>code-behind</strong>; the team wants it to be a way to <strong>write an entire application</strong>. You should be able to build on the <strong>existing WinUI framework</strong> — using its <strong>controls, templates, and all its features</strong> — from a <strong>C#-first experience</strong>. The problem: several of those capabilities are currently <strong>locked behind needing XAML</strong>, and the goal is to <strong>bring C# up to parity</strong> so you don't need XAML to reach them.</p>
+<h3 id="announcing-microsoft-ui-reactor-experimental">Announcing Microsoft UI Reactor (experimental)</h3>
+<p>The headline new thing: <strong>Microsoft UI Reactor</strong> — a <strong>new experimental, open-source framework</strong> for the team to experiment with new styles of programming, new controls, and new app models for WinUI's future. How to think about it:
+- It's a <strong>place to experiment with ideas the team doesn't yet have full conviction behind</strong>, developed <strong>out in the open</strong> as an open project from day one.
+- It is <strong>very early</strong> and <strong>high-churn</strong> — lots of code changes daily. "We are likely to change every line of code in this project."
+- It's explicitly <strong>open for a ton of feedback, guidance, and participation</strong> from the community. Community PRs are <strong>already landing</strong>, and the team wants more.
+- <strong>Graduation model:</strong> as good ideas are found and "baked," they get <strong>pushed down into the production WinUI bits</strong>, becoming consistent and standard across the WinUI stack so they don't stand out. So if something in the Reactor layer looks "foreign," don't panic — it's a trial that may or may not get promoted.</p>
+<p>The two-part call to action: <strong>keep building on WinUI</strong> (the supported, invested-in path forward) <strong>and</strong> <strong>clone Reactor, try it, and give feedback</strong> (file issues, send PRs).</p>
+<h3 id="whats-inside-the-reactor-repo">What's inside the Reactor repo</h3>
+<p>Reactor is a new open-source project showing the <strong>future direction</strong> the team is thinking of for WinUI. It contains two distinct things:
+1. <strong>A set of experimental new controls / experiences</strong> the team thinks will be delivered as part of <strong>core WinUI</strong> — using the <strong>XAML you know, data binding, and the MVVM architecture</strong>. (These controls are not tied to the Reactor syntax; e.g. charting would just be a general WinUI feature.)
+2. <strong>A new domain-specific language / projection of WinUI controls into C#</strong> — enabling <strong>C# as your primary programming experience</strong> for people who prefer a <strong>functional, reactive style</strong> over a XAML-based approach.</p>
+<p>Almost <strong>everything in the open-source project is written using this new C# style</strong> — mostly so the team could experiment with the style as they built the controls and "see where the edges were." Important caveat: they <strong>don't expect this to be the right way to build most controls.</strong> Many controls will be <strong>integrated directly into WinUI</strong>, written in <strong>C++ using the same WinRT frameworks</strong> developers already know. Seeing a DataGrid written in Reactor syntax does <strong>not</strong> mean that's how the DataGrid will ultimately ship — it's an <strong>experimental playground</strong>.</p>
+<p>Chris reiterates the meaning of "experimental" here: likely to <strong>change every line</strong>, <strong>change the syntax</strong>, etc. The current syntax uses a <strong>fluent functional-style expression</strong>, but that may completely change — they're working <strong>with the C# team</strong> on the right way to express these construction patterns so it "feels very natural in the language." External contributors have already added features, filed issues, and issued PRs.</p>
+<h3 id="demo-the-basic-app-window-component-render">Demo — the basic app: window, component, render</h3>
+<p>The live demo builds a reactive WinUI app entirely in C#:
+- A <strong><code>reactor app run</code></strong> call starts the project and <strong>creates a window</strong>.
+- A <strong><code>dev tools</code> flag</strong> is passed (something you'd normally only put in a <strong>debug build</strong>) — revisited later.
+- The core unit of composition is a <strong>component</strong>. You <strong>override <code>render</code></strong>, create a <strong>title bar heading</strong>, a <strong>text block</strong>, and put them in a <strong>flex column</strong>.
+- First tweak: the text is hard to see, so he bumps the <strong>font size</strong> and saves.
+- He adds a <strong>flex column</strong> with a <strong>margin of 24</strong> to indent the header/"hello" text, then makes it occupy all available space with <strong><code>grow: 1</code></strong> and <strong><code>basis: 0</code></strong>.
+- Below, a standard <strong><code>dotnet watch</code></strong> command drives <strong>hot reload</strong>; the app updates live. (He warns <strong>hot reload isn't always stable</strong> and the app "might crash" — a recurring honest caveat.)
+- Both <strong>imperative construction</strong> and <strong>expression-based construction</strong> styles are supported — "whatever you like to do."</p>
+<h3 id="demo-adding-state-usestate">Demo — adding state (useState)</h3>
+<p>To make it interactive, he introduces <strong>state</strong>:
+- Creates a <strong><code>count</code></strong> state initialized to <strong>0</strong> and a <strong><code>name</code></strong> state.
+- Updates the text to interpolate the <strong>name</strong> and <strong>count</strong>, showing you can run <strong>any C# function</strong> inside <code>render</code>.
+- Adds a <strong>name field</strong> (a text input bound to get/set the name) and a <strong>row of buttons</strong> (a flex row): a <strong>minus</strong> button (<code>set count to count - 1</code>) and a <strong>plus</strong> button (<code>set count to count + 1</code>).
+- Adds spacing with a <strong>column gap of 4</strong>, drops the name field and buttons into the header.
+- Result: typing in the name field updates the text; clicking <strong>plus</strong> increments the <strong>count</strong> live. A minor layout glitch is noted to be fixed shortly.</p>
+<h3 id="demo-collections-and-the-re-render-problem-usereducer">Demo — collections and the re-render problem (useReducer)</h3>
+<p>He moves to a richer, collection-valued case:
+- Builds a list: a numeric <strong>range to 100</strong>, mapping each index to a string like <strong><code>item #&lt;i&gt;</code></strong> plus <strong>8 characters of a new GUID</strong> (<code>Guid.NewGuid().ToString()</code> truncated), materialized into a <strong>list</strong>.
+- Visualizes it with a <strong>ListView</strong>, providing a <strong>key selector</strong> (the unique item strings make good keys) and a <strong>view builder</strong> that creates a <strong>text block</strong> per item with a <strong>margin of 8</strong>.
+- Puts the ListView in the flex grid as the <strong>largest piece</strong> (consuming remaining space), which also fixes the earlier layout glitch. Items now render, scroll in a list box, and <strong>plus still works</strong>.
+- <strong>Key teaching moment:</strong> clicking plus regenerates <strong>all</strong> the GUIDs — because <code>render</code> is <strong>called every frame / on every change</strong>. The framework <strong>recomputes the display and diffs</strong> the two trees, updating only what actually changed. But here the GUID strings are recomputed each run, so they all churn. <strong><code>useState</code> values persist</strong> across renders; the inline <code>range</code>/GUID computation does not.
+- <strong>Fix:</strong> switch from recomputing inline to a <strong><code>useReducer</code></strong> (the collection-valued primitive) returning <strong><code>items</code></strong> and <strong><code>updateItems</code></strong>. Saving <strong>immediately fixes the bug</strong> — increment/decrement and text edits work, and the items <strong>no longer recompute every frame</strong>.
+- He then wires an <strong>add</strong> method/button using <code>updateItems</code> (a function taking the incoming list and returning a new list): prepends a <strong>new <code>item #&lt;list.count + 1&gt;</code> + GUID</strong> to the front, keeping the rest. Clicking <strong>add</strong> inserts new items at the top, everything still functions.</p>
+<h3 id="demo-the-reconciler-and-built-in-dev-tools">Demo — the reconciler and built-in dev tools</h3>
+<p>To make the <strong>diffing / incremental update</strong> visible, he returns to the <strong>dev tools</strong> idea:
+- The hypothesis: there's a case for <strong>developer-friendly features built into the framework</strong>. The <strong>dev tools menu</strong> appears <strong>conditionally</strong> — only when you've <strong>set the <code>dev tools</code> property</strong> to opt in <strong>and</strong> specified on the <strong>command line</strong> that you want that instance run with them on. This lets you <strong>turn on developer features in your product</strong> and write <strong>conditional debug code trivially</strong>.
+- Built-in feature: <strong>"highlight reconciler changes."</strong> With it on, clicking <strong>plus</strong> shows the framework is <strong>only updating the string</strong> (it's one big string), and clicking into the text shows the <strong>text box</strong> updating too — a live visualization of <strong>what changes each frame</strong>.
+- Demonstrating granularity: inside the list item he replaces the single text block with a <strong>flex row</strong> containing a <strong>second text block</strong> showing <strong><code>count: &lt;count&gt;</code></strong> (same margin of 8). Initially everything flashes red (re-rendered completely / new elements created), but subsequent <strong>plus</strong> clicks only re-render <strong>that count portion</strong> — while the top "hello" line, being <strong>one atomic text block with a big interpolated string</strong>, must update the <strong>whole string</strong>. The separate count element gets <strong>incremental updates</strong>. He then turns off the "flashy blinky" highlighting.</p>
+<h3 id="demo-building-new-components-function-vs-class">Demo — building new components (function vs class)</h3>
+<p>Two ways to factor out a component:
+- <strong>Extract a method</strong> — e.g. pull the flex row into a <strong><code>listItemView</code></strong> function. That's <em>all</em> that's needed: a new function <strong>is</strong> a new component, no extra ceremony. Changing a label (e.g. to "countish") just works (with the occasional <code>dotnet watch</code> crash, "as promised").
+- <strong>Create a full component class</strong> — more work but gives you a <strong>lifecycle</strong>: you know when the component is <strong>mounted into the tree</strong>, and there's an <strong><code>update</code> method</strong> you can override. He writes a <code>listItemView</code> class <strong>deriving from <code>component</code></strong>, declares the <strong>properties it takes</strong> (an <strong>item</strong> and a <strong>count</strong>), with roughly the same content, plus a <strong>helper method</strong> so callers can just call <strong><code>listItemView(...)</code></strong> instead of doing manual construction. Adding <strong><code>using static</code></strong> for the components lets the call site bind to it; saving shows no functional change.</p>
+<h3 id="demo-an-experimental-pie-chart-control">Demo — an experimental pie chart control</h3>
+<p>To showcase a <strong>new control</strong> candidate, he swaps the ListView for a <strong>pie chart</strong>:
+- <strong><code>pieChart</code></strong> takes the <strong>list of data</strong> (the items) plus a <strong>value function</strong> — he returns <strong>1</strong> for every item so each slice is a unit.
+- After a compile error reminder ("I have to have code that compiles for it to work"), he limits it to the <strong>first five</strong> items.
+- Adds a <strong>label</strong> via a <strong>label view</strong> that returns <strong><code>listItemView(item, count)</code></strong>, so labels show the counts — and they <strong>increment when you click plus</strong>.
+- Labels are hard to see, so he sets a <strong><code>listLabelRadiusOffset</code> of 30</strong> to push them out, then makes it <strong><code>15 * count</code></strong> — so the labels <strong>move outward as the count changes</strong>. This demonstrates how much <strong>flexibility</strong> the reactive system gives: you can transform the code and the <strong>UI continuously updates to keep up</strong>.</p>
+<h3 id="demo-asynchronous-data-resources-match-loadingerrordata">Demo — asynchronous data (resources, match, loading/error/data)</h3>
+<p>Everything so far was <strong>synchronous</strong>; he closes by showing <strong>async</strong>:
+- Introduces a <strong>resource</strong> — an <strong>asynchronous value</strong>. It's hard-coded to <strong>delay 2 seconds</strong>, then <strong>randomly fail ~20% of the time</strong> ("just cuz that's what the network does").
+- This breaks the existing code two ways: you <strong>can't update the item</strong> directly (it's now async) and the result <strong>isn't a list yet</strong> (no <code>.take</code>). You must <strong>get the data out of the async result</strong>.
+- Solution: <strong><code>items.match(...)</code></strong>, which returns an element and lets you specify <strong>what UI to show per state</strong>:
+  - <strong>Loading</strong> → a text block saying <strong>"loading"</strong>.
+  - <strong>Error</strong> → (ignoring the error detail) a <strong>red</strong> text block saying <strong>"error."</strong>
+  - <strong>Data (success)</strong> → takes the resolved value (<strong><code>data</code></strong>) and feeds it into the existing rendering function.
+- On save, it briefly shows <strong>loading</strong>, then drops into an <strong>error</strong> state (it lost the random race).
+- To retry, he makes the resource depend on the <strong>name</strong>: "whenever name changes, pretend that's a <strong>dependency</strong> of this resource." Now changing the <strong>name</strong> re-triggers the resource — it goes to <strong>loading</strong>, "wins the lottery this time," and shows the value.
+- Takeaway: Reactor provides <strong>easy-to-use asynchronous functions</strong> that handle the normal UI cases — trivially showing <strong>loading</strong> and <strong>error</strong> states for <strong>any async value</strong>, including <strong>lists</strong> that return these.</p>
+<h3 id="closing">Closing</h3>
+<p>That covers the breadth of the <strong>core pieces of Microsoft UI Reactor</strong>: an <strong>experimental framework</strong> with a <strong>new set of controls</strong> (e.g. <strong>charting</strong>, which would be <strong>general WinUI</strong>, not Reactor-specific — "very few things would ever be specific to the reactor syntax") plus the <strong>C#-first</strong> functional way of doing development to "see how it feels." Final ask, repeated: <strong>clone the repo, build something, send feedback, file feedback items, issue a PR</strong> — "let's go see what we can do with this… and learn together."</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>WinUI</strong> (formerly "WinUI 3") — Microsoft's native UI framework for Windows; the "3" is being dropped to signal no breaking framework reset. Core focus of the talk.</li>
+<li><strong>Windows App SDK (WinAppSDK)</strong> — the distribution vehicle; new perf changes land via its <strong>experimental</strong> and <strong>preview</strong> branches.</li>
+<li><strong>System compositor</strong> — what WinUI is switching to for better rendering performance.</li>
+<li><strong>DataGrid (control)</strong> — new data-grid control coming to core WinUI for data-oriented scenarios.</li>
+<li><strong>Charting (control)</strong> — new charting/visualization support coming to core WinUI (demoed via an experimental pie chart).</li>
+<li><strong>Microsoft UI Reactor</strong> — newly announced experimental, open-source project: a functional/reactive <strong>C#-first projection</strong> of WinUI controls + an experimental controls playground. Ideas graduate into production WinUI when proven.</li>
+<li><strong>XAML</strong> — WinUI's markup language; today some controls/templates/features are locked behind it. The C#-first goal is to reach parity without requiring XAML.</li>
+<li><strong>Data binding / MVVM</strong> — the architecture Reactor's XAML-based controls still use; familiar WinUI patterns.</li>
+<li><strong>WinRT frameworks / C++</strong> — how most production WinUI controls will actually be implemented (not in Reactor syntax).</li>
+<li><strong>WinForms</strong> — legacy desktop framework; target of a "bulletproof" two-way interop story with WinUI.</li>
+<li><strong>WPF</strong> — desktop framework; goal is mix-and-match parity with WinUI for migration.</li>
+<li><strong>Windows shell</strong> — being integrated with WinUI at a faster rate; first-party features built on WinUI.</li>
+<li><strong><code>dotnet watch</code></strong> — standard .NET CLI command driving hot reload in the demo (noted as not always stable).</li>
+<li><strong>Hot reload</strong> — live code-update mechanism used throughout the demo.</li>
+<li><strong>VS Code + terminal</strong> — cited as one of the most productive modern dev setups; emblem of the code-first shift.</li>
+<li><strong>Claude Code</strong> — CLI-based AI coding tool cited as part of the code-first trend.</li>
+<li><strong>GitHub Copilot</strong> — AI coding assistant cited as part of the code-first / CLI coding trend.</li>
+<li><strong>SwiftUI / Jetpack Compose / React</strong> — industry best-practice dynamic-UI frameworks Reactor draws inspiration from.</li>
+<li><strong>Reactor primitives:</strong> <code>component</code> + <code>render</code>, <strong><code>useState</code></strong>, <strong><code>useReducer</code></strong> (collection-valued), <strong>ListView</strong> with key selector + view builder, <strong>flex column / flex row / flex grid</strong> layout (<code>grow</code>, <code>basis</code>, margin, column gap), <strong>reconciler</strong> (diffing engine), built-in <strong>dev tools</strong> ("highlight reconciler changes"), <strong>pie chart</strong> (<code>pieChart</code>, <code>listLabelRadiusOffset</code>), and <strong>resources</strong> (async values) with <strong><code>.match</code></strong> over loading/error/data states + dependency-based refetch.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>WinUI drops its version number</strong> — now officially just <strong>"WinUI"</strong> (not "WinUI 3"), signaling long-term commitment and no breaking framework reset.</li>
+<li><strong>Performance work is public now</strong> — memory improvements + the <strong>system compositor</strong> switch have already landed in the public Git repo; <strong>WinAppSDK</strong> builds with these changes arrive shortly via experimental/preview branches.</li>
+<li><strong>DataGrid and charting controls</strong> announced as coming to core WinUI "relatively shortly."</li>
+<li><strong>Open-source Phase 3 complete</strong> (tests run in public) and <strong>Phase 4 underway</strong> — the team moves to work and land <strong>all PRs almost exclusively in the public repo</strong>.</li>
+<li><strong>WinForms ↔ WinUI</strong> interop to be made "bulletproof" in both directions, and <strong>WPF ↔ WinUI</strong> mix-and-match brought to parity (future work, no dates).</li>
+<li><strong>Microsoft UI Reactor</strong> — a <strong>new experimental open-source framework</strong> released/announced at this session: a C#-first functional reactive projection of WinUI plus an experimental controls playground. Explicitly early, high-churn, and feedback-driven.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Reactive WinUI app in pure C# (live, hot-reloaded):</strong> Built a window + component overriding <code>render</code>, styled a title bar/heading/text block in a flex column (font size, margin 24, <code>grow 1</code>/<code>basis 0</code>). Proved C#-first construction with <code>dotnet watch</code> hot reload. <em>Point: you can build real WinUI UI entirely in C# with a fast inner loop.</em></li>
+<li><strong>State with <code>useState</code>:</strong> Added <code>count</code> and <code>name</code> state, a name input, and minus/plus buttons that mutate count live. <em>Point: ergonomic React-like state in C#.</em></li>
+<li><strong>Collections + the re-render lesson:</strong> Generated a 100-item list of <code>item #i</code> + GUID, rendered via ListView with a key selector and view builder; showed that <code>render</code> runs every frame and <strong>diffs</strong>, that inline GUID computation churns every frame while <code>useState</code> persists, then fixed it with <strong><code>useReducer</code></strong> and added a prepend-<code>add</code> action. <em>Point: understand the render/diff model and use the right state primitive.</em></li>
+<li><strong>Reconciler visualization via built-in dev tools:</strong> Opt-in <code>dev tools</code> (property + command-line flag) enabled "highlight reconciler changes," visually proving only changed elements update — a single big interpolated string updates wholesale, while a separate <code>count:</code> text block gets incremental updates. <em>Point: the framework does fine-grained incremental updates, and ships debuggability.</em></li>
+<li><strong>Component factoring (function vs class):</strong> Extracted a <code>listItemView</code> function (a function <em>is</em> a component), then rebuilt it as a full <code>component</code> subclass with declared props (item, count), lifecycle/mount + <code>update</code>, and a <code>using static</code> helper call site. <em>Point: scale from quick functions to full lifecycle-aware components.</em></li>
+<li><strong>Experimental pie chart control:</strong> Swapped ListView for <code>pieChart</code> over the first 5 items with a value function and label views showing live counts; animated labels outward with <code>listLabelRadiusOffset = 15 * count</code>. <em>Point: rich new controls + reactive transforms keep the UI in sync automatically.</em></li>
+<li><strong>Async data with resources:</strong> A <code>resource</code> that delays 2s and randomly fails ~20%, surfaced via <code>items.match</code> into loading/error(red)/data states, with the resource depending on <code>name</code> so changing the name re-triggers a fetch. <em>Point: first-class, easy async with built-in loading/error/data handling for any async value.</em></li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><em>"We have no intention of building a new framework… we're kind of dropping the number and we're referring to WinUI as just WinUI."</em> — the headline commitment.</li>
+<li><em>"WinUI 3 is 4 years old."</em> — context for the "are you serious this time?" skepticism.</li>
+<li><em>"I rarely type semicolons anymore. I'm almost always using AI to drive most of the code that I'm writing."</em> — on the AI shift in how he codes.</li>
+<li><em>"This is a place where we are likely to change every line of code in this project."</em> — definition of "experimental" for Reactor.</li>
+<li><strong>Phase 3 → Phase 4</strong> open-source milestones (public tests → team working almost exclusively in the public repo).</li>
+<li>Demo constants: <strong>range to 100</strong> items, <strong>8 characters</strong> of a GUID per item, <strong>margin 24 / margin 8 / column gap 4</strong>, <strong>first 5</strong> pie slices, async <strong>2-second delay</strong> with <strong>~20% random failure</strong>, label offset <strong><code>15 * count</code></strong>.</li>
+<li><em>"Please pick up WinUI, go build something with it… and then the last thing is, let's go try out Reactor. Give us feedback."</em> — the closing two-part call to action.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Clone the <strong>Microsoft UI Reactor</strong> repo, build the sample app with <code>dotnet watch</code>, and try <code>useState</code>/<code>useReducer</code>, ListView keying, the pie chart, and async <code>resource</code> + <code>.match</code>.</li>
+<li>Enable the built-in <strong>dev tools</strong> ("highlight reconciler changes") to see the diffing reconciler in action on a real list.</li>
+<li>Grab the <strong>public WinUI Git repo</strong>, compile it, and run the public test suite (now possible post-Phase 3); watch for <strong>WinAppSDK</strong> experimental/preview builds with the memory + system-compositor wins.</li>
+<li>Prototype a <strong>C#-first</strong> WinUI screen to feel where XAML is still required vs. where C# now reaches parity.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What's the timeline/branch for the <strong>system compositor</strong> + memory improvements reaching a stable WinAppSDK release?</li>
+<li>Will the <strong>DataGrid/charting</strong> controls ship XAML-first, C#-first, or both — and on what schedule?</li>
+<li>How stable will the Reactor <strong>syntax</strong> be given the collaboration with the C# team, and what's the bar for an idea to "graduate" into core WinUI?</li>
+<li>What's the concrete plan/timeline for <strong>WPF ↔ WinUI</strong> mix-and-match parity and bulletproof <strong>WinForms</strong> interop?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Anyone building or maintaining <strong>Windows desktop apps</strong> (WinUI/WPF/WinForms) and weighing migration or incremental adoption.</li>
+<li>Teams interested in <strong>functional/reactive UI</strong> (React/SwiftUI/Compose-style) but on the Windows/.NET stack.</li>
+<li><strong>AI-assisted / code-first</strong> desktop development workflows with Copilot/Claude Code + VS Code.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><a class="wikilink wikilink--resolved" href="ODSP929.html">ODSP929 - Build modern NET apps with Uno Platform AI and visual tools</a> — another C#/.NET path to building cross-platform Windows UI; complementary take on modern app dev with AI + visual tools.</li>
+<li><a class="wikilink wikilink--resolved" href="OD803.html">OD803 - Taking your AI to the edge with NET MAUI</a> — the other Microsoft .NET UI framework; useful contrast to WinUI's Windows-native focus.</li>
+<li><a class="wikilink wikilink--resolved" href="OD806.html">OD806 - NET 11 in depth</a> — the .NET runtime/language backdrop for C#-first WinUI development.</li>
+<li><a class="wikilink wikilink--resolved" href="OD805.html">OD805 - AI Building Blocks for NET Add intelligence to your C sharp apps</a> — adding AI to C# apps, pairing with the AI-assisted workflow theme here.</li>
+<li><a class="wikilink wikilink--resolved" href="BRK220.html">BRK220 - Using AI tools to teach old apps new tricks</a> — modernizing/migrating existing (often desktop) apps with AI, relevant to the WinForms/WPF migration story.</li>
+<li><a class="wikilink wikilink--resolved" href="BRK203.html">BRK203 - From CLI to PR</a> — the CLI/agentic coding workflow (Copilot/Claude Code) that underpins the "code-first" shift Chris describes.</li>
+<li><a class="wikilink wikilink--resolved" href="BRK207.html">BRK207 - GitHub Copilot in Visual Studio Agents That Debug Profile Test</a> — AI-assisted coding/debugging in the Microsoft toolchain, reinforcing the AI-shift framing.</li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="OD841.html"><span class="pager-dir">← Previous</span><span class="pager-code">OD841</span><span class="pager-title">Ship fast, stay secure: from code to runtime</span></a>
+    <a class="pager pager-next" href="OD857.html"><span class="pager-dir">Next →</span><span class="pager-code">OD857</span><span class="pager-title">Connected Experience APIs for Windows apps</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

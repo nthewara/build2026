@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRK251 — Build secure and enterprise-ready agents with Agent 365</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">BRK251</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=qaOIwXD9HJ4" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Build secure and enterprise-ready agents with Agent 365</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Netta, Kendra, Aarti, Ray (GenSpark)</span>
+      <span class="meta-item">⏱️ 47m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="agent-365">Agent 365</span><span class="chip" data-tag="security">Security</span><span class="chip" data-tag="governance">Governance</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="identity">Identity</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Netta (host/MC), Kendra (Agent 365 PM — value, concepts &amp; admin experience), Aarti (developer demo — onboarding a LangChain agent), Ray (co-founder, GenSpark — partner integration)<br>
+<strong>Duration:</strong> ~47 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=qaOIwXD9HJ4">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Agent 365 is positioned as the <strong>control plane for every agent in an organization</strong> — not just Microsoft-built agents, but third-party, custom (e.g. LangChain on AWS/GCP), and pre-built SaaS agents. It organizes its value around three jobs-to-be-done: <strong>Observe</strong> (you can't govern what you can't see), <strong>Govern</strong> (guardrails that <em>speed up</em> adoption rather than block it), and <strong>Secure</strong> (treat agents like employees, protected by Entra, Defender, Purview, and Intune). The session walks through the <strong>Agent 365 SDK</strong> (which <em>wraps</em> an existing agent to make it discoverable — it does <strong>not</strong> build or host the agent), introduces foundational concepts (<strong>agent blueprint</strong>, <strong>agent identity</strong>, two authentication models), and demos end-to-end onboarding of a LangChain travel agent using shippable <strong>Agent 365 skills</strong> invoked from a coding agent. The admin experience inside the M365 admin center is shown in depth — registry, risk drill-downs into Purview/Entra, <strong>templates</strong> (the "hero feature" that bundles policies), <strong>rules</strong> for lifecycle automation, and <strong>registry sync</strong> for visibility-only ingestion of agents from Amazon Bedrock and Google Vertex AI. Partner <strong>GenSpark</strong> closes by explaining how they built on Agent 365's identity, MCP/tools, and observability primitives instead of building their own auth, storage, and audit layers.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Agent 365 is a control plane, not an agent-building platform.</strong> It governs and secures any agent regardless of who built it or where it's hosted (Azure, AWS, GCP, on-prem).</li>
+<li><strong>IDC prediction framing:</strong> by <strong>2028 there will be ~1.5 billion agents</strong> in organizations — more than the population of most countries — making discovery, governance, and security non-negotiable.</li>
+<li><strong>Three pillars structure everything: Observe → Govern → Secure.</strong> "You cannot govern what you cannot see" is the recurring thesis.</li>
+<li><strong>Governance is reframed as an accelerant, not a brake</strong> — guardrails sized to each agent's risk factor let orgs adopt agents faster and more confidently.</li>
+<li><strong>The Agent 365 SDK <em>wraps</em> your agent</strong> to make it discoverable; it doesn't host or build it. It grants an agent ID, observability, tools/messaging, threat protection, governance, and data security — and you can adopt only the pieces you want.</li>
+<li><strong>Four onboarding tiers:</strong> (1) native experience for Microsoft-built agents, (2) partner agents via an extended SDK ecosystem, (3) custom agents you onboard yourself with the SDK, (4) connected platforms via <strong>registry sync</strong> (visibility-only).</li>
+<li><strong>Two new foundational concepts:</strong> an <strong>agent blueprint</strong> (a reusable "recipe" defining tools, data, rules, and guardrails) and an <strong>agent identity</strong> (a service-principal identity <em>up-leveled</em> toward a user-level identity, because agents are "built like apps but function like users").</li>
+<li><strong>Two agent authentication models:</strong> <em>on-behalf-of-user</em> (agent assumes the invoking user's credentials/permissions) and <em>agent user identity</em> (agent has its own identity and permissions and acts independently).</li>
+<li><strong>Shippable Agent 365 skills</strong> (~6 and growing) let a coding agent (GitHub Copilot, Claude Code, etc.) auto-onboard an agent in ~10 minutes — detecting stack, installing packages, wiring identity, observability, Work IQ/MCP servers, then register/publish/deploy.</li>
+<li><strong>Agents become first-class collaborators</strong>: once configured with an endpoint, an agent can be <strong>@mentioned in Word comments and emailed</strong>, not just used in Teams — interacting like a hired employee.</li>
+<li><strong>The four "legs of the stool":</strong> Microsoft <strong>Entra</strong> (identity), <strong>Defender</strong> (risk assessment + real-time threat detection/blocking), <strong>Purview</strong> (data governance/audit logs), and <strong>Intune</strong> (shadow-AI detection) hold Agent 365 up.</li>
+<li><strong>Templates are the hero feature</strong> — they aggregate custom policies across Entra, Defender, Purview, and SharePoint into one reusable bundle applied consistently at agent publish/approval time.</li>
+<li><strong>Rules automate lifecycle management</strong> — e.g. bulk-reassign agents to a leaver's manager, or auto-block an agent when risk is detected — reducing manual admin toil.</li>
+<li><strong>Registry sync</strong> ingests agents from third-party platforms (Amazon Bedrock, Google Vertex AI) for visibility, and mirrors whatever permissions you hold there (e.g. delete) — though without the full SDK-level observability.</li>
+<li><strong>Shadow-agent management is expanding</strong> beyond OpenClaw to leverage Defender across <strong>~22+ additional local platforms</strong> to discover, block, or bring agents under management.</li>
+<li><strong>Security inheritance is the partner win:</strong> because agents get a unified identity, existing Purview policies (e.g. sensitivity labels, DLP) and audit logging apply automatically — partners like GenSpark don't build their own auth/storage/security layers.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="the-problem-an-agent-explosion-thats-hard-to-see-trust-and-govern">The problem: an agent explosion that's hard to see, trust, and govern</h3>
+<p>The session opens (Netta) with an audience check: nearly everyone is building or using agents, but almost no one believes their agents are <strong>enterprise-ready, observed, secure, and governed</strong>. That gap is the whole point of the talk. <strong>IDC predicts ~1.5 billion agents in organizations by 2028</strong> — a number larger than the population of most countries.</p>
+<p>Agents arrive in three broad shapes:
+- <strong>SaaS agents</strong> — pre-built, shipped inside applications or on the web, that orgs simply start using.
+- <strong>Endpoint agents</strong> — ones you build yourself, including open-core agents and agents built with CLIs and other tooling.
+- <strong>Cloud agents</strong> — built across different clouds, platforms, and frameworks.</p>
+<p>This sprawl raises the core questions every organization faces: Can we <strong>discover</strong> all these agents? <strong>Manage</strong> them? Are they <strong>behaving</strong> according to intent — or breaking from it, <strong>misusing tools</strong>, <strong>oversharing/leaking data</strong>? And can they ultimately be <strong>governed and audited</strong>? Historically teams stitch together many disparate frameworks and products to answer these. The desired properties for any agent are: <strong>observability</strong> (registered in an inventory/registry), <strong>identity</strong> (attribute an action to a specific agent), <strong>threat protection</strong> (against new generative-AI risks like prompt injection, intent breaking, tool misuse), <strong>data security</strong> (no over-sharing/leaking), and <strong>governance &amp; compliance</strong>. Agent 365 is presented as the single <strong>control plane</strong> that delivers all of this for any agent in the organization.</p>
+<h3 id="why-agent-365-the-three-pillars-observe-govern-secure">Why Agent 365 — the three pillars (Observe, Govern, Secure)</h3>
+<p>Kendra frames the value around three pillars aligned to the core jobs-to-be-done for managing agents at scale. The headline rule, repeated throughout: <strong>Agent 365 covers Microsoft agents <em>and</em> third-party, custom, and external agents.</strong></p>
+<ul>
+<li><strong>Observe</strong> — "You cannot govern what you cannot see," and you cannot trust you're protected if you don't know what agents exist. Observability surfaces every agent across every platform, plus adoption and usage trends (which platforms agents are built on, etc.), <em>and</em> the actions needed to mitigate issues and keep the ecosystem safe.</li>
+<li><strong>Govern</strong> — explicitly reframed: governance is <strong>not about putting brakes on innovation or adoption</strong>. It's about <strong>guardrails sized to each agent's risk factor</strong>, so the right protections are in place every time regardless of who built the agent or how. The intent is to <em>speed up</em> the pace of adoption and innovation.</li>
+<li><strong>Secure</strong> — secure agents like you'd secure any employee, data asset, or app across the tenant. With <strong>Defender, Purview, and Entra</strong> you block threats in real time <em>and</em> go further: <strong>deep hunting and investigation</strong> to understand root cause, <strong>full Purview logs</strong> capturing every step an agent took when an incident occurred, and the ability to <strong>identify other agents with similar vulnerabilities</strong> so you can mitigate them <em>before</em> incidents happen.</li>
+</ul>
+<h3 id="how-it-covers-everything-the-agent-365-sdk">How it covers everything: the Agent 365 SDK</h3>
+<p>The audience quiz ("Does Agent 365 support <em>all</em> agents?" — answer: yes) sets up the key enabler. The <strong>Agent 365 SDK is explicitly NOT an agent-building SDK and will not host your agent.</strong> Its sole purpose is to <strong>wrap an existing agent and make it discoverable within Agent 365</strong>. Through the SDK you can:
+- Assign an <strong>agent ID</strong> to the agent.
+- Enable <strong>full observability</strong>.
+- Apply <strong>full security policies</strong>.
+- Access <strong>productivity capabilities via the tools gateway</strong>.</p>
+<p>The SDK delivers (and you can opt into only what you need): <strong>identity, observability, tools, messaging, threat protection, governance, and data security</strong>.</p>
+<h3 id="the-stool-architecture-and-the-four-onboarding-tiers">The "stool" architecture and the four onboarding tiers</h3>
+<p>Foundationally, Agent 365 is an <strong>end-to-end governance platform</strong> to scale and operationalize agent governance/management. Picture it as a <strong>stool</strong>, with four enterprise security solutions as its legs:
+- <strong>Microsoft Entra</strong> — identity management.
+- <strong>Microsoft Defender</strong> — risk assessment and real-time threat detection/blocking.
+- <strong>Microsoft Purview</strong> — data governance.
+- <strong>Microsoft Intune</strong> — shadow-AI detection.</p>
+<p>On top sit a wide range of agent solutions: Microsoft's own agent-building platforms and pre-built agents (e.g. <strong>Co-work</strong>, <strong>Researcher</strong>), valuable third-party agents customers already use (acknowledging a "heterogeneous mix"), custom agents built on platforms of choice (LangChain agents, AWS, Gemini, etc.), and common platforms worth automating/ingesting.</p>
+<p>Coverage breaks into <strong>four tiers</strong>:
+1. <strong>Microsoft-built agents — native experience.</strong> Out of the box you see every agent (draft or in production, including real-time changes), with full observability data, policy templates, security guardrails, and the ability to take action — <strong>no additional effort</strong>.
+2. <strong>Third-party partner agents.</strong> Microsoft is building a <strong>partner agent ecosystem</strong> that proactively extends the SDK into partner agents to enable an agent ID, observability, and more. (One such partner — GenSpark — presents at the end.)
+3. <strong>Custom agents (you onboard).</strong> Agents you build on LangChain, another SDK, or an AWS cloud solution can be onboarded with the Agent 365 SDK, gaining identity, observability, tools, messaging, threat protection, governance, and data security — with the flexibility to onboard only what you want.
+4. <strong>Connected agent platforms — registry sync.</strong> Using your existing permissions/credentials on platforms like <strong>Amazon Bedrock</strong> and <strong>Google Vertex AI</strong>, registry sync <strong>ingests those agents into the registry for visibility only</strong>. Any governance capabilities/permissions you already hold on those platforms (e.g. delete) are also exposed inside Agent 365.</p>
+<h3 id="foundational-concepts-agent-blueprint-agent-identity">Foundational concepts: agent blueprint &amp; agent identity</h3>
+<p>Two new-but-fundamental terms are introduced before the demo:</p>
+<ul>
+<li><strong>Agent blueprint</strong> — a <strong>reusable instruction set / "recipe"</strong> for an agent defining what <strong>tools</strong> and <strong>data</strong> it can leverage, plus the <strong>rules and guardrails</strong> in place. Other agents and <strong>agent identities</strong> are created <em>from</em> a blueprint. (In the demo, the developer's onboarding produces a blueprint; multiple <em>instances</em> can be created from it.)</li>
+<li><strong>Agent identity</strong> — takes a service-principal identity and <strong>up-levels it toward a user-level identity</strong>. Rationale: agents are unique — <strong>they're built like apps but function like users</strong>, so they need an identity appropriate to that function. Agent identities are purpose-built to support agents.</li>
+</ul>
+<p><strong>Two authentication models</strong> for agent identities:
+- <strong>On-behalf-of-user</strong> — when a user invokes the agent, the agent <strong>assumes that user's credentials</strong>, passes the credential as the auth token, and operates with <strong>that user's permissions</strong> for information retrieval / task completion.
+- <strong>Agent user identity</strong> — the agent <strong>maintains its own identity and permissions</strong>, passes its own identity for authentication, and <strong>functions independently</strong> without acting on behalf of a user.</p>
+<h3 id="developer-demo-onboarding-a-langchain-travel-agent-aarti">Developer demo: onboarding a LangChain travel agent (Aarti)</h3>
+<p>Aarti "wears several hats," starting as an <strong>agent developer in VS Code</strong>. The subject is a <strong>travel agent built on LangChain using Node.js (TypeScript)</strong> — deliberately chosen as a non-Microsoft example to prove the breadth claim. Given a source, destination, and dates, it returns three hotel options, three flight options, and some restaurants (demoed: three airlines Seattle→San Francisco plus hotels).</p>
+<p><strong>The task:</strong> make this agent "ready for Agent 365." While you <em>could</em> stitch the concepts together manually using the available Learn docs and samples, Microsoft <strong>ships specific Agent 365 skills</strong> for coding agents to do the work. Key points:
+- Skills are invoked from the coding agent (shown via <code>/skills</code> → <code>Agent 365</code> in VS Code). Aarti switches to <strong>GitHub Copilot</strong> to run them, noting <strong>any coding agent works</strong> (Claude Code, your choice — "does not matter").
+- There are <strong>~6 skills and growing.</strong> Two "main" skills are the interesting ones; others are <strong>piecemeal</strong> building blocks — e.g. just get an <strong>identity</strong>, just instrument <strong>observability</strong> (telemetry), or optionally add <strong>Work IQ servers</strong> so the agent can interact with productivity surfaces (create documents, access its own calendar, etc.).
+- The full run takes <strong>~10 minutes</strong> (skipped live for time).</p>
+<p><strong>What the skill does, end to end:</strong>
+1. <strong>Detects the agent's stack</strong> with minimal input (just point it at the agent folder and say "make this agent ready for Agent 365") — correctly identifies Node.js + LangChain + TypeScript, and (being a coding agent with code access) understands what the agent <em>does</em>.
+2. <strong>Checks prerequisites</strong> — downloads required packages/dependencies, ensures the machine is set up; picks the <strong>latest Agent 365 CLI</strong> version. Uses the already-authenticated <strong>Azure CLI</strong> login and targets the chosen <strong>tenant</strong>.
+3. <strong>Produces a detailed plan</strong> and executes it: install required agent packages → validate → build → add <strong>observability</strong>, <strong>Work IQ</strong>, then <strong>register, publish, and deploy</strong>.
+4. <strong>Result:</strong> a fully extended Agent 365 agent. It <strong>created a blueprint</strong>; the <strong>actual agent identity is created later when an admin activates the agent in the Microsoft admin center</strong>. It configured observability and Work IQ, and — per Aarti's choice — wired up <strong>Word and OneDrive MCP servers</strong>, producing a manifest.</p>
+<p>The developer then <strong>hands off to the admin</strong>: the admin decides whether the agent is shared with a <strong>subset of users or all users</strong>, then assigns it — at which point the agent is live in the tenant.</p>
+<h3 id="agent-as-employee-using-and-collaborating-with-the-agent">Agent-as-employee: using and collaborating with the agent</h3>
+<p>Aarti switches to an <strong>agent-user</strong> persona. From <strong>Teams</strong>, she opens the app list and <strong>creates an instance</strong> — her own version of the agent that "reports up to her." She prompts it (plan a trip to Austin after Build) and deliberately asks it to <strong>both reply and create a Word document</strong>, to demonstrate cross-surface interaction. The agent returns near-identical suggestions (she likes Southwest + Marriott) plus an <strong>editable Word document</strong>.</p>
+<p>The standout moment: in the Word doc she <strong>@mentions the agent in a comment</strong> ("can I get some coffee places as well, please") exactly as she would a human colleague — arguing it's more natural/contextual than switching to Teams. This works because onboarding <strong>created an endpoint</strong> for the agent, so it can <strong>respond to notifications over Teams, @mentions in Word comments, and emails</strong>. The agent replies in-comment (e.g. recommending an Italian place, "Loro," "popular with excellent food and a nice atmosphere"). Crucially, the agent <strong>can be hosted anywhere</strong> — demoed in Azure, but it could run in GCP, AWS, or any cloud; "it does not matter."</p>
+<p><strong>Observability has three audiences:</strong>
+- <strong>Developers</strong> — what their agents are doing and who uses them.
+- <strong>End users</strong> — since "this is my employee," users can see their own chats (today's tests, recent chats on refresh, including a couple of <strong>failures</strong> where the agent didn't complete the task), the prompts given, and whether tasks were carried out.
+- <strong>IT admins</strong> — see activity across <strong>all instances of a blueprint</strong> (e.g. colleagues Pooja and Alister each have instances; Aarti's is heavily used), including an <strong>activity view</strong> and the <strong>exact users</strong> of the agent.</p>
+<p><strong>Demo recap:</strong> start with a basic Node.js LangChain agent (hosted anywhere) → use <strong>skills</strong> to make it Agent 365-ready (Entra config + blueprint, observability via <strong>OpenTelemetry</strong>, optional Word/OneDrive MCP servers, notification endpoint for Teams + @mentions) → it's configured and ready in the tenant to unlock all Agent 365 features.</p>
+<h3 id="admin-experience-the-microsoft-365-admin-center">Admin experience: the Microsoft 365 admin center</h3>
+<p>Kendra returns to the <strong>admin experience inside the Microsoft 365 admin center</strong> — the place for full observability across the tenant. (Noted as a work-in-progress: <strong>multi-tenant capabilities</strong> are coming; today it's single-tenant.)</p>
+<p><strong>Overview / landing page:</strong>
+- <strong>High-level analytics</strong>: total agents, total <strong>users</strong> (clarified as <em>human</em> employee users, <strong>not</strong> agentic users), and <strong>total runtime hours</strong>.
+- <strong>Registry sync</strong> entry point (revisited later).
+- <strong>Calls to action</strong> — where to lean in: <strong>pending requests</strong> (agent approvals, like Aarti's instance), <strong>agent risks</strong> seen, <strong>agents without owners</strong> (a "big one" for keeping <strong>agent sprawl</strong> under control and maintaining good hygiene), and <strong>agents with exceptions</strong> (any <strong>error in agent runtime</strong> surfaces as an exception).
+- <strong>Granular analytics</strong>: agents built by your org vs. third-party providers vs. across Microsoft; <strong>top platforms</strong> agents are built on; <strong>agent adoption over time</strong> (useful for adoption campaigns or launching high-profile agents like IT-support or benefits agents); and <strong>trending agents</strong> used heavily across the org.</p>
+<p><strong>Agent registry:</strong> lists <strong>all agents across all platforms</strong> — explicitly <em>not</em> just Microsoft (examples shown include <strong>Workday</strong> and partner agent <strong>GenSpark</strong>). The list can be sliced/diced/customized to manage large numbers.</p>
+<p><strong>Inside an agent (example: a "Zava procurement agent"):</strong>
+- <strong>Metadata</strong>: what the agent does, publish date, last-updated date, <strong>publisher</strong>, <strong>owner</strong>, and <strong>agent ID</strong>.
+- <strong>Agent instructions</strong> — exactly what the agent is doing / its purpose.
+- <strong>Full identity history</strong> — <strong>bot ID</strong>, <strong>blueprint ID</strong>, and <strong>Entra agent ID</strong>. For a <strong>Copilot Studio</strong> agent you'd see environment details; for a <strong>Foundry</strong> agent you see platform details with a link out to the agent itself.
+- <strong>Users the agent is shared with</strong>, <strong>applied policies</strong> (from onboarding/approval — drill into <strong>Purview</strong> or <strong>Entra</strong> to investigate), and <strong>permissions</strong> the agent holds.
+- <strong>Unified activity view across all agent types</strong> (called out as a favorite): total users, total sessions, exceptions, runtime hours, <strong>successful sessions</strong>, and the ability to watch for <strong>spikes in exceptions</strong> and lean in. Below that, the <strong>users driving traffic</strong> with total sessions and last-activity dates.</p>
+<p><strong>Visual / graph view:</strong> beyond the list, a visual representation shows <strong>agents working with other agents</strong>, aggregated by the platforms they're built on. Hovering over multi-agent solutions reveals which agents they leverage — <strong>even across different platforms</strong>. A <strong>list view of connected platforms</strong> shows, e.g., all agents a "researcher agent" uses and whether each is <strong>available or blocked</strong>. The stated value: understand <strong>dependencies</strong> and, before blocking an agent, know the <strong>blast radius</strong> — "if I block this agent, what else does it break?"</p>
+<h3 id="risk-ownership-and-lifecycle-automation-rules">Risk, ownership, and lifecycle automation (rules)</h3>
+<ul>
+<li><strong>Drilling into risks:</strong> clicking a risk jumps to the agent and shows the <strong>source</strong> of the risk. From there you can drill into <strong>Entra</strong> or <strong>Purview</strong> to see incidents granularly — Purview gives <strong>full log access down to the document/data-source layer</strong> that triggered the (blocked) risk. The admin can <strong>block the agent</strong> and hand off to the <strong>SecOps team</strong> for further investigation/mitigation.</li>
+<li><strong>Agents without owners:</strong> owners can be reassigned (e.g. "make Aarti the owner"), but doing it manually is tedious at scale.</li>
+<li><strong>Rules</strong> solve this: a simple way to <strong>automate lifecycle-management actions</strong>. Examples: <strong>bulk reassignment</strong> when someone leaves the org (for agents built in <strong>Agent Builder</strong>, auto-reassign to their <strong>manager</strong>); <strong>auto-block</strong> an agent when risk is identified (no manual blocking required). Microsoft is <strong>investing heavily in risk</strong> with more functionality over the coming quarters.</li>
+</ul>
+<h3 id="templates-the-hero-feature">Templates — the "hero feature"</h3>
+<p><strong>Templates</strong> aggregate custom policies from across <strong>Entra, Defender, Purview, and even SharePoint</strong> into <strong>one reusable template</strong> applied to agents consistently and comprehensively. There are <strong>default templates</strong> and you can create custom ones. A custom template shown includes <strong>access packages</strong> (multiple selectable), <strong>conditional access</strong>, and a range of default policies such as <strong>DLP protection</strong> and <strong>lifecycle-management protections</strong>.</p>
+<p>Templates plug into the <strong>agent approval flow</strong>: when a maker wants to <strong>publish an agent</strong> org-wide (demoed with a "staffing agent"), the <strong>IT admin must approve it and apply the appropriate template</strong>. This is where <strong>data and tools</strong> matter most — to make an informed decision the admin needs to know <strong>what the agent is made of</strong>: what <strong>data</strong> and <strong>tools</strong> it can access, which defines its <strong>risk level</strong>. The publish flow lets the admin select users (pre-install for all, or just make it discoverable in the store), then a <strong>default template is applied as a baseline</strong> ("all agents should have some level of protection"), optionally swapped for a <strong>custom template</strong> (e.g. a "DevOps template"). Policies and appropriate <strong>permissions</strong> are applied, reviewed, approved — and the agent becomes available org-wide.</p>
+<h3 id="registry-sync-shadow-agent-management-revisited">Registry sync &amp; shadow-agent management (revisited)</h3>
+<p><strong>Registry sync</strong> ingests agents from common third-party platforms (<strong>Amazon Bedrock</strong>, <strong>Google Vertex AI</strong>). After configuring access, clicking into <strong>Google</strong> shows the deployed agents (one in the demo). You <strong>don't get the full SDK-level observability</strong>, but you gain <strong>awareness of every agent deployed</strong> on that platform. Permissions mirror what you hold there — because the admin already has <strong>delete</strong> permission in Google, the same <strong>delete</strong> action is available inside Agent 365.</p>
+<p>Beyond synced platforms, Agent 365 helps <strong>identify and bring shadow agents under management</strong>. This is <strong>expanding beyond OpenClaw</strong> to <strong>leverage Defender</strong> and discover <strong>~22+ (give or take) additional local platforms</strong>, so admins can <strong>block</strong> those agents or <strong>bring them under management</strong>. The platform also lets you <strong>govern and manage all of your tools</strong> centrally (shown briefly before the time signal).</p>
+<h3 id="customer-momentum-early-adopters">Customer momentum &amp; early adopters</h3>
+<p>Kendra closes the Microsoft portion with customer proof points:
+- <strong>EY</strong> — for <strong>mission-critical agents</strong>, Agent 365 is key: it gives them the <strong>trust</strong> to unlock these agents and feel confident leveraging them across the organization.
+- <strong>GenSpark</strong> — an early-adopter partner who presents directly (next section).</p>
+<h3 id="partner-deep-dive-genspark-on-building-atop-agent-365-ray">Partner deep-dive: GenSpark on building atop Agent 365 (Ray)</h3>
+<p>Ray, <strong>co-founder of GenSpark</strong>, explains how GenSpark integrates with Agent 365. <strong>GenSpark is a unified AI workspace for knowledge workers</strong>, with <strong>2,000+ organizations</strong> already registered as a daily work tool.</p>
+<p><strong>The motivating insight — different jobs need different AI back-ends:</strong>
+- <em>"Sarah"</em> in finance needs to prep a <strong>board deck by Friday</strong> — summarize content and make slides; she needs <strong>lightweight, chat-based AI tools</strong>.
+- <em>"Tom"</em> has a <strong>200+ MB CSV</strong> needing heavy compute for calculations/summarization; he needs a <strong>dedicated virtual machine</strong>.</p>
+<p>Agent 365 gives developers like GenSpark the <strong>flexibility to combine different AI back-end infrastructures</strong> behind a single governed surface.</p>
+<p><strong>Three primitives GenSpark builds on (Ray's framing of Agent 365):</strong>
+1. <strong>Identity</strong> — with <strong>federated identity credentials</strong>.
+2. <strong>Unified UI/UX interface</strong> — the M365 software suite (Teams, Outlook, Word, etc.).
+3. <strong>Observability, Purview, audit + full lifecycle management.</strong></p>
+<p><strong>GenSpark's architecture (three layers):</strong>
+- <strong>Top layer</strong> — Microsoft software suite (Teams, Outlook, Word, etc.).
+- <strong>Middle layer</strong> — a <em>very thin</em> integration layer using the <strong>Agent 365 Python SDK</strong>, providing <strong>identity, streaming, and MCP</strong> access over Microsoft software, plus <strong>observability, Purview, and lifecycle management</strong>.
+- <strong>Bottom layer</strong> — GenSpark's <strong>flexible back-ends</strong>: lightweight chat-based AI tools, and heavyweight compute like <strong>GenSpark Cloud</strong> and <strong>dedicated VMs</strong>.</p>
+<p><strong>How GenSpark uses each primitive:</strong>
+- <strong>Identity</strong> — they <strong>authenticate <em>every</em> request/message</strong> from Teams through their back-end, <strong>not just once at session start</strong>. Example: if someone in a Teams group chat @mentions the agent asking for private info, the agent can detect the requester is <strong>not in the org's AAD</strong> and <strong>refuse the request</strong>. With Agent 365 they <strong>don't build a separate auth layer</strong> — they use Microsoft's.
+- <strong>MCP / tools</strong> — Agent 365 already provides <strong>powerful MCPs</strong> (PowerPoint, Outlook, Word, etc.). For each request, GenSpark can <strong>generate a PowerPoint or Word document on the fly</strong> and <strong>write it back to the user's or agent's OneDrive via MCP</strong> — so they <strong>don't build their own storage layer</strong>.
+- <strong>Observability, security &amp; governance</strong> ("the most amazing part") — every agent <strong>invocation, inference, and activity is logged into Purview</strong>, giving tenant admins a <strong>single, unified dashboard</strong> to monitor all agent activity. Because each agent has its <strong>own unified identity</strong>, <strong>existing enterprise Purview policies automatically apply</strong> — e.g. a <strong>sensitivity label</strong> on a Word document also applies to the agent, and DLP/Purview policy can <strong>automatically block</strong> the agent if it tries to leak sensitive info. All agent logs are <strong>unified via the same Microsoft APIs</strong>, so IT can use the <strong>same SQL queries</strong> to analyze agent activity.</p>
+<p><strong>The partnership payoff:</strong> GenSpark gives users flexibility to choose different agent back-ends (chat-based or dedicated VMs), while the enterprise <strong>retains full control</strong> — all activity/logs sit on top of Microsoft APIs, so IT managers use <strong>existing tools</strong> to monitor, observe, and audit. Ray reports enterprise customers "love this feature a lot."</p>
+<h3 id="wrap-up">Wrap-up</h3>
+<p>Netta closes: attendees saw how to <strong>build enterprise-ready agents with Agent 365</strong> — integrate the <strong>SDK</strong>, then <strong>observe, secure, and govern</strong> the agent. Resources were shared on screen: <strong>how to get started</strong>, <strong>how to get started with the SDK</strong>, and a <strong>recently released blog</strong>.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Microsoft Agent 365</strong> — the control plane / end-to-end governance platform for <em>every</em> agent (Microsoft, third-party, custom, external) across the organization.</li>
+<li><strong>Agent 365 SDK</strong> — <em>wraps</em> an existing agent to make it discoverable; grants agent ID, observability, tools, messaging, threat protection, governance, data security (not an agent-building or hosting SDK). Available in <strong>Python</strong> (used by GenSpark) and used in the <strong>Node.js/TypeScript</strong> demo.</li>
+<li><strong>Agent 365 skills</strong> — ~6+ shippable skills for coding agents to auto-onboard an agent (setup/identity, observability instrumentation, optional Work IQ servers, plus two main end-to-end skills).</li>
+<li><strong>Agent 365 CLI</strong> — command-line tooling the skills invoke; auto-updated to latest during onboarding.</li>
+<li><strong>Microsoft Entra</strong> — identity management; source of the <strong>Entra agent ID</strong>; "leg of the stool."</li>
+<li><strong>Microsoft Defender</strong> — risk assessment, real-time threat detection/blocking; powers expanded <strong>shadow-agent</strong> discovery across ~22+ local platforms.</li>
+<li><strong>Microsoft Purview</strong> — data governance, full audit logs down to the document/data-source layer; applies sensitivity labels/DLP to agents.</li>
+<li><strong>Microsoft Intune</strong> — shadow-AI detection; "leg of the stool."</li>
+<li><strong>Microsoft 365 admin center</strong> — the admin surface for Agent 365 (registry, analytics, approvals, risk, templates, rules, registry sync).</li>
+<li><strong>Agent blueprint</strong> — reusable "recipe" defining an agent's tools, data, rules, guardrails; agent identities/instances are created from it.</li>
+<li><strong>Agent identity</strong> — service-principal identity up-leveled toward user-level; supports on-behalf-of-user and agent-user-identity auth models.</li>
+<li><strong>Registry sync</strong> — visibility-only ingestion of agents from connected third-party platforms; mirrors held permissions.</li>
+<li><strong>Templates</strong> — reusable bundles aggregating policies across Entra, Defender, Purview, SharePoint (access packages, conditional access, DLP, lifecycle protections); applied at approval/publish.</li>
+<li><strong>Rules</strong> — automation for lifecycle actions (bulk reassignment to managers, auto-block on risk).</li>
+<li><strong>Work IQ servers / MCP servers</strong> — let agents interact with productivity surfaces (create documents, access calendars); demo used <strong>Word</strong> and <strong>OneDrive</strong> MCP servers.</li>
+<li><strong>Tools gateway</strong> — productivity capability access exposed through the SDK; centralized tool governance/management in the admin center.</li>
+<li><strong>OpenTelemetry</strong> — the observability standard wired up for the agent during onboarding.</li>
+<li><strong>Microsoft Copilot Studio</strong> — agent-building platform (admin center shows environment details for Copilot Studio agents).</li>
+<li><strong>Microsoft Foundry</strong> — agent-building platform (admin center shows platform details + link-out for Foundry agents).</li>
+<li><strong>Agent Builder</strong> — platform referenced in rules (e.g. auto-reassign Agent Builder agents to a leaver's manager).</li>
+<li><strong>Co-work / Researcher</strong> — examples of Microsoft pre-built agents.</li>
+<li><strong>GitHub Copilot</strong> — coding agent used to run the Agent 365 skills in the demo (Claude Code and others also supported).</li>
+<li><strong>VS Code</strong> — the developer's editor in the demo.</li>
+<li><strong>LangChain</strong> — framework the demo travel agent is built on (Node.js/TypeScript).</li>
+<li><strong>Amazon Bedrock</strong> — third-party platform supported by registry sync.</li>
+<li><strong>Google Vertex AI</strong> — third-party platform supported by registry sync (demoed, with delete permission mirrored).</li>
+<li><strong>AWS / GCP / Azure</strong> — possible hosting clouds for an onboarded agent ("host anywhere"); demo hosted in Azure.</li>
+<li><strong>Azure CLI</strong> — used for the authenticated login/tenant targeting during onboarding.</li>
+<li><strong>Microsoft Teams / Outlook / Word / OneDrive</strong> — productivity surfaces agents plug into (use, @mention, email, document creation/storage).</li>
+<li><strong>SharePoint</strong> — one of the policy sources aggregated into templates.</li>
+<li><strong>Workday, GenSpark</strong> — example third-party/partner agents visible in the registry.</li>
+<li><strong>GenSpark</strong> (partner) — unified AI workspace; <strong>GenSpark Cloud</strong> and <strong>dedicated VMs</strong> as heavyweight back-ends; integrates via the Agent 365 Python SDK.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p>No formal GA/preview dates were stated, but the session positions the following as new or actively rolling out:
+- <strong>Microsoft Agent 365</strong> as the cross-platform agent control plane (Microsoft + third-party + custom + external).
+- <strong>Agent 365 SDK</strong> (Python + Node.js/TypeScript) for wrapping/onboarding non-native agents.
+- <strong>Agent 365 skills</strong> for coding agents (~6 and "constantly adding") to automate onboarding end-to-end.
+- <strong>Agent blueprint</strong> and <strong>agent identity</strong> as foundational constructs (with two auth models).
+- <strong>Templates</strong> (policy aggregation across Entra/Defender/Purview/SharePoint) — called a "hero feature."
+- <strong>Rules</strong> for lifecycle automation (bulk reassignment, auto-block on risk) — "investing heavily... over the next couple quarters."
+- <strong>Registry sync</strong> for Amazon Bedrock and Google Vertex AI (visibility-only ingestion).
+- <strong>Expanded shadow-agent management</strong> beyond OpenClaw via Defender across <strong>~22+ additional local platforms</strong> (described as in progress).
+- <strong>Multi-tenant capabilities</strong> — explicitly called out as <strong>coming / being worked on</strong> (today is single-tenant).
+- <strong>Partner agent ecosystem</strong> — Microsoft proactively extending the SDK into partner agents (GenSpark a launch example).</p>
+<p><em>(Status note: several items are framed as current/early or roadmap; exact preview vs. GA labels were not given in the transcript.)</em></p>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Developer onboarding demo (Aarti):</strong> A <strong>LangChain Node.js/TypeScript travel agent</strong> is made "Agent 365-ready" by invoking <strong>Agent 365 skills</strong> from <strong>GitHub Copilot</strong> in VS Code. The skill detects the stack, checks prerequisites, installs packages, uses Azure CLI login/tenant, plans, then <strong>builds → adds observability (OpenTelemetry) → Work IQ → register → publish → deploy</strong> in ~10 min — producing a <strong>blueprint</strong>, configured <strong>Word + OneDrive MCP servers</strong>, and a manifest. <em>Proves:</em> non-Microsoft agents can be fully onboarded with minimal manual effort, hosted on any cloud.</li>
+<li><strong>Agent-as-employee demo (Aarti):</strong> From <strong>Teams</strong>, she creates her own <strong>agent instance</strong>, asks it to plan an Austin trip <em>and</em> generate a <strong>Word document</strong>, then <strong>@mentions the agent in a Word comment</strong> to request coffee places — the agent replies in-comment. <em>Proves:</em> the onboarding-created <strong>endpoint</strong> lets the agent respond across Teams, Word @mentions, and email — collaborating like a hired colleague.</li>
+<li><strong>Observability views (Aarti):</strong> Shows developer/end-user/admin observability — recent chats, <strong>failed runs</strong>, prompts, and <strong>per-blueprint instance activity</strong> (colleagues Pooja/Alister have their own instances). <em>Proves:</em> every step is observable for all three audiences.</li>
+<li><strong>Admin center walkthrough (Kendra):</strong> Overview analytics (total agents/users/runtime hours), calls to action (pending requests, risks, <strong>agents without owners</strong>, exceptions), built-by-org vs. third-party vs. Microsoft breakdowns, top platforms, adoption-over-time, trending agents; the <strong>registry</strong> (showing Workday, GenSpark, etc.); a <strong>Zava procurement agent</strong> detail (metadata, instructions, <strong>identity history</strong> with bot/blueprint/Entra IDs, shared users, policies, permissions, unified activity); and a <strong>graph view</strong> of agent-to-agent dependencies with <strong>blast-radius</strong> insight. <em>Proves:</em> unified cross-platform visibility and actionability.</li>
+<li><strong>Risk + ownership + rules (Kendra):</strong> Drill from a risk into Entra/Purview down to the <strong>document layer</strong>, <strong>block</strong> the agent, hand to SecOps; <strong>reassign owners</strong>; and set <strong>rules</strong> to auto-reassign/auto-block. <em>Proves:</em> governance scales from manual to automated.</li>
+<li><strong>Templates + approval flow (Kendra):</strong> Build a custom template (access packages, conditional access, DLP, lifecycle protections), then publish a <strong>staffing agent</strong> through the <strong>admin approval flow</strong> — select users, apply a baseline default template or a custom <strong>DevOps template</strong>, review/approve permissions. <em>Proves:</em> consistent, risk-appropriate guardrails at publish time.</li>
+<li><strong>Registry sync (Kendra):</strong> Configure access to <strong>Google Vertex AI</strong>, view the ingested agent, and (because the admin holds the permission) <strong>delete</strong> it from within Agent 365. <em>Proves:</em> visibility-only ingestion that respects existing platform permissions.</li>
+<li><strong>GenSpark integration architecture (Ray):</strong> Walks the three-layer architecture and live framing of how identity (per-message auth, refusing out-of-AAD requests), MCP (on-the-fly Word/PowerPoint to OneDrive), and Purview observability/policy inheritance work. <em>Proves:</em> a partner can build on Agent 365 primitives instead of rebuilding auth, storage, and audit.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>"By 2028, there will be 1.5 billion agents in organization"</strong> — IDC prediction ("more than most of countries in the world").</li>
+<li><strong>GenSpark: 2,000+ organizations</strong> already registered it as a daily work tool.</li>
+<li><strong>Shadow-agent expansion to ~22+ additional local platforms</strong> via Defender ("give or take").</li>
+<li><strong>~6 Agent 365 skills</strong> shipping and "constantly adding to this."</li>
+<li><strong>~10 minutes</strong> for the skill-driven onboarding run to complete.</li>
+<li><strong>GenSpark example workloads:</strong> a <strong>200+ MB CSV</strong> needing dedicated-VM compute vs. a chat-based slide-deck task.</li>
+<li><strong>"You cannot govern what you cannot see."</strong> — the recurring thesis for the Observe pillar.</li>
+<li><strong>"Governance is all about implementing guardrails... not intended to put the brakes on innovation"</strong> — reframing governance as an accelerant.</li>
+<li><strong>Agents are "built like apps but function like users"</strong> — the rationale for agent identities.</li>
+<li>Audience reality check: nearly everyone is building/using agents, but only <strong>one person</strong> felt their agents were enterprise-ready, observed, secure, and governed.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Run the <strong>Agent 365 skills</strong> from GitHub Copilot against a sample LangChain/Node agent to see the full register→publish→deploy flow end to end.</li>
+<li>Stand up a <strong>template</strong> combining Entra access packages + Purview DLP + conditional access, and apply it via the agent approval flow.</li>
+<li>Test <strong>registry sync</strong> against a Google Vertex AI / Amazon Bedrock agent to evaluate visibility-only ingestion vs. full SDK onboarding.</li>
+<li>Try the <strong>@mention-in-Word</strong> agent collaboration flow to feel the "agent-as-employee" UX.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What are the exact <strong>preview vs. GA</strong> statuses and licensing/pricing for Agent 365 and the SDK?</li>
+<li>When do <strong>multi-tenant</strong> admin capabilities ship?</li>
+<li>Which specific <strong>~22+ local platforms</strong> does the Defender-based shadow-agent discovery cover?</li>
+<li>For <strong>registry sync</strong>, what governance actions beyond delete propagate, and what observability is genuinely missing vs. SDK onboarding?</li>
+<li>How do <strong>agent identities</strong> consume licenses / count against directory objects at the 1.5B-agent scale?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Anyone planning <strong>enterprise agent governance</strong> across mixed clouds (Azure + AWS + GCP).</li>
+<li><strong>Security/IT admin</strong> teams owning agent sprawl, risk, and audit (Defender/Purview/Entra/Intune).</li>
+<li><strong>Developers</strong> shipping custom agents (LangChain, etc.) who need them discoverable and governed.</li>
+<li><strong>ISVs/partners</strong> wanting to integrate with the M365 productivity surface without rebuilding auth/storage/audit.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="BRK250.html"><span class="pager-dir">← Previous</span><span class="pager-code">BRK250</span><span class="pager-title">Observe and control agents across any framework with open source tools</span></a>
+    <a class="pager pager-next" href="BRK252.html"><span class="pager-dir">Next →</span><span class="pager-code">BRK252</span><span class="pager-title">From observability to ROI for AI agents on any framework</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

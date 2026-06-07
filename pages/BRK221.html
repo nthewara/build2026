@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRK221 — Idea to production-ready agent in seconds on AI-native runtime</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">BRK221</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=4VPLRt25bec" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Idea to production-ready agent in seconds on AI-native runtime</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Devanshi Joshi (PMM, Azure Container Apps), Simon (Microsoft Azure Container Apps product team), Gopi (Augur)</span>
+      <span class="meta-item">⏱️ 45m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="runtime">Runtime</span><span class="chip" data-tag="azure">Azure</span><span class="chip" data-tag="containers">Containers</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Devanshi Joshi — Product Marketing Manager, Azure Container Apps · Simon — Microsoft Azure Container Apps product team · Gopi — Augur (customer)<br>
+<strong>Duration:</strong> ~45 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=4VPLRt25bec">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>The session argues that most agentic-AI projects fail not because of the model but because of the <strong>runtime</strong> they run on — citing Gartner's prediction that <strong>&gt;40% of agentic AI projects will be cancelled by 2027</strong>. The Azure Container Apps team lays out five non-negotiable runtime requirements (sub-second start/resume, native tool-calling/integration, persistent state, strong per-task isolation, and unified tooling) and unveils <strong>Azure Container Apps Sandboxes</strong> (now in <strong>public preview</strong>) — fast, isolated, stateful, scale-to-zero compute built for agents <em>to run on</em> and <em>for agents to use</em>. A live demo runs three voice-driven agents (Arya, Nova, SRE Agent) on serverless GPUs (Whisper + Kokoro speech models) and sandboxes, showing instant resume with memory state, snapshots, per-sandbox L7 firewall isolation, inherited connectors, and live port exposure. Customer <strong>Augur</strong> closes by showing how it built an autonomous supply-chain platform on ACA in ~14 months, running <strong>40+ services and thousands of agents</strong> for "agentic data integration" and a real-time simulation/what-if engine backed by its <strong>OUSCO</strong> supply-chain ontology.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Runtime, not model, is the failure point.</strong> "It's not because of the models. It's because of what you're running, where you're running, how you're running." Gartner: <strong>&gt;40% of agentic AI projects cancelled by 2027</strong>.</li>
+<li><strong>Five things a runtime MUST deliver</strong> (treat as the spec you build to, not optimizations): fast startup &amp; resume, native execution/tool-calling stitched to your other apps, persistent state, strong per-task isolation, unified tooling.</li>
+<li><strong>Cold start must be sub-second, every time</strong> — "10-second startup was old-time technology. Now we're talking less than 100 milliseconds." Not a tuning exercise you nail on day five.</li>
+<li><strong>Agents are event-driven</strong>: wake → do task → idle → wake. The runtime must support this loop with instant resume and not charge you for idle.</li>
+<li><strong>Don't run untrusted/agent-generated code on your dev laptop</strong> — it already holds SSH keys, browser cookies, prod credentials. That's a liability; agents need a fresh sandbox per task.</li>
+<li><strong>Azure Container Apps Sandboxes</strong> (NEW, <strong>public preview</strong>) = fast, isolated, stateful compute on demand; secure-by-default isolation for untrusted workloads; resume instantly preserving context; burst zero → thousands of instances and scale back to zero.</li>
+<li><strong>Resume captures memory state, not just disk</strong> — a sandbox left running a script, slept ~20–25 min, woke in ~1–2 sec and continued exactly where it left off. Configurable: capture disk+memory or disk-only.</li>
+<li><strong>Sandbox groups</strong> hold shared entities (connectors, volumes, snapshots, disk images); child sandboxes <strong>inherit</strong> those settings — e.g. create an agent with calendar/email/Teams connectors and it just has that access.</li>
+<li><strong>Isolation is more than process isolation</strong> — each sandbox gets a <strong>Layer-7 firewall</strong>; you control allowed hosts and which routes are denied per host (network isolation), plus identity/data/access governance at the <strong>runtime level</strong>.</li>
+<li><strong>Snapshots</strong> capture an entire disk so agent work (which is constantly undone/redone) can be replayed or branched from — "Git works great, but stuff gets missed when agents do work." Snapshot → create new sandbox = exact clone.</li>
+<li><strong>Serverless GPUs</strong> on ACA: T4 and A100 GPUs, available in <strong>15 regions</strong>, scale-to-zero, pay only while running — "the easiest way to run your custom models" from Hugging Face via vLLM/Llama or any model container.</li>
+<li><strong>Pre-warm pools</strong> address cold start for sandboxes; <strong>Azure Container Apps Express</strong> (launched ~1 month prior) is "fast Container Apps" — environment-less, no physical cluster, best for web apps/regular APIs (the deploy target, vs. sandboxes as the dev/iteration environment).</li>
+<li><strong>Microsoft dogfoods this runtime</strong>: GitHub Copilot cloud/coding sandboxes, Foundry hosted agent service, and Container Apps Express all run on the same agent runtime.</li>
+<li><strong>Six adoption patterns</strong> for sandboxes: multi-tenancy, platform-for-execution (e.g. EdTech student environments), agent workflows, AI code execution, platform building, and interactive user sessions.</li>
+<li><strong>Augur proof point</strong>: built an enterprise autonomous supply-chain platform on ACA + Azure AI Foundry from first line of code (~March last year) to GA in ~14 months — 40+ services, thousands of agents/day.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-why-agents-break-between-demo-and-production">Framing: why agents break between demo and production</h3>
+<p>Devanshi Joshi (PMM, Azure Container Apps) opens with audience polling: of those who deployed agents in the last 3 months, roughly <strong>50–70% said their agents are no longer doing what they wanted at deploy time</strong>. The thesis: this isn't a model problem. Gartner predicts <strong>over 40% of agentic AI projects will be cancelled by 2027</strong>, and the cause is the runtime — <em>what / where / how</em> you run.</p>
+<p>The failure modes she enumerates:
+- <strong>One bad tool call brings down your workspace.</strong> You restart, rebuild, and eat cold-start throttle in the agent loop — toil for the execution environment that can even lead to data leaks.
+- <strong>Budgets burn unattended.</strong> Paraphrasing a news quote: "Agents are extremely good at burning through budgets and get even better when left unattended." A runaway overnight loop can torch a month of token spend before you notice.
+- <strong>Untrusted code on the dev laptop.</strong> The agent has access to your machine — SSH keys, browser cookies, prod credentials. Running agent-generated code there (no sandbox) is a liability.
+- <strong>Cold-start throttle.</strong> Startups exist purely to give sub-second provisioning. An agent sitting idle waiting on provisioning is unacceptable. 10s is "old-time tech"; the bar is <strong>&lt;100 ms</strong>.
+- <strong>Workspaces dying on restart</strong> lose context, cache, and intermediate state, paying the "environment setup tax" every time — long-running agents can't be long-running if their floor of context is removed.
+- <strong>Tooling stitched by hand.</strong> Every runtime ships its own configs, packaging, rules; porting between runtimes as you move from dev to agents is a recurring headache.</p>
+<h3 id="the-five-requirement-runtime-spec">The five-requirement runtime spec</h3>
+<p>Joshi reframes the failure modes into five things a runtime must deliver <strong>all the time, not sometimes</strong> — "these aren't five optimizations, they're the spec you build with":
+1. <strong>Fast startup and resume.</strong> Agents are event-driven (wake → act → idle → wake). Cold starts must be sub-second every time, not a tuning exercise. If resume is slow, the agent can't pick the user's thread back up.
+2. <strong>Execution stitched to the rest of your apps.</strong> Agents are only useful when acting — calling APIs, running code, talking to other cloud services. That must live <em>inside the runtime</em>, not in fragile glue code.
+3. <strong>Persistent stored state.</strong> Long-running agents reason across hours; persistence is required so the agent stays live without re-paying the setup tax. (Imagery: people walking around with laptop lids open so the agent keeps running.)
+4. <strong>Strong isolation per agent task.</strong> Every execution lands in its own fresh sandbox while keeping security boundaries — preventing data/system/permission/access leaks. Governance covers not just identity/data but <em>which systems the tool-calling connects to</em>, enforced at the <strong>runtime level</strong> (not per-agent or per-project).</p>
+<blockquote>
+<p>Note: Joshi frames these as five, with persistent state and isolation tightly coupled; the deck/demo treats fast resume, integrated execution, persistence, and isolation as the pillars, plus unified tooling vs. the hand-stitched-tooling pain point.</p>
+</blockquote>
+<h3 id="the-demo-architecture-simon">The demo architecture (Simon)</h3>
+<p>Simon (Microsoft ACA product team) — self-described as "the guy you call on stage when the high-wire act goes [wrong]" — walks the architecture, which spans two layers:</p>
+<p><strong>Top layer — Container Apps environment with serverless GPUs:</strong>
+- Two speech models on <strong>serverless GPU</strong>: <strong>Whisper</strong> (speech-to-text) and <strong>Kokoro</strong> (text-to-speech).
+- A <strong>multi-agent broker</strong> that intercepts every prompt in/out of every agent and translates text ↔ audio (the voice pipeline).</p>
+<p><strong>Bottom layer — agent infrastructure on sandboxes:</strong>
+- Multiple <strong>sandboxes</strong> each running <strong>GitHub Copilot CLI</strong> (named agent areas, e.g. one called <strong>Nova</strong>).
+- An <strong>Azure SRE Agent</strong> added as part of the demo.
+- A series of <strong>proxy bridges</strong> that interface with the multi-agent broker so users talk to agents by voice.
+- A <strong>browser</strong> front end for the conversation, plus — as "extra credit" — a <strong>phone call gateway</strong> built and run on ACA by <strong>Twilio</strong>.</p>
+<p>The three demo agents:
+- <strong>Arya</strong> — a regular Copilot / developer agent.
+- <strong>Nova</strong> — a personal assistant with access to Simon's calendar, Teams meetings, and emails (via inherited connectors).
+- <strong>SRE Agent</strong> — monitors the application and reports on infrastructure health.</p>
+<h3 id="live-demo-walkthrough">Live demo walkthrough</h3>
+<ul>
+<li><strong>Mic check / voice</strong>: agents greet the audience over the voice pipeline (slight delay noted as expected for the audio round-trip).</li>
+<li><strong>Give Arya a job</strong>: "build a tic-tac-toe game and tell me the port it's listening on." Arya goes off to work (takes a couple of minutes) — demonstrating an agent doing real code execution inside a sandbox.</li>
+<li><strong>Ask Nova in parallel</strong>: "what build-related meetings are on my calendar today?" Nova returns real calendar holds and sessions (mentions TECBRK 221 / BRK221). Then "what was my last Teams message?" — Nova reads a recent Teams message (referencing Twilio + Voice Live API + SRE agent chat, noting Simon is presenting live at BRK221). Simon stresses this was <strong>not rehearsed</strong> and that sandboxes natively connect to an endless number of endpoints via <strong>sandbox connectors</strong>.</li>
+<li><strong>Ask SRE Agent</strong>: "what application are you watching?" It describes <strong>Voice Connect</strong> — a real-time multi-agent voice communication platform connecting users via <strong>WebSocket audio sessions</strong> to AI agents (Claude, an SRE agent, a sandboxed code-execution agent), with STT/TTS handling the audio pipeline, running on <strong>Azure Container Apps, ACR, and Log Analytics</strong>.</li>
+<li><strong>Arya finishes</strong>: tic-tac-toe game is up on <strong>port 80</strong>.</li>
+<li><strong>Omni-channel point</strong>: Simon notes voice/omni-channel feels more natural than constantly typing — you can keep agent "doors" open and converse back and forth.</li>
+</ul>
+<h3 id="infrastructure-deep-dive">Infrastructure deep dive</h3>
+<ul>
+<li><strong>ACA environment view</strong>: shows all running apps and <strong>workload profiles</strong>. Two apps run the STT and TTS models on serverless GPU; both <strong>scale to zero</strong> when idle, so you pay only while running.</li>
+<li><strong>Serverless GPU plug</strong>: easiest way to run custom models — Hugging Face via vLLM/Llama or any model-hosting container; T4 and A100 GPUs across 15 regions.</li>
+<li><strong>Azure SRE Agent</strong>: a full-featured agent with many connectors — connect to a knowledge base, do code check-ins/checkouts, etc. Here it's wired to audio.</li>
+</ul>
+<h3 id="aca-sandboxes-the-core-feature">ACA Sandboxes — the core feature</h3>
+<p>Simon spends most of the remaining demo on <strong>ACA Sandboxes</strong>, "a new offering being launched into public preview." Key framing: it's an <strong>agent-first platform</strong> in <em>two</em> senses — a platform to <em>run</em> agents <strong>and</strong> a platform <em>for agents to use</em>.</p>
+<ul>
+<li><strong>Sandbox groups</strong>: hold entities — <strong>connectors, volumes, snapshots, disk images</strong>. Sandboxes run inside a group and <strong>inherit</strong> the group's settings (this is how Nova inherited calendar/Teams/email connectors).</li>
+<li><strong>Instant resume with memory state</strong> (highlighted as the best part): a sandbox left running a background script slept for ~20–25 minutes; Simon woke it in roughly <strong>1–2 seconds</strong> and the script continued <em>exactly</em> where it left off. Configurable to capture <strong>disk + memory</strong> or <strong>disk only</strong> on sleep.</li>
+<li><strong>Fast create from templates</strong>: a set of pre-configured templates ship; clicking "create" provisions a sandbox near-instantly. Connecting in and launching Copilot, the <strong>GitHub token set on the sandbox group is auto-passed in</strong>, so Copilot is authenticated immediately.</li>
+<li><strong>Network isolation (not just process isolation)</strong>: each sandbox gets a <strong>Layer-7 firewall</strong>; you control exactly which hosts are allowed and which routes on which hosts are denied.</li>
+<li><strong>Port exposure</strong>: Arya's tic-tac-toe game on port 80 is exposed live via a simple "add/expose this port" action, and Simon plays the game on stage.</li>
+<li><strong>Snapshots</strong>: because agent work is constantly undone/redone and "stuff gets missed" even with Git, snapshotting the whole disk lets you replay or branch forward. Snapshot (e.g. "D91") → create a <strong>new sandbox from snapshot</strong> = an exact clone of the original agent's state/sessions.</li>
+<li><strong>Phone "extra credit"</strong>: via the Twilio-built call gateway on ACA, Simon phones the agent trio ("Voice Connect agent — who would you like to talk to?") and asks about the last check-in (a real commit: "client phase 7 UI polish" with door-closed state, drop-mode banner, new Nova avatar). A request to Nova to email someone is correctly refused by the SRE agent ("I don't have the ability to send emails… focused on infrastructure"), illustrating per-agent capability scoping.</li>
+</ul>
+<h3 id="introducing-azure-container-apps-sandboxes-the-engine-back-to-devanshi">Introducing Azure Container Apps Sandboxes (the engine) — back to Devanshi</h3>
+<p>After the demo, Joshi formally introduces the engine: <strong>Azure Container Apps Sandboxes</strong> — <em>fast, isolated, stateful compute infrastructure on demand, executing securely by default, isolated for untrusted workloads.</em> Not just AI-generated code but also <strong>multi-tenant</strong> scenarios. It resumes instantly preserving context end-to-end and bursts to <strong>hyperscale — zero to thousands in seconds — then dies back to idle</strong> so spend goes to tokens, not idle compute.</p>
+<p>It's the <strong>foundation layer already powering Microsoft's own experiences</strong>: <strong>GitHub Copilot's cloud/coding sandboxes</strong> (also launched at Build), <strong>Foundry hosted agent service</strong>, and <strong>Container Apps Express</strong>.</p>
+<ul>
+<li><strong>Cold-start handling</strong>: <strong>pre-warm pools</strong> for sandboxes; <strong>Container Apps Express</strong> is "fast Container Apps."</li>
+<li><strong>Container Apps Express</strong> clarified: use it for everything that is <em>not</em> the agent itself — regular APIs/apps/web apps (the application layer / deploy target). Sandboxes are the fast iteration/dev environment agents run in and use.</li>
+</ul>
+<h3 id="customer-adoption-patterns">Customer adoption patterns</h3>
+<p>Joshi stresses sandbox value isn't industry-specific — net-tech, ISV services, startups all benefit, whether extending existing apps or building new experiences. Named examples:
+- <strong>EdTech / "Ed Chat" for the Department of Education, South Australia</strong> — safe, sandboxed environments per student to build and test technology (democratized AI experience).
+- <strong>Sitecore AI</strong> — runs long-lived agent executions safely/securely in production on its Sitecore AI platform, doing real production work end-to-end without losing control over its agents (multi-tenancy pattern).</p>
+<p><strong>Six emerging patterns</strong>: (1) multi-tenancy (Sitecore AI), (2) platform-for-execution of user/student environments (EdTech), (3) agent workflows (Simon's demo), (4) AI code execution (agent becomes "the user" asking a sandbox to spin up, act, and die down — so production data isn't at risk), (5) platform building (startups building AI/agent/copilot platforms on sandboxes, or multi-tenant ISV experiences), (6) interactive user sessions.</p>
+<h3 id="customer-story-augur-gopi">Customer story: Augur (Gopi)</h3>
+<p>Gopi from <strong>Augur</strong> presents building <strong>autonomous supply chains</strong> with agents. Opening point: more people <em>write code today</em> than started their careers writing code, because agents now write code (his 15-year-old daughter included).</p>
+<p><strong>The supply-chain problem</strong>: even a simple pen has an insane supply chain — raw materials → processed manufacturing parts (ink, ball) → component assembly → shipping → warehousing → transport → retail → you. Combinatorial complexity explodes with variants ("a pink pen that writes in blue," "a pen-pencil"); now scale that to an iPhone or an NVIDIA GPU. Augur's mission: <strong>autonomous supply chains using agents to coordinate across this gamut and eliminate the "coordination tax."</strong></p>
+<p>Three pillars of Augur:
+1. <strong>Built on Augur's Universal Supply Chain Ontology (OUSCO)</strong> — every layer of the stack shares the same terminology so agents can act comfortably.
+2. <strong>AI-native</strong> — they don't reinvent foundational models; heavily <strong>context-driven</strong> because decades of operator/institutional knowledge in supply chains is undocumented and not in the public domain, yet essential to operate effectively.
+3. (Implied throughout) <strong>agents for reasoning, deterministic blocks for math/physics.</strong></p>
+<p><strong>Problem 1 — data lives in silos; unstructured knowledge is lost.</strong> Every deployment is bespoke and doesn't scale; "death by a thousand cuts" — solve the first 20% and the remaining 80% is edge cases. Augur's answer is <strong>Agentic Data Integration (ADI)</strong> on ACA: <strong>thousands of agents</strong> running concurrently. Example: a customer points Augur at a Snowflake account with <strong>900 tables, 1,000+ columns each, millions of rows</strong>. A human team would take <strong>~12 months</strong> just to start making progress on one customer. Instead an <strong>agentic harness</strong> figures out what each table means semantically, how tables/columns relate, and percolates that up to higher-level agents that reason about and join tables and predict interoperation. A <strong>human-in-the-loop</strong> layer lets long-running agents <strong>sleep, then wake</strong> via approval/information workflows to collect context and feed the next stage — compressing a ~1-year integration into <strong>days</strong>.</p>
+<p><strong>Problem 2 — agents break without a world model.</strong> Hyper-customizing every supply-chain problem into a bespoke solution doesn't scale. <strong>OUSCO (Osco)</strong> is richer than a data schema: it codifies common mathematical operations, common functions, and the <em>physics</em> of how a supply chain operates (how products move, processes, buffers). <strong>Agents do decision-making/reasoning; deterministic work happens in strong deterministic blocks exposed as tools</strong> to those agents. The world model scales across multiple customers.</p>
+<p><strong>Connecting data ↔ world model — "the bus."</strong> Because ADI is aware of the higher OUSCO layer it must report into, it <strong>automatically builds ETL pipelines and ML notebooks</strong> and connects incoming data into interoperable intelligence wired to the OUSCO layer. On top sits <strong>context</strong> — company-specific decision logic (e.g. tier-1 customers can never go hungry; tier-2 can starve a little) pulled in real time.</p>
+<p><strong>Offline vs real-time.</strong> The first two pillars are <strong>offline workflows</strong> using thousands of agents. The third is a <strong>real-time</strong> workflow: a what-if question ("what happens if I put a warehouse in this location?") runs through a modeling/simulation pipeline that must be <strong>parameterized</strong> with the right inputs in real time. This needs <strong>very fast ACA agents that open sandboxes, run, hand off to other agents that make local decisions and pull data — all within ~10 seconds.</strong> Back-end (long-running) work can take time; the <strong>front-end experience must be fast</strong>.</p>
+<p><strong>Speed-to-market</strong>: from the first line of code (~<strong>March last year</strong>) to <strong>publicly closing with customers today</strong> — an enterprise-grade, at-scale solution built in ~14 months, thanks to <strong>ACA + Azure + Azure AI Foundry</strong>. Augur runs <strong>40+ services on Azure Container Apps</strong> with <strong>thousands of agents daily</strong>.</p>
+<h3 id="closing-three-things-devanshi">Closing three things (Devanshi)</h3>
+<ol>
+<li><strong>Container Apps already delivers a cohesive agent runtime for customers in action</strong> (Augur as proof) — apps + sandboxes stitched together.</li>
+<li><strong>Container Apps Sandboxes are now in public preview</strong>, and Microsoft uses it itself — GitHub, Foundry, Container Apps and other Azure services run on the same agent-runtime experiences.</li>
+<li><strong>Get started</strong>: read the <strong>Azure Container Apps all-up product blog</strong>; Simon's <strong>demo code is in the linked repo</strong>; access the <strong>sandboxes portal at <code>aka.ms/aca/sandboxes/portal</code></strong>; there's a blog with end-to-end samples; and check out <strong>Express</strong> too.</li>
+</ol>
+<h3 id="qa">Q&amp;A</h3>
+<ul>
+<li><strong>Express vs Sandboxes — when to use which?</strong> Simon: <strong>Sandboxes</strong> are a <em>fast iteration environment</em> — built for agents to be run on <em>and</em> for agents to use during development; very transient ("think of them as your laptop you're finishing work on while running through the airport"). <strong>Express</strong> is what you <em>deploy to</em> — similarly speedy, <strong>environment-less</strong> (no physical cluster behind it), essentially just an app, <strong>best for web apps</strong>; launched ~a month ago. Rule of thumb: <strong>develop with your agents on sandboxes, deploy on Express.</strong></li>
+<li><strong>Where does the OUSCO world model live / what format?</strong> Gopi: it's <strong>actual code — an object-oriented representation</strong> inside their codebase (they want as much as possible to be deterministic). <strong>Agents are registered with OUSCO</strong>, every object is registered, the data schema is OUSCO, common functions are OUSCO — a world model not just of data but of <em>how supply chains operate</em>.</li>
+</ul>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Azure Container Apps (ACA)</strong> — serverless container platform; the agent runtime backbone for this session.</li>
+<li><strong>Azure Container Apps Sandboxes</strong> — NEW (public preview): fast, isolated, stateful on-demand compute; agent-first platform to run agents on and for agents to use; instant resume with memory state, snapshots, L7-firewall isolation, sandbox groups with inherited connectors.</li>
+<li><strong>Sandbox groups</strong> — container for shared entities (connectors, volumes, snapshots, disk images) that child sandboxes inherit.</li>
+<li><strong>Sandbox connectors</strong> — native connectivity from a sandbox to endless endpoints (calendar, email, Teams, etc.); inherited from the sandbox group.</li>
+<li><strong>Snapshots</strong> — whole-disk capture of a sandbox to replay/branch/clone agent state.</li>
+<li><strong>Pre-warm pools</strong> — keep sandboxes warm to eliminate cold start.</li>
+<li><strong>Azure Container Apps Express</strong> — "fast Container Apps"; environment-less (no physical cluster), best for web apps/regular APIs; the deploy target (vs sandboxes for dev). Launched ~1 month prior.</li>
+<li><strong>Serverless GPUs (on ACA)</strong> — T4 and A100 GPUs, 15 regions, scale-to-zero, pay-per-run; easiest way to host custom models.</li>
+<li><strong>Azure SRE Agent</strong> — full-featured monitoring/troubleshooting agent with many connectors (knowledge base, code check-in/out); wired to audio in the demo.</li>
+<li><strong>GitHub Copilot CLI</strong> — coding agent running inside the demo sandboxes (Arya, Nova).</li>
+<li><strong>GitHub Copilot cloud/coding sandboxes</strong> — Microsoft's own Copilot sandboxes, also launched at Build, running on the same ACA sandbox engine.</li>
+<li><strong>Azure AI Foundry — hosted agent service</strong> — Microsoft agent service built on the same runtime; used by Augur.</li>
+<li><strong>Whisper</strong> — speech-to-text model running on serverless GPU in the demo.</li>
+<li><strong>Kokoro</strong> — text-to-speech model running on serverless GPU in the demo (caption garbled it "Cocooro").</li>
+<li><strong>Multi-agent broker</strong> — intercepts every agent prompt in/out and translates text ↔ audio (the voice pipeline).</li>
+<li><strong>Proxy bridges</strong> — interface between the multi-agent broker and individual agents for voice in/out.</li>
+<li><strong>Voice Connect</strong> — the demo app: real-time multi-agent voice platform over WebSocket audio sessions to AI agents, with STT/TTS pipeline, running on ACA + ACR + Log Analytics.</li>
+<li><strong>Twilio call gateway</strong> — phone-call entry point to the agents, built and run on ACA by Twilio (the "extra credit" phone demo).</li>
+<li><strong>Azure Container Registry (ACR)</strong> — image registry in the demo stack.</li>
+<li><strong>Azure Log Analytics</strong> — observability backend in the demo stack.</li>
+<li><strong>vLLM / Llama / Hugging Face</strong> — referenced as model sources/hosting paths for serverless GPU.</li>
+<li><strong>Claude</strong> — named as one of the AI agents in the Voice Connect platform.</li>
+<li><strong>Augur OUSCO (Osco)</strong> — Augur's Universal Supply Chain Ontology; object-oriented code world model codifying supply-chain physics, functions, schema; agents/objects register with it.</li>
+<li><strong>Augur Agentic Data Integration (ADI)</strong> — thousands of concurrent agents that semantically map/join siloed data and auto-build ETL pipelines + ML notebooks.</li>
+<li><strong>Snowflake</strong> — example customer data source (900 tables × 1,000+ columns) ingested by Augur's ADI.</li>
+<li><strong>Workload profiles (ACA)</strong> — compute profile assignment shown in the environment view.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Azure Container Apps Sandboxes — Public Preview</strong> (the headline announcement): fast, isolated, stateful, scale-to-zero compute; instant resume with memory state; snapshots; L7-firewall network isolation; sandbox groups + inherited connectors; bursts zero → thousands of instances.</li>
+<li><strong>Pre-warm pools for sandboxes</strong> — to address cold start (mentioned as available).</li>
+<li><strong>Azure Container Apps Express</strong> — already GA-ish/launched ~1 month before this session; "fast Container Apps," environment-less, web-app-optimized deploy target.</li>
+<li><strong>Serverless GPUs</strong> — T4 + A100 across 15 regions on ACA (promoted; recommend trying).</li>
+<li><strong>Microsoft dogfooding</strong> — GitHub Copilot cloud sandboxes, Foundry hosted agent service, and Container Apps Express all run on the ACA agent runtime (GitHub Copilot cloud sandboxes also noted as launched at this Build).</li>
+<li><strong>Get-started resources</strong>: ACA all-up product blog; Simon's demo <strong>code repo</strong>; sandboxes portal at <strong><code>aka.ms/aca/sandboxes/portal</code></strong>; blog with end-to-end samples.</li>
+<li><strong>Status note:</strong> Container Apps Sandboxes = <strong>public preview</strong>. Express = launched (~1 month prior). Serverless GPU = generally available. (Exact GA dates for Express/GPU not stated in the talk.)</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Three voice agents on stage (Arya, Nova, SRE Agent)</strong> — proved agents run on sandboxes + serverless-GPU voice pipeline and can be driven by natural voice (omni-channel) rather than typing.</li>
+<li><strong>Arya builds a tic-tac-toe game</strong> — agent does real, autonomous code execution inside a sandbox and reports the listening port (80); proved in-runtime code execution + tool use.</li>
+<li><strong>Nova reads live calendar + Teams message</strong> — unrehearsed; proved sandbox connectors reach real endpoints (calendar/email/Teams) inherited from the sandbox group.</li>
+<li><strong>SRE Agent describes the app it monitors</strong> — proved an infrastructure-aware agent with its own connector set and scoped capabilities.</li>
+<li><strong>Instant resume with memory state</strong> — a sandbox running a background script slept ~20–25 min and woke in ~1–2 sec, continuing exactly where it left off; proved stateful, sub-second resume (disk+memory).</li>
+<li><strong>Create sandbox from template</strong> — clicking "create" provisions near-instantly; launching Copilot auto-uses the group's GitHub token (authenticated immediately); proved fast start + inherited credentials.</li>
+<li><strong>Network isolation per sandbox (Nova)</strong> — showed the L7 firewall: allowed hosts and denied routes per host; proved isolation beyond process boundaries.</li>
+<li><strong>Expose port → play the game</strong> — exposed Arya's port 80 live and played tic-tac-toe on stage; proved trivial service exposure from a sandbox.</li>
+<li><strong>Snapshot → clone</strong> — snapshotted a sandbox ("D91") and created an exact new sandbox from it (same sessions); proved disk snapshot/replay/branching.</li>
+<li><strong>Phone call via Twilio gateway</strong> — phoned the agent trio, asked about the last commit; Nova-email request correctly refused by the scoped SRE agent; proved omni-channel reach + per-agent capability scoping.</li>
+<li><strong>Augur (slides/architecture, not live)</strong> — walked ADI (thousands of agents mapping a 900-table Snowflake DB), OUSCO world model, the "bus" auto-building ETL/ML pipelines, and a real-time ~10-second what-if simulation flow; proved production-scale agentic workloads on ACA.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>"&gt;40% of agentic AI projects will be cancelled by 2027"</strong> — Gartner, cited as the central warning.</li>
+<li><strong>"It's not because of the models. It's because of what you're running, where you're running, how you're running."</strong> — Devanshi Joshi.</li>
+<li><strong>"10-second startup was old-time technology. Now we're talking less than 100 milliseconds."</strong> — on the cold-start bar.</li>
+<li><strong>"Agents are extremely good at burning through budgets and get even better when left unattended."</strong> — paraphrased news quote on runaway loops/token spend.</li>
+<li><strong>"These aren't five optimizations. They are the spec that you build with."</strong> — Joshi, on the runtime requirements.</li>
+<li><strong>"It is an agent-first platform for agents to use."</strong> — Simon, reframing sandboxes.</li>
+<li><strong>50–70%</strong> of audience hands dropped when asked if their deployed agents still do what they wanted.</li>
+<li><strong>Resume:</strong> slept <strong>~20–25 min</strong>, woke in <strong>~1–2 sec</strong>, continued exactly as before.</li>
+<li><strong>Serverless GPU:</strong> <strong>T4 + A100</strong>, <strong>15 regions</strong>, scale-to-zero.</li>
+<li><strong>Augur scale:</strong> <strong>40+ services</strong> on ACA, <strong>thousands of agents/day</strong>; first line of code ~<strong>March last year</strong> → publicly live with customers in <strong>~14 months</strong>.</li>
+<li><strong>Augur Snowflake example:</strong> <strong>900 tables</strong>, <strong>1,000+ columns each</strong>, <strong>millions of rows</strong>; human team ≈ <strong>12 months</strong> to even start → compressed to <strong>days</strong>.</li>
+<li><strong>Augur real-time loop:</strong> open sandbox → run → hand off → pull data, all within <strong>~10 seconds</strong>.</li>
+<li><strong>Sandboxes portal:</strong> <code>aka.ms/aca/sandboxes/portal</code>.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: spin up an <strong>ACA Sandbox</strong> from a template and verify sub-second create + Copilot auto-auth via sandbox-group GitHub token; test <strong>resume with memory</strong> (disk+memory vs disk-only) on a long-running script; create a <strong>snapshot</strong> and clone it; configure the <strong>L7 firewall</strong> (allowed hosts / denied routes); deploy a web app to <strong>Container Apps Express</strong> and contrast with a sandbox; try <strong>serverless GPU</strong> hosting a Hugging Face model (Whisper/Kokoro-style).</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: What are sandbox limits (max concurrent, lifetime, size tiers, regions in preview)? Pricing model for sandboxes vs Express vs serverless GPU? How do connectors handle secrets/identity (managed identity?) vs the GitHub-token example? Is the L7 firewall egress-only or also ingress? How do snapshots interact with attached volumes? SLA/observability story for long-running sandboxes? Multi-tenant isolation guarantees for ISV scenarios (Sitecore-style)?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: agent runtime/platform decisions for any internal agentic projects; safe execution of AI-generated/untrusted code; demo/lab environments needing per-task isolation; cost control on idle agent loops (scale-to-zero); customer conversations on ACA sandboxes + Express + serverless GPU; supply-chain / data-integration agent patterns (Augur ADI + ontology approach).</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><a class="wikilink wikilink--resolved" href="BRK227.html">BRK227 - Distributed systems to AI platforms</a></li>
+<li><a class="wikilink wikilink--resolved" href="BRK240.html">BRK240 - Build context-aware agents</a></li>
+<li><a class="wikilink wikilink--resolved" href="DEMSP381.html">DEMSP381 - Scale agentic AI on Azure with Arm Cobalt VMs</a></li>
+<li>ACA all-up product blog · Sandboxes portal: <code>aka.ms/aca/sandboxes/portal</code></li>
+<li></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="BRK220.html"><span class="pager-dir">← Previous</span><span class="pager-code">BRK220</span><span class="pager-title">Using AI tools to teach old apps new tricks</span></a>
+    <a class="pager pager-next" href="BRK222.html"><span class="pager-dir">Next →</span><span class="pager-code">BRK222</span><span class="pager-title">The honest practitioner&#x27;s take on agentic AI on Kubernetes</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

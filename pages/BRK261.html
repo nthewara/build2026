@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRK261 — Build and ship faster with a developer-optimized experience on Windows</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">BRK261</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=V6mdr7Lw1TA" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Build and ship faster with a developer-optimized experience on Windows</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Kayla Cinnamon, Craig (WSL PM), Gier (Windows Performance) [caption-uncertain], Clint</span>
+      <span class="meta-item">⏱️ 42m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="windows">Windows</span><span class="chip" data-tag="developer-experience">Developer Experience</span><span class="chip" data-tag="devtools">Devtools</span><span class="chip" data-tag="wsl">Wsl</span><span class="chip" data-tag="performance">Performance</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Kayla Cinnamon (PM, Windows developer utilities — Terminal, PowerToys, winget, WSL); Craig (PM, Windows Subsystem for Linux &amp; AI tools on Windows); Gier (Windows performance) <em>[name caption-uncertain — also called "Gin"/"Gingier" in captions]</em>; Clint (4th speaker, assisting/timing demos)<br>
+<strong>Duration:</strong> ~42 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=V6mdr7Lw1TA">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>The Windows developer-tools team (Terminal, PowerToys, winget, WSL) walks through a fast, minimal-slides tour of everything that makes Windows a better place to build and ship apps in 2026, split into <strong>building <em>on</em> Windows</strong> (your dev environment) and <strong>building <em>for</em> Windows</strong> (shipping WinUI apps). On the environment side they ship a one-command <strong>Windows developer config</strong> (a winget configuration file that installs WSL + Ubuntu + git/gh/Copilot CLI/VS Code idempotently), a <strong>movable/vertical taskbar</strong>, a <strong>new Run dialog</strong> built on the open-source <strong>PowerToys Command Palette</strong> architecture, an experimental <strong>Intelligent Terminal</strong> agent companion pane, brand-new <strong>WSL containers</strong> via the <code>wslc</code>/<code>container</code> CLI, GNU <strong>core utils</strong> ported natively to Windows (165 tools), and a pre-configured <strong>comfort shell</strong> Ubuntu flavour. For shipping apps they introduce the <strong>WinApp CLI</strong> (one tool for SDKs, packaging, identity, manifests, certs), the <strong>winddev skills</strong> agent plugin for building WinUI 3 / Windows App SDK apps with up-to-date context, a new <strong>WSL Containers API</strong> (NuGet package, runs Linux containers inside a Windows app's own WSL VM), and <strong>Sample-based Profile Guided Optimization (SPGO)</strong> which delivered up to <strong>20% real-workflow gains for Adobe Photoshop</strong> and ~33% in the demo — all friction-free using hardware counters instead of instrumented builds. The unifying theme: nearly everything (except Windows itself) is open source, with 16,000+ contributors thanked.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Windows developer config</strong> is a public, idempotent <strong>winget configuration file</strong> (repo: <code>Windows developer config</code>, made public the morning of the talk) that bootstraps a dev box: installs WSL + Ubuntu plus git, GitHub CLI, Copilot CLI, VS Code and more — re-running won't reinstall tools you already have.</li>
+<li><strong>Movable/vertical taskbar is back</strong> — pin the taskbar left, top, or bottom; a long-requested feature, currently in the <strong>Windows Insider</strong> program and shipping.</li>
+<li>The <strong>new Run dialog</strong> is rebuilt on the <strong>PowerToys Command Palette</strong> architecture (the successor to PowerToys Run), so community code contributed to Command Palette now ships inside Windows itself.</li>
+<li><strong>Intelligent Terminal</strong> (experimental, open source, published the morning of the talk) gives you an <strong>agent companion pane</strong> in the terminal — the agent helps alongside your prompt instead of taking over the whole terminal like a full CLI agent does.</li>
+<li>Intelligent Terminal is <strong>agent-agnostic</strong>: it auto-detects whichever agents you have installed (GitHub Copilot, Claude, Codex, open code, etc.) and lets you pick your preferred model.</li>
+<li><strong>WSL containers</strong> are brand new (announced that morning): a new <code>wslc</code> binary (aliased as <code>container</code>) runs Linux containers natively as part of WSL — pull/run distros (Ubuntu, Debian), build images from container files, port-forward into Windows, all from the terminal.</li>
+<li>WSL containers ship <strong>both a CLI and an API</strong> — Microsoft built their own opinionated CLI (e.g. a <code>system session</code> command that doesn't exist in Docker/Podman) specifically so the CLI and API stay aligned.</li>
+<li>WSL container improvements flow <strong>upstream for free</strong> to Docker Desktop, Podman Desktop and Rancher Desktop because the underlying VM tech is shared and open source — including a <strong>2× cross-OS file performance</strong> improvement for accessing Windows files from Linux.</li>
+<li><strong>Core utils</strong>: ~165 GNU core utilities (the repo highlights ~75) are now available <strong>natively on Windows</strong> (<code>grep</code>, <code>tail</code>, <code>test</code>, <code>env</code>, <code>wc</code>, etc. as <code>.exe</code>), so you can pipe Linux-style commands directly in your Windows shell.</li>
+<li><strong>Comfort shell</strong> (bundled in the Windows developer config) is a pre-configured Ubuntu setup script that ships Homebrew, zsh, Starship, <strong>btop</strong> and other favourites pre-installed, plugging straight into your Ubuntu distro.</li>
+<li><strong>WinApp CLI</strong> (open source, on winget) is a <strong>single CLI</strong> for managing Windows SDKs, packaging, generating app identity, manifests, certificates and build tools — it handles the hard parts like publishing and unlocking <strong>package identity</strong> (native notifications, Explorer/taskbar/share-sheet integration).</li>
+<li><strong>winddev skills</strong> is an <strong>agent plugin</strong> (bundle of skills + MCP servers + custom agents) for building <strong>WinUI 3 / Windows App SDK</strong> apps — ships skills for build/run workflow, WinUI design, code review, testing, packaging, WPF migration, and setup.</li>
+<li>The winddev plugin gives agents <strong>up-to-date WinUI knowledge directly</strong>, so the agent doesn't waste tokens on stale web searches — a real token-efficiency win.</li>
+<li>The <strong>WSL Containers API</strong> (a WSL containers NuGet package) lets a <strong>C#/.NET app embed Linux containers</strong>: defined in the <code>.csproj</code>, the container builds automatically as part of <code>dotnet build</code>/<code>dotnet run</code> — each Windows app gets <strong>its own WSL VM</strong> and can run many containers inside it.</li>
+<li>A WSL-container-backed app <strong>looks and behaves like a native Windows app</strong> — cold-start container init benchmarked at <strong>~2.5 seconds</strong>, with full resource cleanup (VM disappears) when the app closes; supports volume mounts (specific Windows folders) and <strong>GPU access</strong>.</li>
+<li><strong>SPGO (Sample-based Profile Guided Optimization)</strong> removes the friction of classic PGO: instead of instrumented builds, it uses <strong>lightweight hardware counters</strong> on a normal <strong>release build</strong> captured via <code>xperf</code>/ETL traces — same perf wins, no extra build fork, no slow instrumented run.</li>
+<li>SPGO is <strong>real and shipping value</strong>: <strong>Adobe Photoshop saw up to 20%</strong> improvement on real CPU-bound workflows (releasing the optimized build to the public "in the coming days"); the live Fibonacci VM demo went <strong>3s → 2s (~33%)</strong>; ISVs report <strong>5–15%</strong> typical gains.</li>
+<li>SPGO is meant to be <strong>iterative, not one-shot</strong> — re-capture profiles as your code or your users' usage patterns change, and fold it into your existing <strong>build pipeline</strong> (it's non-intrusive — no instrumented fork).</li>
+<li><strong>Everything but Windows itself is open source</strong> — the team thanked <strong>16,000+ open-source contributors</strong> across Terminal, WSL, WinUI and PowerToys (a contributors file 16,000 lines long).</li>
+<li>Bonus PowerToys utility shown: <strong>grab-and-move</strong> — hold <strong>Alt</strong> and click anywhere to drag a window, even when the title bar is hidden behind a wall of browser tabs.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-two-halves-building-on-windows-vs-building-for-windows">Framing: two halves — building <em>on</em> Windows vs building <em>for</em> Windows</h3>
+<p>The team that owns a big chunk of Windows developer utilities (Windows itself, <strong>PowerToys</strong>, <strong>Windows Terminal</strong>, <strong>winget</strong> the Windows package manager, and <strong>WSL</strong> the Windows Subsystem for Linux) ran a deliberately minimal-slides, demo-heavy session ("that's our jam"). They split the talk into two parts:
+- <strong>Building <em>on</em> Windows</strong> — improvements to Windows itself that make it a better machine to <em>do your development on</em> (environment setup, terminal, taskbar, WSL containers, core utils, comfort shell).
+- <strong>Building <em>for</em> Windows</strong> — everything they've created to make <em>shipping Windows apps</em> (WinUI / Windows App SDK apps) more seamless (WinApp CLI, winddev skills agent plugin, SPGO performance optimization, WSL Containers API).</p>
+<p>Most of what's shown was also in the Build 2026 keynote that morning; this session goes deeper. A recurring meta-point: almost everything except Windows itself is <strong>open source on GitHub</strong>.</p>
+<h3 id="developer-setup-pain-the-windows-developer-config-winget-config-file">Developer setup pain → the Windows developer config (winget config file)</h3>
+<p>The problem: setting up a fresh Windows dev box is slow — you have to go grab Python, Node, all your packages and favourite tooling one at a time. The team's answer is a <strong>winget configuration file</strong> that automates this. It installs:
+- <strong>Ubuntu</strong> along with <strong>WSL</strong> (Windows Subsystem for Linux)
+- core tooling: <strong>git</strong>, <strong>GitHub CLI (<code>gh</code>)</strong>, <strong>Copilot CLI</strong>, <strong>VS Code</strong>, and more.</p>
+<p>Key property: winget configuration files are <strong>idempotent</strong>. If you already have git (as most do), it won't reinstall — it just verifies git is present and moves on to the next item. You can download the config first to see exactly what it will install, then run it.</p>
+<p><strong>Repo:</strong> <code>Windows developer config</code> — published and made <strong>public the morning of the talk</strong>. Several other things shown in the session (comfort shell, etc.) also live in this repo. A final slide collects all the links.</p>
+<h3 id="movable-vertical-taskbar-insider">Movable / vertical taskbar (Insider)</h3>
+<p>A long-requested, popular feature is <strong>back</strong>: you can move the Windows taskbar to the <strong>left</strong>, <strong>top</strong>, or keep it on the <strong>bottom</strong> (where it's always been). Currently available in the <strong>Windows Insider</strong> program and shipping. (Kayla noted she keeps hers on the bottom out of habit so she doesn't "lose her icons.")</p>
+<h3 id="the-new-run-dialog-built-on-powertoys-command-palette">The new Run dialog (built on PowerToys Command Palette)</h3>
+<p>The classic <strong>Run</strong> dialog gets a refreshed, <strong>more streamlined UI</strong>. The interesting part is <em>how</em> it's built: it leverages the architecture of <strong>PowerToys Command Palette</strong>. The lineage shown on screen:
+1. <strong>PowerToys Run</strong> — the original launcher.
+2. <strong>Command Palette</strong> — the evolution: more extensibility (you can install things into it), more capability, a redesigned UI based on feedback.
+3. <strong>New Run</strong> — now uses the <strong>Command Palette architecture</strong> inside Windows itself; you can search for tooling and it looks much like Command Palette (just inverted).</p>
+<p>The open-source payoff: because Command Palette is open source in PowerToys, <strong>if you contributed to Command Palette, there's a good chance your code now ships inside Windows.</strong></p>
+<h3 id="intelligent-terminal-an-agentic-companion-pane-experimental-open-source">Intelligent Terminal — an agentic <em>companion pane</em> (experimental, open source)</h3>
+<p>Motivation: when you launch a full CLI agent (e.g. Copilot CLI), it <strong>takes over your whole terminal</strong>. It would be nicer to have a <strong>companion</strong> working alongside you so you can <strong>stay in your own prompt</strong> while an agent helps in parallel.</p>
+<p><strong>Intelligent Terminal</strong> is that experiment — an <strong>agentic pane</strong> in the terminal. Demo walkthrough:
+- The presenter had an agent write a <strong>regex</strong> ("regex" — captions said "reax") for password verification, and deliberately asked it to make the regex <em>not work</em>.
+- The agent <strong>detected</strong> that the regex doesn't work and started reasoning about how to fix it.
+- Crucially, it <strong>doesn't just hand back a command</strong>, because it doesn't know the desired outcome (check for an uppercase letter? a unique character?). You <strong>collaborate with the agent</strong> to converge on a better regex — <strong>without leaving the terminal</strong>.</p>
+<p>Setup behaviour: on first run, Intelligent Terminal asks <strong>which agent you want to work with</strong>. It's <strong>agent-agnostic</strong> — the presenter only had GitHub Copilot installed, but you can add <strong>Claude, Codex, open code</strong>, etc. Once installed on your machine, an agent is <strong>auto-detected</strong>; you can also pick your <strong>preferred model</strong>.</p>
+<p>Status: <strong>available today</strong>, <strong>open source on GitHub</strong>, published the morning of the talk. The team explicitly wants feedback on how the agentic pane <em>feels</em> to work with and what to add.</p>
+<h3 id="wsl-containers-native-linux-containers-in-wsl-via-the-wslc-container-cli">WSL containers — native Linux containers in WSL via the <code>wslc</code> / <code>container</code> CLI</h3>
+<p>Craig took over to show <strong>WSL containers</strong>, also <strong>freshly announced that morning</strong>. His stated goal: convince anyone who's never used containers <em>why</em> they'd want to, and show how to do it with WSL containers.</p>
+<ul>
+<li>A new binary, <strong><code>wslc</code></strong>, was added to WSL. It runs lots of standard Linux container commands. (<code>container</code> is a built-in <strong>alias</strong> — use whichever you prefer.)</li>
+<li>A Linux container is "a very nice little package" to run arbitrary Linux binaries or distributions. Running <code>wslc</code> pulled and ran the <strong>latest Ubuntu</strong>; asking for <strong>Debian</strong> pulled it down (even though it wasn't downloaded) and ran it — <strong>directly inside the terminal</strong>.</li>
+<li>The power: build <strong>powerful Linux environments</strong> you can <strong>share to the cloud or run locally</strong>, all working <strong>directly as part of WSL</strong>.</li>
+</ul>
+<p><strong>Building an image from a container file:</strong> Craig had a <code>container</code> folder with container files and <strong>built an image</strong> for a <em>service</em> directly in the terminal (cached from a prior run). He opened the container file with <strong><code>edit</code></strong> — the new command-line editor — praising that it <strong>works with the mouse</strong>. The container file grabbed <strong>Python 3.13</strong> and ran a series of Linux commands to set up a specific environment.</p>
+<p><strong>Listing + piping with core utils:</strong> He ran <code>wslc image ls</code> and piped it through <code>grep</code> and rendered markdown. The piping works because of the newly released <strong>core utils</strong> (see below). Piping the list to <code>wc</code> (word count) showed <strong>165 tools</strong> available; examples named: <code>test.exe</code>, <code>tail.exe</code>, and <code>env.exe</code> (he was "personally really excited" about <code>env.exe</code> since he only knew how to print env vars in bash). The point: Windows and Linux worlds can <strong>coexist nicely</strong>.</p>
+<p><strong>Running the service + port forwarding:</strong> He started the <strong>markdown service</strong> container he'd built, using <strong><code>-p</code></strong> to forward <strong>port 8000</strong> from the container onto Windows. Opening <strong><code>localhost:8000</code></strong> in Edge showed the container's web app: a small app that takes <strong>any file</strong> (PDF, <code>.docx</code>, etc.), converts it to <strong>markdown</strong>, and shows source on the left and markdown on the right. "That could be my full website, contained right there."</p>
+<p><strong>Fun + the real reason for a custom CLI:</strong> Containers can do silly things too — e.g. "light your whole terminal on fire" with a single command someone built. That raised the question: <em>why build a Linux container CLI when Podman Desktop, Docker Desktop and Rancher Desktop exist?</em> The answer: those are great tools, but Microsoft also built an <strong>API</strong> for this (shown in part two), and wanted to be <strong>opinionated</strong> about how the CLI and API work together. Example: they added a <strong><code>system session</code></strong> command that <strong>doesn't exist in Docker or Podman</strong>, to keep the API and CLI aligned. That deliberate decision is why they made their own CLI.</p>
+<p><strong>Open source + upstream benefits:</strong> It's <strong>all open source</strong>, with many improvements coming to the <strong>underlying virtual machine technology</strong>. Those improvements flow <strong>to Docker, Podman and Rancher for free</strong> — e.g. <strong>cross-OS file performance improved by 2×</strong> when accessing <strong>Windows files from Linux</strong>.</p>
+<h3 id="core-utils-gnu-core-utilities-running-natively-on-windows">Core utils — GNU core utilities running natively on Windows</h3>
+<p>While Craig spoke, Kayla pulled up the <strong>core utils</strong> repo: ~<strong>75</strong> command utilities (165 tools total counted in Craig's demo) available <strong>natively on Windows</strong> as <code>.exe</code> (e.g. <code>grep</code>, <code>tail</code>, <code>test</code>, <code>env</code>, <code>wc</code>). Grab them from the repo to get all those utilities immediately — it lets you pipe Linux-style command chains directly in your Windows shell.</p>
+<h3 id="comfort-shell-a-pre-configured-ubuntu-flavour-in-the-developer-config">Comfort shell — a pre-configured Ubuntu flavour (in the developer config)</h3>
+<p>Also bundled in the <strong>Windows developer config</strong> is the <strong>comfort shell</strong> — described as a customized <strong>implementation/setup script</strong> for Ubuntu. It comes with familiar tools <strong>pre-installed</strong>: <strong>Homebrew</strong>, <strong>zsh</strong>, <strong>Starship</strong>, and more, plugging straight into your Ubuntu distro. Kayla's favourite demo of it (also shown at the keynote): <strong>btop</strong> baked in.</p>
+<h3 id="recap-of-building-on-windows">Recap of "building <em>on</em> Windows"</h3>
+<p>Kayla recapped the first half:
+1. <strong>Optimize your setup</strong> with the <strong>config file</strong> (GitHub repo) — fan-favourite tooling, idempotent.
+2. <strong>Intelligent Terminal</strong> — experimental agent companion in the terminal.
+3. <strong>Windows improvements</strong> — <strong>new Run</strong> (PowerToys Command Palette architecture) + <strong>vertical taskbar</strong>.
+4. <strong>Core utils</strong> — Linux core utilities native on Windows.
+5. <strong>WSL containers</strong> — native container solution that works with your existing container files.
+6. <strong>Comfort shell</strong> — pre-configured Ubuntu with btop and friends.</p>
+<h3 id="winapp-cli-one-cli-to-build-ship-winui-apps">WinApp CLI — one CLI to build &amp; ship WinUI apps</h3>
+<p>Moving to <strong>building <em>for</em> Windows</strong> (shipping WinUI / Windows App SDK apps), the team introduced the <strong>WinApp CLI</strong> (open source, on winget). It's a <strong>single command-line interface</strong> for managing:
+- <strong>Windows SDKs</strong>
+- <strong>packaging</strong>
+- generating <strong>app identity</strong>, <strong>manifests</strong>, <strong>certificates</strong>
+- <strong>build tools</strong></p>
+<p>Use it to jump-start building Windows apps and cover the hard parts like <strong>publishing</strong>. A highlighted benefit: it makes it easy to give your app <strong>package identity</strong>, which unlocks <strong>interactive native notifications</strong>, plus integration with <strong>Explorer</strong>, the <strong>taskbar</strong>, and the <strong>share sheet</strong>. It ships with getting-started instructions and (of course) installs via <strong>winget</strong> in a one-line install ("everything we make goes on winget").</p>
+<h3 id="winddev-skills-an-agent-plugin-for-winui-3-windows-app-sdk">winddev skills — an agent plugin for WinUI 3 / Windows App SDK</h3>
+<p>Leveraging WinApp CLI, the team shipped <strong>winddev skills</strong> — an <strong>agent plugin</strong>. A plugin here is just a <strong>bundle</strong> of the things agents already understand: <strong>skills</strong>, <strong>MCP servers</strong>, and <strong>custom agents</strong>, packaged into one installer. winddev skills is for building <strong>WinUI 3</strong> and <strong>Windows App SDK</strong> apps and includes skills for:
+- build &amp; run <strong>workflow</strong>
+- <strong>WinUI design</strong>
+- <strong>WinUI code review</strong>
+- <strong>testing</strong>
+- <strong>packaging</strong>
+- <strong>migrating from WPF</strong> (session report)
+- <strong>WinUI setup</strong></p>
+<p>Key value (Craig's point): the plugin gives the agent <strong>up-to-date WinUI information directly</strong>, so it <strong>doesn't waste tokens on web searches</strong> and doesn't rely on stale training data. Providing that context up front is far more <strong>token-efficient</strong> than asking an agent to research WinUI 3 from scratch. Install was done by pasting a <strong>long prompt</strong> into Copilot (you can also do it by hand).</p>
+<h3 id="live-demo-building-a-winui-3-markdown-app-with-copilot-cli-winddev">Live demo: building a WinUI 3 markdown app with Copilot CLI + winddev</h3>
+<p>Kayla attempted a live build of a WinUI 3 version of Craig's "Mark It Down" app:
+1. In <strong>Copilot CLI</strong>, with the winddev plugin already installed (via the long prompt), she <strong>set the custom agent to <code>WinUI dev</code></strong> — this routes requests to the WinUI / Windows App SDK skills. Seeing <code>WinUI dev</code> as the active custom agent confirms you're "in the right place."
+2. She used Copilot CLI's <strong>voice feature</strong> to dictate the prompt on stage: <em>build a native WinUI 3 app that takes any file and converts it to markdown, with a side-by-side view showing both files, "make it look prettier than Craig's,"</em> then <strong>do UI testing and run it</strong>.
+3. She switched to <strong>autopilot mode</strong> (via <strong>Shift+Tab</strong> — modes are <em>plan</em>, <em>autopilot</em>, <em>regular</em>) and enabled all permissions to kick it off.</p>
+<p>The plugin's bundled <strong>UI testing</strong> skill means the agent knows how to <strong>build, deploy, then UI-test</strong> the app automatically (mouse bouncing around, clicking buttons, checking text boxes). She'd done a similar build beforehand with a slightly different prompt and it <strong>worked on the first try</strong>, producing a genuine WinUI 3 app with modern WinUI 3 components — text box, a "browse file" button, etc. Later in the session she confirmed the live app <strong>did build, ran all the UI testing, and finished</strong>.</p>
+<h3 id="bonus-powertoys-grab-and-move">Bonus: PowerToys grab-and-move</h3>
+<p>Kayla "shoehorned in" a new <strong>PowerToys</strong> utility she loves: <strong>grab-and-move</strong>. With dozens of browser tabs open you often can't reach the <strong>taskbar or title bar</strong> to drag a window. Grab-and-move lets you <strong>hold Alt and click anywhere</strong> to drag the whole window around — a small but handy quality-of-life win.</p>
+<h3 id="spgo-sample-based-profile-guided-optimization-gier">SPGO — Sample-based Profile Guided Optimization (Gier)</h3>
+<p>Gier (Windows performance) presented <strong>SPGO</strong>, framed as a rethink of classic <strong>Profile Guided Optimization (PGO)</strong>.</p>
+<p><strong>What PGO is:</strong> collect data on the actual executable running — sampling which code paths/branches get executed — and feed that into the <strong>compiler</strong>, so it does a better job optimizing when emitting the final binary. PGO delivers <strong>real</strong> wins (reported <strong>5–10%</strong>), <em>but</em> its costs hinder ISV adoption:
+1. It requires <strong>instrumentation</strong> — extra code injected into your app.
+2. It adds an <strong>extra fork in your build pipeline</strong> — not everyone wants extra steps mucking with their build.
+3. The <strong>instrumented build runs very slowly</strong>, so it <strong>doesn't mimic</strong> what the end user actually experiences — making the <strong>quality of the collected profile questionable</strong>.</p>
+<p><strong>How SPGO fixes it:</strong> instead of code instrumentation, SPGO uses <strong>hardware counters</strong> — very lightweight. You can run your normal <strong>release build</strong> and use <strong>hardware counters to collect the profile</strong>, getting the <strong>same performance benefit without the friction</strong>. Real impact: working with the <strong>Adobe Photoshop</strong> team, they saw <strong>up to 20%</strong> improvement on real, CPU-bound workflows.</p>
+<p><strong>End-to-end SPGO walkthrough (live demo):</strong> Gier used a sample <strong>stack-based virtual machine computing the Fibonacci series</strong> (full sample code to be published in the repo). He drew attention to the VM's <strong>switch on the opcode</strong> — it jumps based on each operator; in a stack VM a lot of branching is <strong>highly predictable</strong> while some branches are rarely used, which is exactly where PGO/SPGO excels at optimizing.</p>
+<p>The steps (Clint timed the runs):
+1. <strong>Baseline build</strong> — plain compiler optimizations, <strong>no SPGO</strong>. Baseline runtime: <strong>3 seconds</strong>.
+2. <strong>Compile with SPGO flag on</strong> — identical to the baseline command except adding the SPGO flag. This doesn't optimize anything yet (no samples), but tells the compiler "I'm going to apply SPGO" and <strong>prepares the executable + PDB</strong> so the profile (<code>.spd</code>) can be consumed later. Running it warns the <strong><code>.spd</code> is not found</strong> (nothing fed yet).
+3. <strong>Capture with <code>xperf</code></strong> — the traditional <code>xperf</code>-start / <code>xperf</code>-stop flow to capture <strong>ETL traces</strong> containing the <strong>hardware counters</strong> used for PGO. Critically, this runs the <strong>release build — no instrumentation, nothing fancy</strong> — exactly how the end user would run it. (A tutorial at the end explains the details.)
+4. <strong>Extract → <code>.spd</code></strong> in <strong>two sub-steps</strong>: first abstract the info out of the ETL traces, then <strong>convert</strong> that into the <strong><code>.spd</code></strong> file fed to the compiler. <em>Why two steps?</em> Big software has <strong>many important workflows</strong> (benchmarks, user interactions) you want to optimize together. Splitting capture means <strong>one workflow → one ETL → one <code>.spd</code></strong>, done <strong>several times in parallel</strong>, then <strong>combined</strong> into a single profile — better, broader signal.
+5. <strong>Rebuild with the profile data</strong> — identical to before except now you <strong>feed the profile data to the compiler</strong>, producing the optimized executable.</p>
+<p><strong>Result:</strong> optimized runtime <strong>2 seconds</strong> vs <strong>3-second</strong> baseline — <strong>≈33% improvement</strong> "without bringing up the calculator." Caveat: mileage varies with app code, <strong>sample quality</strong>, hardware, etc.; ISVs report <strong>5–15%</strong> typical gains.</p>
+<p><strong>Why Adobe loved it (beyond the number):</strong> more <strong>responsive</strong>, out-of-the-way Photoshop for users; and a <strong>rethink of optimization</strong> — instead of endless low-level hand-tuning, SPGO is a <strong>scalable, sustainable procedure</strong> that integrates <strong>naturally into the product build pipeline</strong> because it's <strong>not intrusive</strong> (no instrumented fork). Adobe planned to <strong>ship the SPGO-optimized version to the public in the coming days</strong>.</p>
+<p><strong>SPGO is iterative, not one-shot (Adobe's tip):</strong> product code keeps evolving, and even with unchanged code, <strong>customers' usage patterns change</strong>. So treat SPGO as a loop: when code or usage shifts, <strong>go back to the capture step</strong>, run the new scenario, <strong>refresh the profile</strong>, and feed it back to the optimizer — continuously, as part of the build pipeline. Gier's closing pitch: "this is not just a demo — it's reshaping how you think about optimization," and something you can apply to your product tonight. Kayla's one-line summary: you <strong>built the app, trained a profile on it, then rebuilt with that profile</strong> — that's where the <strong>33%</strong> boost came from ("everything in 10 seconds").</p>
+<h3 id="wsl-containers-api-embed-linux-containers-inside-a-windows-app-craig">WSL Containers API — embed Linux containers inside a Windows app (Craig)</h3>
+<p>Craig returned to show the <strong>WSL Containers API</strong> he'd teased. His goal: reuse all that <strong>Linux container code</strong> inside a <strong>native Windows app</strong> <strong>without rewriting</strong> it.
+- On the left of his screen: the same <strong>container file</strong> with all his Linux code, now part of a <strong>C# project</strong>.
+- In the <strong><code>.csproj</code></strong> he added a <strong>WSL containers NuGet package</strong>, then <strong>defined the same container</strong> he'd run in the CLI — what to call it, where to find it, where to output it.
+- As part of <strong><code>dotnet build</code></strong> / <strong><code>dotnet run</code></strong>, it <strong>automatically builds that container</strong>; editing the container file just <strong>re-triggers the build</strong> — "it truly is part of my source code."</p>
+<p>He ran <code>dotnet run</code> to build and launch the same <strong>markdown app</strong>, this time <strong>fully in WinUI</strong> — "nice and modern." The big takeaway: it <strong>looks exactly like a Windows app</strong>; if he hadn't said Linux was running in the back end, <strong>you wouldn't know</strong>. That's the point — many customers want the <strong>power of Linux without knowing about it</strong> ("my mom and dad don't need to know"). Feeding the same receipt PDF produced the same markdown rendering.</p>
+<p><strong>Architecture:</strong> a <strong>log</strong> showed startup/shutdown speed — <strong>~2.5 seconds</strong> cold start (initialize session → start container → run Linux code). <strong>Task Manager</strong> showed a new <strong><code>markdown service</code></strong> process running in <strong>its own WSL VM</strong> — the <strong>same VM technology that powers WSL distros</strong>, now applied to Linux containers running as part of a Windows app. <strong>Each Windows app gets its own WSL VM</strong>, and you can run <strong>as many containers as you want</strong> inside it.</p>
+<p><strong>The API in code (C#):</strong> short and simple — start a <strong>new session</strong> (starts the VM with given <strong>CPU and memory</strong> counts), <strong>pull a specific image</strong> (run locally), and <strong>configure exactly the options you need</strong>:
+- map only the ports you need (here <strong>port 8000</strong> to expose the API),
+- <strong>volume mounting</strong> to grant access to <strong>specific Windows folders</strong> only,
+- even <strong>GPU access</strong>.
+When closed, <strong>all resources are cleaned up</strong> and the <strong>VM goes away</strong> — it works just like any other app.</p>
+<p><strong>Ecosystem improvements:</strong> aiming for a comprehensive end-to-end container dev story (API <em>or</em> CLI):
+- <strong><code>lazywslc</code></strong> — a community project giving a nice <strong>TUI dashboard</strong> for all your containers.
+- <strong>Dev Containers</strong> support — WSL containers work with <code>attach to running container</code>, <code>reopen in container</code>, and in <strong>VS Code</strong>.</p>
+<p><strong>Partner spotlight — Moonray:</strong> Craig highlighted the <strong>Moonray</strong> team, who build a powerful <strong>Linux-based rendering engine</strong> used to render movies like <strong>The Bad Guys 2</strong> and <strong>The Wild Robot</strong>. Their code is <strong>fully open source</strong> and Linux-based; they wanted to bring it to Windows users in a <strong>production-ready</strong> way — bridged via <strong>WSL containers</strong>. Demo: a <code>wslc moonray</code> folder built into <strong><code>moonray.exe</code></strong> (a Windows executable) taking <strong>Windows file inputs</strong> (note the backslashes; <code>.rdla</code> render inputs) and rendering out a <strong>JPEG</strong>. The run showed the machine starting, the render <strong>maxing out CPU</strong> (as expected), then a clean shutdown/VM cleanup — producing an image of an <strong>orange coffee maker</strong>. Everything user-facing was <strong>Windows</strong> (<code>.exe</code>, Windows inputs/outputs, opened a Windows file), but <strong>all the back-end code was fully Linux</strong> apart from the API integration glue. Craig is excited about the range this unlocks — <strong>AI containerization, cloud, and local</strong>.</p>
+<h3 id="closing-16000-open-source-contributors">Closing — 16,000+ open-source contributors</h3>
+<p>Wrapping up (running out of time), Kayla returned to the open-source theme. Clint had the idea to export the list of <strong>everyone who's contributed</strong> to <strong>Terminal, WSL, WinUI and PowerToys</strong> — the file is <strong>16,000 lines long</strong>, i.e. <strong>over 16,000 open-source contributors</strong>. The team thanked all of them (the products "would not be where they are today without y'all"), with a special shout-out to <strong>Nora</strong>, a standout PowerToys contributor (they did a <code>grep</code> in her honour using core utils). A final slide collected all the repo links: the <strong>config file</strong> + <strong>comfort shell</strong> (same repo), <strong>SPGO</strong> (with a how-to for your own projects), <strong>Intelligent Terminal</strong>, <strong>WinApp CLI</strong> and <strong>winddev skills</strong> (their own repos), and <strong>PowerToys</strong>. The session closed into <strong>Q&amp;A</strong>.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Windows</strong> — the OS itself; the only thing in the talk that isn't open source.</li>
+<li><strong>WSL (Windows Subsystem for Linux)</strong> — runs Linux on Windows; the foundation for WSL containers and the containers API.</li>
+<li><strong>winget</strong> — the Windows package manager; delivery channel for the dev config, WinApp CLI, etc. ("everything we make goes on winget").</li>
+<li><strong>winget configuration file / Windows developer config</strong> — idempotent setup file installing WSL+Ubuntu+git/gh/Copilot CLI/VS Code; public repo <code>Windows developer config</code>.</li>
+<li><strong>Windows Terminal</strong> — the team's terminal; host for Intelligent Terminal and the container CLI demos.</li>
+<li><strong>PowerToys</strong> — utility suite; source of Command Palette, grab-and-move, and (historically) PowerToys Run.</li>
+<li><strong>PowerToys Command Palette</strong> — extensible launcher; its architecture now powers the new Windows <strong>Run</strong> dialog.</li>
+<li><strong>PowerToys Run</strong> — the original launcher that evolved into Command Palette.</li>
+<li><strong>New Run dialog</strong> — refreshed Windows Run built on the Command Palette architecture.</li>
+<li><strong>Movable / vertical taskbar</strong> — pin taskbar left/top/bottom; in Windows Insider.</li>
+<li><strong>Intelligent Terminal</strong> — experimental, open-source agentic companion pane in the terminal; agent-agnostic.</li>
+<li><strong>GitHub Copilot CLI</strong> — CLI coding agent; used in Intelligent Terminal and the WinUI build demo (incl. voice + autopilot modes).</li>
+<li><strong>Other supported agents</strong> — Claude, Codex, open code (auto-detected by Intelligent Terminal once installed).</li>
+<li><strong><code>wslc</code> (WSL containers CLI)</strong> — new WSL binary to pull/run/build Linux containers; aliased as <strong><code>container</code></strong>.</li>
+<li><strong><code>container</code> alias</strong> — built-in alias for <code>wslc</code>.</li>
+<li><strong><code>system session</code> command</strong> — opinionated <code>wslc</code> command (not in Docker/Podman) keeping CLI and API aligned.</li>
+<li><strong><code>edit</code></strong> — new command-line editor; mouse-friendly.</li>
+<li><strong>Core utils</strong> — GNU core utilities native on Windows (<code>grep</code>, <code>tail</code>, <code>test</code>, <code>env</code>, <code>wc</code>, … as <code>.exe</code>); ~75 in repo, 165 tools counted in demo.</li>
+<li><strong>Comfort shell</strong> — pre-configured Ubuntu setup (Homebrew, zsh, Starship, btop) bundled in the dev config.</li>
+<li><strong>btop</strong> — terminal resource monitor, baked into comfort shell.</li>
+<li><strong>Docker Desktop / Podman Desktop / Rancher Desktop</strong> — existing container tools that benefit free from WSL's shared VM improvements.</li>
+<li><strong>WinApp CLI</strong> — single open-source CLI for Windows SDKs, packaging, app identity, manifests, certificates, build tools.</li>
+<li><strong>Package identity</strong> — app capability unlocked by WinApp CLI (native notifications; Explorer/taskbar/share-sheet integration).</li>
+<li><strong>winddev skills</strong> — agent plugin (skills + MCP servers + custom agents) for building WinUI 3 / Windows App SDK apps.</li>
+<li><strong>WinUI 3 / Windows App SDK</strong> — modern Windows UI framework / app platform targeted by winddev skills.</li>
+<li><strong><code>WinUI dev</code> custom agent</strong> — the custom agent set in Copilot CLI that routes to the WinUI skills.</li>
+<li><strong>WPF</strong> — legacy UI framework; winddev includes a WPF→WinUI migration skill.</li>
+<li><strong>PowerToys grab-and-move</strong> — Alt+click-anywhere window dragging.</li>
+<li><strong>SPGO (Sample-based Profile Guided Optimization)</strong> — hardware-counter-based PGO with no instrumentation/build fork.</li>
+<li><strong>PGO (Profile Guided Optimization)</strong> — classic profile-driven compiler optimization SPGO improves on.</li>
+<li><strong><code>xperf</code> / ETL traces</strong> — capture tool/format for the hardware counters SPGO consumes.</li>
+<li><strong><code>.spd</code> / <code>.spt</code> profile files</strong> — profile data converted from ETL traces and fed to the compiler.</li>
+<li><strong>WSL Containers API / WSL containers NuGet package</strong> — .NET API to embed Linux containers in a Windows app via the <code>.csproj</code>.</li>
+<li><strong><code>.NET</code> (<code>dotnet build</code> / <code>dotnet run</code>)</strong> — build system that auto-builds the embedded container.</li>
+<li><strong><code>lazywslc</code></strong> — community TUI dashboard for WSL containers.</li>
+<li><strong>Dev Containers</strong> — supported with WSL containers (attach/reopen-in-container, VS Code).</li>
+<li><strong>VS Code</strong> — editor; installed by the dev config and supports WSL containers via Dev Containers.</li>
+<li><strong>Moonray</strong> — partner's open-source Linux rendering engine (The Bad Guys 2, The Wild Robot) brought to Windows via WSL containers.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>WSL containers</strong> — <strong>announced the morning of the talk</strong>; new <code>wslc</code>/<code>container</code> CLI shipping as part of WSL. <em>(Preview/experimental, newly released; exact GA status not stated.)</em></li>
+<li><strong>WSL Containers API</strong> — new <strong>WSL containers NuGet package</strong> to embed Linux containers in Windows/.NET apps. <em>(Newly introduced; status not explicitly stated as GA.)</em></li>
+<li><strong>Windows developer config</strong> repo — <strong>made public the morning of the talk</strong>; idempotent winget config bootstrapping a dev box.</li>
+<li><strong>Intelligent Terminal</strong> — <strong>available today</strong>, <strong>open source</strong>, published the morning of the talk; explicitly <strong>experimental</strong>, feedback wanted.</li>
+<li><strong>Core utils</strong> — newly released; GNU core utilities running natively on Windows, downloadable from the repo today.</li>
+<li><strong>New Run dialog</strong> — rebuilt on PowerToys Command Palette architecture (shown as shipping/insider-track).</li>
+<li><strong>Movable / vertical taskbar</strong> — in the <strong>Windows Insider</strong> program and <strong>shipping</strong>.</li>
+<li><strong>PowerToys grab-and-move</strong> — newly added PowerToys utility.</li>
+<li><strong>WinApp CLI</strong> — introduced; open source and on winget.</li>
+<li><strong>winddev skills</strong> — introduced; agent plugin for WinUI 3 / Windows App SDK on winget.</li>
+<li><strong>SPGO (Sample-based PGO)</strong> — introduced with a tutorial/repo for applying it to your own projects; <strong>Adobe Photoshop's SPGO-optimized build to ship to the public "in the coming days."</strong></li>
+<li><strong>2× cross-OS file performance</strong> — improvement to the shared WSL VM tech (Windows files accessed from Linux), flowing upstream to Docker/Podman/Rancher.</li>
+<li><strong>Comfort shell</strong> — bundled in the dev config repo.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Intelligent Terminal regex repair</strong> — an agent wrote a deliberately-broken password-verification regex, detected the failure, and reasoned toward a fix collaboratively without leaving the terminal. <em>Proved:</em> an agentic companion pane can assist in-context while you keep your own prompt.</li>
+<li><strong><code>wslc</code> pull/run distros</strong> — ran latest Ubuntu, then pulled+ran Debian on demand. <em>Proved:</em> native, frictionless Linux containers directly in WSL/terminal.</li>
+<li><strong>Build + run the markdown service container</strong> — built an image from a container file (Python 3.13), listed images piped through <code>grep</code>/<code>wc</code> (165 tools), then ran it with <code>-p 8000</code> and opened <code>localhost:8000</code> to a file→markdown web app. <em>Proved:</em> end-to-end container build + port-forward into Windows, powered by core utils.</li>
+<li><strong>Terminal "on fire"</strong> — a one-command novelty container. <em>Proved:</em> the breadth/fun of arbitrary containers.</li>
+<li><strong>WinUI 3 markdown app build (Copilot CLI + winddev)</strong> — voice-dictated prompt, <code>WinUI dev</code> custom agent, autopilot mode; agent built, deployed, UI-tested and ran a modern WinUI 3 app. <em>Proved:</em> agent + winddev skills can ship a real WinUI app (worked first try in rehearsal; live build also completed).</li>
+<li><strong>PowerToys grab-and-move</strong> — Alt+click-drag a window hidden behind many tabs. <em>Proved:</em> QoL window management.</li>
+<li><strong>SPGO end-to-end on a Fibonacci stack-VM</strong> — baseline 3s → SPGO-optimized 2s via compile-with-flag → <code>xperf</code> capture → <code>.spt</code>→<code>.spd</code> → rebuild with profile. <em>Proved:</em> friction-free ~33% speedup from a release-build profile, no instrumentation.</li>
+<li><strong>WSL Containers API WinUI markdown app</strong> — same Linux container embedded in a C#/.NET WinUI app via NuGet + <code>.csproj</code>, ~2.5s cold start, own WSL VM in Task Manager, clean teardown. <em>Proved:</em> Linux containers can power a native-feeling Windows app invisibly.</li>
+<li><strong>Moonray render</strong> — <code>moonray.exe</code> (Windows <code>.exe</code>, Windows <code>.rdla</code> inputs) rendered a JPEG (orange coffee maker) with Linux code in the back end, maxing CPU then cleaning up. <em>Proved:</em> production Linux rendering engine shipped as a Windows app via WSL containers.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>Up to 20%</strong> — real-workflow performance improvement Adobe Photoshop saw from SPGO on CPU-bound workflows.</li>
+<li><strong>~33%</strong> — SPGO demo speedup (<strong>3 seconds → 2 seconds</strong>) on the Fibonacci stack-VM.</li>
+<li><strong>5–15%</strong> — typical SPGO performance gains reported by ISVs (vs <strong>5–10%</strong> for classic PGO).</li>
+<li><strong>2×</strong> — cross-OS file performance improvement (Windows files from Linux) in the shared WSL VM tech.</li>
+<li><strong>165 tools</strong> — core utilities counted via <code>wslc image ls | … | wc</code> (repo highlights ~75).</li>
+<li><strong>~2.5 seconds</strong> — benchmarked cold-start container init for a WSL-container-backed Windows app.</li>
+<li><strong>Port 8000</strong> — the port forwarded from container to Windows in the markdown-service demos.</li>
+<li><strong>Python 3.13</strong> — base used in the demo container file.</li>
+<li><strong>16,000+</strong> — open-source contributors across Terminal, WSL, WinUI and PowerToys (a 16,000-line contributors file).</li>
+<li><em>"If I didn't tell you that this was running Linux in the back end, you would not know."</em> — Craig, on the WSL Containers API WinUI app.</li>
+<li><em>"My mom and dad don't need to know that they're doing some great Linux stuff in the background — they just need to run powerful apps."</em> — Craig.</li>
+<li><em>"This is not just a demo — it's reshaping how you think about optimization."</em> — Gier, on SPGO.</li>
+<li><em>"If you contributed to Command Palette … there's a good chance that your code is now in Windows."</em> — Kayla.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: run the <strong>Windows developer config</strong> winget file on a fresh box; install <strong>core utils</strong> + <strong>comfort shell</strong> (zsh/Starship/btop); kick the tyres on <strong><code>wslc</code></strong> (build a container file, <code>-p</code> port-forward); enable <strong>Intelligent Terminal</strong> and wire up Copilot; build a WinUI 3 app via <strong>Copilot CLI + winddev skills</strong> (<code>WinUI dev</code> agent, autopilot); embed a container in a .NET app with the <strong>WSL containers NuGet package</strong>; apply <strong>SPGO</strong> end-to-end (<code>xperf</code> → <code>.spd</code> → rebuild) to a sample project.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: What's the exact <strong>GA vs preview</strong> status of <code>wslc</code>/the WSL Containers API and which Windows builds ship them? How does the WSL Containers API handle <strong>secrets/identity</strong> for embedded containers? Does <strong>GPU passthrough</strong> work across all GPU vendors? How does SPGO interact with existing PGO/LTCG pipelines, and is the <code>xperf</code> capture supported in CI? Which model/agent providers does Intelligent Terminal officially support beyond Copilot?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: anyone setting up or standardizing <strong>Windows dev environments</strong>; teams shipping <strong>WinUI 3 / Windows App SDK</strong> apps; <strong>container/Linux-on-Windows</strong> workflows (incl. AI containerization); <strong>performance-sensitive ISVs</strong> wanting low-friction compiler gains; agentic/AI-assisted dev tooling on Windows.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><a class="wikilink wikilink--resolved" href="DEM346.html">DEM346 - WSL improvements and the new Containers CLI and APIs</a></li>
+<li><a class="wikilink wikilink--resolved" href="DEM345.html">DEM345 - From prompt to app build AI powered apps on Windows</a></li>
+<li><span class="wikilink wikilink--unresolved" title="2026 Build Keynote">2026 Build Keynote</span></li>
+<li><span class="wikilink wikilink--unresolved" title="BRK260 - What&#x27;s new in Windows for developers">BRK260 - What&#x27;s new in Windows for developers</span></li>
+<li><span class="wikilink wikilink--unresolved" title="BRK200 - The future of agentic development with GitHub Copilot">BRK200 - The future of agentic development with GitHub Copilot</span></li>
+<li><span class="wikilink wikilink--unresolved" title="DEM340 - Supercharge your terminal with PowerToys and Windows Terminal">DEM340 - Supercharge your terminal with PowerToys and Windows Terminal</span></li>
+<li><span class="wikilink wikilink--unresolved" title="BRK265 - Optimizing app performance on Windows">BRK265 - Optimizing app performance on Windows</span></li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="BRK252.html"><span class="pager-dir">← Previous</span><span class="pager-code">BRK252</span><span class="pager-title">From observability to ROI for AI agents on any framework</span></a>
+    <a class="pager pager-next" href="BRKSP90.html"><span class="pager-dir">Next →</span><span class="pager-code">BRKSP90</span><span class="pager-title">Stop routing docstrings to 70B models with on-device AI on Snapdragon</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

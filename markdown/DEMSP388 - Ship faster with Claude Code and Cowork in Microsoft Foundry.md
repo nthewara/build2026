@@ -194,3 +194,12 @@ The goal is **not to remove humans entirely** — it's to keep humans focused on
 - [ ] Relevant to:
   - Internal coding-agent / dev-productivity initiatives on Azure.
   - Security/pen-testing automation
+
+## 🔗 Related
+- [[BRK243 - Claw and agent harness in Microsoft Foundry]]
+- [[DEM333 - How Foundry integrates with open-source frameworks and tools]]
+- [[DEM320 - Hugging Face open-source models to production on Foundry]]
+- [[BRKSP91 - Turn foundation models into production AI on Foundry]]
+- [[BRK200 - Why your AI code doesnt ship Closing the gap to production]]
+- [[ODSP906 - Apply orchestration patterns for production AI agents]]
+- Source list: [[2026 Build Session List]]

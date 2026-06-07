@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRK200 — Why your AI code doesn&#x27;t ship: Closing the gap to production</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">BRK200</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=5YFPfuOhpwU" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Why your AI code doesn&#x27;t ship: Closing the gap to production</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Mario Rodriguez (VP/Head of Product, GitHub), Evan Bole (Engineering Lead — Copilot CLI / SDK / App)</span>
+      <span class="meta-item">⏱️ 45m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ai-coding">Ai Coding</span><span class="chip" data-tag="devops">DevOps</span><span class="chip" data-tag="production">Production</span><span class="chip" data-tag="ci-cd">Ci Cd</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="github">GitHub</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Mario Rodriguez (leads Product for GitHub) · Evan Bole (co-creator &amp; engineering lead of the Copilot CLI, Copilot SDK and Copilot app)<br>
+<strong>Duration:</strong> ~45 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=5YFPfuOhpwU">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>The hard part of AI-assisted development is no longer <em>writing</em> code — agents now do that well — it's getting that code <strong>over the line into production</strong>: triage, CI, review feedback, security, merge conflicts, and deployment. GitHub's thesis is that since January 2026 "agents entered the workforce" and genuinely work, shifting developers from <strong>micro-delegation</strong> (constantly correcting an agent) to <strong>micro-steering</strong> (delegating whole tasks and only nudging). To close the last-mile gap, GitHub is building an <strong>agent-native engineering system</strong> spanning six pillars — surfaces, runtime, automation, quality, intelligence/memory, and enterprise trust — and demoed it almost entirely live ("demos, not memos"). The centrepiece is the new <strong>GitHub Copilot app</strong>, built to <em>finish</em> work rather than just start it, with <strong>canvases</strong> (agent-drivable custom UIs), <strong>Copilot Cloud</strong> sandboxes, <strong>Chronicle</strong> (cross-surface session memory with a SQL API), <strong>agent merge</strong> (an agent that babysits a PR to green), <strong>automations</strong> (morning brief, auto-repro of bug reports), <strong>rubber duck</strong> (advisor/critic mode), and <strong>multimodel code + security review</strong>. The unifying message: stop measuring <em>activity</em>, start measuring <em>output</em> — are you actually shipping?</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>The bottleneck moved from generation to shipping.</strong> Agents can produce code; the gap to production is the "meta work" — review, CI, security, merge, deploy — and that's where velocity is lost.</li>
+<li><strong>Micro-delegate → micro-steer.</strong> Since Dec 2025 / Jan 2026, you can hand an agent a whole task ("fix this issue") and only steer occasionally, instead of correcting every step. This is framed as a "complete new way of working."</li>
+<li><strong>"Agents entered the workforce and it's really working"</strong> is Mario's framing for the inflection that makes an agent-native system necessary.</li>
+<li><strong>The SDLC is "more or less dead"</strong> — it's merging with the product development lifecycle into one human + agent collaboration loop, end-to-end (idea → spec/plan → build → review → deploy → debug live issues).</li>
+<li><strong>Agent-native engineering system = 6 pillars:</strong> Surfaces → Runtime → Automation → Quality → Intelligence/Memory → Enterprise (trust &amp; scale). Each is being rebuilt "agent-first," needing new APIs and new agentic UX.</li>
+<li><strong>"Demos, not memos"</strong> is GitHub's internal saying — the whole session is live demos to prove the system works, defects and all.</li>
+<li><strong>The Copilot app is built to <em>finish</em> work, not start it.</strong> Most tools help you spin up endless parallel work; this app focuses on getting work delivered — "it's not about doing more, it's about finishing more."</li>
+<li><strong>Canvases</strong> are agent-drivable custom full-screen UI surfaces (terminal, triage board, whiteboard, kanban, Miro) that you (or the agent) author, check into the repo, and share with the team — a bidirectional relationship where the agent drives the UI and the UI drives the agent.</li>
+<li><strong>A canvas marketplace</strong> is coming, with official first-party and third-party canvas extensions (e.g. a Miro design canvas), beyond the hyper-personalised ones you build yourself.</li>
+<li><strong>Copilot Cloud</strong> runs tasks on <strong>GitHub sandboxes</strong> — fast, stateful microVMs that spin up in seconds, are isolated, with tightly-scoped credentials — so you can "close your laptop and go home" while agents keep working overnight.</li>
+<li><strong>Chronicle</strong> is per-user, private cross-surface session memory: it remembers every session, prompt and line of code across machines and Copilot products, and exposes a <strong>direct SQL API</strong> to the agent (full-text + structured SQL over a data lake of your sessions).</li>
+<li><strong>Agent merge</strong> is an agentic automation that watches a PR and drives it to merge — resolving merge conflicts, getting CI green, and responding to review (CCR) feedback with justifications — but it pushes back sensibly on bad asks (e.g. refused an unsolicited 1000-line refactor).</li>
+<li><strong>Automations</strong> can run locally (private "morning brief" at 6 a.m.) or in the cloud (e.g. on <code>issue created</code>, auto-attempt a repro + write a failing test + label + comment), turning noisy feedback firehoses into focused, actionable work.</li>
+<li><strong>Rubber duck</strong> brings the "let me bounce this off a colleague" workflow to agents, with <strong>advisor</strong> and <strong>critic</strong> modes; available in the Copilot CLI and the GitHub app.</li>
+<li><strong>Multimodel review beats single-model.</strong> Running code review across Gemini, Claude (Sonnet 4.6) and GPT (GPT-5.5) — models with different training distributions — yields better results than any one; a final "rubber duck" pass critiques the combined output before it reaches the human.</li>
+<li><strong>Security is first-class, not an afterthought.</strong> A dedicated security-review sub-agent (built with GitHub Advanced Security) runs alongside code review, so quality and security are both automated on the path to production.</li>
+<li><strong>Trust &amp; sandboxing are the gating requirement for "YOLO."</strong> Mario stresses the live YOLO/autopilot demos only work because local (public preview) and cloud sandboxes keep agents isolated, credentials scoped, and prevent leaks/pwning.</li>
+<li><strong>A partner ecosystem closes the production loop:</strong> Sonar (code quality), Endor (security), Miro (canvas/design), LaunchDarkly (safe production rollout) — so teams can ship to prod feeling safe.</li>
+<li><strong>The core question for every team:</strong> are you optimising for <em>activity</em> or <em>output</em>? Everything in the Copilot app is aimed at output — bringing all the pieces together to actually deliver value to users.</li>
+<li><strong>Greenfield vs legacy caveat:</strong> these frontier practices land easiest on greenfield apps; legacy/mainframe will move slower — but the talk is meant to spark curiosity about an agent-first future.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="the-inflection-agents-entered-the-workforce-and-its-working">The inflection: agents entered the workforce (and it's working)</h3>
+<p>Mario Rodriguez (Head of Product, GitHub) opens by framing a step-change that happened "since January" 2026: <strong>agents entered the workforce and started <em>really</em> working.</strong> Previously you had to <strong>micro-delegate</strong> — hand the agent a tiny piece, then repeatedly correct it ("you got this wrong, you got this wrong"). From roughly December 2025 into Jan/Feb 2026, the behaviour changed: you can now <strong>micro-delegate</strong> a whole task and only <strong>micro-steer</strong> it — e.g. just say "fix this issue" (after a little spec/plan work) and let the agent run. He calls this "a complete new way of working."</p>
+<p>The consequences he draws out:
+- Developers spend more time on <strong>creativity and judgment</strong> (the pre-work) and delegate more of the execution.
+- <strong>Code review got better</strong> — richer feedback from Copilot.
+- Agents can now <strong>deploy with the right guardrails into production</strong> and even <strong>debug live issues</strong>.
+- Because agents touch the whole lifecycle, <strong>"the SDLC is more or less dead"</strong> — it's merging with the product development lifecycle into a single <strong>human + agent collaboration</strong> loop. It's no longer the old hand-off chain.</p>
+<p>The strategic question this raises: if agents can do all this work, <strong>what's getting in the way of shipping?</strong> Why is velocity not higher, and how do you prepare for a world where velocity is 10×/20×/100× and "anything your imagination can become a reality"?</p>
+<h3 id="the-agent-native-engineering-system-the-6-pillars">The agent-native engineering system (the 6 pillars)</h3>
+<p>This change "necessitates a system," and Mario argues it's not simple. GitHub historically optimised <strong>human-to-human</strong> developer collaboration; it must now evolve into <strong>human + agent</strong> collaboration. He frames the core primitives an agent-native GitHub needs as six pillars, flowing "from surface into enterprise":</p>
+<ol>
+<li><strong>Surfaces</strong> — where developers do their work: IDEs, the command line, and the newly launched <strong>GitHub Copilot app</strong>, plus "many places including your phone."</li>
+<li><strong>Runtime</strong> — a safe, trusted place for agents to execute, <strong>both locally and in the cloud</strong> (he ties this to keynote announcements around "ME MXC" — caption-uncertain phrasing).</li>
+<li><strong>Automation</strong> — to make the whole system <strong>predictable</strong> and to <strong>scale</strong>. Analogy: a <strong>3D printer</strong> — you give it a CAD drawing, it returns an object; you still must <em>verify</em> the result and discard defects. Just as CI/CD and DevOps/DevSecOps were "movements of automation," agentic engineering won't be different.</li>
+<li><strong>Quality / verification</strong> — a system that confirms your <strong>intent</strong> (the "CAD drawing") actually became the shipped software (the "object").</li>
+<li><strong>Intelligence / memory</strong> — a system with <strong>continuous intelligence improving itself</strong>.</li>
+<li><strong>Enterprise trust &amp; scale</strong> — everything above must work with enterprise-grade trust.</li>
+</ol>
+<p>Going "deep in each one" and making it agent-native/agent-first requires <strong>brand-new APIs</strong>, <strong>brand-new UX</strong> (which become "agentic experiences"), and a new way of doing automations — with the <strong>power of agents <em>and</em> predictability</strong>, which Mario calls "a hard problem to solve at scale." This system is <strong>the agent-native engineering system</strong> and is the spine the rest of the demos hang off.</p>
+<blockquote>
+<p>Greenfield caveat: these practices are "a little bit of the frontier." They're easiest on greenfield apps and harder on legacy/mainframe; the goal is to encourage curiosity about an agent-first future of software development.</p>
+</blockquote>
+<h3 id="the-github-copilot-app-built-to-finish-work-not-start-it">The GitHub Copilot app — built to <em>finish</em> work, not start it</h3>
+<p>Mario hands to <strong>Evan Bole</strong>, co-creator of the app and engineering lead for the <strong>Copilot CLI, Copilot SDK and Copilot app</strong>. Evan's core thesis: the Copilot app is <strong>not just another session manager</strong>. Most tools help you create lots and lots of <em>parallel</em> work; the Copilot app is built to help you <strong>finish</strong> it. The interesting part isn't implementation — it's all the <strong>meta work</strong> that delivers value to users: <strong>issue triage, getting through CI, keeping it green, responding to review feedback, merging, and deploying to customers.</strong></p>
+<p>He reframes the promise of agents: not "do more" but <strong>"finish more"</strong> — reclaim your focus, optimise for <strong>outcomes</strong> (did you actually deliver the thing and make users' lives better?) over <strong>activity</strong>. He's self-deprecating about being a "major procrastinator" on tedious tasks — and that everything he's about to show is the product of "procrastinating productively" by building new primitives instead of doing the tedious task (which takes ~10× longer but means millions of other engineers never have to do it).</p>
+<h3 id="inbox-batch-triage-isolated-work-trees">Inbox, batch triage &amp; isolated work trees</h3>
+<p>Evan starts in a <strong>customised inbox view</strong> on the app homepage, filtered to public issues in the GitHub-app repo (lots of feedback since launch). He spots an issue about the <strong>terminal canvas missing from quick chat</strong> and decides to batch several related terminal items (UI improvements, tab switching). He hits <strong>actions → new individual sessions</strong>, which:
+- Kicks off <strong>three sessions</strong> in the left nav at once.
+- Creates <strong>isolated work trees</strong> per session.
+- <strong>Auto-attaches the relevant issue</strong> as context.
+- Lets the agent start working immediately.</p>
+<p>This is the "on-the-rails" one-size-fits-all workflow (you can also kick off agentic PR review or issue/diagnosis sessions) — but the bigger story is <strong>customisation</strong>.</p>
+<h3 id="canvases-agent-drivable-custom-shareable-ui-surfaces">Canvases — agent-drivable, custom, shareable UI surfaces</h3>
+<p><strong>Canvases</strong> are the marquee concept: custom UI surfaces the <strong>agent can drive</strong>, and which can <strong>drive the agent back</strong> — "a rich bidirectional relationship." Evan demonstrates several:</p>
+<ul>
+<li><strong>Terminal canvas (built-in):</strong> via voice, he asks the agent to <em>open the terminal canvas, run a web server that renders "hello canvas," then open the browser to that page.</em> The agent opens the terminal, sends commands, reads output, writes/runs a Python web server, does "a little extra verification," and opens the browser — all on the right-hand side of the app. Point: built-in surfaces the agent can fully operate (terminal, browser, automated testing).</li>
+<li><strong>Triage canvas (team-built, checked into the repo):</strong> pulls recent issues, top thumbs-up issues, and common themes. A button (e.g. <strong>"analyze sample"</strong>) right-clicks a message to the agent instructing it to create <strong>5–8 feedback buckets</strong> — mirroring how Evan's team reviews customer feedback at daily standup. You can also <strong>start sessions directly from the canvas</strong>, which spawns <strong>nested sub-sessions</strong> (visible as a tree) that can talk back and forth — great for managing context and grouping work. Mechanism: the <strong><code>create session</code> tool</strong> — "everything I can drive through the GitHub app, the agent can drive through the GitHub app."</li>
+<li><strong>Create-canvas skill (author a canvas live):</strong> taking an audience suggestion ("whiteboard"), Evan dictates a request for a <strong>whiteboard canvas</strong> you can draw on, with a button to <strong>export to JPEG and publish to a gist</strong> (for design-meeting whiteboarding + sharing artifacts on GitHub). This triggers the <strong>create-canvas skill</strong>; the agent authors the extension <strong>dynamically</strong> into the repo's <code>.github</code> folder, so it can be <strong>checked in and shared with all teammates</strong>. (He sets repo scope and goes to autopilot; it takes a couple of minutes.)</li>
+<li><strong>Extension ecosystem (install from gist/URL):</strong> while the whiteboard builds, he shows installing an extension from a gist/URL — an <strong>agentic kanban ("kanban board") canvas</strong>. If you think visually, you can have the agent add tickets/subtasks to the board for a bigger feature, then <strong>start a task from the board</strong> to kick off work in the left-hand chat. You can even ask for live changes (e.g. re-theming) and the agent <strong>hot-reloads the extension</strong>.</li>
+<li><strong>Miro canvas (first-party/partner):</strong> a full Miro design canvas — sticky notes, feedback, the rich Miro features you'd expect — but now <strong>agent-driven</strong>: the agent can modify the board and you can kick off implementation from it.</li>
+</ul>
+<p><strong>Canvas marketplace:</strong> GitHub is launching a <strong>marketplace</strong> of canvas extensions — not just personal miniatures but <strong>official first-party and third-party</strong> canvases (Miro being an example partner). More official partner canvases are coming. The overarching idea: <strong>hyper-personalised software for your team's and your personal workflows</strong> — "build anything to your heart's content."</p>
+<h3 id="copilot-cloud-close-your-laptop-agents-keep-working">Copilot Cloud — close your laptop, agents keep working</h3>
+<p>Evan addresses <strong>"agent anxiety"</strong>: it's 4:55pm, you're racing to get an agent set up and running before you leave, and the clock's running out. The fix is <strong>Copilot Cloud</strong>, built on <strong>GitHub sandboxes</strong> — <strong>fast microVMs that spin up in a matter of seconds</strong>. He enables it ("yolo on," autopilot) and kicks off cloud tasks. Properties of these sandboxes:
+- <strong>Stateful</strong> — they persist, so you can come back to them.
+- <strong>Isolated</strong> — keep risky PRs/changes separate from everything on your laptop.
+- <strong>Locked down with tightly-scoped credentials.</strong>
+- <strong>No laptop / internet needed</strong> — kick off a task, let it run all night, and it's ready in the morning.</p>
+<p>The payoff: safely test PRs in a clean environment, or run long jobs unattended, and genuinely "shut your laptop and go home" — go to your family and enjoy your evening.</p>
+<h3 id="chronicle-cross-surface-session-memory-with-a-sql-api">Chronicle — cross-surface session memory with a SQL API</h3>
+<p>Developers work across many distinct surfaces — the cloud agent, <strong>CCR</strong> (Copilot code review), Visual Studio, VS Code, the CLI — and it's hard to remember <em>where</em> you did something. Evan introduces <strong>Chronicle</strong>: <strong>per-user, private session memory</strong> that gives you continuity across all surfaces. "Chronicle remembers everything that you've ever done — every session, every line of code, every prompt," across different machines and different Copilot products, and it's <strong>scoped to your user / only accessible to you</strong>.</p>
+<p>Two demos:
+- <strong><code>Chronicle search</code></strong> — he half-remembers fixing "a rather gnarly Rust bug the other day" and asks Chronicle to find it. It crawls his history, locates the context (what the bug was, how he fixed it), loads it into the session, and lets him finish the new task faster.
+- <strong><code>Chronicle stand-up</code></strong> — a swipe at unproductive standups ("managers still living in the 80s"). It looks at all his work in the <strong>last 24 hours</strong> (build prep, bugs he filed while prepping demos) to auto-generate a standup summary, eliminating "TDM."</p>
+<p>The technical reveal: <strong>the agent knows SQL.</strong> GitHub <strong>exposes a direct SQL API to the agent</strong>, and Chronicle works as a <strong>combination of full-text search and structured SQL queries</strong> over a <strong>data lake of all your sessions</strong>. You can watch the SQL queries execute and expand them to see rich structured data being returned.</p>
+<h3 id="agent-merge-an-agent-that-drives-a-pr-to-green">Agent merge — an agent that drives a PR to green</h3>
+<p>The last-mile problem: <strong>getting work over the line.</strong> On any PR, there's now an <strong><code>agent merge</code></strong> button. Once clicked, agent merge <strong>periodically checks in on the PR</strong> and works it until it's green and mergeable by:
+- Detecting and resolving <strong>merge conflicts</strong>.
+- Ensuring <strong>CI is green</strong>.
+- Resolving <strong>review feedback</strong> — whether from an agent (CCR) or a human co-worker.</p>
+<p>Evan walks through the <strong>very first agent-merge PR</strong> (from "Jeremy," dated <strong>March 19th</strong> — evidence they've been building the app for a while): Jeremy added a <strong>CLI health check</strong> and turned on agent merge, then <strong>went and got lunch.</strong> Over multiple rounds of <strong>CCR feedback</strong> (CCR gave an overview + a batch of five comments, then many more rounds), Jeremy's agent <strong>resolved every thread tastefully</strong>, replying with <strong>justifications for what it fixed and what it deliberately didn't.</strong> Only once it was clean did Jeremy send the PR to Evan — <strong>"protecting my attention, my focus."</strong></p>
+<p>Crucially, agent merge <strong>isn't blindly obedient</strong> — it makes good decisions and pushes back:
+- When Evan ("like any good manager") demanded a docs link for a blocking case, the agent replied (paraphrased) <strong>"did you read two lines below? It's already there."</strong>
+- When Evan tried to "send it off the rails" by demanding a <strong>massive 1000+-line refactor</strong>, the agent said <strong>"fair concern, but I'm not going to do that as part of this change"</strong> — and <strong>merged the PR anyway.</strong></p>
+<p>The lesson Evan hammers: stop optimising for <strong>activity</strong>; optimise for <strong>output</strong>. "Are you using agents to get that work over the line?" Everything in the Copilot app is about bringing the pieces together — the engineering <em>and</em> the meta-engineering — and "doing a great job at the five to ten [things] that really matter" instead of "50 things at once."</p>
+<h3 id="sandboxing-trust-the-prerequisite-for-yolo">Sandboxing &amp; trust — the prerequisite for "YOLO"</h3>
+<p>Mario returns to underline <strong>two things</strong>. First, <strong>sandbox</strong>: all those live "YOLO"/autopilot moments only work because you have <strong>trust and security</strong> underneath. GitHub now offers <strong>both a local sandbox story (public preview)</strong> and a <strong>cloud sandbox</strong> (what Evan used via Copilot Cloud). The cloud sandbox capability is <strong>also coming to the Copilot app</strong>, so you'll be able to <strong>delegate local sessions (and that one-shot canvas) into the cloud environment</strong> and "multiplex yourself" — without fear of getting pwned or leaking information.</p>
+<h3 id="automations-local-cloud-to-guard-your-focus">Automations — local &amp; cloud, to guard your focus</h3>
+<p>The second thing Mario flags is <strong>automations</strong> ("agent merge is itself a type of agentic automation, running locally"). Evan demos guarding focus against the <strong>"firehose of noise"</strong> that agents/feedback can create (public + private feedback, cross-team, Slack-connect channels):
+- <strong>Morning brief (local, private):</strong> runs at <strong>6 a.m. every day</strong> on his machine, just for him. The prompt asks for a brief covering <strong>PRs in flight he needs to land, critical un-reviewed PRs that are blocking other engineers, and new/critical issues</strong>. Output: a <strong>"focus morning brief"</strong> with top-10 issues + links, PR details, and what needs his attention — "start your day with your first cup of coffee, focused." Because it's local, the team never sees the output.
+- <strong>Issue-repro automation (cloud):</strong> he creates a cloud automation named <strong>"issue repro"</strong> triggered on <strong><code>issue created</code></strong> for the <strong>private GitHub-app repo</strong> (where GitHub employees file feedback). The prompt: if the issue is a bug report, <strong>try to reproduce it</strong>, <strong>write a failing test case</strong> (to confirm it's a real bug "not ghosts in the GPUs"), <strong>add a label</strong> indicating it's confirmed, and <strong>add a comment with the repro steps + the verbatim failing test</strong> to write and make green. This turns raw bug reports into <strong>pre-triaged, repro-ready work</strong> — "if there's already a repro, fixing them is usually trivial." He then files a test bug ("app won't start … shows a strange whiteboard canvas") to let the automation run during the talk.</p>
+<p>Message: use agents not just to write code but for <strong>all the meta-work around maintaining a high-quality project</strong> and understanding customer signals.</p>
+<h3 id="rubber-duck-advisor-and-critic-modes">Rubber duck — advisor and critic modes</h3>
+<p>Mario highlights <strong>rubber duck</strong> (shown in the keynote, not re-demoed here). Because GitHub is now <strong>multimodel, multi-agent and multi-surface</strong>, it can give you a <strong>second set of eyes</strong> — the "hey, what do you think about this?" rubber-ducking you'd do with a colleague, but with agents. Rubber duck has <strong>two modes</strong>: <strong>advisor</strong> and <strong>critic</strong>. It's available in the <strong>Copilot CLI</strong> and the <strong>GitHub app</strong>. Mario says he uses it constantly — "mainly on critique mode," sometimes assistant mode to save tokens.</p>
+<h3 id="quality-multimodel-code-review-security-review-orchestrated">Quality: multimodel code review + security review (orchestrated)</h3>
+<p>The final demo is about <strong>quality</strong> — the pillars sequence is restated: <strong>surfaces → runtime → automation → quality → intelligence → enterprise</strong> (intelligence and enterprise weren't demoed). Evan gives "inside baseball": prepping the demo, he hit a bug where <strong>cloud support in the app didn't work</strong> for cross-repo orchestration; a colleague ("Enrique") put together a fix PR right before launch, and Evan wants to <strong>review it carefully for quality and security</strong>.</p>
+<p>He pastes the PR URL into the app (<strong>Cmd-K</strong>), and Copilot offers to <strong>create a review session</strong>, loading the diff. He can add comments and ask questions in a <strong>private conversation with the agent</strong> — "this doesn't go to github.com," it's just for building shared understanding of the code. Then he composes review workflows:
+- <strong><code>/review</code></strong> for code review and <strong><code>/security review</code></strong> for security.
+- <strong>Multimodel code review</strong> across <strong>Gemini, Claude (Sonnet 4.6) and GPT (GPT-5.5)</strong> — models with <strong>different training distributions</strong> that "don't all agree," which is the point: combining them yields the best results.</p>
+<p>He issues one orchestration prompt asking the agent (via the <strong><code>create session</code> tool</strong>) to:
+1. <strong>Session 1</strong> — check out the branch and run a <strong>multimodel code review</strong> (code-review agent + Gemini / GPT-5.5 / Sonnet 4.6).
+2. <strong>Session 2</strong> — pull the same branch and run a <strong>security review</strong>, also using <strong>multimodel sub-agents</strong> (the security sub-agent was <strong>built in collaboration with GitHub Advanced Security</strong>).
+3. When both sub-sessions finish, they <strong>message back to the parent session</strong>, which then runs a <strong>rubber-duck critique</strong> of the combined output — a final critical pass — before surfacing a <strong>final recommendation</strong> and optionally <strong>posting comments to the PR</strong>.</p>
+<p>The value: by the time it requires the human's attention, multiple models have agreed, the rubber duck has agreed, and the security review has found the issues — "the feedback it's giving me is actually helpful and legit." High quality, much faster.</p>
+<h3 id="partner-ecosystem-the-production-loop">Partner ecosystem &amp; the production loop</h3>
+<p>Mario closes the loop back to the <strong>agent-native engineering system</strong>: turning <strong>idea → intent → production</strong> via human + agent collaboration, with <strong>trust</strong> throughout. He name-checks partners that fill out the path to prod:
+- <strong>Sonar</strong> — code quality.
+- <strong>Endor</strong> — security.
+- <strong>Miro</strong> — canvas/design (shown earlier).
+- <strong>LaunchDarkly</strong> — deploy to production safely (feature-flag/rollout safety).</p>
+<p>So GitHub isn't "leaving you hanging after coding" — it takes the work the rest of the way: code review + security + safe deploy. The session ends with the live security-review sub-agents still running ("three of these with Gemini"), a fitting demos-not-memos finish.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>GitHub Copilot app</strong> — the new desktop app at the centre of the talk; built to <em>finish</em> work (triage → CI → review → merge → deploy), not just spawn parallel sessions.</li>
+<li><strong>Copilot CLI</strong> — GitHub's command-line Copilot surface; hosts rubber duck and is part of the agent-native surface set.</li>
+<li><strong>Copilot SDK</strong> — SDK Evan's team owns alongside the CLI and app (named as part of his remit).</li>
+<li><strong>Canvases</strong> — custom, agent-drivable UI surfaces in the app (terminal, triage, whiteboard, kanban, Miro); authored as extensions, checked into the repo, shareable with the team, hot-reloadable.</li>
+<li><strong>Create-canvas skill</strong> — a skill that authors a new canvas extension dynamically into the repo <code>.github</code> folder from a natural-language description.</li>
+<li><strong>Canvas marketplace</strong> — forthcoming marketplace of official first-party and third-party canvas extensions.</li>
+<li><strong><code>create session</code> tool</strong> — the primitive that lets both the human and the agent spin up sessions / nested sub-sessions; underpins triage, orchestration and multi-repo work.</li>
+<li><strong>Isolated work trees</strong> — each session gets its own isolated work tree with the relevant issue auto-attached.</li>
+<li><strong>Copilot Cloud</strong> — run agent tasks in the cloud, built on GitHub sandboxes; lets you close your laptop while work continues.</li>
+<li><strong>GitHub sandboxes</strong> — fast, stateful, isolated microVMs (spin up in seconds, tightly-scoped credentials) powering local + cloud agent execution.</li>
+<li><strong>Local sandbox</strong> — on-machine sandboxed execution (public preview) for safe local YOLO/autopilot.</li>
+<li><strong>Chronicle</strong> — per-user, private cross-surface session memory; full-text + structured SQL over a data lake of all your sessions, with a direct SQL API exposed to the agent (<code>Chronicle search</code>, <code>Chronicle stand-up</code>).</li>
+<li><strong>Direct SQL API for the agent</strong> — the mechanism powering Chronicle; the agent writes/executes SQL over session data.</li>
+<li><strong>Agent merge</strong> — agentic automation (a button on a PR) that drives a PR to green: resolves conflicts, gets CI green, answers review feedback with justifications, and pushes back on bad asks.</li>
+<li><strong>CCR (Copilot code review)</strong> — GitHub's code-review agent; produces overviews + batched comments that agent merge responds to.</li>
+<li><strong>Automations</strong> — scheduled/triggered agent jobs, runnable <strong>locally</strong> (e.g. 6 a.m. morning brief) or in the <strong>cloud</strong> (e.g. on <code>issue created</code>).</li>
+<li><strong>Morning brief</strong> — a local daily automation summarising in-flight PRs, blocking un-reviewed PRs, and critical new issues.</li>
+<li><strong>Issue-repro automation</strong> — a cloud automation that, on a new bug report, attempts a repro, writes a failing test, labels the issue, and comments repro steps + the test.</li>
+<li><strong>Rubber duck</strong> — multimodel/multi-agent "second set of eyes" with <strong>advisor</strong> and <strong>critic</strong> modes; in the Copilot CLI and the GitHub app.</li>
+<li><strong><code>/review</code></strong> — code-review command/agent in the app.</li>
+<li><strong><code>/security review</code></strong> — security-review command; uses a security sub-agent built with GitHub Advanced Security.</li>
+<li><strong>Multimodel review</strong> — running review across multiple models (Gemini, Claude Sonnet 4.6, GPT-5.5) for better coverage via differing training distributions.</li>
+<li><strong>GitHub Advanced Security</strong> — the security product the security-review sub-agent was built in collaboration with.</li>
+<li><strong>Cmd-K (paste PR URL)</strong> — quick action in the app to create a review session from a PR URL.</li>
+<li><strong>Models named:</strong> <strong>Gemini</strong>, <strong>Claude (Sonnet 4.6)</strong>, <strong>GPT (GPT-5.5)</strong> — used for multimodel code/security review.</li>
+<li><strong>Partner integrations:</strong> <strong>Sonar</strong> (code quality), <strong>Endor</strong> (security), <strong>Miro</strong> (canvas/design), <strong>LaunchDarkly</strong> (safe production deploy).</li>
+<li><strong>Agent-native engineering system</strong> — GitHub's overarching platform vision: surfaces → runtime → automation → quality → intelligence/memory → enterprise.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>GitHub Copilot app</strong> — newly launched ("we just launched this"); the session is effectively its showcase. Exact GA/preview wording not stated beyond "launched."</li>
+<li><strong>Canvases</strong> — introduced as a new app capability (built-in + author-your-own + install-from-gist/URL).</li>
+<li><strong>Canvas marketplace</strong> — announced as <strong>coming</strong> ("we're excited to share more … coming"); official first-party + third-party canvas extensions, with a Miro partner canvas shown. Not yet GA.</li>
+<li><strong>Copilot Cloud</strong> — presented as available to use in the demo (built on GitHub sandboxes); the <strong>cloud sandbox is also coming to the Copilot app</strong> (delegate local sessions into the cloud) — framed as forthcoming for the app specifically.</li>
+<li><strong>Local sandbox</strong> — explicitly called out as <strong>public preview</strong>.</li>
+<li><strong>Chronicle</strong> — introduced as a new capability ("we now have something called Chronicle"); preview/GA status not stated.</li>
+<li><strong>Agent merge</strong> — introduced as a new PR capability ("I now have this button called agent merge"); status not explicitly labelled.</li>
+<li><strong>Automations (local + cloud)</strong> — demoed as available; status not explicitly labelled.</li>
+<li><strong>Rubber duck</strong> — shown in the keynote and stated to be <strong>available now in the Copilot CLI and the GitHub app</strong> (advisor + critic modes).</li>
+<li><strong>Multimodel + security review orchestration</strong> — demoed live; the security sub-agent built with GitHub Advanced Security. Status not explicitly labelled.</li>
+<li><em>Note on GA vs preview:</em> the only <strong>explicit</strong> status given was <strong>local sandbox = public preview</strong>. Most other items were demoed as working/launched without a precise GA-vs-preview label, so treat them as "shown/launched" rather than confirmed GA.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Batch issue triage</strong> — filtered the inbox to terminal-related issues and fired <strong>new individual sessions</strong> for three of them at once, each in an isolated work tree with the issue auto-attached and the agent starting work. <em>Point:</em> group related agentic work for easier review.</li>
+<li><strong>Terminal canvas (voice-driven)</strong> — asked the agent (by voice) to run a Python web server rendering "hello canvas" and open the browser to it; the agent drove terminal + browser end-to-end. <em>Point:</em> the agent can fully operate built-in surfaces (terminal, browser, automated testing).</li>
+<li><strong>Triage canvas</strong> — "analyze sample" button instructed the agent to bucket issues into 5–8 feedback themes (the team's daily standup ritual), and <strong>start sessions</strong> straight from the canvas, spawning nested sub-sessions. <em>Point:</em> canvases drive the agent and organise/group work.</li>
+<li><strong>Create-canvas (live authoring)</strong> — dictated a request for a <strong>whiteboard canvas</strong> with export-to-JPEG + publish-to-gist; the create-canvas skill authored the extension into <code>.github</code> at repo scope to share with the team. <em>Point:</em> you (or the agent) can build bespoke, checked-in, shareable canvases on the fly. (Paid off later — the whiteboard worked and successfully published to a gist.)</li>
+<li><strong>Install extension from gist/URL</strong> — installed an <strong>agentic kanban board</strong> canvas, added it, opened it, and started a task from the board; asked for live theming changes that the agent <strong>hot-reloaded</strong>. <em>Point:</em> a portable canvas ecosystem + live bidirectional editing.</li>
+<li><strong>Miro canvas</strong> — showed a first-party Miro design canvas, agent-driven, with the ability to kick off implementation from it. <em>Point:</em> official partner canvases.</li>
+<li><strong>Copilot Cloud</strong> — turned on YOLO/autopilot and kicked off cloud tasks on GitHub sandboxes (stateful microVMs). <em>Point:</em> close your laptop; agents keep working safely overnight.</li>
+<li><strong>Chronicle search</strong> — recovered the context of a half-remembered "gnarly Rust bug" fix and loaded it into the session. <em>Point:</em> cross-surface memory speeds up new work.</li>
+<li><strong>Chronicle stand-up</strong> — summarised the last 24 h of work via live SQL queries over the session data lake (queries visible/expandable). <em>Point:</em> the agent uses a direct SQL API over your history.</li>
+<li><strong>Agent merge walk-through</strong> — replayed the first agent-merge PR ("Jeremy," Mar 19): the agent resolved many rounds of CCR feedback with justifications while Jeremy ate lunch, pushed back on a redundant docs request and a 1000-line refactor demand, then merged. <em>Point:</em> an agent reliably drives a PR to green and exercises judgment, protecting reviewer focus.</li>
+<li><strong>Morning brief automation</strong> — a local 6 a.m. automation produced a focus brief (top-10 issues + links, in-flight PR details, team blockers). <em>Point:</em> tame the feedback firehose; start the day focused.</li>
+<li><strong>Issue-repro automation (cloud)</strong> — created a cloud automation on <code>issue created</code> to repro bugs, write a failing test, label, and comment; then filed a test bug to trigger it. <em>Point:</em> auto-pre-triage bug reports so fixes become trivial.</li>
+<li><strong>Multimodel code + security review orchestration</strong> — from a pasted PR URL, orchestrated two sub-sessions (multimodel code review via Gemini/GPT-5.5/Sonnet 4.6; security review via multimodel sub-agents + GitHub Advanced Security), then a parent-session rubber-duck critique and final recommendation/PR comments. <em>Point:</em> high-quality, multi-perspective review + security as one composed workflow. (Live: the security sub-agents were still running at the end — "three of these with Gemini.")</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>"Demos, not memos."</strong> — GitHub's internal saying; the whole session lives by it.</li>
+<li><strong>"Agents entered the workforce and … it's really working."</strong> — Mario, on the post-January 2026 inflection.</li>
+<li><strong>Micro-delegate → micro-steer</strong> — the shift from constantly correcting agents to delegating whole tasks and only nudging.</li>
+<li><strong>"The SDLC is more or less dead"</strong> — merging into the product development lifecycle as one human + agent loop.</li>
+<li><strong>"It's not about doing more. It's about finishing more."</strong> — Evan, reframing the promise of agents around output, not activity.</li>
+<li><strong>"~10× longer"</strong> — Evan's joke that building a new primitive to avoid a tedious task takes about ten times as long as just doing the task (but millions of engineers benefit).</li>
+<li><strong>"60% … telling the truth and … 40% are lying"</strong> — recurring running gag about audience show-of-hands (procrastination; agents creating noise).</li>
+<li><strong>Velocity "10×, 20×, 100×"</strong> — Mario's framing of the upside once shipping friction is removed.</li>
+<li><strong>GitHub sandboxes spin up "in a matter of seconds"</strong> — the microVM performance claim.</li>
+<li><strong>Morning brief runs at 6 a.m. daily; Chronicle stand-up covers the last 24 hours.</strong></li>
+<li><strong>First agent-merge PR dated March 19th</strong> — signalling how long the app's been in development.</li>
+<li><strong>Multimodel review uses Gemini + Claude Sonnet 4.6 + GPT-5.5</strong> — "they don't all agree with each other … you get the best possible results."</li>
+<li><strong>"Are you focused on activity or are you focused on output?"</strong> — the session's central challenge to every team.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Stand up an <strong>agent-merge-style</strong> PR babysitter in our own CI (resolve conflicts + drive to green + answer review bots) and measure reviewer-attention savings.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Prototype a <strong>"morning brief" automation</strong> (in-flight PRs, blocking un-reviewed PRs, critical new issues) and an <strong><code>issue created</code> auto-repro + failing-test</strong> bot.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Pilot <strong>multimodel code review</strong> (route the same diff through 2–3 models + a final "rubber duck" critique pass) and see if disagreement surfaces real defects.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Build a small <strong>canvas-style</strong> internal tool (triage/kanban board the agent can drive) to test the bidirectional UI ↔ agent loop.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: What are the <strong>GA vs preview</strong> timelines for Copilot app, Copilot Cloud, Chronicle, agent merge, and the canvas marketplace? (Only local sandbox was explicitly called public preview.)</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: How is <strong>Chronicle</strong> secured/scoped in enterprise (data residency, retention, who can query the SQL API), given it stores "every prompt and line of code"?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: Pricing/token implications of <strong>multimodel</strong> review + rubber duck running on every PR at scale?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: What exactly is <strong>"ME MXC"</strong> (caption-uncertain) referenced as the keynote runtime announcement?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: Platform/DevEx teams defining the <strong>last-mile "AI code → production"</strong> pipeline (review, security, CI, safe deploy) and agent governance/trust.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><a class="wikilink wikilink--resolved" href="BRK233.html">BRK233 - Software Defensibility in the era of AI coding</a></li>
+<li><a class="wikilink wikilink--resolved" href="BRK229.html">BRK229 - From Skeptic to Superpower</a></li>
+<li><a class="wikilink wikilink--resolved" href="BRK223.html">BRK223 - From rows to reasoning</a></li>
+<li><span class="wikilink wikilink--unresolved" title="GitHub Copilot app">GitHub Copilot app</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Agent-native engineering system">Agent-native engineering system</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Chronicle (Copilot session memory)">Chronicle (Copilot session memory)</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Agent merge">Agent merge</span></li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <span class="pager pager-empty"></span>
+    <a class="pager pager-next" href="BRK202.html"><span class="pager-dir">Next →</span><span class="pager-code">BRK202</span><span class="pager-title">Azure DevOps meets GitHub, the path to AI powered SDLC</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

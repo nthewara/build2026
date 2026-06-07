@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRKSP90 — Stop routing docstrings to 70B models with on-device AI on Snapdragon</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">BRKSP90</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=c0fKfsZny3Y" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Stop routing docstrings to 70B models with on-device AI on Snapdragon</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Alberto Martinez (Qualcomm)</span>
+      <span class="meta-item">⏱️ 42m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="on-device">On Device</span><span class="chip" data-tag="snapdragon">Snapdragon</span><span class="chip" data-tag="edge-ai">Edge Ai</span><span class="chip" data-tag="ai">AI</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speaker:</strong> Alberto Martinez — Software Strategy, Compute Business, Qualcomm (~40 years in the industry)<br>
+<strong>Duration:</strong> ~42 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=c0fKfsZny3Y">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>AI coding workloads are blowing up token budgets and dollar bills — and agentic orchestration is about to multiply that cost 10–100x. Alberto Martinez (Qualcomm) argues that the majority of everyday AI coding tasks (docstrings, lint fixes, simple routes) are <em>trivial</em> and should never be routed to a 70B+ cloud model. His thesis: build a <strong>three-tier routing architecture</strong> (on-device laptop → on-prem workstation → cloud) governed by a small, fast <strong>classifier</strong> that scores prompt complexity and dispatches each sub-task to the cheapest model that can do the job correctly. With a Snapdragon X2 Elite (80 TOPS, up to 122 GB memory, ~225 GB/s bandwidth), research shows <strong>~73% of workload is resolvable locally</strong>, potentially saving <strong>up to ~$24,000/day</strong> of a $36k/day spend, processing <strong>~1.6 billion tokens locally per day with zero quality loss</strong>, and hitting <strong>sub-200ms on-device response</strong> times. The classifier is the key IP developers should build themselves — it's a competitive advantage, lives in the orchestrator, and needs a confidence-based fallback to the cloud when entropy spikes mid-execution.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>"Stop routing your docstrings to a 7-billion-parameter model"</strong> — the provocative thesis. Blindly sending <em>every</em> prompt to a very large model wastes tokens, money, power, and latency on tasks that don't need that horsepower.</li>
+<li><strong>The token economy is now an everyday-life problem, not just a backend one.</strong> Martinez personally runs out of tokens in hours; the inflection point is that his non-technical wife (an attorney) now hits limits too — meaning it's hitting <em>consumers</em>, not just infrastructure providers.</li>
+<li><strong>Agentic orchestration multiplies token consumption 10x–100x</strong> (per Qualcomm CEO Cristiano Amon at Computex). A $36k/day spend becomes $300k–$350k/day on an exponential curve.</li>
+<li><strong>Most AI coding work is low-complexity.</strong> On a 1–7 complexity score using Claude Sonnet 4.6 data: ~34% of workload is simple/medium-low (~1,300 queries), another tranche is medium-high (~1,500 queries), leaving only ~20–30% that is genuinely complex and needs a big model.</li>
+<li><strong>Three-tier architecture is the minimum sensible design:</strong> (1) personal laptop/desktop on-device, (2) on-prem headless workstation/server, (3) cloud. More tiers are possible.</li>
+<li><strong>The classifier is the crown-jewel IP.</strong> It's a small model (&lt;20ms, &lt;50 tokens budget) that scores each prompt and routes it. Building your own classifier is a <em>competitive advantage</em>; using a shared/commodity one gives you none.</li>
+<li><strong>Classifier uses four signals (prongs) + a fifth fallback leg:</strong> (1) token count, (2) abstract-syntax/decision-tree depth, (3) profile/context reference count, (4) security flags — plus (5) confidence fallback that aborts to cloud when runtime entropy grows too fast.</li>
+<li><strong>Snapdragon X2 Elite specs:</strong> 80 TOPS NPU, 143% greater compute than prior gen, up to 122 GB memory, up to ~225 GB/s memory bandwidth (stream edition; ~152 GB/s elite edition as stated), supports your favorite data types.</li>
+<li><strong>Integer quantization is a major lever:</strong> up to ~50% memory reduction vs floating point, with only ~5% quality/precision loss — acceptable for complexity scores 1–7. Above score 7, keep floating point because precision becomes critical (avoid "activation collapse").</li>
+<li><strong>Economics are staggering:</strong> demo showed the cloud-only path cost ~21¢ vs ~5.1–5.5¢ hybrid — <strong>4x cheaper</strong>. At scale that's ~$14k/month vs ~$4k/month differential per recurring marketing/dev workflow.</li>
+<li><strong>Everything is code now.</strong> PowerPoints, Excel reviews, data compilations — all generate Python/JS/HTML under the hood, so the savings apply far beyond "developers."</li>
+<li><strong>Research-backed local resolution: up to ~73%</strong> of workload resolvable on-device today; even a conservative 50% gap "would make you super happy."</li>
+<li><strong>Hardware pays for itself absurdly fast:</strong> a partner spending $35k/dev/month could save $15k+/dev/month — enough to <strong>replace the hardware every month and still save money</strong> (vs typical 3–4 year refresh cycles).</li>
+<li><strong>Call to action — "build it yourself":</strong> audit last week's AI coding request logs, categorize by complexity, find your threshold, measure for two weeks (token cost + latency), optimize the classifier, rinse and repeat.</li>
+<li><strong>The classifier belongs in the orchestrator</strong>, which owns routing logic, execution monitoring, and aggregation — because the orchestrator ships requests to agents, and agents are attached to models.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-predict-the-future-by-creating-it">Framing: predict the future by creating it</h3>
+<p>Martinez opened by improvising the whole talk and framing it as a "who-done-it mystery" about uncovering where agentic AI and orchestration are heading. His guiding philosophy (a famous, oft-attributed quote): <em>"If you want to predict the future, you have to go and create it."</em> Wait for someone else to build it and you're a follower; build it yourself and you're the innovator. The session is about "peeling the onion" on the agentic/orchestration story to understand what developers need to do next.</p>
+<h3 id="the-problem-token-economics-is-becoming-everyones-problem">The problem: token economics is becoming everyone's problem</h3>
+<ul>
+<li>Martinez feels <strong>10x more productive</strong> using AI daily — for research, development, and practice.</li>
+<li>But he constantly runs out of tokens. At the office you don't <em>see</em> tokens run out; instead the <strong>CIO sees the dollar counter climbing</strong> in the backend and eventually says "guys, you're cut off."</li>
+<li>The personal inflection point: his wife (an attorney, non-technical) recently hit token limits for the first time and was told to "wait until 8 p.m." to continue. That signals the cost pain has reached <strong>consumers</strong>, not just infrastructure/foundation-model providers.</li>
+<li>Per Qualcomm CEO <strong>Cristiano Amon</strong> (Computex this week): token consumption is multiplying <strong>10x and 100x</strong> because agents run at a far higher token rate than human prompting.</li>
+<li><strong>The red thread:</strong> the solution is in our hands — not only for economics, but for <strong>power conservation, energy consumption, and latency</strong>.</li>
+</ul>
+<h3 id="the-broken-math-token-costs-per-task-type">The broken math (token costs per task type)</h3>
+<p>Using Qualcomm's research (data derived from Claude Sonnet 4.6), processing typical tasks costs:
+- <strong>Docstring</strong> in a prompt: ~<strong>180 tokens</strong>
+- <strong>Lint error fix</strong>: ~<strong>210 tokens</strong>
+- <strong>Generating a route</strong>: ~<strong>460 tokens</strong>
+- <strong>Security audit</strong>: starts at ~<strong>3,800 tokens</strong> ("goes off the roof")
+- <strong>Cross-repo refactor</strong> (similar complexity to a security audit): ~<strong>3,900 tokens</strong></p>
+<p>When you send any of these to the cloud, the <em>smallest</em> model you hit is <strong>over 70 billion parameters</strong> — overkill for a docstring. "Your mileage will vary based on your classifier," but the point stands: it all costs money, and those tokens add up.</p>
+<h3 id="the-dollar-math-and-the-agentic-multiplier">The dollar math and the agentic multiplier</h3>
+<ul>
+<li>On the <strong>low side</strong>, organizations spend ~<strong>$36,000</strong> (per the curve's lower distribution; he cites ~50 developers context).</li>
+<li>Anecdotally, some vendors/partners spend <strong>~$35,000 per developer per month</strong>.</li>
+<li>Once you apply <strong>agentic + orchestration</strong>, these functions go <strong>10x</strong> — so $36k becomes <strong>$300k–$350k</strong> on an exponential growth curve.</li>
+<li>He name-drops <strong>Peter Steinberger</strong> (rendered "Standberger" in captions) as someone spending ~<strong>$1 million/month</strong> — "maybe he can do that; I cannot afford it personally."</li>
+</ul>
+<h3 id="workload-distribution-the-core-insight">Workload distribution (the core insight)</h3>
+<p>Analyzing prompt complexity on a 1–7 (sometimes 1–4) score using Claude Sonnet 4.6:
+- <strong>~34%</strong> of all workload is <strong>simple</strong> (score 1–4) — ~<strong>1,300 queries</strong>.
+- A <strong>medium-to-low / medium-to-high</strong> band — ~<strong>1,500 queries</strong> plus another ~7%.
+- These simple/medium queries can <strong>run locally</strong> on a Snapdragon X2 Elite given its compute and memory bandwidth.
+- The <strong>remaining ~20% (sometimes 30%)</strong> is <strong>complex</strong> — too big for the X2 Elite — and must go to a <strong>more capable on-prem device</strong> or the <strong>cloud</strong>.
+- This naturally produces <strong>three tiers</strong>: (1) your PC/desk computer, (2) an on-prem headless workstation, (3) the cloud.
+- The savings are big enough that <strong>you can justify almost any hardware in your office to your CIO</strong>.</p>
+<h3 id="why-snapdragon-the-hardware-plug">Why Snapdragon (the hardware plug)</h3>
+<p>The new-generation <strong>Snapdragon X2 Elite</strong>:
+- <strong>80 TOPS</strong> NPU capacity
+- <strong>143% greater compute</strong> than the previous generation
+- Up to <strong>122 GB of memory</strong>
+- Up to <strong>~225 GB/s memory bandwidth</strong> (stated as "225 in the stream edition, 152 in the elite edition")
+- Supports your favorite data types (with an important FP-vs-INT differential discussed below)</p>
+<h3 id="quantization-floating-point-vs-integer">Quantization: floating point vs integer</h3>
+<ul>
+<li>Historically, <strong>floating-point</strong> code is easier to develop and gives <strong>better precision</strong>.</li>
+<li><strong>Integer formats</strong> (especially for weights) yield up to <strong>~50% memory reduction</strong> over floating point (a saving <em>not even counted</em> in his other calculations). A 100 GB FP model can drop to ~50 GB in INT — and then it <em>fits</em>.</li>
+<li><strong>Bandwidth savings</strong> follow: smaller weights = half or a quarter of the memory bandwidth used (e.g., INT4 vs higher).</li>
+<li><strong>Power</strong> drops for many reasons.</li>
+<li><strong>Caveat:</strong> in floating point / FP16, <strong>activations preserve forward numerical precision</strong> that is critical for instructions and <strong>avoid activation collapse</strong> — and Qualcomm supports this.</li>
+<li><strong>Rule of thumb:</strong> if you're power- and memory-conscious, an integer (or reduced-integer) format can do the task with only a <strong>~5% quality gap</strong> — <em>acceptable for complexity scores 1–7</em>. For scores <strong>&gt;7</strong>, <strong>don't</strong> quantize to integers — precision becomes too relevant.</li>
+</ul>
+<h3 id="the-numbers-dual-axis-research-chart">The numbers (dual-axis research chart)</h3>
+<p>On a dual-axis chart (requests/day vs tokens/request), across ~20–30 task types:
+- The curve skews left (requests/day) and right (token complexity).
+- <strong>On-device:</strong> up to <strong>~3,100 requests</strong> can run locally.
+- A <strong>more capable on-prem device:</strong> another <strong>~660 requests</strong>.
+- The <strong>remaining high-complexity</strong> requests go to big cloud models — and routing this way saves <strong>~50% to ~70%</strong> of computational/token spend.
+- Using the same $36k/day baseline, you can <strong>save up to ~$24,000/day</strong> by dividing prompts into sub-tasks dispatched to independent models.
+- That equals <strong>~1.6 billion tokens processed locally per day</strong> (as of "April 1") — <strong>with zero quality loss for developers</strong>.
+- Crucially: <em>not</em> a server-class box on your desk, <em>not</em> a water-cooled rack — <strong>a laptop or a more capable workstation you can buy today at Best Buy</strong>.</p>
+<h3 id="the-demo-proof-of-concept">The demo (proof of concept)</h3>
+<ul>
+<li>Origin story: Martinez built an <strong>emulator using AI-generated code</strong>; it gained popularity inside Qualcomm; CEO Cristiano demoed it at <strong>Computex</strong>, and Martinez brought a version to Build.</li>
+<li><strong>The prompt:</strong> "Design a Snapdragon page with a link to qualcomm.com, with Taiwanese floating lanterns in the background."</li>
+<li>It looks simple but is a <em>collapsed</em> prompt. The hardest sub-task — the <strong>floating lanterns</strong> — needs a <strong>physics model</strong>, background planning, and complex code execution that genuinely requires a <strong>70B+ parameter</strong> model (they tested 3B → 30B → 70B → 120B; smaller models couldn't do the lanterns).</li>
+<li><strong>Two streams raced</strong> (framed as an F1 race — there was an F1/AMG car parked out front):</li>
+<li><strong>Cloud-only:</strong> Claude 4.7 Opus end-to-end.</li>
+<li><strong>Hybrid mode:</strong> the <strong>classifier</strong> decomposed the prompt into <strong>5 tasks</strong> — 1 medium (needs up to a <strong>32B</strong> model), 3 easy (run on an <strong>8B</strong> model on the PC), and 1 hard (the lanterns, executed on <strong>Claude 4.7 Opus</strong> in the cloud).</li>
+<li><strong>Result:</strong> Both produced the <strong>same final picture</strong> ("Thank you Taiwan," lanterns animating). The cloud-only stream actually ran <em>faster</em> (the hybrid pipeline isn't optimized yet — he expects that to improve as the software team optimizes it).</li>
+<li><strong>But cost differs dramatically:</strong> cloud-only ≈ <strong>21¢</strong>; hybrid ≈ <strong>5.1–5.5¢</strong> → <strong>~4x cheaper</strong>, on top of the ≥50% reductions already discussed.</li>
+<li><strong>Generalization:</strong> Everything we do is ultimately code — generating a PowerPoint, reviewing an Excel sheet, compiling datasets all produce Python/JS/HTML. So classify correctly and the savings extend to <strong>marketing teams building web pages, product launches</strong>, etc. Recurring, that's ~<strong>$14k/month vs ~$4k/month</strong>.</li>
+<li>Martinez's aside: in the old days you punch-carded everything to a central server (he learned on an IBM mainframe). The pendulum is swinging back toward distributed/local compute — "send what matters to the cloud," and you also "save some polar bear habitat and penguins."</li>
+</ul>
+<h3 id="what-it-means-for-everyone-provider-developer-user">What it means for everyone (provider, developer, user)</h3>
+<ul>
+<li><strong>≥65%</strong> of cloud GPU cycles consumed can be reclaimed/avoided.</li>
+<li>Research shows <strong>sub-200ms on-device response</strong> turnaround (the demo couldn't show sub-millisecond, so he didn't claim it).</li>
+<li><strong>User cost reduction</strong> is "tremendous value."</li>
+<li>For a partner paying <strong>$35k/dev/month</strong>, integrating this saves <strong>$15k+/dev/month</strong> — enough to <strong>buy a lot of hardware</strong> that lasts 3–4 years. The savings are so large you could <strong>replace hardware every month and still save money</strong>.</li>
+</ul>
+<h3 id="the-three-tier-model-concrete-thresholds">The three-tier model (concrete thresholds)</h3>
+<ul>
+<li><strong>Tier 1 — On-device (laptop/desktop):</strong> models <strong>~13B and below</strong> for sure, up to <strong>~34B</strong> with soon-to-release architectures; complexity score <strong>1–6</strong> ("logic entropy") runs locally.</li>
+<li><strong>Tier 2 — On-prem workstation/server:</strong> up to <strong>~100B (slightly more, ~120B)</strong> parameters; "a little box that sits under your desk" — <em>not</em> a water-cooled rack.</li>
+<li><strong>Tier 3 — Cloud:</strong> anything bigger, e.g., <strong>security audits, full code-repo work</strong> — send it up.</li>
+<li>Routing is governed by an <strong>entropy threshold</strong> evaluated by the <strong>classifier</strong>.</li>
+</ul>
+<h3 id="the-classifier-the-heart-of-the-architecture">The classifier (the heart of the architecture)</h3>
+<p>The classifier is a <strong>small model</strong> that must react in <strong>&lt;20ms</strong> and use <strong>&lt;50 tokens</strong> (so it's "lost in the noise" of the request). Why 20ms? Because the target end-to-end is <strong>&lt;200ms</strong>, and a rule-of-thumb 10% budget = 20ms. It scores prompts on <strong>four prongs</strong>:</p>
+<ol>
+<li><strong>Token count</strong> — analyze the prompt and count tokens first.</li>
+<li><strong>Abstract-syntax / decision-tree depth</strong> — how deep is the tree of decision logic? <code>if</code> clauses, conditional branches ("create page A, but if X not released, make page B…") increase depth and push the request up a tier.</li>
+<li><strong>Profile / context reference count</strong> — how many external references the prompt pulls in ("look at this email <em>and</em> that presentation, search the web, combine into a solution"). More references = higher tier.</li>
+<li><strong>Security flags</strong> — authorization requests, prompt-injection signatures, compliance terms. Any compliance/security match raises a <strong>red flag</strong> for careful handling.</li>
+</ol>
+<p>All four are <strong>tunable thresholds</strong> — you can find your own optimal point and even make the classifier <strong>recursive / adaptive / self-learning</strong>.</p>
+<h3 id="the-fifth-leg-confidence-based-fallback">The fifth leg: confidence-based fallback</h3>
+<p>The four prongs make a <strong>prediction</strong>, and predictions have errors. So there's a <strong>fifth leg — the fallback</strong>:
+- Martinez draws an analogy to <strong>CPU prefetchers</strong> (from his CPU-architecture career): a prefetcher predicts the next instruction and goes in a direction; because it's imperfect, you <em>must</em> have a fallback when it's wrong.
+- The runtime success metric is <strong>entropy</strong>. If, <em>during execution</em>, the query's entropy grows <strong>faster than expected</strong>, <strong>abort</strong> and reshuffle to the cloud "before it goes deeper into the weeds."
+- On abort you have (at least) two choices: (a) <strong>reclassify</strong> with the same parameters (learns nothing, same answer) or (b) <strong>eat the bullet and send to cloud</strong> for a proper, non-hallucinated answer.
+- Over time, review what went wrong and correct the classifier.</p>
+<h3 id="research-evidence-the-boring-references-slide">Research evidence (the "boring" references slide)</h3>
+<p>Martinez declined to read citations aloud but summarized the support: entropy calculations, quantization research, edge inference, and routing capabilities. Headline numbers:
+- <strong>Up to ~73%</strong> of workload is resolvable locally today (a 50% target "would make you super happy," even 10% is real money).
+- <strong>68% of Stack Overflow developers (2024 survey)</strong> use AI tools for <strong>documentation and boilerplate</strong> — that's <strong>100% local-eligible</strong> work.
+- A <strong>73% enterprise-codebase workload analytics study</strong> (50-developer team, cross-maintained heavy codebase) found <strong>50–60%</strong> could use <strong>lower/edge resolution</strong> → small models running locally.
+- Integer quantization costs only <strong>~5% precision</strong> while delivering huge memory, power, and bandwidth reductions on a power-efficient NPU.</p>
+<h3 id="call-to-action-build-it-yourself">Call to action — "build it yourself"</h3>
+<ol>
+<li><strong>Look at your request logs.</strong></li>
+<li><strong>Categorize last week's AI coding requests by complexity</strong> (simple completions, boilerplate, LLM/lint fixes by complexity).</li>
+<li><strong>Find your own threshold</strong> — nobody hands it to you; it's easy but lazy to send everything to a big model ("like driving a gas-guzzler two blocks for groceries").</li>
+<li><strong>Measure for two weeks</strong> — track token cost and latency.</li>
+<li><strong>Optimize your classifier and repeat.</strong> Rinse and repeat. That's the solution space — saving money <em>and</em> the environment.</li>
+</ol>
+<h3 id="where-the-classifier-lives-qa-insight">Where the classifier lives (Q&amp;A insight)</h3>
+<p>The classifier <strong>belongs in the orchestrator</strong>, not standalone — because the orchestrator ships requests to agents, and agents attach to models. The orchestrator owns the <strong>routing logic, execution monitoring, and aggregation output</strong>. A deeper open research problem: <strong>"which model, when, and who"</strong> — today routing is by <em>known</em> capability (we test, we know model X can do task Y, so we send Y→X); in the near future, model/orchestrator/device capabilities will need to be <strong>known in a global, discoverable fashion</strong>.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Snapdragon X2 Elite</strong> — Qualcomm's new-gen compute platform: 80 TOPS NPU, 143% more compute than prior gen, up to 122 GB memory, up to ~225 GB/s bandwidth (stream edition; ~152 GB/s elite edition as stated). Stream edition and Elite edition variants referenced.</li>
+<li><strong>Qualcomm NPU</strong> — power-efficient neural processing unit central to the on-device inference argument.</li>
+<li><strong>Claude Sonnet 4.6</strong> (Anthropic) — used to generate the research workload-distribution data and complexity scoring.</li>
+<li><strong>Claude 4.7 Opus</strong> (Anthropic) — the cloud-only / big-model stream in the live demo (also used for the hard "lanterns" sub-task in hybrid mode).</li>
+<li><strong>The Classifier</strong> (Qualcomm research IP, not yet generally available) — small &lt;20ms / &lt;50-token model scoring prompts on 4 prongs + fallback.</li>
+<li><strong>The Orchestrator</strong> — owns the classifier, routing logic, execution monitoring, and aggregation; dispatches to agents/models.</li>
+<li><strong>Hybrid / on-device emulator</strong> — AI-coded proof-of-concept demonstrating multi-tier task decomposition (shown by CEO Cristiano Amon at Computex).</li>
+<li><strong>Integer (INT) quantization</strong> (e.g., INT4 / reduced-int) vs <strong>floating point (FP16)</strong> — the memory/bandwidth/power vs precision trade-off.</li>
+<li><strong>Cline ("Klene") and Claude</strong> — coding agent tools referenced by an audience member (Nathan) as where automated task-splitting is rarely seen.</li>
+<li><strong>GNNs / "GNI"-style models</strong> — noted in Q&amp;A as behaving slightly differently from LLMs for entropy measurement and classification, but the approach applies similarly.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>No formal product announcement.</strong> This was a forward-looking research/strategy talk, not a launch. The headline artifacts are research findings and an architectural proposal.</li>
+<li><strong>Snapdragon X2 Elite</strong> was presented with detailed specs as the enabling hardware (new-generation positioning), but framed as available-to-buy today rather than newly announced here.</li>
+<li><strong>Qualcomm classifier research</strong> was previewed as <strong>work-in-progress</strong>: classifiers are <strong>not yet generally available</strong>; Qualcomm is researching them and intends to <strong>make a classifier available</strong> while encouraging the ecosystem to build their own.</li>
+<li><strong>A research paper is forthcoming</strong> — Martinez said he hasn't published it yet but promised to: <em>"You're getting a preview of the paper."</em></li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<p><strong>The Lantern Race (recorded demo, from Computex).</strong>
+- <strong>The prompt:</strong> "Design a Snapdragon page with a link to qualcomm.com, with Taiwanese floating lanterns in the background" — a deceptively simple but <em>collapsed</em> prompt.
+- <strong>The hard part:</strong> the floating lanterns require a physics model, background planning, and complex code that genuinely needs a <strong>70B+ parameter</strong> model (tested across 3B / 30B / 70B / 120B; only the largest succeeded on the lanterns).
+- <strong>Two racing streams</strong> (framed as an F1 race, complete with an F1/AMG car parked outside):
+  - <strong>Cloud-only:</strong> Claude 4.7 Opus, end-to-end.
+  - <strong>Hybrid:</strong> the classifier split the prompt into <strong>5 sub-tasks</strong> — 1 medium (≤32B model), 3 easy (8B model on the PC), 1 hard (lanterns → Claude 4.7 Opus in the cloud).
+- <strong>Outcome:</strong> identical final result ("Thank you Taiwan" page with animating lanterns). The cloud-only stream ran <em>faster</em> (hybrid pipeline not yet optimized), but the <strong>hybrid cost ~4x less</strong> (~5.1–5.5¢ vs ~21¢).
+- <strong>Takeaway shown live:</strong> same visual quality, dramatically lower cost — proving complexity-aware routing works in practice. Martinez accelerated the playback so the audience didn't "watch the matrix fall" (Python code scrolling).
+- <em>Note:</em> sub-millisecond / sub-200ms latency was <strong>not</strong> demonstrated because this particular recorded demo didn't capture it — only cost was shown.</p>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<blockquote>
+<p><strong>"Stop routing your docstrings to a 7-billion-parameter model."</strong> — the talk's core provocation.</p>
+<p><strong>"If you want to predict the future, you have to go and create it."</strong> — Martinez's guiding philosophy (famous, oft-attributed quote).</p>
+<p><strong>"1.6 billion tokens could be processed locally… and I'm not telling you a server class on your desk. I'm talking about your laptop… that you can go and buy today at Best Buy — with zero quality loss."</strong></p>
+<p><strong>"You can replace your hardware every month and you're still saving money. It's an incredibly powerful equation."</strong></p>
+<p><strong>"It's like moving a gas-guzzler car to go for groceries two blocks away. It's a waste of resources."</strong> — on sending everything to a big model.</p>
+<p><strong>"We can not only save money but we can save some polar bear habitat and some penguins on the other side of the world."</strong> — on the energy/environmental angle.</p>
+</blockquote>
+<p><strong>Token costs per task (Claude Sonnet 4.6 research):</strong>
+- Docstring in prompt: <strong>~180 tokens</strong>
+- Lint error fix: <strong>~210 tokens</strong>
+- Route generation: <strong>~460 tokens</strong>
+- Security audit: <strong>~3,800 tokens</strong>
+- Cross-repo refactor: <strong>~3,900 tokens</strong></p>
+<p><strong>Economics:</strong>
+- Low-side spend: <strong>~$36,000</strong> (per lower distribution); anecdotal partner spend: <strong>~$35,000/developer/month</strong>.
+- With agentic orchestration: <strong>10x → ~$300k–$350k</strong>.
+- Peter Steinberger cited at <strong>~$1 million/month</strong>.
+- Potential savings: <strong>up to ~$24,000/day</strong> of a $36k/day baseline; <strong>$15k+/dev/month</strong> savings for a $35k/dev partner.
+- Demo cost: <strong>~21¢ (cloud) vs ~5.1–5.5¢ (hybrid) = 4x cheaper</strong>; recurring ≈ <strong>$14k/mo vs $4k/mo</strong>.</p>
+<p><strong>Hardware (Snapdragon X2 Elite):</strong> 80 TOPS · +143% compute vs prior gen · up to 122 GB memory · up to ~225 GB/s bandwidth (stream; ~152 GB/s elite).</p>
+<p><strong>Workload / routing:</strong>
+- ~<strong>3,100</strong> requests/day on-device · ~<strong>660</strong> on-prem · remainder to cloud.
+- <strong>~50–70%</strong> computational/token savings via routing.
+- <strong>~1.6 billion tokens/day</strong> processable locally with <strong>zero quality loss</strong>.
+- <strong>≥65%</strong> cloud GPU cycles reclaimable; <strong>sub-200ms</strong> on-device response.
+- <strong>Up to ~73%</strong> of workload locally resolvable (per research max).</p>
+<p><strong>Quantization:</strong> up to <strong>~50%</strong> memory reduction (INT vs FP), <strong>~5%</strong> precision loss — fine for complexity ≤7, not advised &gt;7.</p>
+<p><strong>Classifier budget:</strong> <strong>&lt;20ms</strong> latency, <strong>&lt;50 tokens</strong> (10% of a 200ms target).</p>
+<p><strong>Adoption evidence:</strong>
+- <strong>68%</strong> of Stack Overflow developers (2024) use AI for documentation/boilerplate → 100% local-eligible.
+- <strong>73%</strong> enterprise-codebase study (50-dev team): <strong>50–60%</strong> suitable for lower/edge resolution.</p>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> <strong>Things to try:</strong></li>
+<li>Audit my own AI coding request logs for the last week and bucket prompts by complexity (1–7) to find where my personal on-device/cloud threshold sits.</li>
+<li>Prototype a tiny prompt classifier (token count + decision-tree depth + reference count + security flags) and measure routing accuracy.</li>
+<li>Benchmark an 8B and a 32B model locally (e.g., on a Snapdragon X-class or comparable NPU/box) against cloud-only for everyday tasks; track $/task and latency.</li>
+<li>Experiment with INT4 vs FP16 quantization on a small coding model and measure the real precision gap on complexity ≤7 tasks.</li>
+<li>Implement a runtime "entropy" abort/fallback heuristic so a local run can bail to cloud mid-execution.</li>
+<li class="task-list-item"><input type="checkbox" disabled> <strong>Questions:</strong></li>
+<li>What <em>exact</em> entropy metric does the research use for the runtime fallback signal? (Paper not yet published.)</li>
+<li>How does the ~225 GB/s "stream" vs ~152 GB/s "elite" bandwidth labeling reconcile? (Caption may have swapped editions.)</li>
+<li>Is the 8B/32B/70B/120B tiering model-family-specific, or a general capability map?</li>
+<li>When Qualcomm releases its reference classifier, how customizable/self-learning will it be vs. roll-your-own?</li>
+<li>How does this integrate with existing agent orchestrators (Cline, Claude Code, AutoGen, etc.) without bespoke plumbing?</li>
+<li class="task-list-item"><input type="checkbox" disabled> <strong>Relevant to:</strong></li>
+<li>On-device / edge AI strategy and cost-optimization for AI coding workloads.</li>
+<li>Anyone managing a CIO-visible AI token/dollar budget or GPU spend.</li>
+<li>Hybrid local+cloud orchestrator design and model-routing IP.</li>
+<li>Snapdragon / NPU hardware evaluation for dev workstations.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Build 2026">Microsoft Build 2026</span></li>
+<li><span class="wikilink wikilink--unresolved" title="On-device AI">On-device AI</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Edge AI inference">Edge AI inference</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Model routing &amp; orchestration">Model routing &amp; orchestration</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Quantization (INT vs FP)">Quantization (INT vs FP)</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Snapdragon X2 Elite">Snapdragon X2 Elite</span></li>
+<li><span class="wikilink wikilink--unresolved" title="AI token economics">AI token economics</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="BRK261.html"><span class="pager-dir">← Previous</span><span class="pager-code">BRK261</span><span class="pager-title">Build and ship faster with a developer-optimized experience on Windows</span></a>
+    <a class="pager pager-next" href="BRKSP91.html"><span class="pager-dir">Next →</span><span class="pager-code">BRKSP91</span><span class="pager-title">Turn foundation models into production AI on Microsoft Foundry</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

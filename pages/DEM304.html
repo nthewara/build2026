@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEM304 — Union types in C#</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEM304</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=7qW92AwlrjM" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Union types in C#</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Mads Torgersen, Dustin Campbell</span>
+      <span class="meta-item">⏱️ 25m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="csharp">Csharp</span><span class="chip" data-tag="dotnet">.NET</span><span class="chip" data-tag="language-design">Language Design</span><span class="chip" data-tag="pattern-matching">Pattern Matching</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Mads Torgersen (Lead Designer, C# language) &amp; Dustin Campbell (Engineer, C# team)<br>
+<strong>Duration:</strong> ~25 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=7qW92AwlrjM">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>A live-coding demo from the C# language team introducing <strong>union types</strong>, a major new feature shipping in <strong>C# 15 (November)</strong> and already available in <strong>.NET 11 preview</strong>. A union is a named type that can be "one of" a fixed set of case types — e.g. <code>union Pet(Dog, Cat, Bird)</code> — giving you a real type to program against instead of falling back to <code>object</code>. The payoff is <strong>type safety</strong>: the compiler blocks values that aren't in the set, offers <strong>implicit conversions</strong> from each case type into the union, and crucially makes <code>switch</code> <strong>exhaustiveness checking</strong> work so you get a warning until every case (including <code>null</code> for nullable cases) is handled. Unions support generics, function/computed members, and static members (but <strong>no extra state</strong> beyond the contained value). They cover both "gluing together pre-existing unrelated types" and classic <strong>discriminated-union</strong> modelling (declaring cases alongside the union). Under the hood the syntax generates a <code>struct</code> holding a single <code>object value</code> field (boxing), implements <code>IUnion</code>, and is driven by a <code>[Union]</code> attribute — all of which you can hand-author yourself to make different (e.g. non-boxing/performance) implementation choices.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Union types ship in C# 15</strong>, releasing in <strong>November</strong>; the bits are already in <strong>preview</strong> (.NET 11 preview / Visual Studio preview / VS Code C# extension pre-release).</li>
+<li>C#'s unions are deliberately a <strong>"Goldilocks" / compromise</strong> design — their own flavour, different from TypeScript's unions and from functional-language discriminated unions.</li>
+<li>Syntax is minimal: <code>union Pet(Dog, Cat, Bird);</code> declares a union of those case types — "and it's that simple."</li>
+<li>A union gives you a <strong>real named type</strong> to use instead of widening everything to <code>object</code> (the pre-union workaround for unrelated types).</li>
+<li>The compiler provides <strong>implicit conversions</strong> from each case type <em>into</em> the union (e.g. a <code>Dog</code> is usable where a <code>Pet</code> is expected); assigning a non-member type (a <code>Shark</code>) is a compile <strong>error</strong> ("cannot implicitly convert type Shark to Pet").</li>
+<li><strong>Pattern matching / <code>switch</code> becomes exhaustive-checked</strong>: you get a warning until all cases are covered, and the warning clears once every case is handled — "compiler help to let us know we've correctly handled everything."</li>
+<li>Exhaustiveness is <strong>smart about <code>null</code></strong>: a <code>union Pet(Dog, Cat, Bird?)</code> (nullable case) re-introduces the warning until <code>null</code> is also handled.</li>
+<li>You can add <strong>function members</strong> — computed properties, methods, static members — directly on the union for shared abstraction across the cases.</li>
+<li>Unions <strong>may not introduce additional state</strong>: the only state is the actual contained value (the dog/cat/bird); the compiler prevents extra fields. (Function members are fine; state is not.)</li>
+<li>Unions are <strong>fully general</strong>: they can be <strong>generic</strong> (<code>union Result&lt;T&gt;(Success&lt;T&gt;, Error)</code>), and case types can be records, interfaces, type parameters, value types, etc. — case types only need to <strong>convert to <code>object</code></strong>, and overlapping cases are allowed.</li>
+<li>Two usage shapes: (1) <strong>bringing together existing unrelated types</strong> you didn't author (the Pet/animals scenario), and (2) <strong>discriminated-union style</strong> where you declare the case types <em>together with</em> the union (the <code>Result&lt;T&gt;</code> / wire scenario).</li>
+<li><strong>Records are the natural case type</strong> for discriminated unions — you can <strong>deconstruct</strong> the data straight out of them in the <code>switch</code>.</li>
+<li><strong>Under the hood:</strong> the syntax generates a <strong><code>struct</code></strong> with a single <code>object value</code> auto-property (cases are <strong>boxed</strong> into it), it implements interface <strong><code>IUnion</code></strong> (which just exposes that <code>value</code> property), and the whole thing is recognised via a <strong><code>[Union]</code> attribute</strong>.</li>
+<li>You can <strong>hand-author a union</strong> (apply <code>[Union]</code> + provide the required <code>public object value</code> property + a <strong>construction member/constructor per case</strong>) to make different implementation choices — e.g. a <strong>non-boxing</strong> layout for performance, or to <strong>retrofit an existing pre-union type</strong> so it gains exhaustiveness + implicit conversions "for free."</li>
+<li>The design took <strong>~5 years</strong>; the team explored <strong>structural (TypeScript-style) unions</strong> but rejected them because <strong>.NET types must exist at runtime</strong>, so C# unions are <strong>nominal (named, declared)</strong> — a structural-ish layer on top via generics remains a possible future.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-what-unions-are-and-the-goldilocks-stance">Framing: what unions are and the "Goldilocks" stance</h3>
+<p>Mads Torgersen (lead designer of C#) and Dustin Campbell (engineer on the C# team) present <strong>one feature: union types</strong>, landing in <strong>C# 15</strong> (out in November), with bits already in preview. They set expectations up front: lots of languages already have "unions," but they're <strong>all different</strong> — TypeScript has unions, most functional languages have some form of <strong>discriminated unions</strong> — and C# is adding <strong>its own</strong> take, jokingly called the <strong>"Goldilocks"</strong> (or "compromise") version. So existing union knowledge transfers only partially; the session shows "how unions <em>should</em> be" from scratch.</p>
+<h3 id="scenario-1-the-problem-unrelated-types-and-the-object-fallback">Scenario 1 — the problem: unrelated types and the <code>object</code> fallback</h3>
+<p>The demo opens with modern C# (top-level statements) and a set of types representing <strong>animals/pets</strong> — mostly <code>record</code>s plus a few other types (<code>Dog</code>, <code>Cat</code>, <code>Bird</code>, etc.). The framing premise: in the real world these come from <strong>separate libraries</strong> (a "dog library," a "cat library") that <strong>don't share a base type or interface</strong> — "dog and cat people" don't talk to each other.</p>
+<p>To process "pets" together today, the only common ancestor is <strong><code>object</code></strong>, so the code builds a <strong><code>List&lt;object&gt;</code></strong>, iterates with <code>foreach</code>, and uses a <strong><code>switch</code> expression</strong> over each item to deconstruct it into a description string written to the console. Problems demonstrated:
+- <strong>No type safety</strong> — nothing stops a non-pet from entering the list. The demo deliberately includes a <strong><code>Shark</code></strong> ("there are four somethings… one of them is not what I'd consider a pet").
+- The <code>switch</code> shows a <strong>squiggle/warning</strong>: because the value is <code>object</code>, the compiler can't prove the switch is <strong>exhaustive</strong> — "you're not checking for crocodiles and snails" and every other thing an <code>object</code> could be.</p>
+<p>This is "the best we can do in C# up until now," and it's unsatisfying.</p>
+<h3 id="scenario-1-the-fix-declaring-a-union">Scenario 1 — the fix: declaring a union</h3>
+<p>The key idea: even though these types were <strong>not</strong> created with a notion of "pet," <strong>why not create a "pet" concept they can belong to?</strong> That's a union type. Syntax:</p>
+<pre><code class="language-csharp">union Pet(Dog, Cat, Bird);   // a union of the case types that make up &quot;Pet&quot;
+</code></pre>
+<p>You just type <code>union</code>, name it, and list the member (case) types. Immediate effects once <code>Pet</code> exists:
+- Change <code>List&lt;object&gt;</code> → <strong><code>List&lt;Pet&gt;</code></strong>. The line that added a <code>Shark</code> now <strong>errors</strong>: <em>"cannot implicitly convert type Shark to Pet."</em> Fix = delete that line.
+- That error message is informative in two directions — it implies the <strong>other types <em>can</em> be implicitly converted to <code>Pet</code></strong>. So a union gets <strong>implicit conversions from each case type into the union</strong> (a <code>Dog</code> flows in wherever a <code>Pet</code> is expected). "Implicit conversions, check."
+- In the <code>switch</code>, a <code>Shark</code> pattern now also <strong>errors</strong> ("expression of type Pet cannot be handled by a pattern of type Shark") — remove it.
+- <strong>Best part:</strong> the earlier "could not be proven exhaustive" warning on the switch is <strong>gone</strong> — all cases are covered and you get <strong>compiler help confirming</strong> every case is handled correctly.</p>
+<p>To prove the safety net, they <strong>comment out one case type</strong> in the union → the <strong>exhaustiveness warning returns</strong>. So the compiler ensures you hit <strong>all</strong> the cases <strong>and nothing but</strong> the cases — the essence of the strong typing unions give you.</p>
+<h3 id="exhaustiveness-is-null-aware">Exhaustiveness is <code>null</code>-aware</h3>
+<p>The check is <strong>smart</strong>. If you declare, say, <code>union Pet(Dog, Cat, Bird?)</code> with a <strong>nullable</strong> case (a "nullable bird"), the warning comes <strong>back</strong> — because now <strong><code>null</code></strong> is one of the possible values and must also be handled in the switch. Until <code>null</code> is covered, the switch is <strong>not exhaustive</strong>. This shows exhaustiveness reasons about nullability, not just the listed types.</p>
+<h3 id="adding-members-to-a-union-abstraction-without-extra-state">Adding members to a union (abstraction without extra state)</h3>
+<p>A bare <code>union Pet(Dog, Cat, Bird);</code> is like a one-liner type — valid, but you can do more by adding <strong>braces and members</strong>:</p>
+<pre><code class="language-csharp">union Pet(Dog, Cat, Bird)
+{
+    public string Description =&gt; /* switch on this — what kind of pet is this — to build the text */;
+}
+</code></pre>
+<p>You can <strong>move the description logic onto the union itself</strong> as a <strong>computed/calculated property</strong> (e.g. <code>Description</code>), switching internally on which case the value is. Callers then just use <code>pet.Description</code> instead of switching externally. So you can attach your <strong>own function members</strong> that compute things over the cases.</p>
+<p><strong>Important constraint:</strong> the team <strong>draws a line at anything that introduces more state.</strong> Conceptually, the state of a union value <strong>is just</strong> the contained dog/cat/bird — it should carry <strong>no additional state</strong>, and the compiler <strong>prevents</strong> you from adding fields. But <strong>function members are totally fine</strong>: computed properties, methods, and any <strong>static members</strong> you want. This lets you do <strong>abstraction</strong> and implement the common operations across the cases in one place. Mads expects this — "add a computed member + switch internally" — to be <strong>how most people use the feature.</strong></p>
+<h3 id="scenario-2-discriminated-union-style-resultt-over-the-wire">Scenario 2 — discriminated-union style: <code>Result&lt;T&gt;</code> over the wire</h3>
+<p>The team acknowledges a common critique: their demos use toy domains (person/student, pets/dogs/cats). So they switch to a scenario <em>"closer to real code"</em> — and in fact <strong>the #1 scenario people asked for</strong> when requesting unions: <strong>modelling data coming off the wire</strong>, where you either get a <strong>success (with a payload)</strong> or an <strong>error</strong>.</p>
+<p>They start from two <strong>records</strong> (existing, current-day C# features — "not new… old features you're not using yet"):</p>
+<pre><code class="language-csharp">record Success&lt;T&gt;(T Data);   // generic payload
+record Error(string Message);
+</code></pre>
+<p>Then <strong>glue them together with a union</strong>, using generics:</p>
+<pre><code class="language-csharp">union Result&lt;T&gt;(Success&lt;T&gt;, Error);   // two cases: a successful payload of T, or an error
+</code></pre>
+<p>A method can now return <code>Result&lt;T&gt;</code> and return <strong>one of the two</strong> case values. They build sample data as a <strong><code>Queue&lt;Result&lt;int&gt;&gt;</code></strong> (simulating items arriving off the wire), enqueueing e.g. a <code>Success(42)</code> and a <code>new Error("...")</code>. Because of the <strong>implicit conversions</strong>, each case value flows straight into the <code>Result&lt;int&gt;</code> queue.</p>
+<p>Processing loop:</p>
+<pre><code class="language-csharp">while (queue.TryDequeue(out var result))
+{
+    var text = result switch
+    {
+        Success&lt;int&gt;(var data) =&gt; /* use data, e.g. 42 */ ...,
+        Error(var message)     =&gt; throw /* or handle */ ...,
+    };
+}
+</code></pre>
+<p>Key points demonstrated:
+- You <strong>switch on <code>result</code></strong> and match <code>Success&lt;int&gt;</code> first; because <code>Success</code> is a <strong>record</strong>, you can <strong>deconstruct</strong> the payload directly (<code>Success&lt;int&gt;(var data)</code>) — <em>"that's why you should use record: you can deconstruct the data right out of it."</em>
+- The moment only <code>Success</code> is handled, the <strong>exhaustiveness warning appears again</strong> — "because I haven't handled <code>Error</code>" — reminding you to deal with errors. Handling <code>Error</code> (grab <code>message</code>, then <code>throw</code> it in the demo) clears it.
+- Running it: prints/uses <strong>42</strong> for the success, then <strong>throws</strong> on the error. The cheeky framing: <em>"we're in the business of giving you more errors… and you love us for it"</em> — because you get <strong>tighter control</strong> of your scenario.</p>
+<h3 id="two-distinct-usage-patterns-and-why-both-matter">Two distinct usage patterns (and why both matter)</h3>
+<p>Mads explicitly <strong>contrasts the two scenarios</strong>:
+- <strong>Scenario 1 (Pet):</strong> unions over <strong>pre-existing types declared elsewhere</strong> — you're <em>bringing together</em> things others already made.
+- <strong>Scenario 2 (Result):</strong> you <strong>declare the case types together with the union</strong> — you're modelling the <strong>whole package</strong> ("the kinds of things it can be"). This is what functional programmers would call a <strong>discriminated union</strong>; C# is <em>"essentially emulating that here."</em> He expects this to be a <strong>common pattern</strong> too.</p>
+<p>He also reiterates how <strong>general</strong> the feature is: unions can be <strong>generic</strong>, can have <strong>members</strong>, and can do most things other types can. <strong>Case types</strong> can be almost anything — records, <strong>interfaces</strong>, <strong>type parameters</strong>, value types — the only requirement is that they <strong>convert to <code>object</code></strong>, and there's <strong>no restriction on overlap</strong> between case types.</p>
+<h3 id="how-the-sausage-is-made-what-a-union-is-under-the-hood">"How the sausage is made" — what a union is under the hood</h3>
+<p>Dustin asks the real-world question: this feels <em>magical</em>; historically writing this kind of type in C# needs <strong>a lot of boilerplate</strong> — so what's actually generated? They <strong>comment out the <code>union</code> syntax</strong> and <strong>re-write the equivalent by hand</strong> to reveal the underlying shape (which also compiles and works). The generated form is a <strong><code>struct</code></strong> — a <em>"very prescriptive / opinionated"</em> shape:</p>
+<ol>
+<li><strong>It's a <code>struct</code>.</strong> You tell the compiler <em>"treat this as a union"</em> via a <strong><code>[Union]</code> attribute</strong> (already in <strong>.NET 11 preview 4</strong>). Without the rest, the attribute alone produces several <strong>errors</strong> that spell out exactly what a union must have.</li>
+<li><strong>Required <code>value</code> property.</strong> A union <em>"must have a </em><em>public instance <code>value</code> property of type <code>object</code></em><em>."</em> (This is the same <code>value</code> member you'd see if you dotted into a syntax-generated union.) It's just an <strong>auto-property backed by a single <code>object</code> field</strong> that holds whatever the union currently is — boxed/wrapped inside the struct.</li>
+<li><strong>At least one "union creation member."</strong> How do you create instances? <strong>Constructors.</strong> You add <strong>one constructor per case</strong>, each taking that case type and assigning it into the big <code>value</code> field:
+   <code>csharp
+   [Union]
+   struct Result&lt;T&gt;
+   {
+       public object value { get; }            // required
+       public Result(Success&lt;T&gt; value) =&gt; this.value = value;  // construction member per case
+       public Result(Error value)      =&gt; this.value = value;
+   }</code>
+   As each constructor is added, the corresponding error disappears; once a case is constructible the union "has" that case ("now it's a union of one thing," then add the other).</li>
+<li><strong><code>IUnion</code> interface.</strong> When generating from syntax, the compiler also makes the type <strong>implement <code>IUnion</code></strong> (also already in <strong>.NET 11</strong>), which <strong>just exposes the <code>value</code> property</strong> — nothing more. It lets you do a <strong>runtime check</strong> for "is this a union?" / read the value generically in runtime code.</li>
+</ol>
+<p>So a syntax-generated union is, concretely: a <strong><code>struct</code> with a single reference (<code>object</code>) field</strong>, that <strong>boxes/casts on the way in and out</strong>.</p>
+<h3 id="why-expose-the-hand-authored-form-two-reasons">Why expose the hand-authored form? Two reasons</h3>
+<p>The whole point of revealing the underpinnings is so you can <strong>make different implementation choices</strong> than the default (which boxes case types into an <code>object</code> field):</p>
+<ol>
+<li><strong>Performance / avoiding boxing.</strong> If you're in a <strong>tight loop</strong> and want a union of <strong>two small value types</strong>, the default <strong>boxes on every union value creation</strong> — an allocation that can be expensive. Instead you can <strong>choose your own storage</strong>: e.g. a field of each value type <strong>plus a discriminator field</strong> saying which one is active, avoiding the boxing. (They note there are <em>additional</em> tricks — you can have the compiler <strong>generate different usage code that also avoids boxing</strong> — not shown.) The tradeoff: it's <strong>more complicated from a developer standpoint</strong>, but saves the allocations. Aside: <em>"Copilot's going to write that part anyway… as long as you teach it."</em></li>
+<li><strong>Retrofitting existing hand-rolled unions.</strong> Before this feature ("~20+ years without unions"), people built their <strong>own</strong> union-like types with conventions like <em>"// do not derive from this class"</em> or <em>"// do not assign other types."</em> Rather than the new feature <strong>stomping all over</strong> that work, you can put the <strong><code>[Union]</code> attribute on your existing type</strong> (and add a few members to satisfy the compiler) so your <strong>existing type becomes a real union</strong> in the compiler's eyes — gaining <strong>exhaustiveness</strong>, <strong>implicit conversions</strong>, and the rest <strong>for free</strong>.</li>
+</ol>
+<p>Mads frames this as classic C# design philosophy: many C# features are <strong>built on patterns/conventions</strong> the compiler treats specially (rather than being baked rigidly into the type system) — and you can implement them yourself. Unions follow the same approach: the syntax gives the <strong>basics</strong>, but you <strong>can go deep</strong>. Most people will <strong>never need</strong> the manual route, but it's good to know the default is <em>"a <code>struct</code> with a single reference field that boxes and casts."</em></p>
+<h3 id="qa-typescript-envy-and-why-c-went-nominal">Q&amp;A — TypeScript envy and why C# went nominal</h3>
+<p>Audience question: TypeScript/JavaScript developers know unions, but use them differently (e.g. because JS lacks overloads, unions are used on inbound parameters). What was the <strong>internal design debate</strong>?</p>
+<ul>
+<li><strong>TypeScript unions are structural</strong>: you don't declare them by name — you can <strong>cook one up on the spot</strong> (<code>dog | cat | bird</code> as the type of something) and the compiler figures it out. The C# team had <strong>"envy"</strong> of that and <strong>actually tried</strong> designing down that path.</li>
+<li><strong>Why it didn't work for C#:</strong> TypeScript types <strong>vanish at compile time</strong> — they don't exist at runtime. But <strong>C#/.NET types must mean something at runtime</strong> — you have to be able to <strong>ask questions about them at runtime</strong> — so unions <strong>can't be thrown away</strong>. For that, it's <strong>better to have real, named (declared) types</strong>.</li>
+<li><strong>Result:</strong> C# unions are <strong>nominal — declared, named unions of types</strong>. They kept TypeScript's notion that <em>"a union is a union </em><em>of types</em><em>"</em>, but made them <strong>nominal</strong> rather than structural.</li>
+<li><strong>Future possibility:</strong> you could get some structural-ish feel back via <strong>generics</strong> — e.g. a library type like <code>Union&lt;T1, T2&gt;</code> — <em>"we haven't done that yet, but it's a possibility."</em> They <strong>may revisit</strong> a structural layer on top later ("there are proposals"). Analogy: like <strong>delegates / function types</strong> — C# has <strong>no anonymous function types</strong> but gives you ways to <strong>declare</strong> them. C#'s unions sit <strong>right in the middle</strong> between TypeScript's structural unions and functional languages' fully-nominal discriminated unions — <em>"trying to do kind of both."</em></li>
+</ul>
+<h3 id="closing-maturity-timeline-and-how-to-try-it">Closing: maturity, timeline, and how to try it</h3>
+<ul>
+<li>The design <strong>took roughly five years</strong> to reach this <strong>"very simple" form</strong> — they explored <strong>many paths</strong> and are happy to discuss at length.</li>
+<li><strong>Availability today (preview):</strong> the current <strong>Visual Studio preview</strong> has union support; <strong>.NET 11 preview</strong>; <strong>VS Code</strong> with the <strong>C# extension pre-release</strong> (insiders). What was demoed <em>"will be there in about a couple of weeks"</em> and will keep improving — there are <strong>some bugs</strong> in the current preview, but it's usable: <strong>"go try it."</strong></li>
+<li>They direct attendees to the <strong>green dev tools area / Experts Zone pavilion</strong> ("big cube hanging overhead") to continue the conversation.</li>
+</ul>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Union types (C#)</strong> — the headline feature: a named type that is "one of" a fixed set of case types, with implicit conversions in and exhaustiveness-checked pattern matching.</li>
+<li><strong><code>union</code> keyword / syntax</strong> — <code>union Name(CaseA, CaseB, …);</code> (optionally with <code>{ … }</code> members) to declare a union.</li>
+<li><strong><code>[Union]</code> attribute</strong> — marks a hand-authored <code>struct</code>/<code>class</code> as a union for the compiler; in <strong>.NET 11 preview 4</strong>.</li>
+<li><strong><code>IUnion</code> interface</strong> — implemented by syntax-generated unions; exposes the <code>value</code> property for runtime checks; in <strong>.NET 11</strong>.</li>
+<li><strong><code>value</code> property (object)</strong> — required public instance member on any union; backing store for the contained (boxed) case value.</li>
+<li><strong>Pattern matching / <code>switch</code> expression</strong> — gains <strong>exhaustiveness checking</strong> over union cases (including <code>null</code> for nullable cases).</li>
+<li><strong>Records</strong> — recommended case types; enable <strong>deconstruction</strong> of payload data directly in <code>switch</code> patterns.</li>
+<li><strong><code>struct</code></strong> — the underlying representation the union syntax generates (single <code>object</code> reference field).</li>
+<li><strong>Generics</strong> — unions and their case types can be generic (e.g. <code>Result&lt;T&gt;</code>, <code>Success&lt;T&gt;</code>).</li>
+<li><strong>Top-level statements</strong> — used in the demo's modern C# entry point.</li>
+<li><strong>C# 15</strong> — the language version delivering unions, releasing November.</li>
+<li><strong>.NET 11</strong> — the runtime/SDK preview carrying the supporting types/attribute.</li>
+<li><strong>Visual Studio (preview)</strong> — IDE with union support today.</li>
+<li><strong>VS Code + C# extension (pre-release/insiders)</strong> — editor support for unions in preview.</li>
+<li><strong>GitHub Copilot</strong> — name-checked as able to write the more complex (non-boxing) hand-authored union code.</li>
+<li><strong>TypeScript</strong> — referenced as the structural-union comparison point.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Union types are coming to C# 15</strong>, which <strong>releases in November</strong>. This is the central announcement of the session.</li>
+<li><strong>Preview available now:</strong> the feature and its supporting APIs are shipping in <strong>.NET 11 preview</strong> — specifically the <strong><code>[Union]</code> attribute and <code>IUnion</code> interface are in .NET 11 preview 4</strong>.</li>
+<li><strong>Tooling preview:</strong> union support is in the <strong>current Visual Studio preview</strong> and in <strong>VS Code via the pre-release C# extension</strong> (insiders); the team notes the demoed experience <em>"will be there in about a couple of weeks"</em> and improve further (some bugs exist in the current preview).</li>
+<li><strong>Roadmap / future direction (not committed):</strong> a possible <strong>structural-style layer on top</strong> (e.g. a generic <code>Union&lt;T1, T2&gt;</code> library type) to recover some TypeScript-like flexibility — <em>"we haven't done that yet… we may come back to it";</em> described as proposals, <strong>not</strong> an announced deliverable.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Demo 1 — Pets via <code>object</code> → <code>union Pet(Dog, Cat, Bird)</code>:</strong> Started with a <code>List&lt;object&gt;</code> + non-exhaustive <code>switch</code> (with a rogue <code>Shark</code>), then introduced a union. Proved: non-member assignment (<code>Shark</code>) becomes a <strong>compile error</strong>, <strong>implicit conversions</strong> from case types work, and the <code>switch</code> <strong>exhaustiveness warning disappears</strong> once all cases are covered (and <strong>reappears</strong> when a case is commented out, or when a <strong>nullable</strong> case adds <code>null</code>). Also showed adding a <strong>computed <code>Description</code> member</strong> on the union itself.</li>
+<li><strong>Demo 2 — <code>Result&lt;T&gt;</code> over the wire (discriminated-union style):</strong> Declared <code>record Success&lt;T&gt;</code> and <code>record Error</code>, glued them with <code>union Result&lt;T&gt;(Success&lt;T&gt;, Error)</code>, queued sample results (<code>Success(42)</code>, an <code>Error</code>), and looped with a <code>switch</code> that <strong>deconstructs the record payload</strong>. Proved exhaustiveness nags until <strong><code>Error</code> is handled</strong>, then <strong>ran it live</strong> — printed/used <strong>42</strong> and <strong>threw</strong> on the error.</li>
+<li><strong>Demo 3 — "Under the hood" hand-authored union:</strong> Commented out the <code>union</code> syntax and <strong>rebuilt the equivalent by hand</strong> — a <code>struct</code> with <strong><code>[Union]</code></strong>, the required <strong><code>public object value</code></strong> auto-property, and <strong>one constructor per case</strong> — watching the compiler errors clear one by one until it was a valid union, plus noting the generated form also implements <strong><code>IUnion</code></strong>.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>~5 years</strong> of design work to reach "this very simple design."</li>
+<li><strong>C# 15</strong>, <strong>out in November</strong>; <strong>.NET 11 preview 4</strong> already carries <code>[Union]</code> + <code>IUnion</code>.</li>
+<li><strong>"We call it Goldilocks… but you could also call it the compromise version."</strong> — on C#'s union design sitting between TypeScript and functional-language unions.</li>
+<li><strong>"Cannot implicitly convert type Shark to Pet."</strong> — the error that simultaneously teaches that the <em>other</em> types <strong>can</strong> convert into the union.</li>
+<li><strong>"It's reminding us to deal with the errors, which is what you've always wanted."</strong> — on exhaustiveness forcing error handling.</li>
+<li><strong>"We're in the business of giving you more errors… and you love us for giving you more errors"</strong> — because it's tighter control over your scenario.</li>
+<li><strong>"The state of this thing is just the actual dog or cat or bird that's inside"</strong> — rationale for forbidding extra state on a union.</li>
+<li><strong>"TypeScript has it easy because all the types go away at compile time… but [.NET] types have to mean something at runtime"</strong> — the core reason C# unions are nominal, not structural.</li>
+<li><strong>"Copilot's going to write that part anyway… as long as you teach it."</strong> — on the more complex non-boxing hand-authored unions.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Install the <strong>.NET 11 preview</strong> + Visual Studio preview (or VS Code C# pre-release extension) and write a <code>union Pet(Dog, Cat, Bird);</code>, then watch the exhaustiveness warning behaviour (comment out a case; add a nullable case).</li>
+<li>Build a <code>Result&lt;T&gt;</code> / <code>Option&lt;T&gt;</code>-style discriminated union with <code>record</code> cases and confirm record <strong>deconstruction</strong> in <code>switch</code>.</li>
+<li>Hand-author a <strong>non-boxing</strong> union of two value types (per-type fields + discriminator + <code>[Union]</code>) and benchmark allocations vs the default boxed <code>struct</code> form.</li>
+<li>Try retrofitting an existing hand-rolled "union-like" type by adding <code>[Union]</code> + the required <code>value</code> property/constructors.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What exactly does the compiler emit for <strong>non-boxing usage</strong> (the "different code on usage" they didn't show)? Where is that documented?</li>
+<li>How do unions interact with <strong>nullable reference type</strong> analysis and <strong>generic constraints</strong> in more complex cases?</li>
+<li>Is there a planned <strong><code>Union&lt;T1, T2&gt;</code> library/structural layer</strong>, and what's its status in the roslyn proposals?</li>
+<li>How do unions serialize (System.Text.Json) given they're a <code>struct</code> over an <code>object</code> field?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>C#/.NET codebases modelling <strong>result/error</strong>, <strong>state machines</strong>, parser/AST nodes, or any "one-of-N" domain currently faked with base classes, <code>object</code>, or enums + payloads.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><a class="wikilink wikilink--resolved" href="OD806.html">OD806 - NET 11 in depth</a> — broader .NET 11 release context that ships the union-supporting APIs (<code>[Union]</code>, <code>IUnion</code>).</li>
+<li><span class="wikilink wikilink--unresolved" title="Pattern matching in C#">Pattern matching in C#</span> — unions plug directly into <code>switch</code>/pattern matching and add exhaustiveness checking.</li>
+<li><span class="wikilink wikilink--unresolved" title="Records in C#">Records in C#</span> — the recommended case type for discriminated unions; enables payload deconstruction.</li>
+<li><span class="wikilink wikilink--unresolved" title="C# language design">C# language design</span> — the "feature built on a compiler-recognised pattern/attribute" philosophy behind unions.</li>
+<li><span class="wikilink wikilink--unresolved" title="Discriminated unions">Discriminated unions</span> — functional-language concept C#'s Scenario 2 emulates.</li>
+<li><span class="wikilink wikilink--unresolved" title="TypeScript union types">TypeScript union types</span> — the structural-union comparison the team drew (and rejected for runtime reasons).</li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEM303.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEM303</span><span class="pager-title">Late to agentic coding? Don&#x27;t panic, build.</span></a>
+    <a class="pager pager-next" href="DEM305.html"><span class="pager-dir">Next →</span><span class="pager-code">DEM305</span><span class="pager-title">GitHub Copilot Anywhere: From Remote Control CLIs to Cloud Sandboxes</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

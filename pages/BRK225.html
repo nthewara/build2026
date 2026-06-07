@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRK225 — Data, apps, and agents: the future of app dev with Rayfin</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">BRK225</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=ZsPq5ZVj3fE" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Data, apps, and agents: the future of app dev with Rayfin</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Ben, Sachin, Sutapa, Carl (Replit)</span>
+      <span class="meta-item">⏱️ 32m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="data">Data</span><span class="chip" data-tag="app-dev">App Dev</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="fabric">Fabric</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Ben (Microsoft, app dev / Rayfin) · Sachin (Microsoft, Rayfin engineering — "under the hood") · Sutapa (Microsoft, Power BI / data-app template) · Carl (Technical Lead, Replit)<br>
+<strong>Duration:</strong> ~32 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=ZsPq5ZVj3fE">YouTube</a></p>
+  </div>
+</div>
+
+<div class="callout callout-note">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">📝</span><span class="callout-title-text">Name note — &quot;Rayfin&quot;</span></div>
+  <div class="callout-body">
+<p>The auto-captions garble the product name throughout (Rayfen, Raygun, Raefin, Raizen, Raven, Waif, Raygun). The correct name is <strong>Rayfin</strong> — confirmed by the closing call-to-action to <strong><code>github.com/Microsoft/Rayfin</code></strong> and Microsoft's Build 2026 announcement. Rayfin (🐟) is a new <strong>open-source SDK + CLI / Backend-as-a-Service</strong> that lets developers <em>and</em> coding agents define a complete app backend in code and deploy it to <strong>Microsoft Fabric</strong>. All garbled spellings in this note have been corrected to "Rayfin".</p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Rayfin is Microsoft's new open-source <strong>SDK and CLI</strong> that gives the AI/agentic-coding era a real <strong>enterprise backend</strong>. Instead of "vibe-coded" apps that fall apart the moment they touch real customer data and compliance, Rayfin lets a human or a coding agent define an <em>entire backend in code</em> — database, functions, storage, APIs, and access policies — then deploy it with a single <code>rayfin up</code> command straight into <strong>Microsoft Fabric</strong>, where it becomes a first-class, fully-managed, governed artifact. Because apps run inside Fabric, their data lands in <strong>OneLake</strong> (the "OneDrive for data"), inheriting enterprise-grade security/compliance and instantly available for downstream analytics. The session demos building an operational delivery app and a Power BI–powered analytics dashboard, introduces <strong>connectors</strong> (to existing OneLake data), <strong>functions</strong>, and <strong>templates</strong> (incl. a Power BI <strong>data-app template</strong>), and announces a <strong>Replit</strong> partnership so non-technical users can build Rayfin apps too.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Rayfin = "the backend for the AI coding era."</strong> Agentic coding is great at front ends; Rayfin fills the missing enterprise backend (DB, auth, services, governance).</li>
+<li><strong>Everything is defined in code</strong> (an SDK + CLI), so both a human <em>and</em> an AI agent can understand, author, and operate it. The scaffold even includes agent instructions on how to use the Rayfin SDK/CLI.</li>
+<li><strong>One command to ship:</strong> <code>rayfin create</code> scaffolds the project; <code>rayfin up</code> provisions and deploys all resources into Microsoft Fabric — no manual infra setup.</li>
+<li><strong>Decorator-driven data model (TypeScript):</strong> an <code>@entity</code> decorator marks a class as a Fabric DB table; property decorators map to column types and min/max → column constraints; you can declare relationships too.</li>
+<li><strong>Security is code, not config sprawl:</strong> a <code>@role</code> decorator + policy function expresses access rules (e.g. "only authenticated users can see their own deliveries") — row-level security defined inline.</li>
+<li><strong>Automatic schema migrations:</strong> change/remove a column and Rayfin detects the diff and runs the migration for you — no hand-maintained migration scripts.</li>
+<li><strong>Front end and back end deploy together</strong>, but are internally separable — you can host the front end elsewhere (e.g. Azure with custom domains), share one backend across multiple apps, and scope each app's access (App A read-only, App B read/write).</li>
+<li><strong>Connectors</strong> let you connect to <em>existing</em> data in <strong>OneLake</strong> (databases, warehouses, semantic models) and selectively pull in only the tables you need as type-safe classes (e.g. just "order details" out of a 100-table semantic model).</li>
+<li><strong>Functions</strong> run your TypeScript back-end logic in a secure Fabric sandbox (deployed via <code>rayfin up</code> as a Fabric Function) so you can safely inject credentials, fire notifications, or call external services — not in the browser.</li>
+<li><strong>Templates</strong> standardize org apps, bundle tools (API/MCP server defs), agent instructions, sample code, and libraries (e.g. a charting lib), can be checked into a repo, and save tokens vs. re-publishing style guides.</li>
+<li><strong>Data-app template (built with the Power BI team)</strong> unifies analytics + apps — build apps <strong>directly on your semantic layer</strong>, reusing your analytics investment. Three parts: <strong>data package</strong> (Fabric endpoint connection, query retries, caching), <strong>visual package</strong> (React + <strong>Vega-Lite</strong>, AI-first, enterprise-grade defaults), and <strong>agent skills</strong> (teach the agent to use the packages <em>with good taste</em>).</li>
+<li><strong>Fabric is the differentiator:</strong> SaaS by default, governance/security inherited, one capacity meter shared across analytical + app workloads, data co-located in OneLake within one security boundary.</li>
+<li><strong>Dev locally, run in cloud:</strong> user code (functions/web app) runs locally against remote services; underlying services run in a Fabric dev workspace or an (experimental) local Docker container; promote dev → staging → prod via Fabric workspaces.</li>
+<li><strong>Replit partnership</strong> (announced day prior on stage with Satya) brings Rayfin app-building to non/semi-technical users in Replit's browser IDE, inheriting the same enterprise security — currently <strong>private beta</strong>.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="the-problem-agentic-coding-democratizes-building-but-enterprise-apps-need-more-than-good-vibes">The problem: agentic coding democratizes building, but enterprise apps need more than "good vibes"</h3>
+<p>Ben opens with a relatable framing: agentic coding is transforming app development and <strong>democratizing who can build</strong>. His example — coaching a U5 girls' soccer team ("the Mia Hamsters") with his friend Brent, who is <em>not</em> a software engineer. A few months ago Brent discovered agentic coding and started "spitting out applications": season-stats apps, snack schedules, practice plans. The point: agentic coding turns "the Brents of the world" into <strong>makers</strong>, and turns existing engineers into <strong>super-makers</strong>.</p>
+<p>But the promise of "vibe coding" <strong>falls apart</strong> when you move from a kids' soccer app to a corporate environment with real customer data and compliance needs. In the enterprise you need:
+- Databases with <strong>real authentication</strong>
+- Configured <strong>back-end services</strong>
+- To safely connect to <strong>existing customer data</strong>
+- To do all of it while following the company's <strong>compliance and governance</strong> rules</p>
+<p>And from the <strong>IT admin</strong> side it's even harder: ensuring only the right people have the right access to the right data, while maintaining the company's security and compliance posture. <strong>That gap is why Microsoft built Rayfin.</strong></p>
+<h3 id="what-rayfin-is">What Rayfin is</h3>
+<p>Rayfin is positioned as <strong>"the backend for this new AI coding era."</strong> Core characteristics:
+- It's an <strong>SDK and CLI</strong>.
+- You <strong>author the entire backend in code</strong> — database, functions, storage, and access policies all defined in code — so both an agent and a human can understand and operate it.
+- When ready, <strong>deploy with a single CLI command</strong> straight into <strong>Microsoft Fabric</strong>, where all resources are provisioned and managed for you.
+- You get <strong>enterprise-grade security and compliance right out of the gate</strong>.</p>
+<h3 id="demo-1-building-an-operational-delivery-app-ben">Demo 1 — Building an operational delivery app (Ben)</h3>
+<p>Scenario: Ben works for <strong>Zava</strong>, a home-improvement store whose excitable CEO wants to launch a <strong>home delivery service</strong>. That needs a whole suite of apps (for delivery drivers, for management monitoring), all landing on Ben the engineer.</p>
+<p>Flow shown:
+1. <strong><code>rayfin create</code></strong> in VS Code with a terminal open → it asks to choose a <strong>template</strong>. A couple of basic starter templates exist; Ben picks the <strong>blank app</strong> template and names the project <code>delivery app</code>.
+2. The CLI <strong>scaffolds</strong> the project — all files for both front end and back end, <em>including the agent instructions</em> on how to use the Rayfin SDK/CLI.
+3. <code>cd</code> into the project, then <strong><code>rayfin up</code></strong> → provisions all resources in Fabric (database + app now running in Fabric). He can then run a <strong>local dev environment pointing at those remote resources</strong>.
+4. He <strong>prompts the agent in natural language</strong>: build a delivery app for Zava delivery drivers — let them <strong>log deliveries with photos and item conditions</strong>, and let <strong>customers confirm receipt</strong>. ("Build demo magic" fast-forward.)
+5. Result: the agent created <strong>TypeScript files defining the tables and their properties in code</strong>. Ben visits the app <strong>in Fabric</strong> — a driver can arrive at a house with a tablet and have the customer <strong>sign off / confirm</strong> the delivery. He confirms a delivery; the app can also open <strong>outside the Fabric chrome</strong> with its own URL.
+6. In the <strong>Fabric workspace</strong> (where items/artifacts live), a new <strong>delivery app artifact</strong> appears alongside a <strong>child SQL database</strong>; drilling into that SQL DB shows the <strong>new delivery row</strong> landed correctly.</p>
+<p><strong>Point proved:</strong> an agent can build a complete front-end + database app and deploy it to Fabric, with data immediately queryable in the underlying SQL DB.</p>
+<h3 id="under-the-hood-the-code-model-sachin">Under the hood — the code model (Sachin)</h3>
+<p>Sachin walks through the generated <code>delivery</code> class:
+- <strong><code>@entity</code> decorator</strong> on the class → tells Rayfin this is a <strong>database table inside Fabric</strong>.
+- <strong>Property decorators</strong> → hint the <strong>column type</strong>; <strong>min/max</strong> translate to <strong>column constraints</strong> on the database. You can also specify <strong>relationships</strong>.
+- <strong>Security in code:</strong> a <strong><code>@role</code> decorator</strong> + a <strong>policy function</strong>. In the demo it means <em>only authenticated users can see deliveries, and only their own</em> (row-level security expressed inline).
+- <strong>Automatic migrations:</strong> if you change the data model — drop a column or restructure entirely — Rayfin <strong>detects the change and performs the migration for you</strong>. No hand-managed migration scripts.</p>
+<p><strong>Configuration (YAML):</strong>
+- The <strong>dialect</strong> is <strong>Microsoft SQL</strong> — deploying a Rayfin app to Fabric currently spins up the <strong>Fabric SQL server</strong> as your database.
+- <strong>Future:</strong> <strong>PostgreSQL</strong> support — your app will be able to spin up a Postgres database via <em>just a configuration change</em>. Your application code, entity declarations, and permissioning stay <strong>exactly the same</strong>.</p>
+<p><strong>Deployment topology:</strong>
+- The app deploys <strong>front end + back end</strong> (both in Fabric in the demo), but <strong>internally they're separate</strong>. So you can host the front end elsewhere (e.g. <strong>Azure</strong> with <strong>custom domains</strong>).
+- <strong>Shared backends:</strong> deploy a backend by itself, then build <strong>two different apps</strong> on top of it. Via <strong>scopes</strong>, App A could be <strong>read-only</strong> while App B can <strong>read and write</strong>.
+- <strong>Authentication options:</strong> today all apps require <strong>Fabric authentication</strong>. Future: publish <strong>anonymous</strong> apps or use other providers (<strong>Gmail/social</strong>, etc.). Imagine an external customer signing into your app while the <strong>data lands in your Fabric tenant</strong>, so business users can run downstream analytics on it.</p>
+<h3 id="connectors-connecting-to-data-you-already-have-sachin">Connectors — connecting to data you already have (Sachin)</h3>
+<p>People rarely start from an empty database; they want to connect to <strong>existing data</strong>, read and write it. Rayfin introduces <strong>connectors</strong>:
+- Connect to <strong>any data in the Fabric OneLake</strong> — <strong>databases, warehouses, semantic models</strong>. Depending on the data source, you may also be able to <strong>write back</strong>.
+- You <strong>declare the data source in configuration</strong>. <strong>Agent instructions</strong> help <strong>pull in tables and create classes</strong> so you get <strong>type safety</strong>.
+- It <strong>doesn't pull everything</strong> — a semantic model with hundreds of tables can be narrowed to just the one you need (e.g. only <strong>order details</strong>), creating just that schema's types for use in the app.</p>
+<h3 id="functions-secure-back-end-logic-sachin">Functions — secure back-end logic (Sachin)</h3>
+<p>Sometimes you need to <strong>execute logic</strong>, not just move data — fire a notification, call an external service — and you <strong>don't want that code in the browser</strong>; you want credentials safely injected server-side. Rayfin:
+- Lets you <strong>write and define the function in TypeScript</strong>; your app <strong>calls it as if it were part of its own code</strong>.
+- On <strong><code>rayfin up</code></strong>, it takes that function block and <strong>deploys it as a Fabric Function</strong>, running in a <strong>secure sandbox</strong> — from there you can trigger notifications or connect to external services/data.</p>
+<h3 id="templates-standardize-and-share-sachin">Templates — standardize and share (Sachin)</h3>
+<p>Ben started from the built-in blank template; Sachin explains templates more deeply. Templates let you <strong>avoid always starting blank</strong> <em>and</em> <strong>standardize apps across an organization</strong> (e.g. a dashboard that should look/behave a certain way) <strong>without burning tokens</strong> on publishing style guides for the agent to read.
+- Anyone in the org can use a created template; templates can be <strong>checked into a repository</strong> and <strong>shared with the community</strong>.
+- A template can contain: <strong>tools</strong> (API definitions or <strong>MCP servers</strong>), <strong>agent instructions</strong> (how to operate those tools / generate context), <strong>sample code</strong> (so the agent doesn't waste time scaffolding logic), and <strong>libraries</strong> (e.g. a charting library for a data app).</p>
+<h3 id="the-data-app-template-analytics-apps-unified-sutapa-power-bi">The data-app template — analytics + apps unified (Sutapa, Power BI)</h3>
+<p>Most enterprise apps start with <strong>analytics</strong>, and historically analytics and apps lived in <strong>separate worlds</strong> (different teams, different stacks). Rayfin's <strong>data-app template</strong> (built with the <strong>Power BI team</strong>) lets you <strong>build applications directly on your semantic layer</strong> — reusing all the effort already invested in your semantic model/analytics stack for your apps.</p>
+<p>Three core components:
+1. <strong>Data package</strong> — normalizes the <strong>Fabric endpoint connection</strong>, <strong>query retries</strong>, and <strong>caching</strong>: the foundational steps to connect to and query enterprise data well.
+2. <strong>Visual package</strong> — <strong>React + Vega-Lite</strong> components for <strong>AI-first, extremely flexible</strong> visuals with <strong>enterprise-grade defaults</strong> (Power BI's years of data-vis experience baked in).
+3. <strong>Agent skills</strong> — teach the coding agent how to use the packages <strong>effectively</strong> — building dashboards/apps with <strong>good taste</strong>, not just functional output ("something that's going to impress your boss").</p>
+<h3 id="demo-2-building-an-analytics-app-from-fabric-sutapa">Demo 2 — Building an analytics app from Fabric (Sutapa)</h3>
+<p>The Zava CEO loved Ben's app and (as CEOs do) wants more: <strong>"build me an operational dashboard so I can see if customers are actually loving this new delivery experience."</strong></p>
+<p>Flow shown (starting <strong>inside the Fabric portal</strong>, not the CLI):
+1. In a Fabric <strong>workspace</strong> (already full of <strong>semantic models</strong>), click <strong>New item</strong> → a new artifact type called <strong>app</strong>. Name it <code>analysis app</code> → <strong>Create</strong>.
+2. Choose a template — could be <strong>blank app</strong>, but pick the <strong>data app template</strong> to auto-get scaffolding to <strong>query the semantic model</strong>, connect to it, and get <strong>enterprise-grade visuals</strong>.
+3. <strong>Copy the prompt</strong> the template provides, switch to <strong>VS Code</strong>, and using <strong>Copilot / the coding agent</strong>, paste the prompt and hit enter → it <strong>scaffolds the data app</strong>.
+4. Provide requirements: build an analytics app to look at <strong>customer satisfaction</strong>, linking the <strong>existing semantic model</strong>. Because it's an <em>app</em> (not just a report), make it <strong>actionable</strong> — add a <strong>"flag" button to escalate issues to the product team</strong> (which emails the product team). ("Demo magic" fast-forward; normally you iterate with the agent.)
+5. Open it in Fabric → a <strong>full-blown analytics app</strong> from just a few prompts. Crucially she <strong>did not</strong> have to prompt for fine layout/formatting ("move this visual here") — the <strong>coding agent handled formatting</strong>, so non-design-experts get a <strong>polished</strong> result.</p>
+<p><strong>Point proved:</strong> you can stand up a governed analytics app on an existing semantic model in minutes, and <strong>combine analytics with actions</strong> — "tying the loop between how you take data and transform it into action."</p>
+<h3 id="why-fabric-is-so-good-for-these-apps-sachin">Why Fabric is so good for these apps (Sachin)</h3>
+<ul>
+<li><strong>Enterprise-grade security &amp; compliance are already defined on every Fabric artifact.</strong> Since the app now lives in Fabric as Fabric artifacts, it <strong>inherits</strong> them.</li>
+<li><strong>All artifact data lives in OneLake</strong> — described as the <strong>"OneDrive for data."</strong> So your <strong>application's data also lands in OneLake</strong>. A business user can then easily access it for <strong>data science / downstream analytics</strong>, and you can build apps that consume that data — <strong>apps and analytical data share the same security boundary</strong>.</li>
+<li><strong>Fabric is SaaS by default</strong> — infrastructure is easy to provision, little to manage.</li>
+<li><strong>One capacity, one meter:</strong> you buy <strong>Fabric capacity</strong> and assign compute to artifacts. The <strong>same capacity</strong> used for analytical workloads can now also power your <strong>applications</strong> (DB operations, queries) — <strong>no multiple meters to manage</strong>.</li>
+<li><strong>Dev locally, run in cloud:</strong> while Fabric runs everything in the cloud, <strong>development is local</strong> — anything containing <strong>user code</strong> (functions, web app) is developed locally. For underlying services you can either spin up a <strong>dev workspace in Fabric</strong> or run a <strong>local Docker container</strong> <em>(currently experimental)</em>. <strong><code>rayfin up</code></strong> packages the whole thing for a <strong>production workspace</strong>, and the same workflow promotes <strong>dev → staging → production</strong> across Fabric workspaces.</li>
+<li><strong>Self-hosting:</strong> they will <strong>open-source part of the Rayfin runtime</strong> and look to the community to help, so apps can be <strong>self-hosted</strong> on various infrastructure.</li>
+</ul>
+<h3 id="replit-partnership-carl-replit">Replit partnership (Carl, Replit)</h3>
+<p>Not everyone lives in an IDE or CLI. <strong>Replit</strong> — an <strong>agentic, browser-based IDE</strong> for non-technical and semi-technical users — is integrating with Rayfin + Fabric. Where Rayfin/Fabric suit the highly technical user once you're in the code, <strong>Replit serves users who lack coding experience</strong> but still want to build and deploy these apps, with the <strong>same enterprise-grade privacy/security</strong> inherited.</p>
+<p><strong>Demo:</strong> Carl spins up a dashboard "for our stand-up in an hour" — gives it the <strong>Power BI semantic model</strong> and lets the agent work. The agent reads the <strong>schemas</strong> within the semantic model and <strong>builds the dashboard, including the DAX queries</strong>, directly from that content, then <strong>deploys directly into the Rayfin environment</strong> — yielding a live app with the <strong>same workspace and item objects</strong> on the backend, fully manageable from Replit.
+- Status: <strong>private beta</strong> (a couple of users).
+- <strong>Customer quote — Leatherman</strong> (both an avid Replit <em>and</em> Fabric user): <em>"We appreciate how quickly we can build and iterate with Replit, but … some of our data needs to stay governed and centralized in Fabric. With Rayfin, we finally have both — fast development in the tools we prefer and the confidence that our applications run on top of our enterprise data platform. This is exactly what we've been looking for."</em>
+- The <strong>Replit ⨉ Microsoft partnership</strong> was announced the <strong>day before on stage with Satya</strong> (Nadella).</p>
+<h3 id="wrap-up-where-we-are-whats-shipping-where-its-going-ben">Wrap-up — where we are, what's shipping, where it's going (Ben)</h3>
+<p><strong>Now / focus:</strong> make it easy to build <strong>enterprise applications</strong> — the <strong>core building blocks</strong>: database, enterprise auth out of the box, easy deploy to Fabric in a <strong>managed tenant</strong>.</p>
+<p><strong>Releasing over the next couple of days / very soon:</strong>
+- <strong>Functions</strong> support for the backend.
+- <strong>Additional data connectors</strong> — connect to <strong>any data within OneLake</strong>.
+- <strong>Blob storage</strong> support.
+- → At that point you have "the full suite" to run enterprise applications, moving beyond internal apps/data dashboards to "whatever you want to build within an enterprise tenant."</p>
+<p><strong>By end of year (roadmap):</strong>
+- More <strong>B2B and B2C</strong> scenarios — moving <strong>beyond Entra ("intra") auth</strong> to <strong>OIDC auth</strong> and <strong>real-time services</strong>.
+- Easier onboarding: get started <strong>without</strong> an Entra/company ID — use a <strong>social login</strong> — plus a <strong>perpetual free tier</strong>. (And you can use <strong>Fabric for free</strong> to get started today.)</p>
+<p><strong>What's next for you:</strong>
+- One more <strong>Rayfin session today at 3:00 PM</strong> — <strong>Chris Anderson</strong> (their team) walking through it.
+- <strong>Go try it:</strong> <code>github.com/Microsoft/Rayfin</code>, give feedback, build apps now.
+- <strong>Sign up for the Replit private preview.</strong></p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Rayfin</strong> — <em>(the star of the talk; captions garbled it badly)</em> Microsoft's new <strong>open-source SDK + CLI / Backend-as-a-Service</strong> that lets developers and coding agents <strong>define a full app backend in code</strong> (DB, functions, storage, APIs, access policies) and <strong>deploy it to Microsoft Fabric</strong> with one command. Repo: <code>github.com/Microsoft/Rayfin</code>.</li>
+<li><strong><code>rayfin create</code></strong> — CLI command that scaffolds a new project (front end + back end + agent instructions); prompts you to pick a template.</li>
+<li><strong><code>rayfin up</code></strong> — CLI command that <strong>provisions and deploys</strong> all resources (DB, functions, etc.) into Microsoft Fabric.</li>
+<li><strong>Rayfin SDK</strong> — code-first definitions using <strong>TypeScript decorators</strong>: <code>@entity</code> (class → Fabric DB table), property decorators (column types + min/max → constraints), relationships, <code>@role</code> + policy function (row-level security).</li>
+<li><strong>Connectors</strong> — declare a data source in config to connect to <strong>existing OneLake data</strong> (databases, warehouses, semantic models), pull in only needed tables as type-safe classes, and (per source) write back.</li>
+<li><strong>Functions</strong> — TypeScript back-end logic deployed (via <code>rayfin up</code>) as a <strong>Fabric Function</strong> in a secure sandbox; for notifications, external service calls, and credential-safe code.</li>
+<li><strong>Templates</strong> — reusable, shareable (repo-checked-in) scaffolds bundling tools (API/MCP defs), agent instructions, sample code, and libraries; for standardizing org apps without burning tokens.</li>
+<li><strong>Data-app template</strong> — Rayfin template <strong>built with the Power BI team</strong> to build apps <strong>on your semantic layer</strong>; comprises a <strong>data package</strong>, <strong>visual package</strong>, and <strong>agent skills</strong>.</li>
+<li><strong>Microsoft Fabric</strong> — the unified SaaS data platform Rayfin deploys to; provides governed artifacts, shared capacity, and dev/staging/prod workspaces. Apps run as <strong>first-class Fabric artifacts</strong>.</li>
+<li><strong>OneLake</strong> — Fabric's unified data lake, described as the <strong>"OneDrive for data"</strong>; all Fabric artifact (and now app) data lands here within one security boundary.</li>
+<li><strong>Fabric SQL (Microsoft SQL)</strong> — the database dialect/engine currently spun up for a Rayfin app on Fabric.</li>
+<li><strong>PostgreSQL</strong> — <em>future</em> supported dialect via a config change (no app-code changes).</li>
+<li><strong>Fabric Functions</strong> — the managed sandboxed compute Rayfin functions deploy to.</li>
+<li><strong>Fabric workspaces</strong> — where Fabric items/artifacts live; used to organize apps + child databases and to promote dev → staging → prod.</li>
+<li><strong>Fabric capacity</strong> — the compute you buy in Fabric; a single capacity/meter now covers both analytical workloads and Rayfin app workloads.</li>
+<li><strong>GitHub Copilot / VS Code coding agent</strong> — the agent used to build the apps from natural-language prompts inside VS Code.</li>
+<li><strong>TypeScript</strong> — language for entity classes, decorators, and functions across Rayfin.</li>
+<li><strong>React + Vega-Lite</strong> — the visual package's stack for AI-first, flexible, enterprise-grade visuals in the data-app template.</li>
+<li><strong>DAX</strong> — query language the Replit agent generated under the hood when building a dashboard from a semantic model.</li>
+<li><strong>Semantic models</strong> — Fabric's analytics models that apps can be built directly on top of (the "semantic layer").</li>
+<li><strong>MCP servers</strong> — can be packaged as "tools" inside a Rayfin template's tool definitions.</li>
+<li><strong>Blob storage</strong> — <em>coming soon</em> as a Rayfin storage option.</li>
+<li><strong>Microsoft Entra ID ("intra" auth)</strong> — the current default identity provider; today all apps require Fabric authentication.</li>
+<li><strong>OIDC auth</strong> — <em>roadmap</em> (end of year) for B2B/B2C scenarios beyond Entra.</li>
+<li><strong>Social login (e.g. Gmail)</strong> — <em>future</em> onboarding option to start without a company/Entra ID.</li>
+<li><strong>Replit</strong> — partner; agentic, browser-based IDE for non/semi-technical users that deploys into the Rayfin environment with inherited Fabric governance.</li>
+<li><strong>Zava</strong> — fictional demo company (a home-improvement store) used throughout the demos.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Rayfin — introduced at Build 2026</strong> as a new <strong>open-source SDK + CLI</strong> for code-first, agent-friendly application backends on Microsoft Fabric. <strong>Available now</strong> to try at <code>github.com/Microsoft/Rayfin</code>. <em>(Status: newly launched / early — basic starter templates; some features experimental or roadmap.)</em></li>
+<li><strong>Data-app template</strong> (built with the <strong>Power BI team</strong>) — build apps directly on your <strong>semantic layer</strong> with data/visual/agent-skills packages. <em>(Shown in this session.)</em></li>
+<li><strong>Replit ⨉ Microsoft partnership</strong> — announced on stage with <strong>Satya Nadella the day before</strong>; Rayfin integration lets non/semi-technical users build governed apps in Replit. <em>(Status: </em><em>private beta / private preview</em><em> — sign-up available.)</em></li>
+<li><strong>Local Docker container</strong> for running underlying services during dev — <em>(explicitly </em><em>experimental</em><em>).</em></li>
+<li><strong>Roadmap — "next couple of days / very soon":</strong> Rayfin <strong>Functions</strong>, <strong>additional data connectors</strong> (any OneLake data), and <strong>Blob storage</strong> support.</li>
+<li><strong>Roadmap — by end of year:</strong> <strong>OIDC auth</strong> and <strong>real-time services</strong> for B2B/B2C; <strong>social-login</strong> onboarding (no Entra/company ID required); a <strong>perpetual free tier</strong>.</li>
+<li><strong>Roadmap — future:</strong> <strong>PostgreSQL</strong> dialect support (config-only switch); <strong>anonymous / alternative auth providers</strong> for public apps; <strong>open-sourcing part of the Rayfin runtime</strong> for community <strong>self-hosting</strong>.</li>
+<li><strong>Companion session:</strong> another Rayfin session <strong>same day at 3:00 PM</strong>, presented by <strong>Chris Anderson</strong>.</li>
+<li><strong>Free today:</strong> you can use <strong>Microsoft Fabric for free</strong> to get started right now.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Demo 1 — Zava delivery app (Ben):</strong> <code>rayfin create</code> (blank template) → <code>rayfin up</code> → prompt an agent to build a driver delivery app (log deliveries w/ photos + item conditions; customer confirms receipt). Result deployed in Fabric; agent-generated TypeScript table definitions; a delivery confirmed in-app shows up as a new row in the <strong>child Fabric SQL database</strong> within the workspace. <strong>Proved:</strong> an agent can build a full front-end + DB app and deploy to Fabric, with data instantly queryable in SQL.</li>
+<li><strong>Demo 2 — Zava analytics/satisfaction app (Sutapa):</strong> Started <strong>inside Fabric</strong> (New item → <strong>app</strong> artifact → <strong>data app template</strong>), copied the template's prompt into <strong>VS Code + Copilot</strong>, prompted for a <strong>customer-satisfaction</strong> analytics app on an existing <strong>semantic model</strong>, and added a <strong>"flag" button</strong> to escalate/email issues to the product team. <strong>Proved:</strong> a governed, polished analytics app built on a semantic model in minutes — without manual layout prompting — that also <strong>combines analytics with actions</strong>.</li>
+<li><strong>Demo 3 — Replit dashboard (Carl):</strong> In Replit's browser IDE, gave the agent a <strong>Power BI semantic model</strong>; the agent read the schemas, <strong>generated DAX queries</strong>, built the dashboard, and <strong>deployed directly into the Rayfin environment</strong> with the same workspace/item objects on the backend. <strong>Proved:</strong> non/semi-technical users can build and deploy governed Rayfin/Fabric apps from Replit with inherited enterprise security.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>"Rayfin is the backend for this new AI coding era."</strong> — Ben (the session's thesis).</li>
+<li>On democratization: agentic coding <strong>"has the ability to turn the Brents of the world into makers … and turn existing software engineers into … super makers."</strong> — Ben.</li>
+<li>On the gap: <strong>"As a software engineer, apps in the enterprise … need more than just … good vibes."</strong> — Ben.</li>
+<li><strong>Customer quote (Leatherman, via Carl/Replit):</strong> <em>"We appreciate how quickly we can build and iterate with Replit, but … some of our data needs to stay governed and centralized in Fabric. With Rayfin, we finally have both — fast development in the tools we prefer and the confidence that our applications run on top of our enterprise data platform. This is exactly what we've been looking for."</em></li>
+<li>On the data-app template's intent: build something <strong>"that is going to impress your boss"</strong> — not just a functional dashboard but apps with <strong>"good taste."</strong> — Sutapa.</li>
+<li>OneLake framing: it's the <strong>"OneDrive for data."</strong> — Sachin.</li>
+<li><em>(No hard benchmark numbers or performance metrics were presented — this was a launch/architecture + demo session.)</em></li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li class="task-list-item"><input type="checkbox" disabled> <code>npm create @microsoft/rayfin@latest</code> then <code>npx rayfin up</code> against a free Fabric workspace — build a tiny app end-to-end.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Try the <strong>data-app template</strong> on an existing semantic model and see how good the auto-formatted Power BI/Vega-Lite visuals actually are.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Test <strong>connectors</strong> against existing OneLake data (warehouse/semantic model) and confirm the selective type-safe table pull-in.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Write a <strong>Rayfin Function</strong> that calls an external API and confirm credentials stay server-side in the Fabric sandbox.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Watch the companion <strong>3:00 PM session (Chris Anderson)</strong> and the related <strong>BRK223</strong> for the database/data-modeling deep dive.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li class="task-list-item"><input type="checkbox" disabled> How does Rayfin's row-level security (<code>@role</code> + policy) map onto Fabric/OneLake permissions and Entra groups at scale?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Capacity/cost: how do app workloads consume Fabric capacity vs. analytical workloads — any noisy-neighbor risk on a shared meter?</li>
+<li class="task-list-item"><input type="checkbox" disabled> What exactly gets open-sourced for <strong>self-hosting</strong>, and what stays Fabric-only?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Migration safety: how does auto-migration handle destructive schema changes (dropped columns) on production data?</li>
+<li class="task-list-item"><input type="checkbox" disabled> When does <strong>PostgreSQL</strong> / <strong>HorizonDB</strong> support land, and is the config-only dialect swap truly zero-code?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li class="task-list-item"><input type="checkbox" disabled> Azure/Fabric labs — could replace bespoke backend provisioning for demo apps.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Any internal data-driven app that should keep data governed in OneLake instead of a separate store.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><a class="wikilink wikilink--resolved" href="BRK223.html">BRK223 - From rows to reasoning</a> — companion Build 2026 session on designing databases for AI apps and agents (same data/agents theme).</li>
+<li>Microsoft Build 2026 hero blog — <em>"Building agentic apps with Microsoft Fabric and Microsoft Databases"</em> (Arun Ulag) — context incl. <strong>Azure HorizonDB</strong> (PostgreSQL for AI apps, public preview).</li>
+<li>Rayfin GitHub repo: <code>github.com/Microsoft/Rayfin</code>.</li>
+<li>Microsoft Learn — <em>Fabric apps programming model</em> (decorator-driven Rayfin SDK reference).</li>
+<li><span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span> — source tracker for Build 2026 session notes.</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="BRK224.html"><span class="pager-dir">← Previous</span><span class="pager-code">BRK224</span><span class="pager-title">PepsiCo&#x27;s blueprint for agentic AI</span></a>
+    <a class="pager pager-next" href="BRK226.html"><span class="pager-dir">Next →</span><span class="pager-code">BRK226</span><span class="pager-title">Inside Azure innovations with Mark Russinovich</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

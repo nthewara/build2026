@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEM340 — Build work-ready agents with Foundry + Work IQ, govern with Agent 365</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEM340</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=uQEvIZKUyCc" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Build work-ready agents with Foundry + Work IQ, govern with Agent 365</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Shri (Group Product Manager, Agent 365)</span>
+      <span class="meta-item">⏱️ 26m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="foundry">Foundry</span><span class="chip" data-tag="agent-365">Agent 365</span><span class="chip" data-tag="governance">Governance</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speaker:</strong> Shri — Group Product Manager, Agent 365 (builds agents + enables IT admins to govern them)<br>
+<strong>Duration:</strong> ~26 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=uQEvIZKUyCc">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>This demo-heavy session walks the full lifecycle of building an enterprise-ready agent in <strong>Microsoft Foundry</strong> and governing it with <strong>Agent 365</strong>. The core thesis: <em>context is king</em>, and an agent is only as good as the data, context, and tools it's given. <strong>Work IQ</strong> delivers that enterprise context (email, Teams, SharePoint) in a single click via an MCP tool, while <strong>Foundry IQ</strong> provides reusable, vector-indexed knowledge bases (RFPs, pricing guides, invoices) backed by Azure AI Search with agentic RAG. The speaker then builds "Agent 007," adds both IQ sources, runs evals (groundedness, task completion, etc.), publishes to the company store, and switches to the IT-admin hat to show how Agent 365 observes, governs, and secures every agent in the tenant — including local agents like GitHub Copilot CLI, OpenClaw, and Claude Code, which can be sandboxed in Intune-powered Microsoft Execution Containers (MXC).</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Context is the king</strong> — agents only succeed when given the right instructions, the right tools, and (most critically) the right context, which lives locked up in SQL/SAP databases, emails, Teams chats, and SharePoint.</li>
+<li><strong>Work IQ</strong> unifies email + Teams chat + SharePoint documents into a single context layer fed to the agent, reducing token-heavy back-and-forth prompting.</li>
+<li>Work IQ is <strong>generally available mid-June 2026</strong> (~2 weeks from the session).</li>
+<li>Adding Work IQ to a Foundry agent is a <strong>one-click</strong> catalog action — the endpoint, connection credentials, and Entra ID are all wired up automatically.</li>
+<li>Work IQ exposes <strong>MCP, A2A, and REST</strong> protocols, plus a <strong>secure ephemeral workspace</strong> (scratchpad) that clears when the agent runtime finishes so data isn't stored forever.</li>
+<li>Access is <strong>permission-trimmed and identity-aware</strong> — agents (via agent identity) only see the SharePoint docs and emails they're authorized to see.</li>
+<li><strong>Foundry IQ</strong> = reusable knowledge databases from your existing blob containers (RFPs, sales orders, invoices); Azure AI Search auto-converts blobs into vector indexes with <strong>agentic RAG enabled automatically</strong> and enterprise-grade permission honoring.</li>
+<li><strong>Evals are built into Foundry</strong> — single-turn or multi-turn, using simulated data or existing human conversations; evaluators include <strong>task completion, task adherence, customer satisfaction, groundedness, and coherence</strong>.</li>
+<li><strong>Groundedness matters most</strong> because models are biased toward always answering (from abundant internet knowledge) even when they lack the right answer — you must verify responses are grounded in your IQ sources and not hallucinating.</li>
+<li>Publishing to the <strong>company store</strong> auto-creates the Azure Bot Service, assigns an <strong>Agent ID</strong>, and pushes the agent to Teams + M365 Copilot channels <em>and</em> the Agent 365 registry — full build-to-publish in ~10–15 minutes.</li>
+<li>There's a <strong>52-point governance gap</strong> between how many agents run in production vs. how many are mature enough to deserve running in the enterprise — the problem Agent 365 solves.</li>
+<li><strong>Agent ID</strong> has two critical components: a <strong>unique principal</strong> identifying the agent regardless of where it's deployed/running, and <strong>identity permissions just like a human user</strong> so you can scope its access.</li>
+<li><strong>Agent 365</strong> brings four pillars under the hood: <strong>Intune</strong> (MXC sandbox), <strong>Purview</strong> (sensitivity labels), <strong>Defender</strong> (prompt-injection / exfiltration protection), and the agent registry/observability.</li>
+<li>The <strong>Agent 365 SDK</strong> lets you instrument agents built on <strong>LangChain, AWS Bedrock, etc.</strong> to get the same observability/security/governance — Microsoft is not forcing you onto its stack.</li>
+<li>Agent 365 detects <strong>local/shadow agents</strong> (GitHub Copilot, OpenClaw, Claude Code) across devices and can push an Intune policy to <strong>isolate them in an MXC container</strong> with folder-path access controls.</li>
+<li><strong>Tool governance</strong> lets IT admins control MCPs/plugins/connectors centrally — e.g., block Work IQ MCP so no agent in the company can ever be built with it (extreme-governance example).</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-context-is-king">Framing: Context is King</h3>
+<p>The session opens by reinforcing a theme heard repeatedly across Build: <strong>context is the key to an effective agent</strong>. Every agent needs context — a shopper agent needs to find products, an interior-design agent needs design images, an inventory agent needs to know stock levels and supplies. The problem is that <strong>all this context lives locked up inside the work organization</strong>: SQL databases, SAP systems, emails, meeting chats, and documents.</p>
+<p>Agents do well only when given three things: the <strong>right instructions</strong>, the <strong>right tools</strong>, and most importantly the <strong>context</strong> (delivered in the form of "IQ"). The speaker frames the common pain point: building an agent where context was missing, then spending so much effort teaching it that doing the task manually would have been faster. That gap is what Work IQ closes — bringing email, Teams chat, and SharePoint documents together to feed the agent enough knowledge so you don't burn tokens repeatedly re-prompting it.</p>
+<p><strong>Context consists of three things:</strong> data, context, and skills/tools. Today's focus is the <strong>Work IQ MCP</strong>, but behind the Work IQ API sits a broader set of capabilities.</p>
+<h3 id="work-iq-crash-course">Work IQ — Crash Course</h3>
+<ul>
+<li><strong>What it is:</strong> A unified context layer that brings your email, Teams chats, and SharePoint documents together to feed agents enterprise knowledge.</li>
+<li><strong>Availability:</strong> Generally available <strong>mid-June 2026</strong> — playable within ~2 weeks of the session.</li>
+<li><strong>Properties:</strong> Agents become <em>optimized for use</em>, <em>secure</em>, and <em>comprehensive</em>. "Secure/comprehensive" means access is <strong>permission-scoped</strong>: you only get the SharePoint docs and emails you're supposed to see — and this holds true for agents using the <strong>agent identity</strong> too.</li>
+<li><strong>Protocols exposed:</strong> Although the demo focuses on the Work IQ <strong>MCP</strong>, Work IQ also exposes <strong>A2A</strong> and <strong>REST APIs</strong>. This lets an agent chat, get context, and invoke tools.</li>
+<li><strong>Secure workspace:</strong> Work IQ provides a secure workspace where the agent can store its "homework" — a <strong>scratchpad</strong> for safely keeping in-progress work without exposing it. As soon as the agent runtime finishes, the <strong>workspace clears up</strong> so none of the data is stored forever.</li>
+<li><strong>Where you can build with it:</strong> Copilot Studio (declarative agents), and Foundry agents. This session demos the <strong>Foundry</strong> path.</li>
+</ul>
+<h3 id="demo-1-building-agent-007-with-work-iq-in-foundry">Demo 1 — Building "Agent 007" with Work IQ in Foundry</h3>
+<p>The speaker switches to the Foundry UI (familiar to most attendees who'd built Foundry agents). Steps shown:
+1. <strong>Start building an agent</strong> — quick and simple. Names it the "super agent" / <strong>Agent 007</strong>.
+2. <strong>Give instructions</strong> — for the demo, just "you know it all because you're 007." Unwanted tools are removed.
+3. <strong>Add Work IQ from the catalog</strong> — Work IQ "lights up" in the tool catalog; you simply type/select "Work IQ" and <strong>add it in one click</strong>. The <strong>Work IQ endpoint</strong> is exposed and <strong>all connection credentials + Entra ID are configured automatically</strong>. With that single click the agent now has the context of emails, SharePoint, and Teams.
+4. <strong>Save and test</strong> — the speaker asks: <em>"What was the last email from David?"</em> The <strong>Work IQ MCP tool is invoked</strong>, and a <strong>human-in-the-loop prompt</strong> asks whether to approve the tool call. The speaker approves all tools (for demo flow so it doesn't keep popping up).</p>
+<p>This is the core "wow": one click to wire enterprise context into an agent.</p>
+<h3 id="foundry-iq-crash-course">Foundry IQ — Crash Course</h3>
+<ul>
+<li><strong>What it is:</strong> <strong>Reusable knowledge databases</strong> you've already created — think <strong>blob containers containing blobs</strong>: RFPs, RFQs, sales orders, invoices, anything moved to blob storage becomes a Foundry IQ knowledge source.</li>
+<li><strong>How it works:</strong> <strong>Azure AI Search automatically converts those blobs into vector indexes</strong>, which are then available to the agent for rich <strong>semantic</strong> retrieval. Indexing is done <em>for you</em> by Foundry — <strong>agentic RAG is enabled automatically</strong> thanks to Azure AI Search under the hood.</li>
+<li><strong>Enterprise-grade security:</strong> It <strong>honors all the permissions</strong> you set on the storage containers when they were built.</li>
+</ul>
+<h3 id="demo-2-adding-foundry-iq-to-the-agent">Demo 2 — Adding Foundry IQ to the Agent</h3>
+<ol>
+<li><strong>Add Foundry IQ</strong> — when creating it, you set up a <strong>connection to your Azure AI Search index</strong>. The speaker has pre-created some knowledge bases.</li>
+<li><strong>Behind the scenes:</strong> In the storage account, the speaker created a <strong>container</strong> (via "Add Container") and dumped files into it — <strong>pricing guide, battle cards, product specifications</strong>. Azure AI Search <strong>automatically created the index</strong> over that container.</li>
+<li><strong>Connect the knowledge source</strong> — back in Foundry, connect to the index; the knowledge source attaches. The agent is now enriched with <strong>both Work IQ and the Foundry IQ knowledge base files</strong>.</li>
+<li><strong>Test queries:</strong>
+   - Work IQ query (e.g., the email lookup) — picks up Work IQ tools, invokes the needed tool in "ask mode," returns the answer.
+   - Foundry IQ query — <em>"What is the guidance on the discount for these products?"</em> — pulls from the storage container (pricing specs). Because the live run was slow, the speaker shows a <strong>pre-run agent (timestamp 06:03)</strong> where the same question returns an answer <strong>with a citation</strong> sourced from <strong>"answer synthesis" (i.e., Foundry IQ)</strong>.
+   - Combined action — the speaker uses the <strong>Work IQ tool to reply back to David</strong> about the order he was asking about.</li>
+</ol>
+<blockquote>
+<p>The takeaway: it's "as simple as bringing all the enterprise knowledge to your agent."</p>
+</blockquote>
+<h3 id="evals-in-foundry">Evals in Foundry</h3>
+<p>After building, the agent isn't ready to publish — <strong>it must be tested</strong>. Foundry lets you <strong>create and run evals in place</strong>:
+1. <strong>Pick the agent</strong> to evaluate (Agent 007).
+2. <strong>Choose turn type:</strong> <strong>single-turn</strong> or <strong>multi-turn</strong> (complex, human-like simulated interaction).
+3. <strong>Choose eval data source:</strong>
+   - <strong>Simulate data</strong> (generate new),
+   - Use <strong>existing conversations</strong> (if the agent has been tested with humans), or
+   - <strong>Upload a dataset</strong> — there's a downloadable <strong>sample</strong> structure. The speaker uploads pre-made <strong>"007 data."</strong>
+4. <strong>Dataset structure (human-writable):</strong> prompts, test-case description, expected output, and desired number of turns. Not a fancy JSON/CSV — <strong>a human can handwrite it</strong> and upload.
+5. <strong>Confirm agent config</strong> (already set) and move on.
+6. <strong>Evaluators run:</strong> <strong>task completion, task adherence, customer satisfaction, groundedness, and coherence.</strong>
+   - <strong>Groundedness</strong> is emphasized: with Work IQ + Foundry IQ feeding the agent, you must ensure responses are <strong>grounded in the knowledge and not hallucinating</strong>. Models have a <strong>bias toward always answering</strong> (internet knowledge is abundant) whether or not they actually found the right answer — so groundedness testing is essential.
+7. <strong>Run + results:</strong> The eval runs all prompt combinations (takes time). Pre-completed results are shown as <strong>scores out of 100</strong> — e.g., <strong>88%, 94%</strong> — across evaluators including <strong>tool selection</strong> (was the right tool chosen?), <strong>tool output utilization</strong> (was output optimal?), accuracy/success evaluators, etc. The agent scores well → <strong>100% ready to publish</strong>.</p>
+<h3 id="publishing-to-the-company-store">Publishing to the Company Store</h3>
+<ul>
+<li><strong>Target:</strong> the <strong>company store</strong> — a central repository where all organization employees can start using the agent.</li>
+<li><strong>Automatic plumbing:</strong> Publishing <strong>auto-creates the Bot Service</strong> — no manually going to Azure Bot Service, creating a bot, and assigning permissions. Foundry makes build → publish achievable in <strong>~10–15 minutes</strong>.</li>
+<li><strong>Distribution:</strong> Publishing pushes the agent to <strong>Teams and M365 Copilot channels</strong>, and <strong>also registers it in the Agent 365 registry</strong>.</li>
+<li><strong>Approval gate:</strong> After publishing, the system says to <strong>go back to the admin center to approve it</strong> — handing off to the IT-admin governance flow.</li>
+</ul>
+<h3 id="switching-hats-the-agent-365-admin-view">Switching Hats — The Agent 365 (Admin) View</h3>
+<p>The speaker role-switches from "Shri the dev" to <strong>"Shri the IT admin."</strong> The <strong>Agent 365 view</strong> shows <strong>all AI artifacts deployed in the tenant</strong>:
+- A <strong>scorecard</strong>, <strong>agents at risk</strong>, <strong>active users</strong>, and rich telemetry.
+- The newly published agent appears in the registry. As IT admin, you can see <strong>what it is, who published it, when it was published</strong>, and its <strong>security permissions</strong>.
+- The agent has an automatically created <strong>bot service</strong> and an assigned <strong>Agent ID</strong>.</p>
+<h3 id="agent-id-why-it-matters">Agent ID — Why It Matters</h3>
+<p><strong>Agent ID</strong> has two most-important components:
+1. A <strong>unique principal</strong> that identifies the agent <strong>regardless of where it is deployed or running</strong> in the tenant.
+2. <strong>Identity and permissions just like a human user</strong> — so you can <strong>control the scope</strong> and grant permissions exactly as you would to a human user.</p>
+<h3 id="why-agent-365-the-governance-gap">Why Agent 365 — The Governance Gap</h3>
+<ul>
+<li><strong>The problem:</strong> a <strong>52-point governance gap</strong> between how many agents are running in production vs. how many are <strong>mature/capable/deserving</strong> of running in the enterprise. Agents are doing things they shouldn't, and IT admins don't know.</li>
+<li><strong>The promise of Agent 365:</strong> <strong>observe → govern → secure</strong> these agents.</li>
+</ul>
+<h3 id="the-most-important-slide-what-you-get-with-agent-365">The Most Important Slide — What You Get with Agent 365</h3>
+<ul>
+<li><strong>Agent identity</strong> (Agent ID, scoped permissions).</li>
+<li><strong>Agent observability.</strong></li>
+<li><strong>Agent interoperability</strong> — e.g., Work IQ enabling agents to interact with SharePoint, Teams, etc.</li>
+<li><strong>Agent 365 SDK</strong> — instrument agents built on <strong>LangChain, AWS Bedrock</strong>, etc., to get the <strong>same observability, security, and governance</strong>. <em>Microsoft is not forcing you onto its stack</em> — just use the SDK to instrument your existing agent.</li>
+</ul>
+<h3 id="the-four-products-under-the-hood">The Four Products Under the Hood</h3>
+<p>Agent 365 brings the power of four products together:
+1. <strong>Intune → the sandbox (MXC).</strong> The <strong>Microsoft Execution Container (MXC)</strong> from Satya's keynote is delivered via Intune through a <strong>policy pushed out</strong> to make all devices sandbox-enabled. This lets <strong>GitHub Copilot CLI, Claude Code, OpenClaw</strong> run in a <strong>sandboxed environment</strong>.
+2. <strong>Purview → sensitivity labels.</strong> Data tagged highly sensitive is honored by agents — they respect the labels you've assigned.
+3. <strong>Defender → exfiltration + prompt-injection protection.</strong> Agents can be manipulated "like a teenager or even a small kid" to do things they shouldn't. With the Agent 365 SDK, traffic passes through a <strong>tooling gateway with deep Defender integration</strong>, providing:
+   - Protection from <strong>data exfiltration</strong> (e.g., DNS smuggling) and <strong>real-time prompt-injection</strong> protection.
+   - Blocking agents from <strong>visiting harmful sites</strong>.
+   - Blocking agents from <strong>sending/replying to suspicious emails</strong> (phishing attacks, etc.).
+4. <strong>(Registry/observability)</strong> rounding out the governance story.</p>
+<blockquote>
+<p><strong>Key principle:</strong> <em>The agent (and the model) doesn't decide what agents do when running an enterprise — your enterprise policies define how the agent behaves.</em> That's the big differentiator.</p>
+</blockquote>
+<h3 id="demo-3-agent-365-capabilities-deep-dive">Demo 3 — Agent 365 Capabilities Deep-Dive</h3>
+<ul>
+<li><strong>Agent registry (map view):</strong> A rich view of <strong>all agents across all platforms</strong> — Copilot, Foundry, and more. Supports <strong>external agents</strong> brought in from <strong>Amazon, Google, Databricks, Agentforce</strong> — you can <strong>sync them into your registry</strong>. A <strong>map view</strong> shows how different platforms interact.</li>
+<li><strong>Requests:</strong> Every time a new agent is published, <strong>admins approve it</strong> here (the earlier publish flow lands here).</li>
+<li><strong>Local agent detection (the "coolest" demo):</strong> Tied to Satya's keynote — <strong>GitHub Copilot and other local agents</strong> are detected as part of the registry. Agent 365 shows the <strong>devices where GitHub Copilot is running</strong>.</li>
+<li>You can <strong>deploy a policy to isolate the agent</strong> — forcing it to run in the <strong>MXC container</strong> — and set <strong>deeper controls over which folder paths are accessible</strong> to it.</li>
+<li><strong>Shadow-agent / security detection:</strong> Agent 365 helps <strong>detect other agents (shadow agents)</strong> running, using <strong>Intune + GSA (Global Secure Access)</strong> technology to detect the traffic, with <strong>Microsoft Defender</strong> detecting endpoints running local agents.</li>
+<li><strong>Tool governance:</strong> Beyond controlling agents, you can govern the <strong>MCPs, plugins, and connectors</strong> exposing data through API connections. Lock these down and you worry less about the agent side. Example: the <strong>Work IQ MCP</strong> shows up in tool governance — as IT admin you can see <strong>any agent ever built in the company using Work IQ</strong>, know what tools they'll use, set <strong>RBAC-style policies</strong>, or <strong>block it entirely</strong> so <strong>no agent can ever be built using Work IQ</strong> (an extreme-governance example to illustrate the option).</li>
+<li><strong>Bring Your Own MCP server:</strong> Using the SDK you can <strong>publish your own MCP servers</strong>; they appear in the admin view where <strong>IT admin can approve or reject</strong> them.</li>
+</ul>
+<h3 id="closing">Closing</h3>
+<p><strong>Build your agents with Foundry, govern them with Agent 365.</strong> Final key takeaway: start building with <strong>Microsoft Foundry</strong>, then govern with <strong>Agent 365</strong>.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Microsoft Foundry</strong> — platform for building, evaluating, and publishing enterprise agents (demo home base).</li>
+<li><strong>Work IQ</strong> — unified enterprise context layer (email + Teams + SharePoint) delivered to agents; exposed via MCP, A2A, and REST.</li>
+<li><strong>Work IQ MCP</strong> — the MCP tool/endpoint added to agents in one click; appears in tool governance for admins.</li>
+<li><strong>Foundry IQ</strong> — reusable, vector-indexed knowledge bases built from blob storage (RFPs, invoices, pricing guides), with agentic RAG.</li>
+<li><strong>Agent 365</strong> — the governance/observability/security suite for all agents in a tenant (observe → govern → secure).</li>
+<li><strong>Agent 365 SDK</strong> — instruments third-party agents (LangChain, AWS Bedrock, etc.) for unified observability/security/governance; also used to publish custom MCP servers.</li>
+<li><strong>Agent ID</strong> — unique agent principal + human-like identity/permissions, portable across deployments.</li>
+<li><strong>Agent 365 registry</strong> — central inventory/map of all agents across platforms (Copilot, Foundry, Amazon, Google, Databricks, Agentforce).</li>
+<li><strong>Azure AI Search</strong> — auto-converts blobs to vector indexes; powers Foundry IQ's agentic RAG.</li>
+<li><strong>Azure Blob Storage / Storage Containers</strong> — source for Foundry IQ knowledge (files dumped into a container).</li>
+<li><strong>Azure Bot Service</strong> — auto-created on publish (no manual bot setup needed).</li>
+<li><strong>Microsoft Intune</strong> — pushes sandbox policy enabling the MXC; isolates local agents.</li>
+<li><strong>Microsoft Execution Container (MXC)</strong> — Intune-powered sandbox for running local agents (GitHub Copilot CLI, Claude Code, OpenClaw).</li>
+<li><strong>Microsoft Purview</strong> — sensitivity labels honored by agents.</li>
+<li><strong>Microsoft Defender</strong> — prompt-injection, exfiltration, harmful-site, and phishing protection via a tooling gateway.</li>
+<li><strong>Global Secure Access (GSA)</strong> — traffic detection used (with Intune/Defender) to surface shadow agents.</li>
+<li><strong>Copilot Studio</strong> — alternative build surface for (declarative) agents using Work IQ.</li>
+<li><strong>Microsoft 365 Copilot &amp; Teams channels</strong> — publish targets for the agent.</li>
+<li><strong>Company store</strong> — central org repository where published agents become available to employees.</li>
+<li><strong>Human-in-the-loop tool approval</strong> — Foundry prompt to approve/deny tool invocations.</li>
+<li><strong>Foundry Evals</strong> — single/multi-turn evaluation with task completion, task adherence, customer satisfaction, groundedness, coherence, tool selection, and tool-output-utilization scoring.</li>
+<li><strong>GitHub Copilot CLI / Claude Code / OpenClaw</strong> — examples of local agents detected and sandboxable via Agent 365.</li>
+<li><strong>External agent platforms</strong> — Amazon, Google, Databricks, Agentforce (syncable into the registry).</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Work IQ → Generally Available mid-June 2026</strong> (~2 weeks after the session). <em>(Explicit timeline given.)</em></li>
+<li><strong>Foundry IQ</strong> — reusable knowledge bases with automatic agentic RAG via Azure AI Search, presented as available/demoed.</li>
+<li><strong>Agent 365</strong> — observability/governance/security platform demoed with: registry + map view, agent requests/approvals, <strong>local-agent (GitHub Copilot/OpenClaw/Claude Code) detection</strong>, <strong>MXC sandbox isolation policies</strong>, <strong>tool governance</strong> (MCP/plugin/connector control), shadow-agent detection (Intune + GSA + Defender), and <strong>bring-your-own-MCP-server</strong> publishing.</li>
+<li><strong>Microsoft Execution Container (MXC)</strong> — referenced from Satya's keynote; delivered via Intune policy.<blockquote>
+<p>Note: Most items are demoed capabilities; the only explicit dated GA in this talk is <strong>Work IQ (mid-June 2026)</strong>.</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ol>
+<li><strong>Build Agent 007 + add Work IQ (one click):</strong> Showed creating a Foundry agent, adding Work IQ from the catalog with auto-configured endpoint/credentials/Entra ID, and querying <em>"What was the last email from David?"</em> with a human-in-the-loop tool-approval prompt. <strong>Proved:</strong> enterprise context (email/Teams/SharePoint) can be wired into an agent in a single click.</li>
+<li><strong>Add Foundry IQ knowledge base:</strong> Connected an Azure AI Search index over a storage container holding pricing guide, battle cards, and product specs; queried <em>"guidance on the discount for these products"</em> and showed a <strong>cited answer</strong> from "answer synthesis" (Foundry IQ) in a pre-run agent (06:03). <strong>Proved:</strong> reusable blob-based knowledge becomes grounded, citable agent context via auto-indexing/agentic RAG.</li>
+<li><strong>Run Foundry Evals:</strong> Configured an eval on Agent 007 (single/multi-turn), uploaded handwritten <strong>"007 data"</strong> (prompts, descriptions, expected outputs, turn counts), selected evaluators (task completion, task adherence, customer satisfaction, groundedness, coherence), and showed pre-completed <strong>scores out of 100 (e.g., 88%, 94%)</strong> including tool selection and tool-output utilization. <strong>Proved:</strong> agents can be quantitatively validated for groundedness/quality inside Foundry before shipping.</li>
+<li><strong>Publish to company store:</strong> Published the agent — auto-creating the Bot Service and Agent ID, pushing to Teams + M365 Copilot, and registering in Agent 365 — then routed to admin-center approval. <strong>Proved:</strong> full build-to-publish in ~10–15 min with no manual Azure Bot Service plumbing.</li>
+<li><strong>Agent 365 admin governance:</strong> Showed the scorecard/agents-at-risk view, the published agent's details + permissions + Agent ID, the cross-platform registry <strong>map view</strong> (incl. Google/Amazon/Databricks/Agentforce), <strong>GitHub Copilot/local-agent device detection</strong>, <strong>MXC sandbox isolation + folder-path controls</strong>, shadow-agent detection, <strong>tool governance</strong> (Work IQ MCP block example), and <strong>bring-your-own-MCP-server</strong> approval. <strong>Proved:</strong> IT admins can observe, govern, sandbox, and secure every agent (cloud <em>and</em> local) in the tenant from one pane.</li>
+</ol>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>52-point governance gap</strong> — the gap between how many agents run in production vs. how many are mature/capable/deserving enough to run in the enterprise. <em>(The central justification for Agent 365.)</em></li>
+<li><strong>Eval scores out of 100</strong> — example results of <strong>88%</strong> and <strong>94%</strong> across evaluators.</li>
+<li><strong>~10–15 minutes</strong> — time to build and publish an agent in Foundry.</li>
+<li><strong>Work IQ GA: mid-June 2026</strong> (~2 weeks out).</li>
+<li><em>"Context is the key to an effective agent."</em> / <em>"Context is the king."</em></li>
+<li><em>"The biggest problem for adoption of AI is: I don't know what AI is doing in my system. I'd rather know it, govern it, and then shut it down if I don't like it."</em> — the IT-admin mindset.</li>
+<li><em>"The agent doesn't decide, your model doesn't decide what agents do when you're running an enterprise — your enterprise policies define how the agent behaves."</em></li>
+<li>On agent manipulation: agents can be influenced <em>"very much like a teenager or even a small kid to do things it's not supposed to do."</em></li>
+<li><em>"Build your agents with Foundry, and govern with Agent 365."</em> — the closing one-liner.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li class="task-list-item"><input type="checkbox" disabled> Spin up a Foundry agent and add <strong>Work IQ</strong> in one click once it hits GA (mid-June 2026); test permission-trimming with a low-privilege test user.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Build a <strong>Foundry IQ</strong> knowledge base from a blob container of sample docs and verify auto-indexing + citations ("answer synthesis").</li>
+<li class="task-list-item"><input type="checkbox" disabled> Run a <strong>Foundry eval</strong> with a small handwritten dataset; inspect groundedness + tool-selection scores.</li>
+<li class="task-list-item"><input type="checkbox" disabled> In <strong>Agent 365</strong>, check whether our local agents (GitHub Copilot CLI, Claude Code, <strong>OpenClaw</strong>) get detected, and test the <strong>MXC</strong> isolation policy + folder-path controls.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Try <strong>tool governance</strong> on the Work IQ MCP and the <strong>bring-your-own-MCP-server</strong> publish/approve flow.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li class="task-list-item"><input type="checkbox" disabled> What exactly distinguishes <strong>Work IQ</strong> vs <strong>Foundry IQ</strong> vs <strong>Foundry knowledge sources</strong> — is Work IQ a managed-graph layer over M365 and Foundry IQ purely your-own-blob RAG?</li>
+<li class="task-list-item"><input type="checkbox" disabled> How is <strong>Agent ID</strong> issued/managed — is it an Entra workload identity / service principal variant? Licensing?</li>
+<li class="task-list-item"><input type="checkbox" disabled> What's the <strong>Agent 365</strong> licensing/SKU story, and which pieces require Intune/Purview/Defender/GSA entitlements?</li>
+<li class="task-list-item"><input type="checkbox" disabled> How deep is <strong>A2A/REST</strong> parity vs the <strong>MCP</strong> surface for Work IQ?</li>
+<li class="task-list-item"><input type="checkbox" disabled> How does the <strong>secure ephemeral workspace</strong> (scratchpad) handle multi-turn/long-running agents — true per-run teardown?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Is the <strong>MXC</strong> the same container surfaced for Copilot CLI elsewhere, and what's the host OS coverage (Windows/macOS/Linux)?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li class="task-list-item"><input type="checkbox" disabled> Enterprise agent platform/governance strategy; anyone shipping Foundry/Copilot Studio agents into Teams/M365.</li>
+<li class="task-list-item"><input type="checkbox" disabled> IT admin / security teams evaluating shadow-AI detection and local-agent sandboxing.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Our own OpenClaw setup (local-agent detection + MXC sandbox implications).</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Build2026">Build2026</span> — Microsoft Build 2026 session index</li>
+<li>Other Build 2026 notes on <strong>Foundry</strong>, <strong>Agent 365</strong>, <strong>Work IQ / Foundry IQ</strong>, and <strong>Copilot Studio</strong></li>
+<li>Satya keynote references: <strong>MXC (Microsoft Execution Container)</strong>, local-agent registry/detection</li>
+<li>Topics: <span class="wikilink wikilink--unresolved" title="Azure AI Search">Azure AI Search</span>, <span class="wikilink wikilink--unresolved" title="Microsoft Intune">Microsoft Intune</span>, <span class="wikilink wikilink--unresolved" title="Microsoft Purview">Microsoft Purview</span>, <span class="wikilink wikilink--unresolved" title="Microsoft Defender">Microsoft Defender</span>, <span class="wikilink wikilink--unresolved" title="Model Context Protocol">Model Context Protocol</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEM333.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEM333</span><span class="pager-title">How Foundry integrates with open-source frameworks and tools</span></a>
+    <a class="pager pager-next" href="DEM341.html"><span class="pager-dir">Next →</span><span class="pager-code">DEM341</span><span class="pager-title">Any agent, any cloud: Standardized tracing with Foundry+OpenTelemetry</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

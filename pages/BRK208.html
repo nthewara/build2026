@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRK208 — Ensuring your code works when AI testing isn&#x27;t enough</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">BRK208</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=9RzqagabeOk" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Ensuring your code works when AI testing isn&#x27;t enough</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Simon Willison</span>
+      <span class="meta-item">⏱️ 45m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="testing">Testing</span><span class="chip" data-tag="quality">Quality</span><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="devops">DevOps</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Simon Willison (independent developer, writer at simonwillison.net; co-creator of Django, creator of Datasette; long-time AI-assisted-coding practitioner)<br>
+<strong>Duration:</strong> ~45 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=9RzqagabeOk">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Simon Willison argues that coding agents — LLMs that write, run, test and iterate on their own code — became genuinely reliable "daily drivers" only at the <strong>November 2025 inflection point</strong> (Opus 4.5, GPT-5.1 + matured coding harnesses), and that the typing-code bottleneck is now gone. The real, urgent job has shifted from <em>writing</em> code to <strong>verifying</strong> it: producing code that is trustworthy, maintainable and high-quality at a massively accelerated velocity. This (slightly retitled) talk on <strong>verification patterns for agentic engineering</strong> walks through concrete, individually-usable techniques — active refactoring, prototyping-as-verification, exercising API designs with throwaway code, agentic documentation, continuous preview deployments, reducing the "blast radius" of mistakes with sandboxes (CSP, sandboxed iframes, WebAssembly/WASI), and zero-tolerance for flaky tests. The throughline: large companies have always shipped quality from untrusted/unreviewable code via layered verification; we should scale those same ideas <em>down</em> to run on our laptops with our "armies of agents," and use AI to build <strong>better</strong> software faster, not worse software faster.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>The November 2025 inflection point</strong>: coding agents went from curiosity to reliable daily driver because OpenAI and Anthropic spent all of 2025 doing reinforcement learning against coding tasks (a domain with obvious right/wrong answers); the advances landed together in November (Opus 4.5, GPT-5.1, much-improved coding harnesses).</li>
+<li><strong>"Vibe coding" is being misapplied.</strong> Karpathy coined it (Feb 2025) explicitly for <em>fun/weekend</em> projects where you forget the code exists. For professionals shipping real software the better term is <strong>agentic engineering</strong>.</li>
+<li><strong>The typing-code bottleneck is automated away</strong> — Willison routinely writes ~600 lines of tested, documented code <em>on his phone while walking the dog</em>, versus historical norms of 10–50 LOC/dev/day (and 600 LOC/day once cited as an extreme outlier).</li>
+<li><strong>Verification is now the core job.</strong> "Our job is to produce code AND verify that that code works." Churning out code is worthless without trustworthy, maintainable, proud-of-it results.</li>
+<li><strong>The invisible QA you used to do as you built has vanished.</strong> You used to twiddle a feature, hit refresh, eyeball it constantly. One-shotting 1,000 lines with Claude skips all of that — so verification must be deliberately re-introduced.</li>
+<li><strong>It's an old problem in disguise.</strong> Microsoft (100k+ devs, 25M+ LOC) and other megacorps already ship quality from code no single human can review — by layering verification. The challenge is <strong>scaling those big-company techniques down to a laptop.</strong></li>
+<li><strong>Active refactoring</strong> beats passive code review: nitpick the agent relentlessly (rename, dedupe, "explain this and add comments"). You can't be rude to an agent — and you come out actually understanding the code.</li>
+<li><strong>Think in stakes and seams.</strong> Review an auth flow line-by-line; barely glance at a decorative icon. Engineers are now more like <strong>architects/designers</strong> — get the high-level structure and the seams between systems right.</li>
+<li><strong>Verify API designs by writing throwaway code against them.</strong> Agents will instantly prototype several features against a new API, surfacing design problems you'd otherwise miss.</li>
+<li><strong>Prototypes are now effectively free</strong> — use agents to build interactive proofs-of-concept (to prove something is <em>possible</em>), hoard them, then feed them back as input when building the real feature. Some projects spend a month+ purely prototyping.</li>
+<li><strong>Agentic documentation</strong>: agents are great at accurate, short, "uncreative" prose. Run <code>diff against main → does any documentation need updating?</code> before landing a branch. <strong>Strip all opinions/promotional language</strong> — doc trust is hard to earn and lost instantly the first time docs mislead.</li>
+<li><strong>Continuous deployment for previews has no downside now.</strong> Auto-deploy every PR to a fresh preview env (Fly.io / Cloud Run / Vercel) — reading code never tells you what running it does. A single prompt (with "ask clarifying questions first") replaces what used to be weeks of CI/CD setup.</li>
+<li><strong>Reduce the blast radius of mistakes</strong> with layered defenses (the Firefox model): Content Security Policy headers, <strong>sandboxed iframes</strong>, and <strong>WebAssembly/WASI</strong> server-side sandboxes that can't read files, open network connections, or exceed strict CPU/memory limits.</li>
+<li><strong>Test your sandboxes by attacking them with agents.</strong> Put GPT-5.5 inside and tell it to break out; if it can't, you gain real confidence. (Caveat: agents often recognize <strong>Docker</strong> and escape via known host-port tricks — so test sandboxes specifically.)</li>
+<li><strong>Zero tolerance for flaky tests</strong> — including UI tests. Agents don't mind wasting their own time reproducing a 1-in-50 failure; they're very good at simulating the conditions (e.g. reproducing a Linux/CI-only bug in Docker on a Mac in the background).</li>
+<li><strong>Any tool that helps human engineers helps agents too</strong>: <code>CLAUDE.md</code> (onboarding docs), linters, formatters, debuggers, logs, CI, and fast-compiling languages with good error messages (Go is excellent for agents).</li>
+<li><strong>Agentic engineering is the "SEO for accessibility" of good practices</strong> — it finally gives everyone a selfish reason to adopt decades-old engineering discipline (tests, docs, CI, CD).</li>
+<li><strong>Use this to build better software faster, not worse software faster</strong> — you can have all three of higher quality, easier maintenance, and more features; the usual "pick two of three" no longer binds.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-a-grand-elder-of-a-four-year-old-field">Framing: a "grand elder" of a four-year-old field</h3>
+<p>Willison opens (clicker failing, recovered mid-talk) by noting he's been using LLMs to help write code since <strong>2022</strong> — which absurdly makes him a "grand elder" of a four-year-old space. He references his own June-2022 writing about getting GPT-3 to write little SQL queries and explain how code works, and has explored these tools continuously since. The point: the field is so new that even brief experience counts as deep, and patterns are still being discovered constantly.</p>
+<h3 id="vibe-coding-vs-agentic-engineering-terminology">Vibe coding vs. agentic engineering (terminology)</h3>
+<ul>
+<li><strong>Andrej Karpathy</strong>, Feb 2025 ("ancient times" by current pace), coined <strong>vibe coding</strong>: "fully give into the vibes, embrace exponentials, and forget that the code even exists."</li>
+<li>Crucially, most people <strong>didn't scroll to the bottom of that tweet</strong>, where Karpathy said this is <em>for fun, for weekend projects</em> — not for serious code.</li>
+<li>Willison thinks it's a "waste of a term" to apply "vibe coding" to all AI-assisted coding. Vibe coding = the <strong>irresponsible</strong> way of building things.</li>
+<li>The open question: what do you call it when <strong>professional engineers ship real software they care about</strong> using AI? The term bubbling to the top — and the one he adopts — is <strong>agentic engineering</strong> (he saw a Chinese AI lab use it in a press release, his signal it had spread enough to be safe to use).</li>
+<li><strong>Audience poll</strong>: "How many have shipped code to production without reading that code?" — <em>quite a few hands</em>. He notes that when he pitched the talk three months earlier, the honest answer would have been <strong>nobody at all</strong>. The rate of change is "shocking."</li>
+</ul>
+<h3 id="what-coding-agent-means-here-and-the-november-inflection-point">What "coding agent" means here, and the November inflection point</h3>
+<ul>
+<li><strong>Definition</strong>: a coding agent is software where the LLM <em>both</em> writes the code <em>and</em> executes it — it can test, iterate, and improve.</li>
+<li>They "only really got good in <strong>November 2025</strong>": <strong>Opus 4.5</strong> shipped, <strong>GPT-5.1</strong> + coding harnesses matured, and the tools jumped from interesting curiosity to a <strong>reliable partner / daily driver</strong>.</li>
+<li><strong>Why November</strong>: both OpenAI and Anthropic spent all of 2025 doing <strong>reinforcement learning against coding tasks</strong> — a strong pattern precisely because code has an obvious right/wrong answer. A year of advances "came to a head" in November, just in time for everyone to tinker over the Christmas holidays.</li>
+<li>He calls this <strong>the November inflection point</strong>.</li>
+</ul>
+<h3 id="lines-of-code-the-metric-you-should-never-use-used-anyway">Lines of code: the metric you should never use (used anyway)</h3>
+<ul>
+<li>The cardinal rule: never measure productivity in lines of code. He immediately breaks it to make a point about <em>scale of change</em>.</li>
+<li><strong>Steve McConnell, <em>Code Complete</em> (2004)</strong>: industry-average productivity ≈ <strong>10–50 lines of delivered code per person per day</strong>.</li>
+<li>A later source (~10 years on): <strong>600 LOC/day</strong> was cited as a <em>high outlier</em> of developer performance.</li>
+<li>Willison: he now writes <strong>~600 lines of tested + documented code on his phone while walking the dog</strong>, routinely. Output has risen "by a terrifying magnitude."</li>
+<li>The whole question: <strong>is that code any good?</strong> How do we work at this much higher velocity without producing slop and rubbish?</li>
+</ul>
+<h3 id="the-old-problem-hiding-inside-the-new-one">The old problem hiding inside the new one</h3>
+<ul>
+<li>This looks new, but megacorps solved a version of it long ago. <strong>Microsoft</strong>: 100,000+ developers of varying experience across a 25-million-line codebase. <strong>No single human can review it all</strong> — yet they ship quality.</li>
+<li>The big challenge for individuals: figure out <strong>which big-company techniques produce quality from unreviewable code, and scale them down to run on our laptops.</strong></li>
+<li>Willison had an earlier version of this revelation ~5 years ago at <strong>Eventbrite</strong> (engineers across ~5 time zones). The processes good for distributed teams — <strong>comprehensive automated tests, comprehensive documentation</strong> — turned out to be great for <em>personal</em> productivity too: rather than slowing him down they <em>sped him up</em>, because he could run <strong>100 projects at once</strong> and treat every reboot like being a brand-new contributor.</li>
+<li>Now the same idea must apply to the whole field of <strong>software validation</strong>: produce code <em>and</em> verify it works.</li>
+</ul>
+<h3 id="the-verification-gap-invisible-qa-disappeared">The verification gap: invisible QA disappeared</h3>
+<ul>
+<li>Verification used to be woven into the build: change a line → hit refresh in the browser → confirm it works. That <strong>invisible, continuous manual QA</strong> was just "the daily grind."</li>
+<li>Now you can <strong>one-shot a feature with Claude</strong> and come back to ~1,000 lines having done <em>none</em> of that along-the-way checking. The QA didn't move — it vanished, and must be re-introduced deliberately.</li>
+</ul>
+<h3 id="case-study-strong-dms-dark-factory-the-maximalist-version">Case study — Strong DM's "dark factory" (the maximalist version)</h3>
+<p>The most striking example he's seen (from October 2025 — "ancient times" by current standards): a company called <strong>Strong DM</strong> building what they called a <strong>software factory</strong>, also known as a <strong>dark factory</strong>.
+- <strong>Dark factory concept (from manufacturing)</strong>: if you automate a factory enough, you don't need humans on the floor — the robots do all the work, so you may as well <em>turn the lights off</em>. Applied to software: build so automatically that human "illumination" isn't required.
+- <strong>Team of just three people.</strong> Two foundational rules:
+  1. <strong>Code must not be written by humans</strong> — radical nine months ago, unremarkable now.
+  2. <strong>Code must not be <em>reviewed</em> by humans</strong> — the genuinely provocative one ("big exclamation mark").
+- The kicker: they were building <strong>security software</strong> — authentication management, issuing credentials — arguably the <em>most</em> security-conscious software imaginable, yet built under those two rules.</p>
+<p><strong>Techniques worth borrowing from Strong DM:</strong>
+- <strong>Scenario testing with an army of agents.</strong> Scenarios are described in plain terms ("a user must log in, add something to the shopping cart, sign out"); those scenarios become test scripts; swarms of automated agents run through different scenarios hunting edge cases. Effectively an <strong>automated, very-high-quality QA team</strong>.
+- <strong>A "digital twin universe."</strong> Their software integrates with <strong>Slack, Okta, Jira</strong> and other enterprise platforms — all of which have <strong>rate limits</strong>, are occasionally flaky, and can't take 10,000 tests/hour.
+  - So they had a coding agent <strong>rebuild clones</strong> of those partners, using the partners' <strong>API documentation and client libraries as the specification</strong> (plus the fact that agents already "know what Slack is").
+  - The clones were tiny <strong>Go binaries</strong> — complete-enough duplicates of Slack/Okta/etc. — with <strong>no rate limits</strong>, hammerable as hard as needed.
+  - They could even <strong>simulate weird production bugs</strong> by having the digital twin reproduce them.
+  - Example: a testing agent posting "Hey, I'm Janet Sanchez joining as an employee in #general" would trigger a whole simulated <strong>onboarding + credential-issuing</strong> sequence.</p>
+<p><strong>The one rule he rejects — "token maxing."</strong> Strong DM's third rule: <em>"If you haven't spent at least $1,000 on tokens per human engineer, your software factory has room for improvement."</em> (i.e. ~$30,000/month for the three-person team.) Willison calls this <strong>"token maxing before anyone was calling it token maxing"</strong> and explicitly does <strong>not</strong> endorse spending $30k/month. He cites a saner data point heard <em>that morning</em>: <strong>Uber capping tools at $1,500 per engineer per month.</strong> Takeaway: borrow the <em>techniques</em>, not the spend.</p>
+<hr>
+<h3 id="pattern-1-active-refactoring-make-review-fun-and-actually-learn-the-code">Pattern 1 — Active refactoring (make review fun, and actually learn the code)</h3>
+<ul>
+<li><strong>Stakes-based review policy</strong>: think hard about the stakes. A decorative icon on a web page → don't sweat the details. An <strong>authentication flow → review every line carefully.</strong></li>
+<li>But reviewing code is <em>miserable</em> — nobody wants to read 1,000 lines of a GitHub PR; you glaze over and rubber-stamp "accept."</li>
+<li><strong>Active refactoring</strong>: instead of passively reading, <strong>nitpick the agent's every decision</strong> — rename this variable, refactor this, remove this duplication, "I don't get how this works — explain it and add comments."</li>
+<li>This is a <strong>complete anti-pattern with humans</strong> (rude; can stall a PR for weeks across timezones). But <strong>you can't be rude to an agent</strong> — if it "gets upset," reboot it and it forgets everything.</li>
+<li>It's <strong>more fun and less boring</strong> than read-and-accept, and you <strong>come out actually understanding what the code does.</strong></li>
+<li><strong>Example prompt</strong>: <em>"Refactor the tests to reduce duplicate code; rename variables for consistency with this other file."</em> He uses prompts like this constantly; it works very well for code that <strong>deserves the effort</strong>.</li>
+</ul>
+<h3 id="pattern-2-stakes-and-seams-verify-api-designs-by-exercising-them">Pattern 2 — Stakes and seams; verify API designs by exercising them</h3>
+<ul>
+<li>The job is increasingly <strong>software architecture/design</strong>: get the <strong>high-level structure</strong> and the <strong>seams between systems</strong> as good as possible.</li>
+<li><strong>API design is one of the most important decisions</strong> — any interface other code/developers will call should be <strong>as close to flawless as possible.</strong></li>
+<li><strong>Best way to verify an API design: write lots of code against it.</strong> Agents are excellent at <strong>throwaway code</strong> against experimental APIs.</li>
+<li><strong>Workflow trick — "review the last commit"</strong>: if you make good commits, telling the agent to <em>look at the last commit</em> is enough for it to understand "this feature, in this part of the codebase, changed this way." Then: <em>"brainstorm and prototype three features against that new API"</em> — tell it to run in a <strong>branch or work tree</strong>, and it churns out the equivalent of several co-workers hacking at your API, <strong>instantly.</strong></li>
+<li>Result: far more confidence in API designs, because <strong>every one has been exercised</strong> (sometimes in weird ways) by agents.</li>
+</ul>
+<h3 id="pattern-3-prototyping-as-verification-prototypes-are-now-free">Pattern 3 — Prototyping as verification (prototypes are now free)</h3>
+<ul>
+<li>Willison has "always been a prototyper" — interactive prototypes / proofs-of-concept aren't just about the interface; they <strong>prove something is possible</strong> given available tools (e.g. "Can Redis serve up this combined timeline?").</li>
+<li>Prototypes are <strong>effectively free</strong> now that agents build them. Build a prototype with an agent, then <strong>feed the verified prototype back in</strong> as input to build the real thing.</li>
+<li><strong>Concrete example</strong>: he's building <strong>his own agent</strong> (he quips that in 2026 "the hello world of programming is <em>build your own agent</em>"), and wanted Claude's feature where pasting a large block of text into the input is treated as a <em>file</em>.</li>
+<li>Prompt (≈): <em>"Build a prototype with text editing where you can type directly in, but if you paste more than X characters (pick X, I don't care), treat it as a paste-file event."</em></li>
+<li>It produced a working little text editor: paste a big chunk → it shows as a "pasted file" at the bottom. He <strong>tested it across a couple of browsers</strong> → now has a <strong>verified</strong> version of the feature.</li>
+<li>Later: <em>"Add a paste-file feature based on the prototype in <code>file-paste.html</code>."</em></li>
+<li>He is <strong>"hoarding prototypes."</strong> Many of his most interesting projects spend <strong>over a month in the prototyping phase</strong>, trying little patterns he expects to need. Eventually: "I've covered all my bases, I have working code for all the pieces — now it's just cobbling them together into production software."</li>
+</ul>
+<h3 id="pattern-4-agentic-documentation-accurate-short-uncreative">Pattern 4 — Agentic documentation (accurate, short, uncreative)</h3>
+<ul>
+<li>A long-held belief of his: <em>"If I'm going to read a piece of text, the writer must have put more effort in than I put into reading it — otherwise they're a vampire on my time."</em> True for <strong>blog posts / persuasion / anecdotes</strong> — but <strong>code documentation has none of those characteristics.</strong></li>
+<li>What you want from code docs: <strong>accurate, short, totally uncreative, tells you exactly what the thing does.</strong> Agents are <strong>very good at uncreative prose.</strong></li>
+<li><strong>Habit before landing a branch</strong>: <em>"<code>diff against main</code> and review if any documentation needs to be updated."</em> (Again using <strong>git as input</strong> to the agent.) Sometimes it finds nothing; sometimes it offers updates (he accepts or rejects case-by-case).</li>
+<li>The main benefit is <strong>confidence in documentation.</strong> <strong>Documentation trust is very hard to earn and lost instantly</strong> — the moment docs mislead someone, they'll never trust them again. Agents give us a powerful mechanism to <strong>keep docs continuously up to date.</strong></li>
+</ul>
+<h3 id="pattern-5-no-opinions-no-promotion-in-generated-text">Pattern 5 — No opinions, no promotion in generated text</h3>
+<ul>
+<li>A <strong>strong rule</strong> for LLM-generated text: <strong>no opinions and no rationalizations.</strong> Agents often add a flourish like "this feature exists so that X, Y and Z" — usually <strong>not quite the real reason</strong>, hence misleading. <strong>Edit it out.</strong></li>
+<li>Real commit examples of his: <em>"tweaked some overly promotional language"</em>; removing a code comment that claimed <em>"the whole point is to persist an async response."</em></li>
+<li>Keeping artificial/over-promotional language out of codebases matters because <strong>people lose trust</strong> in docs/comments that feel artificial.</li>
+</ul>
+<h3 id="pattern-6-continuous-deployment-preview-environments-now-trivial">Pattern 6 — Continuous deployment &amp; preview environments (now trivial)</h3>
+<ul>
+<li>Some things every team wants but that were "too much work" in the <strong>pre-agent era</strong> — his favourite example: <strong>continuous deployment</strong> (push a branch/PR/main → something turns "green" and deploys that version to hosting).</li>
+<li>He uses CD on <strong>main</strong> for several projects; <strong>CD for previews has essentially no downsides.</strong></li>
+<li>With a <strong>robust preview environment</strong> (good auth, VPN, etc.), preview deploys take <strong>"the risk of reviewing code by looking at it down to almost zero"</strong> — because <strong>reading code never tells you what you need to know vs. actually putting it through its paces.</strong> Value for both your own testing <em>and</em> sharing/collaborating with teammates.</li>
+<li>This used to be <strong>weeks of work for an engineering team</strong>; now a single prompt does it:</li>
+<li><em>"Build a GitHub Actions workflow that deploys new PRs to a fresh Fly.io machine"</em> (or <strong>Cloud Run / Vercel</strong> / your host of choice), <strong>"ask clarifying questions first."</strong></li>
+<li>The "ask clarifying questions first" tack-on is essential — without it the agent <strong>makes stuff up</strong>; with it, it extracts the needed info from you and produces the "dream preview environment" with <strong>no manual GitHub Actions fiddling.</strong></li>
+</ul>
+<h3 id="pattern-7-reduce-the-blast-radius-of-mistakes-layered-defenses">Pattern 7 — Reduce the blast radius of mistakes (layered defenses)</h3>
+<ul>
+<li>Agents (and humans) make mistakes that slip through; <strong>agent mistakes may be weirder and harder to spot due to overconfidence.</strong> So borrow software-engineering techniques for <strong>operating when code isn't fully trustworthy.</strong></li>
+<li><strong>The Firefox model</strong>: Firefox has many reported security issues, but <strong>very few are priority-1</strong>, because everything runs in <strong>many layers of defense</strong> — a bug in one part still can't break out to read files on your computer.</li>
+<li>Three sandboxing tools he's been using heavily:</li>
+<li><strong>Content Security Policy (CSP)</strong> — HTTP headers that stop pages from loading code from external domains and restrict what they can do if something goes wrong.</li>
+<li><strong>Sandboxed iframes</strong> — <em>fascinating</em>: an iframe area that can run <strong>malicious JavaScript that can't do anything bad</strong> (can't steal cookies, can't break out). Trustworthy because they're used for <strong>banner ads</strong> — <em>several decades of hardening.</em> Documentation is "almost impossible" to find, but <strong>frontier agents (e.g. GPT-5.5) are good at setting them up</strong> and have taught him a huge amount he'd struggled with for years.</li>
+<li><strong>WebAssembly / WASI</strong> — Wasm began as a browser tech (run compiled C/C++ in a sandbox where it can't misbehave). Newer <strong>server-side</strong> Wasm via <strong>WASI (WebAssembly System Interface)</strong> lets you run sandboxed code in server programs: <strong>can't read files, can't make network connections, strict memory/CPU limits.</strong> He recently read software running <strong>Python inside WebAssembly inside Python</strong> and it seemed to hold up.</li>
+</ul>
+<h3 id="pattern-8-attack-your-own-sandboxes-with-agents">Pattern 8 — Attack your own sandboxes with agents</h3>
+<ul>
+<li>A perennial problem with sandboxes: <strong>you don't trust them.</strong> Fix: <strong>put agents inside and have them try every escape trick they know.</strong> He tested the Python-in-Wasm sandbox by telling GPT-5.5 <em>"you are running in a sandbox I built — try to break out."</em> It couldn't (he wants to try <strong>Claude</strong> equivalents when he gets access).</li>
+<li><strong>Important caveat about Docker</strong>: many people report that when they try this <strong>in Docker, agents recognize it</strong> ("Oh, this is Docker — if I connect to this host port I can run host commands") and <strong>escape</strong>. So it's specifically good to <strong>test your sandboxes this way.</strong></li>
+</ul>
+<h3 id="pattern-9-zero-tolerance-for-flaky-tests-incl-ui-tests">Pattern 9 — Zero tolerance for flaky tests (incl. UI tests)</h3>
+<ul>
+<li>A test failing <strong>1 in 50</strong> times is historically a miserable, hours-to-days hunt — so humans <em>tolerate</em> it. <strong>No more.</strong> Agents <strong>don't mind wasting their own time</strong> and are <strong>very good at simulating the conditions</strong> that cause flakiness.</li>
+<li><strong>Concrete example</strong>: a sandboxing project crashed in <strong>GitHub Actions CI against Python 3.14</strong> but worked fine on his Mac. He told <strong>Codex</strong>: <em>"You've got Docker — try to reproduce this."</em> It <strong>reproduced enough of the Linux/CI environment in a Docker container on his Mac to replicate the bug</strong>, found the root cause, and produced a confusing-but-correct patch he had to interrogate to understand. He <strong>ran it in a background window and forgot about it</strong>; checking back ~15 minutes later, it had solved the problem. "We don't have to tolerate flaky tests anymore" — a huge relief.</li>
+<li><strong>Applies to UI tests too (100%).</strong> Browser-automation tests were <em>notoriously</em> flaky (he's worked at companies that <strong>threw away entire test suites</strong> over it). Two things changed: <strong>Playwright</strong> auto-handles timing ("the link's not there — wait a second and retry"), and <strong>agents are fluent in all browser-testing tech</strong> (Selenium, Playwright). You often don't even need to install anything — <strong>Chrome's DevTools Protocol</strong> lets agents talk JSON directly to Chrome. Browser automation "quietly got solved over the past 18 months"; he now uses it for everything, including <strong>scraping</strong> (if data appears in a browser, the agent can fire up the browser engine and scrape it).</li>
+</ul>
+<h3 id="pattern-10-every-human-productivity-tool-helps-the-agents-too">Pattern 10 — Every human-productivity tool helps the agents too</h3>
+<ul>
+<li>A general principle: <strong>any tool that helps human engineers almost always helps coding agents</strong> — and he's been describing them all along.</li>
+<li>Examples: <strong>onboarding documentation</strong> (he notes <code>CLAUDE.md</code> <em>is</em> just onboarding documentation for your agent — "we should have had that before, we just weren't incentivized"); <strong>continuous integration</strong>; <strong>linters</strong> (he now runs them against everything — agents sort out the gnarly warning/error messages); <strong>code formatting</strong>; <strong>debuggers</strong>; <strong>logs</strong>; and in some cases <strong>entire programming languages.</strong></li>
+<li><strong>Language angle</strong>: he never got to grips with <strong>Go</strong> before (the learning curve), but <strong>Go is fantastic for coding agents</strong> — anything that <strong>compiles quickly and has good error messages</strong> lets agents practically <strong>brute-force</strong> their way through building things. Generating overly-ambitious projects and then picking through them is itself a great way to <strong>learn a new language.</strong></li>
+</ul>
+<h3 id="the-big-picture-agentic-engineering-as-a-trojan-horse-for-good-practices">The big picture — agentic engineering as a Trojan horse for good practices</h3>
+<ul>
+<li><strong>Analogy to accessibility</strong>: web accessibility was always a hard sell — until people realized <strong>Google/SEO was effectively the world's most prolific screenless user.</strong> Once SEO was the carrot, people adopted <strong>semantic headings and accessibility</strong> wholesale. <strong>SEO was the trick that got people to care about accessibility.</strong></li>
+<li>Likewise, <strong>agentic engineering is the trick that teaches everyone good engineering practices.</strong> Decades-old-but-neglected discipline (tests, docs, CI/CD, linters) is suddenly worth learning, because the acceleration forces us to <strong>work like mega-corporations — on our laptops, with armies of agents.</strong></li>
+<li>He's <strong>rereading <em>The Mythical Man-Month</em> (1978)</strong> and finds <strong>three chapters directly applicable</strong> to agentic engineering in 2026.</li>
+</ul>
+<h3 id="build-verification-machines-not-dark-factories">Build "verification machines," not dark factories</h3>
+<ul>
+<li>His own setup isn't a true dark factory — "more of a slightly gray, hazy factory"; he <strong>still reviews code when needed.</strong></li>
+<li>The most important thing is to <strong>build verification machines</strong>: anything that helps you and your agents <strong>verify the code is good, works, and is high-quality.</strong></li>
+<li><strong>Closing thesis</strong>: <em>"If we're going to use these tools to build worse software faster, we're missing a trick. We should be using this stuff to build</em> <strong><em>better</em></strong> <em>software faster."</em> We can have <strong>higher quality, easier maintenance, AND more features</strong> — normally a "two out of three," but here we get <strong>all three.</strong> We get to <strong>reinvent how software is built</strong>; nobody asked for it, nobody knows the end state, but it's a thrill to be present for it.</li>
+<li>Find him at <strong>simonwillison.net</strong>, and on <strong>Mastodon, Bluesky, and Twitter.</strong></li>
+</ul>
+<h3 id="qa-highlights">Q&amp;A highlights</h3>
+<ul>
+<li><strong>What are you reading/listening to?</strong> <em>Mythical Man-Month</em>'s concept of <strong>conceptual integrity</strong> — a large system must be understandable/explainable as a coherent whole. Big risk with agents: every feature is "just another prompt," producing a <strong>weirdly-shaped product</strong> you can't even remember the capabilities of the next day (he calls his January-2026 phase <strong>"coding-agent psychosis"</strong> — he rebuilt JavaScript in Python, built a Go application server with lazy-loading/proxying, ~4–5 giant projects untouched since February because they were terrible ideas with no market fit). Lesson: <strong>just because you can build it doesn't mean you should</strong>; the hard problem now is <strong>personal discipline.</strong></li>
+<li><strong>Where do I find templates/repos that bake these principles in?</strong> <strong>Jesse Vincent</strong> (sitting front row) built <strong>Superpowers</strong> — a set of <strong>skills for Claude Code / Codex</strong> that bakes in much of this (e.g. brainstorming → test-driven development). Good starting point, but patterns are still evolving — <strong>the most important thing is to just try it out.</strong> Take on <strong>side projects</strong>; he's been doing <strong>game development</strong> (half a dozen games, including a 3D game in <strong>Rust</strong>, all "terrible") and learned the hard part isn't drawing on screen — it's a <strong>compelling game loop</strong>, which he hasn't cracked.</li>
+<li><strong>The "jagged frontier":</strong> LLMs are unpredictably great at some things and bad at others. The only way to learn the boundary is to <strong>throw overly-ambitious projects at them.</strong> Great trick: <strong>if something fails, pocket it and retry in six months</strong> — it often starts working, and you may be the <strong>first person in the world</strong> to discover an agent can now do it.</li>
+<li><strong>How do different languages behave in agentic flow?</strong> A year ago there were clear winners (Python, JavaScript great; Rust often failed to compile ~18 months ago). <strong>That's changed entirely</strong> post-November models — agents can write code in a <strong>language you just made up</strong>, brute-forcing through <em>especially</em> if it has good error messages. He's "<strong>running out of tasks they can't do</strong>" (awkward for benchmarking new models). He optimizes for <strong>his own readability</strong> — picks <strong>Go over Rust</strong> because he can read ~all of it, whereas Rust's <strong>borrow checker / refs / signatures</strong> still trip him up (one of his model tests: <em>"can it teach a Python programmer how the Rust borrow checker works?"</em> — improving, but he hasn't internalized it). He's even written <strong>Swift UI</strong> Mac menu-bar apps <strong>without knowing a single line of Swift.</strong> With strong fundamentals (red-green TDD, good test harnesses), "the world is your oyster."</li>
+<li><strong>HTML prototypes vs. spec-driven development?</strong> He uses both. The most basic spec-driven version is <strong>Claude Code's planning mode</strong>; he often does informal planning — <strong>brainstorm with a model, have it write a markdown file</strong> describing the feature, then feed that markdown to the implementing model. Works <strong>across all models</strong> (brainstorm with Claude, implement with Codex). Huge bonus: <strong>review becomes far easier</strong> — instead of decoding unfamiliar code, you're just <strong>checking it did exactly what you agreed.</strong></li>
+<li><strong>Zero tolerance for flaky UI tests too?</strong> Yes (see Pattern 9). His own UI testing is <strong>very basic</strong> (open window, navigate, click button) and he <strong>doesn't review that test code closely</strong> — a great property of UI tests is <strong>you can watch them run</strong> (the window pops open, you see it click/select), which makes reading the underlying code add little value. He has nothing against behavior-driven development; he just keeps it simple.</li>
+<li><strong>Regulated industries / SOC-2 / CISO conversations?</strong> He's candid: he <strong>last dealt with these problems eight years ago</strong>, pre-coding-agents, so he has <strong>no specific advice</strong> here. Good news: <strong>every regulated industry faces the same problems right now.</strong> His one transferable tip: <strong>find peers doing your job at similar companies and form a "cabal"</strong> — monthly coffee to swap the dirty tricks that actually work (he did this as an engineering manager; it was fantastic). (Audience referenced a <strong>"Swiss cheese" layered-defense model</strong> where each layer produces artifacts that satisfy controls/requirements — Willison didn't claim production experience with that specific compliance mapping.)</li>
+<li><strong>Does code readability still matter</strong> if you don't know the language and agents maintain it? Comes back to <strong>blast radius / stakes</strong>: high-stakes code, yes, absolutely; low-stakes "vibed-up" UI on a rarely-visited page, less so (a future agent can clean it up). But there's a real tension: <strong>good code for humans is good code for agents.</strong> Agents are <strong>great at consistency</strong> — drop one into a <strong>good codebase</strong> and it tends to <strong>keep it good</strong>; drop one into a <strong>gritty codebase</strong> and it risks getting <strong>messier and messier</strong> over iterations. Since keeping it clean isn't expensive, <strong>investing in readability is worth it.</strong> (He stresses he's <strong>not confident</strong> this answer is correct.)</li>
+<li><strong>Is the coding-agent transcript a necessary artifact?</strong> <strong>"So much. Yes."</strong> His biggest frustration: <strong>agents don't treat transcripts with respect</strong> (Claude Code, last he checked ~6 months ago, <strong>deleted transcripts older than 90 days by default</strong> — presumably fixed by now). <strong>"There's gold in those"</strong> — most of the work now lives in the transcript. His favourite agent is <strong>Codex Desktop</strong> purely for its <strong>"copy as markdown"</strong> button: he pastes the transcript into a <strong>GitHub Gist</strong> and <strong>links the gist in the commit message</strong> → archived forever. He rarely re-reads them, but treats them like <strong>commit messages</strong> — irrelevant until the day you need to know <em>why on earth</em> you decided to do something a certain way. Coding agents <strong>should value their transcripts far more.</strong></li>
+</ul>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Coding agents (general class)</strong> — software where the LLM both writes and executes/tests/iterates on code; "only really got good" in November 2025.</li>
+<li><strong>Claude / Opus 4.5 (Anthropic)</strong> — flagship model whose Nov-2025 release helped trigger the inflection point; also the source of the paste-large-text-as-file UX he cloned. ("Claude Mythos" referenced as a sandbox-testing target he wants access to.)</li>
+<li><strong>GPT-5.1 (OpenAI)</strong> — improved coding model/harness contributing to the November inflection point.</li>
+<li><strong>GPT-5.5 (OpenAI)</strong> — frontier model he uses for sandboxed-iframe setup and for <strong>attacking his own sandboxes</strong> to test escape resistance.</li>
+<li><strong>Claude Code</strong> — coding agent; its <strong>planning mode</strong> and <code>CLAUDE.md</code> onboarding-doc convention are cited; criticized for deleting old transcripts by default.</li>
+<li><strong>Codex / Codex Desktop (OpenAI)</strong> — coding agent he used to reproduce a CI-only bug in Docker; <strong>Codex Desktop's "copy as markdown"</strong> transcript export is his favourite feature.</li>
+<li><strong>GitHub / GitHub Actions</strong> — CI/CD; prompt-generate a workflow to deploy PRs to preview environments; also where the Python 3.14 CI bug surfaced.</li>
+<li><strong>GitHub Gist</strong> — where he archives agent transcripts and links them from commit messages.</li>
+<li><strong>Fly.io / Google Cloud Run / Vercel</strong> — hosting targets for auto-deployed per-PR preview environments.</li>
+<li><strong>Content Security Policy (CSP)</strong> — HTTP headers restricting external code loading and page capabilities (blast-radius reduction).</li>
+<li><strong>Sandboxed iframes</strong> — heavily-hardened (via banner-ad history) browser sandbox that can run untrusted JS safely.</li>
+<li><strong>WebAssembly (Wasm) + WASI (WebAssembly System Interface)</strong> — browser-origin sandbox tech now usable <strong>server-side</strong> to run code with no file/network access and strict CPU/memory limits.</li>
+<li><strong>Playwright</strong> — browser-automation framework that auto-retries on timing issues, dramatically reducing UI-test flakiness.</li>
+<li><strong>Selenium</strong> — older browser-automation framework agents are fluent in.</li>
+<li><strong>Chrome DevTools Protocol</strong> — lets agents drive Google Chrome via JSON directly, no extra install needed.</li>
+<li><strong>Docker</strong> — used to reproduce Linux/CI bugs locally; <strong>caution</strong>: agents often recognize Docker and escape its sandbox via host-port tricks.</li>
+<li><strong>Redis</strong> — referenced as the kind of capability question a prototype answers ("can Redis serve this combined timeline?").</li>
+<li><strong>Go</strong> — fast-compiling, good-error-message language that's <strong>excellent for coding agents</strong>; used by Strong DM for their tiny digital-twin binaries.</li>
+<li><strong>Rust</strong> — agents now write it well, but Willison still struggles to <em>read</em> it (borrow checker); used for his 3D game experiments.</li>
+<li><strong>Swift / SwiftUI</strong> — used (via agents) to build Mac menu-bar apps despite him not knowing the language.</li>
+<li><strong>Python</strong> — used throughout; including running Python inside WebAssembly inside Python; CI bug was Python 3.14.</li>
+<li><strong>Slack / Okta / Jira</strong> — enterprise platforms Strong DM cloned as "digital twins" for unlimited integration testing.</li>
+<li><strong>Superpowers (by Jesse Vincent)</strong> — a set of skills for Claude Code / Codex that bakes in brainstorming + TDD patterns; recommended starting point.</li>
+<li><strong>GPT-3 (2022)</strong> — his original LLM-for-code experiments (SQL queries, code explanation).</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p>None explicitly announced. This is a patterns/practitioner talk, not a product-launch session. Contextual references to recent releases (Opus 4.5, GPT-5.1, and the "November 2025 inflection point") describe the existing landscape rather than new Build announcements.</p>
+<h2 id="demos">💡 Demos</h2>
+<p>No live on-stage demos were run (the clicker even failed at the start). Willison instead walked through <strong>screenshots/examples from his own real work</strong>, notably:
+- <strong>The paste-file prototype</strong> — a small text editor built by an agent where pasting &gt; X characters renders the content as a "pasted file" at the bottom; shown as proof that prototypes are cheap, verifiable, and reusable as later prompt inputs.
+- <strong>Strong DM's Slack "digital twin"</strong> — a screenshot of an agent-rebuilt Slack clone (tiny Go binary) and a testing agent posting "Hey, I'm Janet Sanchez joining as an employee in #general" to trigger a simulated onboarding/credentialing flow.
+- <strong>Commit-message examples</strong> — e.g. "tweaked some overly promotional language" — illustrating the no-opinions/no-promotion editing rule.</p>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>10–50 lines of delivered code per person per day</strong> — industry-average productivity (Steve McConnell, <em>Code Complete</em>, 2004).</li>
+<li><strong>600 LOC/day</strong> — once cited as a <em>high outlier</em> of developer performance (a source ~10 years after <em>Code Complete</em>).</li>
+<li><strong>~600 lines of tested + documented code on his phone, while walking the dog</strong> — Willison's casual present-day output.</li>
+<li><strong>November 2025</strong> — the inflection point when coding agents became reliable daily drivers (Opus 4.5, GPT-5.1, matured harnesses).</li>
+<li><strong>Microsoft: 100,000+ developers, 25,000,000+ lines of code</strong> — the "no single human can review it all" scale that motivates layered verification.</li>
+<li><strong>Strong DM: a team of 3</strong> building security software under "no human writes code" + "no human reviews code"; their token rule = <strong>$1,000+ tokens per engineer (~$30,000/month)</strong> — which Willison rejects.</li>
+<li><strong>Uber: $1,500 per engineer per month</strong> tool cap — cited as the saner spending benchmark.</li>
+<li><strong>1 in 50</strong> — the flaky-test failure rate he now refuses to tolerate; the background agent solved the CI repro in <strong>~15 minutes.</strong></li>
+<li><strong>Claude Code deleted transcripts older than 90 days by default</strong> (as of ~6 months before the talk).</li>
+<li><em>"You can't be rude to an agent. If you're rude to your agent and it gets upset, you can reboot it and it forgets everything."</em></li>
+<li><em>"In 2026 the hello world of programming is: build your own agent."</em></li>
+<li><em>"Token maxing before anyone was calling it token maxing."</em></li>
+<li><em>"Documentation trust is very difficult to earn and you can lose it instantly."</em></li>
+<li><em>"If we're going to use these tools to build worse software faster, we're missing a trick. We should be using this stuff to build<em> </em><strong>better</strong><em> </em>software faster."</em></li>
+<li><em>"Agentic engineering... it's a trick to teach everyone good engineering practices"</em> (the SEO-for-accessibility analogy).</li>
+<li><em>"The jagged frontier"</em> — LLMs are unpredictably good/bad; the only way to learn the edge is to try overly-ambitious things.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Adopt <strong>active refactoring</strong> on the next real PR from a coding agent — nitpick names/dedupe/"explain and add comments" instead of read-and-accept.</li>
+<li>Wire up <strong>per-PR preview deploys</strong> with the "build a GitHub Actions workflow… ask clarifying questions first" prompt (Fly.io / Cloud Run / Vercel).</li>
+<li>Add the <strong><code>diff against main → does any documentation need updating?</code></strong> step to my pre-merge checklist.</li>
+<li>Try the <strong>"review the last commit → brainstorm &amp; prototype 3 features against this API in a work tree"</strong> loop to stress-test an API design.</li>
+<li>Experiment with a <strong>WASI server-side sandbox</strong> for running untrusted/agent-generated code; then <strong>attack it with an agent</strong> to confirm it can't escape (and remember the <strong>Docker-escape caveat</strong>).</li>
+<li>Start <strong>hoarding prototypes</strong> as <code>.html</code>/standalone files and feeding the verified ones back as prompt inputs.</li>
+<li>Set up <strong>transcript archiving</strong> (Codex Desktop "copy as markdown" → Gist → link in commit message).</li>
+<li>Look at <strong>Superpowers</strong> (Jesse Vincent) for Claude Code / Codex skills (brainstorm + TDD).</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What does a <strong>layered "Swiss cheese" verification model mapped to SOC-2 / audit artifacts</strong> actually look like for a regulated team? (Willison explicitly couldn't answer.)</li>
+<li>For our stack, which <strong>digital-twin clones</strong> (of internal/3rd-party APIs) would unlock unlimited, rate-limit-free scenario testing?</li>
+<li>What's our equivalent of a per-engineer <strong>token budget</strong> — and what governance makes it sane (cf. Uber's $1,500/mo)?</li>
+<li>How do we preserve <strong>conceptual integrity</strong> when every feature is "just another prompt"?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Anyone shipping AI-assisted code who needs a <strong>verification / quality strategy</strong> (testing, CI/CD, sandboxing, docs).</li>
+<li>Platform/DevEx teams designing <strong>preview environments, CI, and sandboxed execution</strong> for agent-generated code.</li>
+<li>Engineering leaders thinking about <strong>agentic engineering practice, tooling budgets, and code-review policy.</strong></li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><a class="wikilink wikilink--resolved" href="BRK208.html">BRK208 - Ensuring your code works when AI testing isnt enough</a> (this note)</li>
+<li>Topic: agentic engineering / AI-assisted coding · verification &amp; testing · sandboxing (CSP, sandboxed iframes, WebAssembly/WASI) · continuous deployment &amp; preview environments</li>
+<li>People/projects: Simon Willison (simonwillison.net) · Jesse Vincent — <em>Superpowers</em> · Andrej Karpathy ("vibe coding") · Strong DM ("dark factory" / digital twins)</li>
+<li>Reading: <em>The Mythical Man-Month</em> (Brooks, 1978) — conceptual integrity · <em>Code Complete</em> (McConnell, 2004)</li>
+<li></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="BRK207.html"><span class="pager-dir">← Previous</span><span class="pager-code">BRK207</span><span class="pager-title">GitHub Copilot in Visual Studio: Agents That Debug, Profile, and Test</span></a>
+    <a class="pager pager-next" href="BRK210.html"><span class="pager-dir">Next →</span><span class="pager-code">BRK210</span><span class="pager-title">Future of Developer Productivity: Microsoft&#x27;s EngThrive Framework in Practice</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

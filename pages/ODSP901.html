@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ODSP901 — Discover, govern, and scale Azure resources with HashiCorp Terraform</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">ODSP901</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=w9CXxGHi2HA" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Discover, govern, and scale Azure resources with HashiCorp Terraform</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Karim Satili (Senior Developer Advocate, HashiCorp)</span>
+      <span class="meta-item">⏱️ 18m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="terraform">Terraform</span><span class="chip" data-tag="hashicorp">Hashicorp</span><span class="chip" data-tag="iac">Iac</span><span class="chip" data-tag="azure">Azure</span><span class="chip" data-tag="governance">Governance</span><span class="chip" data-tag="policy-as-code">Policy As Code</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Karim Satili — Senior Developer Advocate, HashiCorp (focus: infrastructure &amp; orchestration tooling)<br>
+<strong>Duration:</strong> ~18 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=w9CXxGHi2HA">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Every Azure team believes they manage "everything with Terraform" — but when you actually diff Terraform state against what's running, real coverage is usually <strong>40–60%</strong>, not the 80–90% people claim. This HashiCorp partner session is about closing that <strong>unmanaged-resource gap</strong> quickly. The headline is <strong><code>terraform query</code> (Terraform search)</strong> — a new CLI capability (Terraform <strong>1.14</strong>, released <strong>November 2025</strong>) that <em>inverts</em> the import workflow: instead of you knowing the resource ID up front and hand-writing an <code>import</code> block, Terraform <strong>discovers</strong> unmanaged resources via a search query, <strong>generates the config + import blocks for you</strong> into a <code>.tf</code> file, and lets you plan/apply the import. The session then layers <strong>HashiCorp Sentinel</strong> policy-as-code on top to govern the newly imported resources (tags, naming conventions, instance types) and eliminate drift. The pitch: turn "three weeks of inventory work" into "three commands."</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>The coverage gap is real and unmeasured.</strong> Teams self-report 80–90% Terraform coverage; actual is typically <strong>40–60%</strong>. The problem isn't dishonesty — <em>nobody is measuring</em> the delta between state and reality.</li>
+<li><strong>Resources escape IaC for human reasons, not engineering failures.</strong> Four recurring patterns: (1) "I'll codify it later" (later never comes), (2) the <strong>2 a.m. incident fix</strong> done by hand, (3) <strong>acquisitions</strong> where you inherit an unknown subscription, (4) the <strong>PoC that became production</strong> because it worked and nobody rebuilt it.</li>
+<li><strong>The goal isn't prevention — it's a fast path back.</strong> You can't stop these situations from happening; you need a quick route from <em>unmanaged → managed</em>.</li>
+<li><strong>The gap is worse for AI/GPU workloads.</strong> Untagged GPU resources break <strong>cost attribution</strong> (which team/experiment/project?), ungoverned subnets collapse <strong>network isolation</strong> between training and inference, and undefined managed-identity scopes destroy your <strong>audit story</strong> (identity sprawl, acute for agent-based architectures).</li>
+<li><strong>Import has evolved in three stages:</strong> (1) old <code>terraform import</code> CLI — one resource/one address at a time, slow; (2) <strong>import blocks</strong> (since Terraform <strong>1.5</strong>) — plan-first, PR-reviewable, but <em>you still write the block and must already know the resource ID</em>; (3) <strong><code>terraform query</code> / search</strong> (since <strong>1.14</strong>) — Terraform discovers the resources <em>and</em> generates the config.</li>
+<li><strong><code>terraform query</code> is a 3-step workflow:</strong> define a search query → run <code>terraform query</code> (authenticates to Azure like a normal plan, queries the remote API for unmanaged resources) → <strong>generate code</strong> into a <code>.tf</code> file.</li>
+<li><strong>No credentials in the query file.</strong> Terraform search <strong>inherits auth from your existing provider config</strong> — if a normal <code>terraform plan</code> succeeds, <code>terraform query</code> succeeds.</li>
+<li><strong>Generated config includes <code>import</code> blocks.</strong> Each discovered resource comes with an <code>import</code> block, so bringing it into state is a single <code>plan</code> + <code>apply</code> cycle — and because it uses import blocks, it works with <strong>HCP Terraform</strong>.</li>
+<li><strong>Import retains existing configuration.</strong> Terraform does <strong>not</strong> change the imported resource's config unless you tell it to — so right after import, resources still carry their old (possibly non-compliant) settings.</li>
+<li><strong>Govern with Sentinel after importing.</strong> <strong>HashiCorp Sentinel</strong> is a policy framework that <em>blocks</em> Terraform operations that violate policy. Use it to enforce tags, naming conventions, instance types, etc., on the newly imported resources.</li>
+<li><strong>Start in soft-fail, move to hard-fail.</strong> The demo runs Sentinel in <strong>soft-fail</strong> (advisory only) — move to <strong>hard-fail</strong> as soon as possible so non-compliant changes are actually blocked.</li>
+<li><strong>Don't reinvent policies.</strong> The <strong>Terraform Registry</strong> (<code>registry.terraform.io</code>) has ready-made <strong>policy packs for Azure</strong> to get you started.</li>
+<li><strong>It can be made agentic.</strong> HashiCorp <strong>Terraform agent skills</strong> let you set much of this up programmatically / through agentic loops.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="the-problem-the-gap-between-state-and-reality">The problem: the gap between state and reality</h3>
+<p>The session frames a problem "every Azure team has but very few have a clean answer for": the gap between <strong>what's in your Terraform state</strong> and <strong>what's actually running</strong> in your subscriptions and tenants.</p>
+<p>When the speaker asks practitioners for a coverage number, he hears 80%, 90%, sometimes higher. But when they sit down and actually compare Terraform state against what's running, the <strong>real number is 40–60%</strong>. A few teams genuinely hit 80%. Regardless of the number, everyone believes the same thing: <em>"we do everything with Terraform."</em></p>
+<p>The gap "isn't dishonesty, it's that nobody's measuring." Resources accumulate outside IaC for entirely human reasons, and historically the path back from unmanaged → managed required either <strong>a heroic engineering effort</strong> or <strong>a freeze you couldn't afford</strong>. The session promises a workflow that closes that gap <strong>"in a quarter rather than a quarter-year."</strong></p>
+<h3 id="sidebar-what-iac-terraform-actually-is">Sidebar: what IaC / Terraform actually is</h3>
+<p>For anyone unsure what IaC or Terraform is: the <em>traditional</em> way to provision in Azure is to open the <strong>Azure portal</strong>, find the service, and manually click together your infrastructure. It seems fast but is <strong>error-prone</strong> — to reproduce the same result you must click the exact same buttons again with no mistakes.</p>
+<p><strong>Infrastructure as Code</strong> instead lets you describe infrastructure in <strong>human-readable text files</strong> that you can <strong>version control</strong> and <strong>review with colleagues</strong>. Because it's code, tools like <strong>Terraform</strong> can parse it and turn your prose into provisioned infrastructure.</p>
+<h3 id="why-resources-end-up-un-codified-the-four-patterns">Why resources end up un-codified — the four patterns</h3>
+<p>None of these are failures of engineering discipline:</p>
+<ol>
+<li><strong>"I'll codify it later."</strong> (Most common.) Someone well-intentioned clicks something in the portal during exploration, fully meaning to bring it under management later — but later never arrives.</li>
+<li><strong>The 2 a.m. incident fix.</strong> Writing Terraform while production is down is a hard sell, especially for teams that don't already codify everything.</li>
+<li><strong>The acquisition.</strong> You inherit an environment you've never seen. All you know is there's a new subscription in your account full of stuff that doesn't look like it belongs.</li>
+<li><strong>The PoC that became production.</strong> It worked, it was already live serving customers, and nobody had time to rebuild it properly.</li>
+</ol>
+<p>The point of the list is <strong>not to prevent these</strong> — you can't, and they'll keep happening — but to have a <strong>fast path back</strong>.</p>
+<h3 id="why-the-gap-is-worse-for-ai-workloads">Why the gap is worse for AI workloads</h3>
+<p>This isn't about agentic loops generating code — it's about <strong>actual GPU resources</strong> for AI, LLM, and ML infrastructure. The governance failures bite harder here:</p>
+<ul>
+<li><strong>Cost attribution breaks.</strong> Missing tags mean the organization struggles to figure out which experiment, team, and project a given (expensive GPU) resource belongs to.</li>
+<li><strong>Network isolation collapses.</strong> Training and inference environments have very different security postures; <strong>one ungoverned subnet</strong> can collapse that boundary.</li>
+<li><strong>Identity sprawl (specific to agent-based architectures).</strong> Every agent has a managed identity; every managed identity has scopes. If those scopes <strong>aren't defined in code</strong>, your audit story falls apart the moment someone asks.</li>
+<li><strong>Data blast radius.</strong> E.g. a storage account left <strong>publicly accessible</strong> is a leak waiting to happen.</li>
+</ul>
+<h3 id="the-evolution-of-importing-in-terraform">The evolution of importing in Terraform</h3>
+<p>Terraform has understood this problem for a long time. The import story has three generations:</p>
+<ol>
+<li><strong><code>terraform import</code> (the old CLI command).</strong> Has existed for years and still works. But it's <strong>one resource, one address at a time</strong> — therefore time-consuming.</li>
+<li><strong>Import blocks (since Terraform 1.5).</strong> A real improvement: you get a <strong>plan-first model</strong>, you can review the generated config in a <strong>pull request</strong>, and apply when happy. <em>But</em> — <strong>discovery is still on you</strong>. You're still writing the import block yourself, which means <strong>you already need to know the resource ID</strong> inside Azure and that the resource actually exists. (Even with tooling that infers it, the discovery burden remains.)</li>
+<li><strong>Terraform search / <code>terraform query</code> (since Terraform 1.14, Nov 2025).</strong> This is the leap the session is built around — it removes the discovery burden.</li>
+</ol>
+<h3 id="terraform-query-terraform-search-the-core-feature"><code>terraform query</code> (Terraform search) — the core feature</h3>
+<p>Available in the <strong>Terraform CLI since 1.14</strong> (released <strong>November 2025</strong>). It upgrades imports by <strong>inverting the import question</strong>:</p>
+<ul>
+<li><strong>Old framing:</strong> <em>"I know what I want — now help me write the config."</em></li>
+<li><strong>New framing:</strong> <em>"Show me what's there, generate the config from it, then let me plan the import."</em></li>
+</ul>
+<p><strong>Three steps:</strong>
+1. <strong>Define a search query</strong> — e.g. <em>"Give me all unmanaged MSSQL servers in my subscription that are in the MS Build resource group."</em>
+2. <strong>Run <code>terraform query</code></strong> on the CLI. It <strong>authenticates to Azure the way you normally do</strong> and queries the remote API for all the unmanaged resources. Takes a minute or two depending on data volume / number of resources.
+3. <strong>Generate code.</strong> No more hand-coding, no copy-paste errors or forgotten attributes — Terraform <strong>generates the code for you, stored in a <code>.tf</code> file</strong> so you can inspect it, peer-review it, and align resources to your org's requirements.</p>
+<p>The tagline: <strong>"three commands instead of three weeks of inventory work."</strong></p>
+<p><strong>Key authentication note:</strong> you do <strong>not</strong> specify Azure credentials in the query file. Terraform search <strong>inherits them from your overall provider config</strong>. So as long as a normal <code>terraform plan</code> run can succeed, <code>terraform query</code> will also succeed.</p>
+<p><strong>Scoping:</strong> you can make queries more prescriptive by constraining to a <strong>specific resource group</strong> (e.g. only list unmanaged resources in the <code>Microsoft Build 2026 unmanaged</code> resource group). ⚠️ <strong>Caveat:</strong> if your constraints cause the API to return nothing, Terraform won't find anything either. <strong>Don't hard-code variable values or resource names</strong> — use variables and make sure the constraints actually match real resources.</p>
+<h3 id="the-generated-unmanagedtf-file">The generated <code>unmanaged.tf</code> file</h3>
+<p>Running <code>terraform query</code> again <strong>with a path argument</strong> exports the config to a file. In the demo, four discovered resources produced <strong>~300 lines</strong> of import statements and resource definitions. Notable details:
+- Terraform leaves a <strong>comment at the top</strong> marking it a <strong>generated file</strong>, plus a <strong>warning to inspect and verify everything</strong> (not shown on screen but present in the file).
+- Below <strong>each</strong> discovered + generated resource there's an <strong><code>import</code> block</strong> to easily bring that currently-unmanaged resource into Terraform state.
+- Importing is just <strong>one <code>terraform plan</code> + <code>apply</code> cycle</strong>.
+- Because it uses import blocks, you can <strong>use HCP Terraform</strong> for this.</p>
+<h3 id="are-we-done-no-govern-next">"Are we done?" — no, govern next</h3>
+<p>After import you <em>could</em> stop — you've gone from unmanaged to managed in an almost programmatic way (and could automate further with the <strong>HashiCorp Terraform agent skills</strong> / agentic loops). But importing <strong>retains all the old configuration</strong> — Terraform made <strong>no changes</strong> to it. So the resources are managed but <strong>not yet compliant</strong>.</p>
+<p>The next level is to <strong>apply organizational policies</strong> to the newly imported resources to <strong>eliminate drift</strong> and make them "feel and behave like other resources" — right tags, right naming conventions, appropriate instance types, correct SKUs, and anything else you can express as a policy.</p>
+<h3 id="governance-with-hashicorp-sentinel-policy-as-code">Governance with HashiCorp Sentinel (policy-as-code)</h3>
+<p><strong>Sentinel</strong> is HashiCorp's <strong>policy framework</strong> that <strong>blocks Terraform from carrying out operations that are not in line with your policy definitions.</strong> The demo policy is built up as:</p>
+<ol>
+<li><strong>Define the resource types to match</strong> against — the set of public IPs, the NAT gateway, the security group.</li>
+<li><strong>Collect all planned resources that are taggable</strong> whenever a plan runs.</li>
+<li><strong>Loop over those resources and collect their tags.</strong></li>
+<li><strong>Evaluate a conditional</strong> for violations — e.g. a <strong>missing owner tag</strong> or an <strong>owner tag in the wrong format</strong>. (Demo is deliberately simple; real orgs would have many more policies.)</li>
+</ol>
+<p>Apply the policy <strong>through Sentinel</strong>, just like running Terraform. The result (as expected) shows the imported resources are <strong>not aligned with the org's naming policy</strong> — because they were knowingly imported in a non-compliant state. <strong>Terraform happily imports them; Sentinel then prevents further changes until the drift is eliminated.</strong></p>
+<p><strong>Soft-fail vs hard-fail:</strong> the demo uses Sentinel in <strong>soft-fail mode</strong> — you get an <strong>advisory</strong> and can still continue. The guidance: <strong>move to hard-fail as soon as possible</strong> so your infrastructure is properly governed and non-compliant changes are actually blocked. (Actually <em>fixing</em> all the violations is "a task for another time.")</p>
+<p><strong>Getting started with policies:</strong> check the <strong>Terraform Registry</strong> (<code>registry.terraform.io</code>) for <strong>policy packs specifically for Azure</strong> use cases.</p>
+<h3 id="conclusion">Conclusion</h3>
+<p>End state: infrastructure that is <strong>Terraform-managed</strong> <em>and</em> <strong>governed by appropriate Sentinel policies</strong>. The two-line takeaway the speaker leaves you with:
+- Use <strong><code>terraform query</code></strong> to bring unmanaged resources under management.
+- Use <strong>Sentinel</strong> to enforce policies that make sense for your organization.</p>
+<p>Three closing links were recommended: the <strong>CLI command documentation</strong>, a <strong>blog post</strong> on the why/how of <code>terraform query</code>, and a <strong>Sentinel playground</strong> to see the full policy in action.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>HashiCorp Terraform</strong> — IaC tool that parses human-readable config and provisions infrastructure; the backbone of the whole session.</li>
+<li><strong>Terraform state</strong> — the record of what Terraform manages; the gap vs. running reality is the central problem.</li>
+<li><strong><code>terraform import</code> (CLI command)</strong> — legacy import, one resource/one address at a time; slow but still supported.</li>
+<li><strong>Import blocks</strong> — plan-first, PR-reviewable import mechanism introduced in <strong>Terraform 1.5</strong>; still requires you to know the resource ID.</li>
+<li><strong>Terraform search / <code>terraform query</code></strong> — new CLI capability (<strong>Terraform 1.14</strong>) that discovers unmanaged resources and generates config + import blocks for you.</li>
+<li><strong>HCP Terraform</strong> (Terraform Cloud) — referenced as a place to run the import-block workflow.</li>
+<li><strong>HashiCorp Sentinel</strong> — policy-as-code framework that blocks Terraform operations violating defined policy; used for tag/naming/instance-type governance. Supports <strong>soft-fail</strong> (advisory) and <strong>hard-fail</strong> (blocking) modes.</li>
+<li><strong>Terraform Registry</strong> (<code>registry.terraform.io</code>) — source of ready-made <strong>Azure policy packs</strong>.</li>
+<li><strong>HashiCorp Terraform agent skills</strong> — let you set up discovery/import programmatically and via agentic loops.</li>
+<li><strong>Azure portal</strong> — the "click-ops" provisioning path that IaC replaces; used in the demo to show the messy unmanaged environment.</li>
+<li><strong>Azure resources demoed</strong> — NAT gateway, network security groups, public IP addresses, storage account, function app, private DNS, networking foundations (~30 resources in one resource group), plus MSSQL servers (used in the example query).</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong><code>terraform query</code> / Terraform search</strong> is the standout new capability — available in the <strong>Terraform CLI since version 1.14, released November 2025</strong>. It enables <strong>discovery of unmanaged resources + automatic config and import-block generation</strong>, removing the manual "you must already know the resource ID" step of import blocks. (Presented as available/released, not a preview.)</li>
+<li>No private/public-preview or GA-gating language was used for the other features; <strong>import blocks (Terraform 1.5)</strong> and <strong>Sentinel</strong> were referenced as established, existing capabilities.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<p>A single connected end-to-end demo (Discover → Import → Govern):
+- <strong>Survey the mess (Azure portal).</strong> Opens the subscription showing <strong>~30 unmanaged resources</strong> scattered across one resource group (networking, security groups, NAT gateway, storage account, function app, private DNS, public IPs). Inconsistent/partial tagging; framed as "three teams clicked this together over a year" — different conventions, no central inventory, unclear dependencies. <em>Point: this is the realistic unmanaged starting state.</em>
+- <strong>Write the search query.</strong> Highlights three target resources to discover — the <strong>NAT gateway</strong>, the <strong>security groups</strong>, and the <strong>two public IP addresses</strong> — and constrains the NAT gateway query to the <code>Microsoft Build 2026 unmanaged</code> resource group. Notes <strong>no Azure credentials in the file</strong> (inherited from provider config). <em>Point: discovery is declarative and scoped; auth is automatic.</em>
+- <strong>Run <code>terraform query</code>.</strong> After a few seconds, discovered resources appear (shows the first two for brevity). <em>Point: Terraform finds the resources for you — no manual inventory.</em>
+- <strong>Export &amp; inspect <code>unmanaged.tf</code>.</strong> Re-runs <code>terraform query</code> with a path to save config; the four resources generate <strong>~300 lines</strong> including a <strong>generated-file comment</strong>, an <strong>inspect/verify warning</strong>, and an <strong><code>import</code> block per resource</strong>. <em>Point: review-ready, peer-reviewable generated config + one-cycle import.</em>
+- <strong>Author &amp; apply a Sentinel policy.</strong> Builds a policy matching the resource types, collecting taggable planned resources and their tags, and checking for a <strong>missing/mis-formatted owner tag</strong>. Applies via Sentinel in <strong>soft-fail</strong>; result correctly flags the imported resources as <strong>non-compliant with naming policy</strong>. <em>Point: import alone isn't governance — Sentinel catches and (in hard-fail) blocks drift.</em></p>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>40–60%</strong> — the <em>actual</em> Terraform coverage most teams have when state is diffed against running resources.</li>
+<li><strong>80–90%+</strong> — what teams <em>self-report</em> (the perception gap).</li>
+<li><strong>"The gap here isn't dishonesty, it's that nobody's measuring."</strong></li>
+<li><strong>Terraform 1.5</strong> — introduced import blocks.</li>
+<li><strong>Terraform 1.14 (November 2025)</strong> — introduced <code>terraform query</code> / search.</li>
+<li><strong>~30 resources</strong> — in the single demo resource group.</li>
+<li><strong>~300 lines</strong> — of generated config + import statements for just <strong>four</strong> discovered resources.</li>
+<li><strong>"Three commands instead of three weeks of inventory work."</strong></li>
+<li>On <code>terraform query</code> inverting import: from <em>"I know what I want, now help me write the config"</em> → <em>"show me what's there, generate the config from it, then let me plan the import."</em></li>
+<li><strong>"Terraform happily imports those. Sentinel then prevents you from making further changes until you've eliminated this drift."</strong></li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Run <code>terraform query</code> against a real Azure subscription/resource group to measure the <em>actual</em> vs <em>assumed</em> coverage gap.</li>
+<li>Try the discover → generate → import → <code>plan</code>/<code>apply</code> loop on a few known-unmanaged demo resources (NAT gateway / NSG / public IP) end-to-end.</li>
+<li>Pull an <strong>Azure policy pack</strong> from <code>registry.terraform.io</code> and run it in Sentinel <strong>soft-fail</strong>, then promote to <strong>hard-fail</strong>.</li>
+<li>Wire the generated import blocks through <strong>HCP Terraform</strong> rather than local CLI.</li>
+<li>Explore the <strong>HashiCorp Terraform agent skills</strong> for automating discovery/import in an agentic loop.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>Which Azure resource types are actually queryable via <code>terraform query</code> 1.14 today (full provider coverage vs gaps)?</li>
+<li>How does <code>terraform query</code> handle dependencies between discovered resources (ordering of imports)?</li>
+<li>Performance/scale: how does query time grow with subscription size / number of resources?</li>
+<li>Best practices for de-duplicating against resources <em>already</em> in state when running broad queries.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Azure landing-zone / governance work and IaC drift remediation.</li>
+<li>Cost attribution + tagging strategy for GPU/AI workloads.</li>
+<li>Lab cleanup — discovering click-ops resources accumulated in test subscriptions.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Terraform">Terraform</span> — the IaC tool whose import/query workflow this session uses to close the coverage gap on Azure.</li>
+<li><span class="wikilink wikilink--unresolved" title="Terraform import and terraform query">Terraform import and terraform query</span> — the discover→query→generate evolution (import blocks → <code>terraform query</code>/search) headlined here.</li>
+<li><span class="wikilink wikilink--unresolved" title="HashiCorp Sentinel">HashiCorp Sentinel</span> — the policy-as-code engine demoed for governing Azure resources (soft-fail vs hard-fail).</li>
+<li><a class="wikilink wikilink--resolved" href="OD827.html">OD827 - Build deploy and run Linux workloads on Azure</a> — adjacent Azure infrastructure/operations session.</li>
+<li><span class="wikilink wikilink--unresolved" title="Azure governance and policy-as-code">Azure governance and policy-as-code</span> — broader governance context (Azure Policy packs, naming standards) this talk plugs into.</li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="ODSP900.html"><span class="pager-dir">← Previous</span><span class="pager-code">ODSP900</span><span class="pager-title">Performance tuning on Cobalt with Arm Performix</span></a>
+    <a class="pager pager-next" href="ODSP902.html"><span class="pager-dir">Next →</span><span class="pager-code">ODSP902</span><span class="pager-title">Build AI-driven UIs in .NET MAUI with design systems</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

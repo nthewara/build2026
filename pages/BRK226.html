@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRK226 — Inside Azure innovations with Mark Russinovich</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">BRK226</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=p2lJFg9bSjM" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Inside Azure innovations with Mark Russinovich</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Mark Russinovich</span>
+      <span class="meta-item">⏱️ 45m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="azure">Azure</span><span class="chip" data-tag="infrastructure">Infrastructure</span><span class="chip" data-tag="security">Security</span><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="networking">Networking</span><span class="chip" data-tag="confidential-computing">Confidential Computing</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Mark Russinovich (CTO &amp; Deputy CISO, Azure); live guest appearance by "Katar/Qatar" — a researcher from Microsoft Research Cambridge (Project Mosaic demo)<br>
+<strong>Duration:</strong> ~45 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=p2lJFg9bSjM">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Russinovich's signature under-the-hood tour of Azure infrastructure, spanning data centers, networking, serverless, AI inference, and security — with the unifying theme of <strong>co-designing AI data centers, core infra, and software together</strong>. Highlights: the latest <strong>Azure Boost</strong> offload card (now 400 Gb networking, multi‑million IOPS) and bare-metal instances powering OpenAI in the Fairwater data centers; a new resilient training-network protocol called <strong>MRC (Multipath Reliable Connection)</strong> that packet-sprays across "planes" to survive switch failures with zero bandwidth loss; <strong>VM-to-VM RDMA</strong> over Azure Boost roughly doubling inference throughput. On the serverless side, <strong>Azure Container Instances</strong> is being re-platformed onto <strong>direct (L1) virtualization</strong>, gaining <strong>container live migration</strong> and the ability to host AI models (Manifold) with isolated CPU/GPU pods. New AI-inference features include <strong>Azure Context Cache</strong> (a pooled, storage-backed KV cache) and ultra-fast <strong>container sandboxes</strong> (10,000 launched in ~2s avg via memory snapshotting). Security closed the show with the <strong>first-ever public confidential VM live migration</strong>, the <strong>Azure Integrated HSM</strong> (an HSM in every server, FIPS 140‑3 L3) giving ~30× faster signing, and speculative MSR work — <strong>Project Mosaic</strong>, micro‑LED optical interconnect — demoed live from Cambridge.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Theme: innovation powering AI</strong> via co-design of AI data centers + core infrastructure + the software on top. Caveat up front: some items shown are pre-release / may never ship as presented.</li>
+<li><strong>Fairwater</strong> AI data centers (Wisconsin + new Atlanta site) use liquid cooling and enormous network cabling — <em>"enough cabling to wrap the Earth four times"</em> in one site; continuously under construction.</li>
+<li><strong>Azure Boost</strong> offloads storage + networking data planes (and the host "agents") onto a dedicated card with <strong>Arm cores + DPU + FPGA</strong> SoC, leaving the workload in control of the server. Now in <strong>&gt;30% of the fleet</strong>; goal is every server.</li>
+<li>Azure Boost gen-over-gen gains (vs last Build): <strong>20 Gb/s remote storage (≈1.4× up), 1M remote-storage IOPS, 36 Gb/s + 6.6M IOPS local NVMe, 400 Gb networking (up from 200), 400k connections/sec</strong>. Dual 200 Gb ports → two top-of-rack switches → sub-second servicing with sub-second workload impact.</li>
+<li><strong>Bare-metal instances</strong> (management offloaded to Azure Boost) launched in limited access for <strong>OpenAI</strong> on Fairwater (GPU servers are bare metal); a <strong>general-purpose offering is coming</strong> soon. Demoed <code>ND144V6</code> with no virtualization running and 8 RDMA-capable Mellanox NICs on the back-end GPU network.</li>
+<li>Fairwater switched from <strong>InfiniBand → Ethernet</strong>, and from RoCE to a new protocol <strong>MRC (Multipath Reliable Connection)</strong>, co-developed with OpenAI + a growing partner consortium. MRC <strong>sprays packets across independent "planes"</strong> so a dropped link/switch rebalances automatically — critical when synchronizing <strong>100,000 GPUs</strong> (a failure otherwise forces a checkpoint restart). Now described as an <strong>industry standard for large network topologies</strong>.</li>
+<li><strong>VM-to-VM RDMA over Azure Boost</strong> bypasses the TCP/MANA software path (memory copies + sync), used for split <strong>prefill/decode</strong> inference pools. Demo: throughput <strong>~3,400 → 7,637 tokens</strong> (≈2×) and <strong>TTFT cut from ~123k → ~47k ms</strong> when switching TCP/IP → RDMA (<code>mana0</code> device). Powers inference clusters behind <strong>Foundry</strong>.</li>
+<li><strong>The future is serverless</strong> (a 10-year-running Russinovich thesis) — now arriving via <strong>Azure Container Instances (ACI)</strong>. Azure treats <strong>only virtualization</strong> (not process/user-mode isolation) as a security boundary, so ACI isolates containers with <strong>Hyper-V</strong>. Already underpins <strong>GitHub Actions, Python in Excel, Horizon DB</strong>.</li>
+<li><strong>Direct virtualization (L1)</strong>: containers run as peers to the management VM (parent partition = L1 host; child VMs = L2 hosts for individual containers/pods) — removes nested-virtualization overhead while keeping strong hostile-multi-tenant isolation. Whole fleet migrating (a <strong>1–2 year</strong> effort).</li>
+<li><strong>Container live migration</strong> shown publicly for the first time — a ticking container moved server→server with <strong>no gap</strong> (tick 695 preserved). Brings VM-style minimal-downtime servicing to containers.</li>
+<li><strong>Manifold</strong> treats all Microsoft GPUs as <strong>one pool</strong> for priority-based, topology-aware scheduling across <strong>ASICs / GPUs / FPGAs / CPUs</strong>; supports complex models (embedding + vision LLM components). With direct virtualization, CPU and GPU model components run in <strong>separate Hyper-V-isolated pods</strong> with direct GPU passthrough. Demoed Llama 4 Maverick inference on a GPU pod beside an isolated 2-CPU/no-GPU pod.</li>
+<li><strong>Azure Context Cache</strong> (preview): a <strong>storage-account-backed, pooled KV cache</strong> behind all servers, so a moved/re-routed conversation doesn't re-pay prefill. Demo lifted cache hit rate to <strong>~96.2%</strong> under concurrency where per-server caches dropped.</li>
+<li><strong>Container sandboxes</strong> for agents start in ~instant time via <strong>memory snapshotting</strong> (snapshot once, map memory for subsequent launches, skipping init). Demo: <strong>10,000 sandboxes</strong> across 10 workers, <strong>~2s average launch</strong>. Agent sandboxing is landing on ACI.</li>
+<li><strong>Confidential computing</strong> protects data <em>in use</em> (in a hardware enclave) + provides <strong>attestation</strong> (a hardware "quote" → relying party / KMS policy releases a key only to an approved enclave). Azure has built this for <strong>a decade</strong> (Intel SGX → AMD/Intel CVMs) and claims the <strong>largest confidential-computing portfolio of any hyperscaler</strong>.</li>
+<li><strong>First-ever public confidential VM live migration</strong> — achieved "in the last few weeks," not yet in production. Uses a measured <strong>migration TD (mig TD)</strong> + sending/receiving policy to extend the confidential trust boundary between two servers (work done deeply with Intel).</li>
+<li><strong>Azure Integrated HSM</strong> (internal name <strong>ManaCore</strong>; announced late last year) puts a <strong>FIPS 140‑3 Level 3 HSM in every Azure server</strong>; keys can be released <em>with policy</em> from Azure Managed HSM / Key Vault into it and used directly by the VM. Demo: AKV signing <strong>~640 ops/s → ~18,800 ops/s</strong> with no loss of security. Built on Microsoft's <strong>Caliptra</strong> root of trust (donated to Open Compute Project).</li>
+<li><strong>Project Mosaic</strong> (MSR, experimental): replace high-power optical lasers with <strong>many low-speed channels of standard micro-LEDs</strong> over imaging fiber, read by <strong>silicon camera sensor arrays</strong> — riding commodity VR/camera supply chains. Live demo from <strong>MSR Cambridge</strong> rendered the letter "Z" by individually modulating micro-LEDs at gigabit speeds.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-format">Framing &amp; format</h3>
+<p>Mark Russinovich opens as <strong>CTO and Deputy CISO for Azure</strong>, noting this recurring "Inside Azure Innovations" talk spans the whole Azure infrastructure stack — <strong>data centers → cybersecurity → systems under development</strong>. Standard caveat: some content hasn't shipped, some just shipped, and some may never ship (or not in the form shown). The unifying thread is <strong>innovation powering AI</strong>, specifically the <strong>co-design of AI data centers, the core infrastructure, and the software running on top</strong>.</p>
+<h3 id="1-infrastructure-fairwater-data-centers">1. Infrastructure — Fairwater data centers</h3>
+<p>Russinovich recounts a <strong>November visit to Fairwater in Atlanta</strong> (companion sites in Wisconsin). The Atlanta site is "continuously under construction." A walkthrough video showed:
+- <strong>Network cabling trunks</strong> connecting top-floor and bottom-floor servers — "enough cabling to wrap the Earth four times" per site.
+- <strong>Liquid-cooling cables</strong> pre-laid so servers can be dropped into sleds and racked; InfiniBand + Ethernet cables on the rack backs.
+- A <strong>break-fix</strong> of liquid cooling being plugged into a rack. (Aside: Mark plugged in a loose cable and minutes later Scott Guthrie got a text that "power cell three" had unexpectedly powered on.)</p>
+<h3 id="2-azure-boost-server-offload-card">2. Azure Boost (server offload card)</h3>
+<p><strong>Purpose:</strong> offload the <strong>data planes</strong> for storage + networking off the main server CPUs onto a dedicated card, and also move the host <strong>management "agents"</strong> off the server — leaving the customer workload in maximal control of the server.</p>
+<p><strong>Hardware:</strong> the latest-gen Azure Boost card carries <strong>DRAM</strong> around the edges and a central <strong>SoC</strong> containing <strong>Arm cores, a DPU, and an FPGA</strong>, where the data plane is processed and the agents run.</p>
+<p><strong>Gen-over-gen stats (since last Build):</strong>
+| Capability | New value | Note |
+|---|---|---|
+| Remote storage throughput | <strong>20 Gb/s</strong> | ≈ <strong>1.4×</strong> increase |
+| Remote storage IOPS | <strong>1,000,000</strong> | |
+| Local NVMe throughput | <strong>36 Gb/s</strong> | local NVMe |
+| Local NVMe IOPS | <strong>6.6 million</strong> | via Boost NVMe offload acceleration |
+| Networking | <strong>400 Gb</strong> | up from 200 Gb |
+| Connections/sec | <strong>400,000</strong> | |</p>
+<p>The card has <strong>two 200 Gb network ports</strong>, each going to a different <strong>top-of-rack switch</strong>, so a switch failure doesn't sever the server, and <strong>sub-second servicing</strong> with sub-second workload impact becomes possible. Azure Boost has been deploying for several years; <strong>&gt;30% of the fleet</strong> now has it, with the goal of <strong>every server</strong>. It also enables <strong>guest VM RDMA</strong> (memory-to-memory transfers bypassing the networking stack, with Boost as transport).</p>
+<p><strong>Bare-metal instances:</strong> because management is offloaded to Boost, Azure can offer <strong>bare-metal instances</strong>, currently in limited access for <strong>OpenAI</strong> (the Fairwater GPU servers are bare metal). A <strong>general-purpose bare-metal offering is coming</strong>. Demo of <code>ND144V6</code>: grab the IP, SSH in, confirm <strong>no virtualization services running</strong>, and <code>lspci</code> showing a PCI bridge plus <strong>eight Ethernet controllers</strong> wired to RDMA-capable <strong>Mellanox</strong> NICs for the back-end GPU-to-GPU network.</p>
+<h3 id="3-mrc-multipath-reliable-connection-training-fabric-networking">3. MRC — Multipath Reliable Connection (training-fabric networking)</h3>
+<p>Fairwater <strong>switched from InfiniBand to Ethernet</strong>, and instead of <strong>RoCE</strong> (RDMA over Converged Ethernet) uses a <strong>new protocol, MRC (Multipath Reliable Connection)</strong>, co-developed with <strong>OpenAI</strong> and a growing partner consortium.</p>
+<p><strong>Why:</strong> synchronizing <strong>~100,000 GPUs</strong> routes packets across a vast fabric; <strong>any congestion or failure on a synchronous training job</strong> forces a checkpoint rollback and restart — a huge loss. MRC is <strong>resilient</strong> by <strong>spraying packets across independent network domains called "planes."</strong> If a link drops, the spray <strong>rebalances automatically</strong> onto the remaining planes.</p>
+<p><strong>Demo:</strong> two servers exchanging <strong>4 GB payloads</strong> over four switches, packet-sprayed across <strong>eight planes (~12 Gb/plane)</strong> for an <strong>aggregate ~95 Gb/s</strong> target. One switch was killed mid-flight; traffic <strong>rebalanced across the remaining three</strong> (one switch went to 0, another jumped to ~36 Gb/s) with <strong>no drop in aggregate bandwidth (~95 Gb/s held)</strong>. MRC is described as having become an <strong>industry standard for large network topologies</strong>.</p>
+<h3 id="4-vm-to-vm-rdma-over-azure-boost">4. VM-to-VM RDMA over Azure Boost</h3>
+<p>For general-purpose workloads, Azure is bringing <strong>RDMA into VMs</strong>. Normally VM↔VM traffic traverses the app → <strong>TCP</strong> → <strong>MANA driver</strong> (Microsoft Accelerated Network Adapter / Azure Boost NIC driver) and back up, with heavy <strong>memory copies and synchronization</strong>. <strong>RDMA bypasses all of it</strong> — the app maps memory in the remote system and Boost transfers data straight into the remote memory, eliminating the copies and sync.</p>
+<p><strong>Scenario — split inference (prefill/decode):</strong> inference splits into <strong>prefill</strong> (consume the prompt, populate the KV cache) and <strong>decode</strong> (generate new tokens). It's now common to put these in <strong>separate server pools</strong> because their memory/compute constraints differ.</p>
+<p><strong>Demo (vLLM benchmark):</strong>
+- <strong>TCP/IP baseline:</strong> RDMA send-requests stayed flat at <strong>460</strong>; <strong>token throughput ~3,400</strong>; <strong>median TTFT ~123,000 ms</strong>.
+- <strong>RDMA via MANA link (<code>mana0</code>):</strong> send-requests jumped <strong>460 → 506</strong>; <strong>throughput ~7,637</strong> (≈2×); <strong>mean TTFT dropped to ~47,000 ms</strong>.</p>
+<p>This is deployed in Azure's <strong>inference clusters behind Foundry</strong>, powered by Azure Boost.</p>
+<h3 id="5-the-core-serverless-via-azure-container-instances-aci">5. The core — serverless via Azure Container Instances (ACI)</h3>
+<p>Russinovich reiterates his long-held thesis: <strong>"the future is serverless,"</strong> now arriving with <strong>ACI</strong>. Traditional containers use <strong>process isolation</strong> (OS primitives). But <strong>Azure does not treat a process / user-mode kernel as a security boundary</strong> — only <strong>virtualization</strong> (with a tight, small connection between host and server) qualifies. So <strong>ACI isolates every container with Hyper-V</strong>.</p>
+<p><strong>Adoption is broad</strong> — using these services means indirectly using ACI:
+- <strong>GitHub Actions</strong> now runs on ACI.
+- <strong>Python in Excel</strong> runs on ACI.
+- <strong>Horizon DB</strong> runs on ACI.</p>
+<p>The goal is to make ACI efficient and capable enough that <strong>process isolation is never needed</strong>.</p>
+<h3 id="6-direct-l1-virtualization">6. Direct (L1) virtualization</h3>
+<p>To remove <strong>nested-virtualization overhead</strong>, <strong>direct virtualization</strong> places containers <strong>directly on servers as peers to the management VM</strong>:
+- <strong>Parent partition = Layer-1 virtualization host.</strong>
+- <strong>Child VMs = Layer-2 hosts</strong>, each running an <strong>individual container or pod</strong>.</p>
+<p>This keeps <strong>strong hostile-multi-tenant isolation</strong> while improving performance/efficiency. ACI itself now runs on direct virtualization, and <strong>the entire fleet is migrating</strong> — expected to take <strong>1–2 years</strong>. Direct virtualization also lets a GPU be assigned to a VM, which can spawn an L2 sub-VM and <strong>hand the GPU through</strong> for <strong>direct hardware access</strong>.</p>
+<h3 id="7-container-live-migration-first-public-demo">7. Container live migration (first public demo)</h3>
+<p>A long-standing VM advantage is <strong>live migration</strong> — minimal downtime when a server must be serviced or is predicted to fail. Containers have lacked this. Russinovich showed the <strong>first public demo of container live migration</strong>: a container on "dev six" emitting a <strong>tick per second</strong> (reached tick <strong>695</strong>) was migrated to "dev one." Inspecting the destination showed the same <code>hello world</code> workload, already at tick <strong>755</strong>, with <strong>tick 695 present and no gap</strong> in the log.</p>
+<h3 id="8-manifold-microsofts-gpu-fleet-scheduler">8. Manifold — Microsoft's GPU fleet scheduler</h3>
+<p><strong>Manifold</strong> powers all of Microsoft's own inference and training by treating the <strong>entire GPU pool as one</strong>, doing <strong>priority-based, topology-aware deployment</strong> to maximize utilization while <strong>abstracting the hardware</strong> (<strong>ASICs, GPUs, FPGAs, CPUs</strong>). Modern models increasingly mix <strong>CPU and GPU portions</strong> and embed sub-models (e.g., an <strong>embedding model</strong> or a <strong>vision LLM</strong> in a multimodal model), making topologies more complex.</p>
+<p>With <strong>direct virtualization</strong>, Manifold can place <strong>CPU model components and GPU model components in separate Hyper-V-isolated pods</strong> that don't interfere yet get <strong>direct hardware access</strong>.</p>
+<p><strong>Demo:</strong> a cluster node with two pods — a <strong>GPU-based llama server</strong> and a <strong>CPU-based metrics server</strong>. The GPU pod showed visible GPUs (via <code>nvidia-smi</code>), large RAM, many processors; the adjacent CPU pod showed <strong>~no memory, 2 processors, no GPUs</strong>. A cat image was sent for inference to the GPU pod running <strong>Llama 4 Maverick</strong>, proving CPU/GPU pods are isolated yet directly attached to physical hardware.</p>
+<h3 id="9-azure-context-cache-pooled-kv-cache-preview">9. Azure Context Cache (pooled KV cache) — preview</h3>
+<p>The <strong>KV cache is effectively the LLM's state</strong> — you can't decode efficiently without the KV representing all prior prompt tokens. Conversations proceed in <strong>turns</strong> (e.g., a system prompt, then a PR-diff interaction with Copilot extends the prompt). Frameworks often let you cache the <strong>system prompt</strong>, but ideally you'd cache <strong>the whole thing</strong> so that if inference <strong>moves to another server</strong>, you don't re-pay the prefill cost. That requires a <strong>cache behind all servers</strong>.</p>
+<p><strong>Azure Context Cache</strong> (preview) backs the KV state in a <strong>storage account</strong>, so regardless of which server a request hits, a missing KV can be <strong>fetched from the shared cache</strong> instead of re-decoded — saving time and money.</p>
+<p><strong>Demo:</strong>
+- <strong>Concurrency 1, same system prompt:</strong> ~<strong>81%</strong> cache-hit (after the first request, subsequent ones reuse the cached system prompt).
+- <strong>Concurrency 10:</strong> requests spread across servers, so per-server hit rate <strong>drops</strong> (a conversation can land where the system prompt isn't present; first query is always a miss).
+- <strong>With the remote prompt cache enabled:</strong> hit rate climbed to <strong>~96.2%</strong>, because the KV is fetched from remote cache no matter which server is hit — effectively a <strong>pooled cache</strong> rather than per-server caches.</p>
+<h3 id="10-container-sandboxes-for-agents-memory-snapshotting">10. Container sandboxes for agents (memory snapshotting)</h3>
+<p>Unlike container layers/images or full VM images, <strong>container sandboxes</strong> are <strong>bespoke, tiny, lightweight</strong> images meant to start <strong>near-instantly</strong> — ideal for agents that "write a Python script and run it" or "spin up an HTML site and iterate." Normal container cold-start is <strong>5–20s</strong> depending on OS, but the goal is <strong>thousands starting simultaneously, fast, off the same base image</strong>.</p>
+<p><strong>Technique — memory snapshotting:</strong> start the container once, <strong>snapshot its memory</strong>, then for subsequent requests <strong>map that memory</strong> straight into a running container, <strong>skipping initialization</strong>.</p>
+<p><strong>Demo:</strong> 10 worker pods each launching <strong>1,000 sandboxes</strong> → <strong>10,000 container sandboxes</strong>, with an <strong>average launch time of ~2 seconds</strong> — speed <em>and</em> scale. <strong>Agent sandboxing is landing on ACI.</strong></p>
+<h3 id="11-security-confidential-computing">11. Security — confidential computing</h3>
+<p><strong>Confidential computing</strong> completes the data-protection triad. Data is already protected <strong>in transit</strong> (TLS everywhere now, vs occasional SSL 20 years ago) and <strong>at rest</strong> (node-level → server-side encryption → <strong>customer-managed keys</strong> for double-layered at-rest encryption). The gap is <strong>data in use</strong>: once decrypted on a server, plaintext sits where the <strong>hypervisor, admins, host software, or a hacker</strong> could reach it — and you may even want to keep <strong>your own operators</strong> away, exposing data <strong>only to the compute that needs it</strong>.</p>
+<p>Confidential computing puts data in a <strong>hardware enclave</strong> none of those actors can enter. Crucially, the hardware can <strong>measure the enclave's contents</strong> — an <strong>attestation</strong>. Code inside requests a <strong>"quote"</strong> (the attestation) and presents it to a <strong>relying party</strong> (typically a <strong>key management service</strong> with a policy: release this key <em>only</em> to an enclave of this <strong>hardware type, security version number, and code configuration</strong>). The key is then released <strong>encrypted to the enclave</strong>, decrypted inside, and used to process data in the clear — with everyone assured of hardware isolation.</p>
+<p>Azure has built this for <strong>over a decade</strong>: <strong>Intel SGX</strong> servers first, now <strong>AMD and Intel confidential VMs</strong>, with the <strong>largest confidential-computing portfolio of any hyperscaler</strong> (services, <strong>confidential containers on ACI</strong>, and underlying hardware).</p>
+<h3 id="12-confidential-vm-live-migration-first-ever-public-demo">12. Confidential VM live migration (first-ever public demo)</h3>
+<p><strong>Live migration is a fundamental hyperscale requirement</strong> (reduce fragmentation, move workloads off failing servers, reduce servicing impact) — but it's been <strong>missing from confidential computing</strong>. Working deeply with <strong>Intel</strong>, Azure built <strong>confidential live migration</strong>:
+- The source CVM is paired with a <strong>migration TD (mig TD)</strong> — a <strong>confidential partition</strong> that is <strong>measured as part of the VM's measurement</strong>.
+- <strong>Sending and receiving sides enforce policy</strong>: migrate only to a server with a <strong>mig TD approved for this VM</strong>, thereby <strong>extending the confidential trust boundary</strong> between servers under hardware-enforced policy.</p>
+<p><strong>Demo:</strong> Hyper-V Manager on two servers; a CVM on server one RDP-pinging every second. After starting migration (a multi-GB VM, sped up for the demo), <strong>TD-info attestations</strong> printed, then the <strong>CVM moved</strong> to the other server (the ping died because the IP was tied to server one). Russinovich stresses this is <strong>the first confidential VM live migration shown anywhere</strong>, achieved <strong>in the last few weeks</strong>, <strong>not yet in production</strong>.</p>
+<h3 id="13-azure-integrated-hsm-manacore-caliptra-root-of-trust">13. Azure Integrated HSM (ManaCore) + Caliptra root of trust</h3>
+<p>Beyond a <strong>root of trust</strong> (Microsoft's <strong>Caliptra</strong>, donated to the <strong>Open Compute Project</strong>, deployed in every server), Azure's security-hardware architects identified a need for <strong>key management inside the hardware of every server</strong> — so keys stay <strong>hardware-protected across their whole lifecycle</strong> and <strong>never leave the hardware trust boundary</strong>.</p>
+<p>This became <strong>ManaCore</strong> internally, announced publicly <strong>late last year</strong> as the <strong>Azure Integrated HSM</strong> — effectively an <strong>HSM in every single Azure server</strong>, now being deployed fleet-wide. A key can be <strong>released with policy</strong> from <strong>Azure Managed HSM or Azure Key Vault</strong> into the integrated HSM, which is <strong>FIPS 140‑3 Level 3 certified</strong> (same bar as the HSMs behind Managed HSM / Key Vault). So the key stays <strong>within a FIPS 140‑3 Level 3 boundary</strong> from the HSM all the way to the server, and can be used for operations <strong>directly from the VM</strong> (the hardware is mapped into the VM).</p>
+<p><strong>Demo (sign 5,000 payloads over 32 threads with an AKV key):</strong>
+- <strong>Key never leaves AKV's HSM</strong> (every op sent to the HSM): <strong>~640 signing ops/sec</strong>.
+- <strong>Key released into the local Azure Integrated HSM</strong> (ops performed directly on it): <strong>~18,800 signing ops/sec</strong> — with <strong>no loss of security</strong>.</p>
+<p>Russinovich frames this as the future: confidential computing where <strong>keys for everything</strong> (including services agents talk to) are <strong>hardware-protected for their entire lifecycle</strong> and <strong>can never be stolen</strong>.</p>
+<h3 id="14-project-mosaic-micro-led-optical-interconnect-microsoft-research-experimental">14. Project Mosaic — micro-LED optical interconnect (Microsoft Research, experimental)</h3>
+<p>Closing with speculative <strong>Microsoft Research</strong> work that may or may not be productized. <strong>Intra-data-center networking has been copper</strong> — cheap, light, reliable, but limited to <strong>~2 m</strong> without loss, which is too short as computing <strong>disaggregates</strong> (GPUs in one place, servers in another) and demands high-bandwidth interconnect. The industry is moving to <strong>optics with lasers</strong>, but lasers are <strong>high-power, hot, and expensive</strong>.</p>
+<p><strong>Project Mosaic</strong> instead uses <strong>many low-speed channels with standard micro-LEDs</strong> — the same <strong>micro-LED tech being productized for next-gen VR glasses/goggles and cameras</strong> — projecting LED light over <strong>fibers inside a cable</strong>, read by <strong>standard silicon camera sensor arrays</strong>. The appeal: <strong>ride commodity supply chains</strong> scaling for other reasons, while deploying the tech in data centers.</p>
+<p><strong>Live demo from MSR Cambridge</strong> (guest researcher "Katar/Qatar"): inside the cable is a small <strong>PCB</strong> with a <strong>package</strong> containing a tiny <strong>array of micro-LEDs + photodetectors</strong> over a <strong>CMOS control chip</strong>, tested on a larger evaluation board. Hundreds of micro-LEDs couple via an <strong>optical coupler</strong> into an <strong>imaging fiber</strong> (with <strong>thousands of pores/cores</strong>, each micro-LED coupling to more than one pore to ease alignment). After <strong>tens of meters</strong> of transmission, the receiver shows the fiber's output facet. In real operation all micro-LEDs flash <strong>billions of times per second</strong> (invisible to the eye). To prove it's live and individually controllable, Mark picked the letter <strong>"Z"</strong>, and the lab modulated the micro-LEDs (each "flower" = one micro-LED at gigabits/sec) to render it.</p>
+<h3 id="wrap-up">Wrap-up</h3>
+<p>Russinovich recaps innovation <strong>at every layer</strong> — hardware, data centers, serverless, GPUs, prompt pre-fetching/inference, and a speculative look at future in-data-center networking — then points to his follow-on session with <strong>Scott Guthrie</strong> on the <strong>future of software engineering</strong>.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Fairwater data centers</strong> — Microsoft's AI data centers (Wisconsin, Atlanta) with liquid cooling and massive InfiniBand/Ethernet fabric.</li>
+<li><strong>Azure Boost</strong> — server offload card (Arm cores + DPU + FPGA SoC) moving storage/networking data planes and host agents off the main CPU.</li>
+<li><strong>Bare-metal instances</strong> — VM-free instances enabled by Boost offload; in limited access for OpenAI, GP offering coming (demoed <code>ND144V6</code>).</li>
+<li><strong>MRC (Multipath Reliable Connection)</strong> — resilient Ethernet training protocol that packet-sprays across "planes"; replaces RoCE for large GPU fabrics.</li>
+<li><strong>InfiniBand → Ethernet</strong> — Fairwater's back-end network transport switch.</li>
+<li><strong>MANA driver / <code>mana0</code></strong> — Microsoft Accelerated Network Adapter (Azure Boost NIC) driver; exposes the RDMA verbs device.</li>
+<li><strong>VM-to-VM RDMA (guest RDMA over Azure Boost)</strong> — memory-to-memory transfers bypassing the TCP/software networking path.</li>
+<li><strong>Azure Container Instances (ACI)</strong> — serverless containers, Hyper-V-isolated; underpins GitHub Actions, Python in Excel, Horizon DB.</li>
+<li><strong>Direct virtualization (L1)</strong> — containers as peers to the management VM (L1 parent partition / L2 child VMs) to drop nested-virt overhead.</li>
+<li><strong>Container live migration</strong> — minimal-downtime server-to-server container moves on ACI (first public demo).</li>
+<li><strong>Manifold</strong> — Microsoft's fleet-wide GPU scheduler; one pool across ASIC/GPU/FPGA/CPU with topology-aware, priority-based placement.</li>
+<li><strong>Azure Context Cache</strong> — preview; storage-backed pooled KV cache so moved inference doesn't re-pay prefill.</li>
+<li><strong>Container sandboxes</strong> — ultra-fast (memory-snapshot) sandboxes for agent code execution on ACI.</li>
+<li><strong>Confidential computing</strong> — hardware-enclave protection of data <em>in use</em> with attestation/quotes; SGX, AMD/Intel CVMs, confidential containers on ACI.</li>
+<li><strong>Confidential VM live migration</strong> — CVM migration via a measured <strong>migration TD (mig TD)</strong> under hardware-enforced policy (first public demo, with Intel).</li>
+<li><strong>Azure Integrated HSM (internal: ManaCore)</strong> — FIPS 140‑3 Level 3 HSM in every server; policy-released keys usable directly by the VM.</li>
+<li><strong>Caliptra</strong> — Microsoft's hardware root of trust in every server, donated to the Open Compute Project.</li>
+<li><strong>Azure Managed HSM / Azure Key Vault (AKV)</strong> — KMS that releases keys (with policy) into the Azure Integrated HSM.</li>
+<li><strong>Project Mosaic</strong> — experimental MSR micro-LED optical interconnect over imaging fiber, read by silicon camera sensor arrays.</li>
+<li><strong>Azure AI Foundry</strong> — platform whose inference clusters run the Boost-powered RDMA inference described.</li>
+<li><strong>vLLM</strong> — inference engine used for the prefill/decode RDMA benchmark.</li>
+<li><strong>Llama 4 Maverick</strong> — model run in the Manifold GPU-pod inference demo.</li>
+<li><strong>Horizon DB</strong> — database service shown running on ACI.</li>
+<li><strong>Python in Excel</strong> — feature shown running on ACI.</li>
+<li><strong>GitHub Actions</strong> — CI/CD service shown running on ACI.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Latest-gen Azure Boost</strong> deployed: <strong>400 Gb</strong> networking (from 200), <strong>20 Gb/s</strong> remote storage / <strong>1M IOPS</strong>, <strong>36 Gb/s</strong> + <strong>6.6M IOPS</strong> local NVMe, <strong>400k</strong> conns/sec. <strong>&gt;30% of fleet</strong> enabled. <em>(Shipping/rolling out.)</em></li>
+<li><strong>Bare-metal instances</strong> — <strong>limited access today (OpenAI on Fairwater)</strong>; <strong>general-purpose offering coming</strong> "in the near future." <em>(Limited → GP roadmap.)</em></li>
+<li><strong>MRC</strong> — in production for OpenAI training; positioned as an emerging <strong>industry standard</strong> for large topologies. <em>(In use.)</em></li>
+<li><strong>VM-to-VM RDMA over Azure Boost</strong> — deployed in <strong>Foundry inference clusters</strong>. <em>(In use.)</em></li>
+<li><strong>Direct (L1) virtualization</strong> — ACI now runs on it; <strong>whole-fleet migration underway (1–2 years)</strong>. <em>(Rolling out.)</em></li>
+<li><strong>Container live migration on ACI</strong> — <strong>first public demo</strong>; <strong>still under development</strong>. <em>(Preview/dev.)</em></li>
+<li><strong>Azure Context Cache</strong> — <strong>coming out in preview now</strong>. <em>(Preview.)</em></li>
+<li><strong>Container sandboxes for agents</strong> — agent sandboxing <strong>landing on ACI</strong>. <em>(Coming.)</em></li>
+<li><strong>Confidential VM live migration</strong> — <strong>first-ever public demo</strong>; <strong>not yet in production</strong> (built with Intel, achieved within weeks). <em>(Pre-production.)</em></li>
+<li><strong>Azure Integrated HSM (ManaCore)</strong> — announced <strong>late last year</strong>; <strong>being deployed into every server</strong> now. <em>(GA-track rollout, FIPS 140‑3 L3.)</em></li>
+<li><strong>Project Mosaic</strong> — <strong>experimental Microsoft Research</strong>; may or may not be productized. <em>(Research.)</em></li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ol>
+<li><strong>Fairwater Atlanta walkthrough video</strong> — cabling trunks, liquid-cooling install, server-sled racking, a live break-fix — conveyed the scale and continuous build-out of an AI data center.</li>
+<li><strong>Bare-metal <code>ND144V6</code></strong> — SSH in, confirm no virtualization running, <code>lspci</code> shows PCI bridge + 8 RDMA-capable Mellanox NICs — proved it's a true bare-metal GPU server.</li>
+<li><strong>MRC resiliency</strong> — 4 GB payloads sprayed over 8 planes / 4 switches at ~95 Gb/s; killed a switch, traffic rebalanced (one →0, another →36 Gb/s) with <strong>no aggregate bandwidth drop</strong> — proved failure resilience for 100k-GPU training.</li>
+<li><strong>VM-to-VM RDMA (vLLM prefill/decode)</strong> — TCP/IP ~3,400 tok &amp; ~123k ms TTFT vs RDMA (<code>mana0</code>) ~7,637 tok &amp; ~47k ms TTFT — proved ~2× inference gain by bypassing the software net stack.</li>
+<li><strong>Container live migration</strong> — ticking container moved dev6→dev1; tick 695 preserved, no gap — proved VM-class live migration for containers.</li>
+<li><strong>Manifold isolated pods</strong> — GPU pod (Llama 4 Maverick, GPUs/RAM/CPUs visible) beside an isolated CPU pod (2 procs, ~no RAM, no GPU); cat-image inference succeeded — proved CPU/GPU isolation with direct GPU passthrough via direct virtualization.</li>
+<li><strong>Azure Context Cache</strong> — hit rate ~81% (concurrency 1) dropping under concurrency 10, then <strong>~96.2%</strong> with the remote pooled cache — proved pooled KV cache beats per-server caches.</li>
+<li><strong>10,000 container sandboxes</strong> — 10 workers × 1,000 each launched with <strong>~2s average</strong> start — proved speed <em>and</em> scale via memory snapshotting.</li>
+<li><strong>Confidential VM live migration</strong> — CVM with mig TD migrated between Hyper-V hosts; TD-info attestations printed, ping died as IP moved — <strong>first-ever public demo</strong> of confidential live migration.</li>
+<li><strong>Azure Integrated HSM signing</strong> — AKV-only signing <strong>~640 ops/s</strong> vs key released into integrated HSM <strong>~18,800 ops/s</strong> — proved ~30× throughput with no security loss.</li>
+<li><strong>Project Mosaic live link (MSR Cambridge)</strong> — micro-LED-over-imaging-fiber transmission rendered the letter <strong>"Z"</strong> by individually modulating LEDs — proved live, individually addressable optical channels on commodity tech.</li>
+</ol>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li>“Enough cabling to <strong>wrap the Earth four times</strong>” in one Fairwater site.</li>
+<li>Azure Boost: <strong>400 Gb</strong> net, <strong>20 Gb/s</strong>/<strong>1M IOPS</strong> remote storage, <strong>36 Gb/s</strong>/<strong>6.6M IOPS</strong> local NVMe, <strong>400k</strong> conns/sec; <strong>&gt;30% of fleet</strong>.</li>
+<li>MRC demo: <strong>~95 Gb/s</strong> aggregate held through a switch failure; <strong>8 planes × ~12 Gb/s</strong>.</li>
+<li>RDMA inference: <strong>~3,400 → ~7,637 tokens</strong> throughput; <strong>TTFT ~123,000 → ~47,000 ms</strong>.</li>
+<li>Container cold-start <strong>5–20s</strong> normally; <strong>10,000 sandboxes</strong> at <strong>~2s average</strong> launch.</li>
+<li>Azure Context Cache hit rate up to <strong>~96.2%</strong> (pooled) vs ~81% / lower per-server.</li>
+<li>Copper link limit <strong>~2 m</strong>; micro-LEDs flash <strong>billions of times/sec</strong>; fiber has <strong>&gt;thousands of pores/cores</strong>.</li>
+<li>Azure Integrated HSM signing: <strong>~640 → ~18,800 ops/sec</strong>; <strong>FIPS 140‑3 Level 3</strong>.</li>
+<li>“The <strong>future is serverless</strong>” — a thesis Russinovich says he's repeated for <strong>10 years</strong>.</li>
+<li>“<strong>First time ever</strong> this has been shown publicly” — on the confidential VM live migration.</li>
+<li>Connecting <strong>~100,000 GPUs</strong> is the scale driving MRC's design.</li>
+<li>Confidential computing built in Azure for <strong>over a decade</strong>; <strong>largest hyperscaler portfolio</strong>.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: provision a <strong>bare-metal <code>ND</code>-series</strong> instance once GP-available; test <strong>VM-to-VM RDMA</strong> for a split prefill/decode inference deployment; enable <strong>Azure Context Cache</strong> (preview) on a Foundry workload and measure hit-rate/cost; evaluate <strong>Azure Integrated HSM</strong> for high-throughput signing vs AKV/Managed HSM.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: When does the <strong>GP bare-metal</strong> offering GA, and which regions? Is <strong>container live migration</strong> / <strong>Azure Context Cache</strong> GA timeline public? Is <strong>confidential VM live migration</strong> AMD-bound too or Intel-TDX-only at first? What models/sizes does <strong>Azure Context Cache</strong> support, and storage-cost vs prefill-savings tradeoff?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: AI infra/platform planning, Foundry inference cost optimization, confidential-computing migration story for regulated workloads, key-management/HSM strategy, and ACI-based agent sandboxing.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<h2 id="-2026-build-session-list">- <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></h2>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="BRK225.html"><span class="pager-dir">← Previous</span><span class="pager-code">BRK225</span><span class="pager-title">Data, apps, and agents: the future of app dev with Rayfin</span></a>
+    <a class="pager pager-next" href="BRK227.html"><span class="pager-dir">Next →</span><span class="pager-code">BRK227</span><span class="pager-title">Distributed systems to AI platforms with Mark Russinovich &amp; Ion Stoica</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ODSP937 — Build realtime multimodal agents with LiveKit and Azure</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">ODSP937</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=_K7gAvZgHw0" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Build realtime multimodal agents with LiveKit and Azure</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 LiveKit presenter (partner/On-Demand session; speaker not named in captions)</span>
+      <span class="meta-item">⏱️ 10m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="livekit">Livekit</span><span class="chip" data-tag="realtime">Realtime</span><span class="chip" data-tag="multimodal">Multimodal</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="voice">Voice</span><span class="chip" data-tag="azure">Azure</span><span class="chip" data-tag="webrtc">Webrtc</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> LiveKit presenter (LiveKit partner / On-Demand session — the individual speaker is not named in the auto-captions)<br>
+<strong>Duration:</strong> ~10 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=_K7gAvZgHw0">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>This LiveKit partner session makes the case that <strong>real-time multimodal agents (voice/video/data) are "built different"</strong> from text agents: latency is unforgiving, and the hard problems live in the <strong>real-time media infrastructure</strong>, not the models. LiveKit is pitched as the <strong>open-source real-time media layer</strong> (built on WebRTC) plus an <strong>Agents SDK</strong> (Python or TypeScript) that together get users to your agent and your custom logic back to users reliably, across any device — phones, laptops, telephony/SIP, cars, wearables, robotics. The talk walks through the <strong>cascaded voice pipeline</strong> (VAD → STT → LLM → TTS), shows how <strong>Azure plugs into all three model slots</strong> (Azure STT, Azure OpenAI LLM, Azure TTS), and stresses using the <strong>LiveKit MCP docs server / skill</strong> so coding agents build against up-to-date APIs. It closes with a live demo building a working Azure-powered voice agent from <code>lk app create</code> templates in a single <code>agent.py</code> file.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Real-time is "built different."</strong> Text agents tolerate latency (a spinner/dimmer is fine); real-time voice agents need a full mic→model→speaker round trip in <strong>a few hundred milliseconds</strong> over networks you don't control.</li>
+<li><strong>Models are now the easy part — everything around them is hard.</strong> Network conditions, echo/noise cancellation, turn detection, and graceful interruption are the real engineering challenges, and they belong to the <strong>media infrastructure</strong>, not the model.</li>
+<li><strong>Interruption must be smart.</strong> Users should be able to interrupt the agent, but a cough, sneeze, or back-channel ("mhm", "oh yeah") should <em>not</em> trigger an interruption.</li>
+<li><strong>WebRTC is the right substrate, but raw WebRTC is non-trivial.</strong> It's exactly what real-time media needs, yet building production infrastructure around it is hard — which is the gap LiveKit fills.</li>
+<li><strong>LiveKit = open-source real-time media layer on WebRTC</strong>, carrying not just voice but also <strong>video and data</strong>, that your agent and orchestration run on.</li>
+<li><strong>Two parts:</strong> the <strong>transport layer</strong> (LiveKit server: transport, jitter buffering, codecs, SIP, fanout — self-hosted or LiveKit Cloud) and the <strong>application/orchestration layer</strong> (the <strong>Agents SDK</strong>, Python or TypeScript, where your code, models, tools, MCP servers and business logic live).</li>
+<li><strong>Same agent, any device.</strong> One agent runs across phones, laptops, SIP/telephony, embedded devices, cars, wearables, robotics, and more.</li>
+<li><strong>The cascaded (voice) pipeline:</strong> user speech → <strong>VAD</strong> (don't process/pay for silence) → <strong>STT</strong> → <strong>LLM</strong> → <strong>TTS</strong> → audio back to the user.</li>
+<li><strong>LiveKit is model-agnostic.</strong> It ships no models; you pick STT/LLM/TTS, mix and match, and <strong>swap any model with one line of code</strong>.</li>
+<li><strong>Azure fits all three model slots:</strong> <strong>Azure STT</strong>, <strong>Azure OpenAI</strong> for the LLM, and <strong>Azure TTS</strong>.</li>
+<li><strong>Use the LiveKit MCP docs server / skill</strong> when coding — LiveKit ships features almost weekly, and your coding agent needs the most complete, up-to-date context to build accurately (presenter's "most important slide").</li>
+<li><strong>Credibility signal:</strong> LiveKit is the <strong>transport layer ChatGPT chose for its voice mode</strong>.</li>
+<li><strong>Getting started is genuinely simple:</strong> scaffold with <code>lk app create</code> (Python agent + React front-end templates), edit a <strong>single <code>agent.py</code></strong>, set a handful of env vars, and run — LiveKit Cloud gives <strong>three free env vars</strong> on signup.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="why-real-time-agents-are-a-different-problem">Why real-time agents are a different problem</h3>
+<p>Most agents being built today are <strong>single-modal text agents</strong>, and for text, <strong>latency is forgiving</strong> — users accept a spinner or a dimmed text field as a signal that "something's happening." <strong>Real-time agents flip that:</strong> latency becomes the defining constraint. The session's framing line is that <strong>"real-time is built different."</strong></p>
+<p>The concrete real-time loop for voice: take the user's voice from <strong>their microphone, wherever they are in the world</strong>, ship it to the models, generate a reply, and return it to <strong>the user's speakers</strong> — and to <em>count</em> as real-time, the whole round trip must land within <strong>a few hundred milliseconds</strong>, all <strong>over networks you don't control</strong>.</p>
+<h3 id="the-hard-part-isnt-the-model-its-everything-around-it">The hard part isn't the model — it's everything around it</h3>
+<p>A central thesis: <strong>"models are the easy part now; everything around it is the hard part."</strong> Building an excellent real-time voice experience means handling a stack of media problems that the model is not responsible for:
+- <strong>Network conditions</strong> (variable, lossy, out of your control).
+- <strong>Echo and noise cancellation.</strong>
+- <strong>Turn detection</strong> — knowing when the user has actually <em>finished</em> talking.
+- <strong>Interruption handling</strong> — letting the user barge in, but <strong>not</strong> treating a <strong>cough, sneeze, or back-channel</strong> ("mhm", "oh yeah") as a real interruption.</p>
+<p>On top of correctness, there's <strong>scale</strong>: a successful app must serve not one user but <strong>tens or hundreds of thousands of concurrent users</strong>. All of this is the responsibility of the <strong>real-time media infrastructure</strong> — something many teams "aren't even thinking about." This is precisely what <strong>WebRTC</strong> was designed for, but <strong>building infrastructure around WebRTC is not trivial</strong>, which is the opening for LiveKit.</p>
+<h3 id="what-livekit-is">What LiveKit is</h3>
+<p><strong>LiveKit is an open-source real-time media layer</strong> that your <strong>agent and orchestration run on</strong>. It carries <strong>voice, video, and data</strong>, and it's <strong>built on WebRTC</strong>. Alongside the media layer is the <strong>Agents SDK</strong>, available in <strong>Python and TypeScript</strong>.</p>
+<p>Together these let you <strong>bring the same agent to any device</strong>: phones, laptops, <strong>SIP and telephony</strong>, embedded devices, <strong>cars, wearables, robotics</strong>, and more. A strong external proof point: <strong>LiveKit is the transport layer ChatGPT chose for their voice mode.</strong></p>
+<h3 id="the-voice-pipeline-aka-the-cascaded-pipeline">The voice pipeline (a.k.a. the cascaded pipeline)</h3>
+<p>The "very basic voice pipeline," also called the <strong>cascaded pipeline</strong>, flows as:</p>
+<ol>
+<li><strong>User speech</strong> — the starting point.</li>
+<li><strong>VAD (Voice Activity Detection)</strong> — detect when the user <em>starts</em> speaking. Critical because you <strong>don't want to process silence</strong>, which would "cost a lot of money."</li>
+<li><strong>STT (Speech-to-Text)</strong> — transcribe the detected speech into text.</li>
+<li><strong>LLM</strong> — take that text and <strong>generate a reply, in text</strong>.</li>
+<li><strong>TTS (Text-to-Speech)</strong> — turn the reply text into voice.</li>
+<li><strong>Audio back to the user.</strong></li>
+</ol>
+<p>It's "cascaded" because each stage feeds the next (speech → text → text → speech).</p>
+<h3 id="the-zoomed-out-architecture-transport-layer-vs-application-layer">The zoomed-out architecture: transport layer vs application layer</h3>
+<p>A wider system view stacks two layers:</p>
+<p><strong>Transport layer — the LiveKit server.</strong>
+- The user, on <strong>any device, anywhere</strong>, connects via <strong>WebRTC</strong> — "every modern device already speaks it," and it's an <strong>open browser standard.</strong>
+- The <strong>LiveKit server</strong> handles <strong>transport, jitter buffering, codecs, SIP, and fanout.</strong>
+- It's <strong>open source</strong>, so you can <strong>self-host</strong> it, or use <strong>LiveKit Cloud</strong> and have LiveKit host it for you.</p>
+<p><strong>Application / orchestration layer — the Agents SDK.</strong>
+- This is <strong>where your code lives</strong> and where you <strong>connect media to the model.</strong>
+- The <strong>voice pipeline lives here</strong>, and this is where you <strong>pick which models to use</strong> and where your <strong>tools, MCP servers, custom functions, and custom business logic</strong> sit.
+- The "box below the Agents SDK" in the slide is a zoom-in of what's <em>inside</em> the Agents SDK (i.e. the pipeline + your logic).</p>
+<p><strong>The key architectural takeaway:</strong> <strong>WebRTC gets users to your agent reliably, and the Agents SDK gets your custom business logic to your users reliably.</strong> That split — reliable transport on one side, reliable orchestration/logic on the other — is the whole mental model.</p>
+<h3 id="model-agnostic-by-design-and-where-azure-fits">Model-agnostic by design (and where Azure fits)</h3>
+<p><strong>LiveKit ships no models of its own — it is model-agnostic.</strong> You choose <strong>which STT, which LLM, and which TTS</strong> you want, <strong>mix and match freely</strong>, and swapping a model is <strong>a single line of code</strong>. The slide shows a non-exhaustive list of popular models usable through LiveKit.</p>
+<p><strong>Azure plugs into all three slots:</strong>
+- <strong>Azure STT</strong> for speech-to-text,
+- <strong>Azure OpenAI</strong> (OpenAI through Azure) for the LLM,
+- <strong>Azure TTS</strong> for text-to-speech.</p>
+<p>So an entire real-time agent can be built end-to-end on Azure models, orchestrated by LiveKit.</p>
+<h3 id="the-most-important-slide-use-the-livekit-mcp-docs-server-skill">The "most important slide": use the LiveKit MCP docs server / skill</h3>
+<p>The presenter explicitly calls this out as, in their opinion, <strong>the most important slide</strong>: when building with LiveKit, <strong>use the LiveKit MCP docs server (or the LiveKit skill)</strong> so your coding agent has the <strong>most up-to-date context.</strong></p>
+<p>The reasoning: <strong>LiveKit ships new features almost every week</strong> and their <strong>docs are always up to date — but your agent doesn't know that.</strong> A coding agent needs the <strong>most complete, current context</strong> to build <strong>accurately</strong> against LiveKit's rapidly-changing API. The presenter's stated preference is the <strong>MCP server</strong> ("it's amazing").</p>
+<h3 id="building-the-agent-demo-walkthrough">Building the agent (demo walkthrough)</h3>
+<p>The build is scaffolded entirely from templates and one Python file.</p>
+<p><strong>Scaffold with the LiveKit CLI:</strong>
+- In a terminal, run <strong><code>lk app create</code></strong> and choose the <strong>agent starter Python template</strong> for the agent.
+- Run it again to install the <strong>React starter template</strong> for the <strong>front end</strong>.</p>
+<p><strong>Inside <code>agent.py</code> (the single file holding all agent logic):</strong>
+- <strong>Imports</strong> from <strong>LiveKit Agents</strong> and <strong>LiveKit plugins</strong>, notably the <strong>Azure plugin for LiveKit.</strong>
+- <strong>The assistant/agent definition</strong> — nameable to anything. It sets up the <strong>LLM first</strong>, here using the <strong>Azure LLM</strong> wired to <strong>environment variables from the presenter's Azure deployment</strong> (an OpenAI model served from Azure).
+- <strong>Instructions</strong> — e.g. <em>"you're a friendly and reliable voice assistant demoing at Microsoft Build,"</em> plus some Microsoft Build info baked in (collapsible).
+- <strong><code>on_enter</code></strong> — when the agent enters the session, it should <strong>greet the user</strong>, so it's instructed to <em>"greet the user and warmly welcome them to Microsoft Build,"</em> etc.
+- <strong>Server</strong> defined as the <strong>agent server</strong>, with <strong>Silero VAD</strong> set up here (caption rendered it "Solero"; this is the <strong>Silero</strong> voice-activity-detection model).
+- <strong>Session</strong> — given a <strong>name/identifier</strong> ("my agent") so the <strong>front end knows which agent to connect to</strong>; the front end must use that <strong>same identifier.</strong>
+- <strong>Agent session config</strong> — this is where <strong>STT and TTS</strong> (and other variables) are defined, using <strong>Azure STT</strong> and <strong>Azure TTS</strong>, with the <strong>voice specified here.</strong>
+- <strong>Start + await connection</strong>, then <strong>run the file.</strong> The takeaway: it's "very, very simple" to get the agent running.</p>
+<p><strong>Environment variables:</strong>
+- <strong>Three env vars from LiveKit Cloud</strong> (free on signup).
+- <strong>Azure env vars</strong> for the <strong>STT and TTS</strong> models.
+- An <strong>OpenAI API key</strong> (also from Azure).</p>
+<p><strong>Run sequence:</strong>
+- <code>cd</code> into <strong>agent</strong>, then <strong><code>uv sync</code></strong>, then <strong><code>uv run agent.py download-files</code></strong> — this downloads the <strong>small Silero VAD</strong> voice-activity-detection model.
+- <code>cd</code> into the <strong>front end</strong>, <strong><code>pnpm install</code></strong>.
+- <strong><code>uv run</code> the agent in dev mode</strong>, and <strong><code>pnpm dev</code></strong> for the front end.
+- The presenter customized the front end with a <strong>Microsoft Build theme</strong>, then started talking to it live.</p>
+<h3 id="what-the-live-conversation-showed">What the live conversation showed</h3>
+<p>The running agent held a natural, low-latency voice conversation (transcript excerpt):
+- <strong>Agent (greeting):</strong> "Hi there. Welcome to Microsoft Build. I can help with questions about Microsoft technologies like Azure, Windows, Microsoft 365, GitHub, or the latest AI work Microsoft is sharing here. What would you like to explore?"
+- <strong>User:</strong> asks for the <strong>dates of Microsoft Build.</strong>
+- <strong>Agent:</strong> "Microsoft Build 2026 takes place on <strong>June 2nd and June 3rd</strong>. It is a <strong>two-day event in San Francisco at Fort Mason</strong>, with an online experience as well. Are you planning to attend in person or join online?"
+- <strong>User:</strong> notes that's <em>today</em> and he's already there.</p>
+<p>The closing line: <em>"That's it. Quick and easy. Integrate Azure. Give it a try today and let us know what you think."</em></p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>LiveKit</strong> — open-source real-time media layer (voice, video, data) built on WebRTC; the transport + media foundation your agent and orchestration run on.</li>
+<li><strong>LiveKit Agents SDK</strong> — application/orchestration layer where your code, models, tools, MCP servers and business logic live; available in <strong>Python</strong> and <strong>TypeScript</strong>.</li>
+<li><strong>LiveKit server</strong> — the transport layer handling transport, jitter buffering, codecs, SIP, and fanout; self-hostable.</li>
+<li><strong>LiveKit Cloud</strong> — hosted LiveKit option; provides three free environment variables on signup.</li>
+<li><strong>LiveKit plugins (Azure plugin)</strong> — integration package that wires Azure STT/LLM/TTS into the Agents SDK.</li>
+<li><strong>LiveKit MCP docs server / LiveKit skill</strong> — keeps a coding agent supplied with the latest LiveKit docs/context (presenter's preferred = the MCP server).</li>
+<li><strong><code>lk</code> CLI (<code>lk app create</code>)</strong> — scaffolds projects from templates (agent starter Python template, React starter front-end template).</li>
+<li><strong>WebRTC</strong> — open browser standard for real-time media; the substrate LiveKit is built on; spoken by every modern device.</li>
+<li><strong>Azure Speech-to-Text (Azure STT)</strong> — STT model slot in the pipeline.</li>
+<li><strong>Azure OpenAI (OpenAI via Azure)</strong> — the LLM slot in the pipeline.</li>
+<li><strong>Azure Text-to-Speech (Azure TTS)</strong> — TTS model slot in the pipeline; voice selectable in config.</li>
+<li><strong>Silero VAD</strong> — small downloadable voice-activity-detection model used to detect speech start (captioned as "Solero").</li>
+<li><strong>VAD / STT / LLM / TTS</strong> — the four model stages of the cascaded voice pipeline.</li>
+<li><strong>SIP / telephony</strong> — supported transport target, so agents can run over phone systems.</li>
+<li><strong>uv</strong> — Python package/runner used (<code>uv sync</code>, <code>uv run</code>).</li>
+<li><strong>pnpm</strong> — Node package manager used for the front end (<code>pnpm install</code>, <code>pnpm dev</code>).</li>
+<li><strong>React</strong> — front-end framework (starter template).</li>
+<li><strong>ChatGPT voice mode</strong> — cited as a production user of LiveKit's transport layer.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p>None explicitly announced. This is a technical/partner explainer and demo, not a release announcement. The presenter notes that <strong>LiveKit ships new features "almost every week"</strong> (hence the push to use the MCP docs server for current context) but does <strong>not</strong> call out any specific new release, preview, or GA in this session.</p>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>End-to-end Azure-powered voice agent built live.</strong> Scaffolded with <code>lk app create</code> (Python agent template + React front-end template), all agent logic in a single <code>agent.py</code>, using the <strong>LiveKit Azure plugin</strong> with <strong>Azure STT</strong>, <strong>Azure OpenAI LLM</strong>, and <strong>Azure TTS</strong>, plus <strong>Silero VAD</strong>.</li>
+<li><strong>What it proved:</strong> A production-style, low-latency real-time voice agent on Azure models can be stood up with minimal code (one file), a few env vars, and a handful of <code>uv</code>/<code>pnpm</code> commands — reinforcing the "models are easy, infra is hard, and LiveKit handles the infra" thesis.</li>
+<li><strong>Live spoken conversation with the agent.</strong> The Build-themed front end greeted the user, then correctly answered a question about Build 2026 dates (June 2–3, San Francisco, Fort Mason) and asked a natural follow-up.</li>
+<li><strong>What it proved:</strong> The cascaded pipeline (VAD→STT→LLM→TTS) delivers a fluid, conversational, real-time experience in practice — including a sensible greeting on session enter and contextual follow-up questions.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>"A few hundred milliseconds"</strong> — the latency budget for the full mic→model→speaker round trip to qualify as real-time.</li>
+<li><strong>Scale target: "tens or hundreds of thousands of users concurrently."</strong></li>
+<li><strong>"Models, they are the easy part now. Everything around it is the hard part."</strong></li>
+<li><strong>"Real-time, it is built different."</strong></li>
+<li><strong>"WebRTC gets users to your agent reliably and the Agents SDK gets your custom business logic to your users reliably."</strong> — the core architectural takeaway.</li>
+<li><strong>"It's just one line of code to change out a model."</strong> — on LiveKit's model-agnostic swapability.</li>
+<li><strong>"LiveKit is the transport layer ChatGPT chose for their voice mode."</strong></li>
+<li>On the MCP slide: <strong>"this is actually, I think, in my opinion, the most important slide here."</strong></li>
+<li><strong>Three free environment variables</strong> from LiveKit Cloud on signup.</li>
+<li>Agent's spoken fact: <strong>Build 2026 = June 2–3, San Francisco, Fort Mason</strong> (two-day event + online).</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Run <code>lk app create</code> with the Python agent starter + React front-end templates and stand up an Azure-only voice agent (Azure STT + Azure OpenAI + Azure TTS) end-to-end with <code>uv sync</code> / <code>uv run agent.py download-files</code> / <code>pnpm install</code> / <code>pnpm dev</code>.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Wire up the <strong>LiveKit MCP docs server</strong> in my coding-agent setup so it builds against current LiveKit APIs; compare vs the LiveKit skill.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Swap models with the "one line of code" claim — e.g. switch TTS/STT providers and measure latency/quality differences in the cascaded pipeline.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Experiment with turn detection + interruption tuning so coughs/back-channels ("mhm") don't falsely interrupt.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: What's the real-world latency floor on the Azure STT→Azure OpenAI→Azure TTS path, and where's the biggest contributor (network vs STT vs LLM vs TTS)?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: Self-hosted LiveKit server vs LiveKit Cloud — what are the cost/ops/scale tradeoffs at the "hundreds of thousands of concurrent users" tier?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: Does LiveKit support a <strong>speech-to-speech / realtime (non-cascaded)</strong> model path, or is the cascaded pipeline the recommended pattern? (Session only covered cascaded.)</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: How does SIP/telephony bridging work in practice for taking the same agent to phone systems?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: Any voice-assistant / real-time multimodal agent build on Azure; telephony/IVR modernization; embedded/automotive/wearable voice UX; demos needing a fast "wow" voice agent.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="ODSP933.html"><span class="pager-dir">← Previous</span><span class="pager-code">ODSP933</span><span class="pager-title">Agentic infrastructure needs agentic observability</span></a>
+    <a class="pager pager-next" href="ODSP938.html"><span class="pager-dir">Next →</span><span class="pager-code">ODSP938</span><span class="pager-title">Mitigate software supply chain risks in GitHub Actions</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRK245 — Build the thing that builds the thing</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">BRK245</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=o5IQMijn-Ks" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Build the thing that builds the thing</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Peter Steinberger (creator/maintainer, OpenClaw)</span>
+      <span class="meta-item">⏱️ 44m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="developer-tools">Developer Tools</span><span class="chip" data-tag="platform-engineering">Platform Engineering</span><span class="chip" data-tag="coding-agents">Coding Agents</span><span class="chip" data-tag="open-source">Open Source</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speaker:</strong> Peter Steinberger — creator &amp; maintainer of OpenClaw (large open-source project)<br>
+<strong>Duration:</strong> ~44 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=o5IQMijn-Ks">YouTube</a></p>
+  </div>
+</div>
+
+<div class="callout callout-note">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">📝</span><span class="callout-title-text">Accuracy note</span></div>
+  <div class="callout-body">
+<p>This is an auto-caption transcript and the speaker is self-deprecating/improvisational, so some tool names and product names are garbled. Best-guess corrections are applied throughout (e.g. "GBT 5.4 / GBD55" → GPT-5.5-class model, "Asia" → Azure, "inferral machine" → infra/ephemeral machine, "crit box" → CrapBox, "claw"/"clanker" used loosely for the agent/AI). The talk is openly about <strong>OpenClaw</strong> and the agent used is <strong>Codex</strong>. Internal tool names (Claw Sweeper, GOG, Octopool, CrapBox, Mantis, CorePatch, CrapFleet, ClickClock, Release Bar) are taken as spoken — they are this maintainer's own homemade "slop" tools and may not be public products.</p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>This is a fast, demo-driven talk by the maintainer of OpenClaw about a new way to build software in the agent era: <strong>stop optimising how <em>you</em> build software and start building tools that help your <em>agents</em> build software faster.</strong> The speaker walks through a sprawling collection of small, "vibe-coded" homemade tools (most of them ugly throwaways) that he built every time he hit friction maintaining a massive open-source project with a tiny team and tens of thousands of issues. The recurring method is simple: <strong>annoyance is the signal</strong> — whenever something is repetitive or painful, go one level up and build a tool to automate it, because in 2026 "any problem is just a prompt away." The headline lessons: treat every issue/PR as a "prompt request" (a change signal), automate triage/review/testing/verification end-to-end so you only stay in the loop for what matters, and remember these tools <em>compound</em> — each one makes the next one faster to build. The two things he most wants you to try: <strong>auto-review</strong> (agent re-reviews its own code in fresh contexts until clean) and <strong>CrapBox</strong> (ephemeral cloud test boxes).</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Reframe the job:</strong> your job is no longer to build software faster yourself — it's to <em>help your agent</em> build software faster, and above all to <strong>close the loop</strong> (give the agent a way to self-verify, e.g. taking its own screenshots instead of you eyeballing the browser).</li>
+<li><strong>"Prompt request," not pull request:</strong> every issue or PR is just a signal that someone wants a change. Issues and PRs are largely interchangeable; a fresh issue is sometimes <em>easier</em> than an AI-written PR you have to make your agent read, critique, and rewrite.</li>
+<li><strong>The hard part isn't building, it's maintaining.</strong> "Any problem is just a prompt away" — building these tools is trivial; gardening them over time (deps, platforms, edge cases) is the real cost.</li>
+<li><strong>Annoyance is the trigger to automate.</strong> "Listen to your body / listen when you're annoyed." Every tool in the talk was born from a specific moment of friction.</li>
+<li><strong>Go one level up.</strong> Don't think at the project level — point the agent at your <em>projects folder</em> and ask "what should I work on?" across all repos + open issues at once.</li>
+<li><strong>Optimise for autonomous work + protect your focus time.</strong> Maximise what agents can do unattended (duration doesn't matter), and reserve human attention for the genuinely important/risky items.</li>
+<li><strong>Tools compound.</strong> Small helper tools chain together (reports need the crawler; CrapFleet needs CrapBox), so each new tool gets cheaper to build — a flywheel, not a tax.</li>
+<li><strong>It's safe to vibe-code throwaways.</strong> Helper tools aren't system-critical, so he literally doesn't read their code; for OpenClaw itself he reads far more code than people assume.</li>
+<li><strong>Auto-review changes everything:</strong> one line in <code>AGENTS.md</code> ("before you commit/land a PR, run auto-review") makes the agent call itself in a <em>fresh context</em> and run many review rounds — far more reliable than manually hammering <code>/review</code> all day.</li>
+<li><strong>CrapBox (ephemeral cloud test boxes) is the other must-try:</strong> offload heavy/parallel tests to beefy cloud machines, fan out across OSes/providers, and massively raise shipping confidence.</li>
+<li><strong>Capture intent, not just diffs:</strong> an OpenClaw skill offers contributors a privacy-filtered prompt/transcript upload so the maintainer can tell genuine effort ("good slop") from a 5-token one-liner.</li>
+<li><strong>Models aren't the bottleneck — imagination is.</strong> "We're not limited anymore by intelligence... everything that we're limited of is our own imagination."</li>
+<li><strong>Feed the agent your invariants.</strong> Write project-specific assumptions into <code>AGENTS.md</code> (the agent has no memory across sessions), and periodically ask the agent itself to flag confusing/contradictory instructions and clean them up (confusion = token burn + worse results).</li>
+<li><strong>Don't write agent files yourself</strong> — let the agent write instructions in "agent-to-agent" language; you describe intent, it phrases it.</li>
+<li><strong>Own the whole stack so the agent can self-fix:</strong> because he controls the full stack (e.g. his own Google CLI), a missing feature is just something the agent can build <em>and</em> end-to-end verify against a demo account before shipping.</li>
+<li><strong>"You can just do stuff."</strong> The overarching mindset: in this era a single person can build their own ecosystem of tooling on the side, in spare corners of the day.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-build-the-thing-that-builds-the-thing">Framing: build the thing that builds the thing</h3>
+<p>The speaker opens by warning this won't be a polished presentation — it's a live tour of his own tools. His thesis: it's been less than a year since coding agents existed and only ~half a year since they got <em>good</em>, and there's no slowing down, so <strong>many of our old ways of building software are already obsolete and we haven't figured out the new ones yet.</strong> The mental shift he's pushing: anytime you build software now, your job isn't to figure out how to build <em>faster yourself</em> — it's to figure out <strong>what you can do to help your agent build faster</strong>, and especially to <strong>close the loop</strong>.</p>
+<p>He illustrates the loop with a story: last year he spent months building a SaaS where the agent would write code, declare it done, he'd check the browser, swear at the agent, it would loop and fix and eventually get there. The breakthrough was realising the agent could just <strong>take a screenshot itself</strong> — like a human would — so it could self-verify. Lesson: anything you find yourself doing repeatedly, ask "how can I automate this / help my agent close the loop?"</p>
+<p>He also reframes how he sees all his "failed" projects. People wrote articles like "he made 43 projects that failed and one worked" — but he says <strong>none of them failed</strong>: they're all tools he built for himself (mostly to help his agents work faster). He's catalogued them on a deliberately "slop" website of all the little tools built to build OpenClaw (and says it's not even complete).</p>
+<h3 id="the-scale-problem-tens-of-thousands-of-issues">The scale problem: tens of thousands of issues</h3>
+<p>OpenClaw "exploded," and issues/PRs spiked. He notes GitHub's issue counter caps display at 5k, masking the real number — at one point <strong>more than 10,000 issues</strong> open. His blunt view: most of that volume is <strong>agent-generated</strong>, not written by humans ("let's not pretend any of that is written by humans anymore"). Many open-source maintainers are furious about the "slop," but his stance is <strong>you can't fight the world — you have to find a way to deal with it.</strong></p>
+<p>Key reframe (the conceptual core of the talk): <strong>stop calling it a pull request; call it a "prompt request."</strong> Any issue or PR is just a signal that <em>someone is unhappy with what you built and wants a change</em> — issues and PRs are basically interchangeable. Sometimes a plain <strong>issue is nicer than an AI-written PR</strong>, because with an AI PR he has to make his agent read the code, critique it, and rewrite it anyway, whereas an issue lets him start fresh.</p>
+<h3 id="claw-sweeper-automated-issue-triage-closing">Claw Sweeper — automated issue triage &amp; closing</h3>
+<p>First concrete problem: <strong>get the issue number down.</strong> He tried existing review tools (he name-drops trying CodeRabbit, Greptile/"grab," and others). They were fine but only gave <em>reviews</em> — he wanted something that <strong>automatically groups and closes</strong> issues. Nothing good existed, so he built <strong>Claw Sweeper</strong> (again, intentionally sloppy — the website doesn't matter).</p>
+<p>How it works (and it's deliberately simple):
+- It runs as a <strong>GitHub Action</strong>. Whenever someone opens an issue/PR, it <strong>kicks off a Codex run in the cloud</strong>.
+- A carefully written prompt explains the project's goal and vision. He keeps a <strong><code>vision.md</code></strong> in every open-source project now, and his standard prompt makes the agent read it. The file spells out <strong>what the project definitely wants and definitely does not want.</strong>
+- Based on those rules, the agent either <strong>comments on</strong> or <strong>closes</strong> the issue.
+- Result: he closed roughly <strong>15,000 issues</strong> this way. He admits he operates "on the assumption of infinite tokens" and that you could do it far more efficiently.</p>
+<p>It's not a one-shot static process. Because at this scale a fix landing on <code>main</code> may resolve issues he's <strong>never even read</strong>, <strong>Claw Sweeper re-runs on every issue/PR at least weekly</strong> (could be daily if you want to spend the tokens). A common outcome: it auto-closes a months-old issue he never saw, the original reporter gets a "we fixed this on main" reply, and he never had to touch it. He has a <strong>Discord integration</strong> that reports what it did, and a <strong>dashboard</strong> (e.g. "18 Codex working right now") that shows a long explanatory comment plus an array of issues people need to solve.</p>
+<h3 id="maintainer-reports-a-discord-crawler">Maintainer reports &amp; a Discord crawler</h3>
+<p>With more momentum he added maintainers — some excellent, some who showed up briefly then vanished. Having been liberal about granting access, he lost overview, so he built a <strong>dashboard / maintainer reports</strong> for OpenClaw (kept private because it needs more data than just GitHub). Crucially, <strong>being a good maintainer isn't just pushing code — it's participating in discussions</strong>, which the project does on <strong>Discord</strong>. So the reporting system needed Discord data too.</p>
+<p>That created the next problem: <strong>how to get data out of Discord.</strong> Answer: build a <strong>crawler</strong> ("any problem is just a prompt away"). He stresses again that <em>building</em> the crawler was never the hard part — <em>maintaining</em> it is.</p>
+<p>He then describes operating <strong>one level above the project</strong>: instead of thinking per-project, he points Codex at his <strong>projects folder</strong> and asks "what should I work on?" It enumerates all his projects and open issues. He could say "do all of them" (joking "my slop is better than your slop") but doesn't blindly — some reports are weird and he doesn't fully trust the agents, so he wants to read them.</p>
+<h3 id="the-issue-browser-killing-micro-friction">The issue browser — killing micro-friction</h3>
+<p>Reading flagged items by clicking each URL was too slow, so he built himself a <strong>homemade issue browser</strong>: select text and it parses it. Because "clankers" produce an almost unlimited number of formats, every time something didn't parse he just patched it, so now it handles essentially every format it's ever seen and he can click through the list fast. Thanks to the <code>vision.md</code> context, the agent's pre-selection is usually right — it'll say "do these eight, skip these two, those need real human time." </p>
+<p>The principle he extracts: <strong>your time is the limiting resource, so you must build the tools to build the tools.</strong> Optimise what agents do autonomously (then duration is irrelevant) and carefully manage the <strong>focus time</strong> where you genuinely need to be in the loop.</p>
+<h3 id="gog-a-google-cli-for-agents">GOG — a Google CLI for agents</h3>
+<p>Aside (sparked by spotting a "Gmail draft create" feature mid-demo): he built <strong>GOG</strong> because <strong>Google has no good CLI</strong> and he wanted his agents to access all his Google services. Codex has Gmail and now calendar integration but only for a single account, which annoyed him. Owning the whole stack means <strong>the agent can fix itself</strong> — anything missing is just a feature the agent can add. Better still, because he has a <strong>demo account on GOG</strong>, Codex can <strong>build the feature <em>and</em> end-to-end verify it</strong>, so he ships with confidence having done almost nothing but say "yes."</p>
+<h3 id="turning-the-crawler-into-a-prioritisation-engine">Turning the crawler into a prioritisation engine</h3>
+<p>The Discord crawler turned out to solve a much bigger problem than reporting: <strong>with thousands of issues, knowing <em>what to actually work on</em> is hard.</strong> He hooked the crawler up to Codex so it can scan all his channels and answer questions like <em>"what are people screaming about the most, correlated to open issues/PRs — find me the top five things to work on,"</em> matched against the <strong>vision document</strong>, picking work the agent can do autonomously so it can run for hours and parallelise.</p>
+<p>He reiterates a governance point: even when you heavily automate, <strong>you must keep an overview of your system</strong> so you can tell which issues are "probably fine, probably fine" vs. "this one is scary, I need to look at it."</p>
+<p><strong>Distribution trick:</strong> other maintainers wanted the crawler, but there's no public way to get all that data. He uses a bot to access it, but didn't want to hand his <strong>bot token</strong> to everyone. Solution: the crawler <strong>backs up all Discord data to GitHub</strong> ("what's the simplest backup system? GitHub") in a serialized DB format, so anyone without a bot token can use <strong>GitHub as an alternative data source.</strong> Problem solved.</p>
+<h3 id="release-bar-knowing-when-to-ship">Release Bar — knowing when to ship</h3>
+<p>Maintaining many projects, he wanted a dashboard of <strong>what needs attention</strong> — most pending PRs, time since last release, "should I cut a release?" Nothing good existed, so he built <strong>Release Bar</strong>, which he can filter by e.g. <em>days since last release</em>. His software philosophy: <strong>if you don't constantly garden software, it's dead</strong> — dependencies and systems change, everything needs updating — so a dashboard telling him when to release (and which projects need attention) is valuable. Reminder again: these little helper tools are <strong>not system-critical</strong>, so he doesn't read their code; if a tool gets heavy use he iterates on it, and if one doesn't pan out, "no cost."</p>
+<h3 id="octopool-beating-github-rate-limits">Octopool — beating GitHub rate limits</h3>
+<p>Running lots of parallel work (and instructing his agent to hunt for <em>related</em> issues) kept <strong>exhausting GitHub tokens</strong>. He has friends at GitHub and literally had someone (Ashley/"Ashley wasn't around"; "Peter's rate limits") <strong>clicking a button once an hour to reset his limits</strong> — but humans need sleep ("it's not clankers"), so working odd hours he'd get stuck. (Annoyance → solution.)</p>
+<p>He built <strong>Octopool</strong>. The principle is simple:
+- A personal account gets <strong>~5,000 API requests/hour</strong>; installing a <strong>GitHub App</strong> grants <strong>~15,000/hour</strong>.
+- Octopool <strong>shims <code>gh</code></strong> and routes through a service on <strong>Cloudflare</strong>. For a <strong>read-only, non-mutating action on a public repo</strong>, it uses the <strong>GitHub App's token</strong> (not his personal token). For anything <strong>mutating</strong> or not matching that pattern, it falls back to his own token.</p>
+<p>He praises how good the tooling is now — Cloudflare especially — noting the agent plus smart models plus browser use can essentially <strong>configure Cloudflare itself</strong> (though you still want to review that it didn't weaken your security settings). General principle restated: <strong>whenever you feel pain, go one level out, ask "what can I do to remove this pain?"</strong> — it'll usually help your whole team and it <strong>compounds</strong>.</p>
+<h3 id="crapbox-ephemeral-cloud-test-boxes-must-try-2">CrapBox — ephemeral cloud test boxes (must-try #2)</h3>
+<p>As the codebase and features grew, <strong>tests became a major pain</strong> — creeping from ~10s to 30s to minutes; he optimised for his Mac Studio to ~1 min, then everyone with fewer than 40 cores complained their "computers were melting." Shared pain.</p>
+<p>Around then he saw a vendor (he references <strong>Blacksmith</strong>) launch a <strong>"test box" concept</strong> — give the agent a little box to run intensive tests/whatever it needs. It was beautiful but <strong>very new and down ~2+ hours/day</strong>, and his team had become so dependent that CI and tests would break and nothing got done during outages. So he built a <strong>wrapper with alternatives</strong>: <strong>CrapBox</strong> (keeping the "crustacean" naming theme).</p>
+<p>How CrapBox works:
+- Spin up an <strong>ephemeral machine in the cloud</strong>, with your <strong>repo already checked out</strong>, <strong>rsync your changes</strong> in, and <strong>run the tests there</strong> — so you don't pay the heavy CPU cost locally, can use <strong>really beefy hardware</strong>, and <strong>massively parallelise.</strong>
+- It uses their main provider and <strong>fails over to AWS / now also Azure</strong> when one is down. It became "universally loved," and community PRs grew its support to <strong>~20 providers.</strong></p>
+<p>Then it expanded well beyond testing:
+- <strong>Cross-platform debugging.</strong> Cross-platform is "a lie" — e.g. a Windows-only <code>EPERM</code>-type issue despite Node supposedly being cross-platform. Previously he'd lazily wipe such bugs rather than boot his Windows machine. He added <strong>cross-OS support</strong>: tell the agent "test it on all OSes" and it spins up <strong>multiple boxes</strong> (Windows/Linux/macOS, even Red Hat) in <strong>parallel</strong>, scaling "ad infinitum" to raise confidence.
+- <strong>UI debugging via VNC.</strong> For UI-specific, browser-specific, OS-specific bugs he added <strong>VNC</strong> ("people already solved that — just add VNC"). The agent opens a browser with <strong>webVNC</strong> in the box, with a browser/terminal (and e.g. Telegram) already waiting, so it can <strong>recreate the exact scenario end-to-end.</strong>
+- <strong>Agent-driven computer use.</strong> Since vision models can do it, CrapBox got <strong>screenshot/click/type</strong> tools so the <strong>agent controls the UI itself</strong> in its own box — no human clicking.</p>
+<h3 id="mantis-visual-verification-of-fixes">Mantis — visual verification of fixes</h3>
+<p>Building on CrapBox: he wanted to stop watching the agent and just <strong>watch a video.</strong> <strong>Mantis</strong> is an agent you <strong>ping on a PR</strong>: it spins up the correct boxes, <strong>records a video of the bug</strong>, fixes it, <strong>records a video of the fix</strong>, and <strong>looks at the video to verify</strong> the fix. End-to-end flow: see an issue → ping <strong>Claw Sweeper</strong> to fix it (creates the PR) → <strong>Mantis</strong> does visual verification → he just <strong>watches the video and merges.</strong> "All built based on me being annoyed."</p>
+<h3 id="auto-review-agent-reviews-its-own-code-must-try-1">Auto-review — agent reviews its own code (must-try #1)</h3>
+<p>He describes the painful manual loop everyone knows: run a prompt, then <code>/review</code> because you're unsure; Codex finds three real-sounding issues; you fix and wait 10–20 min; <code>/review</code> again finds two <em>new</em> issues (it can't surface them all at once); fix, wait, repeat. He once did this <strong>10 times in a single day</strong> (adding LINE support he doesn't even use) and felt like <em>he</em> was the agent.</p>
+<p>So he built <strong>auto-review.</strong> He expected to need hooks (and could, since Codex is open source) but it turned out <strong>far easier</strong>, because agents follow instructions reliably. The whole mechanism is <strong>one line in <code>AGENTS.md</code></strong>: <em>before you commit or land a PR, if you haven't done auto-review, run auto-review.</em> The trick: you can <strong>call the CLI agent from within itself</strong> to get a <strong>fresh context</strong> — Codex calls Codex to run the review — giving the "fresh eyes" that a single long context can't ("good luck" reviewing with fresh eyes inside one context). The result is a reliable system that <strong>automatically runs many review rounds.</strong></p>
+<p>He hit (and fixed) a bug where <strong>Codex kept calling Codex calling Codex</strong> recursively and took forever. He also tuned a <strong><code>SKILL.md</code></strong> to teach the agent that <strong>not every review finding is valid</strong> — agents surface weird edge cases, so you must encode your project's conditions/invariants (his example: "we don't expect plug-in files to be randomly edited while the system is running," otherwise the agent writes overly defensive code). <strong>Write your invariants into <code>AGENTS.md</code></strong> — <em>you</em> know them, the agent doesn't, and its memory is gone each new session, so the more context you give, the better. He went from very long agent files → very short → now <strong>long again but with meaningful content.</strong> And: <strong>don't write the text yourself</strong> — let the agent phrase it in agent-to-agent language; periodically go "meta" and ask the agent what's confusing/contradictory in its own <code>AGENTS.md</code> and clean it up, because <strong>confusion is pure token burn and yields worse results.</strong></p>
+<blockquote>
+<p>His explicit ask: <em>"If you only take two ideas from this talk: try auto-review and try CrapBox."</em> They "totally revolutionised how we build software" and his trust in prompting-and-shipping is much higher.</p>
+</blockquote>
+<h3 id="capturing-contributor-intent-the-prompt-upload-skill">Capturing contributor intent (the prompt-upload skill)</h3>
+<p>A oneline prompt can generate 10 pages of content, so you can't tell how much effort went into a PR. Early on his contributor guidelines <strong>asked people to send their prompts</strong>, but nobody did — no good system, and you can't beat people's laziness. The fix: an <strong>OpenClaw skill</strong> so that when a contributor sends a PR, <strong>their agent asks</strong> "want to send a <strong>privacy-filtered</strong> version of the prompt? If you do, we'll review your PR faster." On "yes," the agent <strong>finds its own transcript on disk, trims it to the interesting parts, and attaches it to the PR.</strong> Now he has a far better signal of <strong>effort</strong> — distinguishing a 5-token "fix issue #N" from hours of real discussion, i.e. <strong>total slop vs. "good slop."</strong> He notes he could've built this six months earlier; it just never occurred to him how easy it was. <strong>"We're not limited by intelligence anymore — the models are good enough. What limits us now is our own imagination."</strong></p>
+<h3 id="corepatch-reviewing-million-line-codebases">CorePatch — reviewing million-line codebases</h3>
+<p>Auto-review made him feel guilty about all the code he'd shipped <em>without</em> review — even with a strong <strong>GPT-5.5-class model</strong>, large/difficult changes hide bugs the agent only finds over multiple review rounds. But you <strong>can't <code>/review</code> a million-line project</strong> — too much for any context. So he built <strong>CorePatch</strong>: take a big project <strong>apart into ~50 subsections</strong> (however you can separate it), have the agent <strong>review each separately</strong>, and you'll "find a lot of interesting things." It's not as perfect as reviewing an actual changeset (true coverage would need thousands of Codex sessions, a problem even with unlimited tokens), but it's <strong>great for cleaning up codebases.</strong> Still unfinished.</p>
+<h3 id="crapfleet-multiplayer-codex">CrapFleet — multiplayer Codex</h3>
+<p>The last tool. He hated being the <strong>intermediary</strong> when a teammate copy-pastes between their coding agent and chat while he comments. He wanted to <strong>talk to their agent directly.</strong> Since CrapBox already runs tests in a box, <strong>Codex can run in there too</strong> → <strong>CrapFleet = multiplayer Codex.</strong> He can <strong>send a maintainer a link to a session</strong> so they can <strong>view it, talk to it, or take it over</strong> — "multiplayer clanking."</p>
+<h3 id="clickclock-they-accidentally-rebuilt-slack">ClickClock — they accidentally rebuilt Slack</h3>
+<p>Testing OpenClaw's many message channels end-to-end was hard — complex APIs are easier to understand in a UI. But automating real chat platforms in a fresh Linux cloud box triggered <strong>Cloudflare CAPTCHAs / anti-bot defenses</strong> (an unattended Linux box "feels like someone trying to hack their system"). Understandable, but it blocked real end-to-end tests. So they <strong>built their own messaging platform</strong> they fully control for end-to-end testing — which "got a little out of hand" and became a <strong>backup chat system</strong> for when their primary team chat is down. It's called <strong>ClickClock</strong>.</p>
+<h3 id="closing-qa">Closing &amp; Q&amp;A</h3>
+<p>He wraps with the through-line: <em>"Listen to your body, listen when you're annoyed."</em> <strong>Annoyance is an amazing signal that something can be automated</strong>, and <strong>every automation compounds</strong> — all these oddly-named little tools work together (reports rely on the crawler; CrapFleet relies on CrapBox), letting a <strong>very small team ship a massive codebase</strong>. There are many more crawlers/tools he didn't show.</p>
+<p><strong>Q&amp;A:</strong>
+- <em>"As you build this ecosystem and get more 'enterprise,' do dependencies between your tools ever get in the way of improving them?"</em> — Hasn't happened yet. It's <strong>less about dependencies, more that the tools compound and make building new tools faster.</strong> A general agent trick: <strong>if you've solved something once, point the agent at where you solved it</strong> — agents are excellent at pattern-matching, so it really compounds. When something doesn't work out, you learn from it (e.g. the token/Octopool tool's first version ran on his machine and was awkward with the GitHub App, so he iterated, then told the agent "remove this feature, rebuild with this new idea, but take that part from that other tool" — reusing prior work saves the prompting; agents are smart at reading the git history to figure out context). Even better, just press the <strong>Whisper Flow</strong> voice button and <em>talk</em> about it — sometimes the team just discusses out loud, he presses the button, and <strong>Codex listens in and starts building during the conversation</strong>, clever enough to tell a joke aside from the important bits. <strong>"You can just do stuff."</strong>
+- <em>"As a busy solutions engineer with a billion things on my plate, I love building my own agents but I simply don't have time to build tools to save time."</em> — He invokes the <strong>"square wheels" meme</strong> (people too busy pushing a cart on square wheels to adopt round ones). The point: <strong>these tools can be massive slop</strong> — literally tell Codex <em>"look at this session, see the pain I had, build me a tool that reduces it, this is just a rough idea."</em> You don't even need to specify the language or anything (he uses <strong>Go</strong> — admits he doesn't even like Go, but his agents are fast in it, "so who cares"). Do it <strong>on the side</strong>; there's always a spare corner/window for little experiments — it brings the fun back <strong>and it compounds.</strong></p>
+<div class="callout callout-tip">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">💡</span><span class="callout-title-text">The mantra</span></div>
+  <div class="callout-body">
+<p>"Any problem is just a prompt away." / "You can just do stuff." / "We're not limited by intelligence anymore — only by our imagination."</p>
+  </div>
+</div>
+
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>OpenClaw</strong> — the large open-source project being maintained; the subject of all the tooling.</li>
+<li><strong>Codex</strong> — the AI coding agent (cloud + CLI) doing the actual work; the agent he calls recursively (Codex-calls-Codex).</li>
+<li><strong>GPT-5.5-class model</strong> ("GBT 5.4 / GBD55" as garbled) — the model referenced as "really good" but still missing bugs on large/hard changes.</li>
+<li><strong><code>vision.md</code></strong> — per-project file stating what the project <em>does</em> and <em>does not</em> want; read by the agent's standard prompt to drive triage decisions.</li>
+<li><strong><code>AGENTS.md</code></strong> — agent instruction file; holds the one-line auto-review rule and project invariants. Evolved long → short → meaningfully long.</li>
+<li><strong><code>SKILL.md</code> / OpenClaw "skills"</strong> — tuned instructions teaching the agent which review findings are valid; also powers the contributor prompt-upload flow.</li>
+<li><strong>Claw Sweeper</strong> — GitHub Action that fires Codex on every issue/PR to auto-comment/close per the vision rules; re-runs weekly; Discord-integrated; has a dashboard.</li>
+<li><strong>GOG</strong> — homemade <strong>Google CLI</strong> giving agents full Google access (Gmail/Calendar/etc.) across accounts; supports end-to-end self-testing via a demo account.</li>
+<li><strong>Maintainer reports / dashboard</strong> — private analytics combining GitHub <em>and</em> Discord activity to judge maintainer contribution and surface what needs attention.</li>
+<li><strong>Discord crawler</strong> — pulls Discord data; later hooked to Codex for prioritisation; backs data up to GitHub as an alternative data source.</li>
+<li><strong>Issue browser</strong> — homemade tool to select/parse issue text in any format and click through prioritised work fast.</li>
+<li><strong>Release Bar</strong> — dashboard of release readiness across projects (e.g. days since last release, pending PRs); filterable to what needs attention.</li>
+<li><strong>Octopool</strong> — shims <code>gh</code> and routes read-only/non-mutating public-repo calls through a <strong>Cloudflare</strong>-hosted <strong>GitHub App</strong> token (~15k/hr) instead of the personal token (~5k/hr) to beat rate limits.</li>
+<li><strong>Cloudflare</strong> — hosting/edge for Octopool; praised as agent-configurable via smart models + browser use.</li>
+<li><strong>GitHub Actions / GitHub Apps</strong> — automation runtime and the higher rate-limit token source.</li>
+<li><strong>CrapBox</strong> — ephemeral cloud test boxes: repo pre-checked-out, rsync changes, run heavy/parallel tests on beefy hardware; multi-provider failover (main → AWS → Azure), ~20 providers; cross-OS boxes (Win/Linux/macOS/Red Hat); <strong>VNC/webVNC</strong> UI debugging; agent computer-use (screenshot/click/type).</li>
+<li><strong>VNC / webVNC</strong> — added to CrapBox to recreate and debug UI/browser/OS-specific issues end-to-end.</li>
+<li><strong>Mantis</strong> — agent pinged on a PR that spins up boxes, records before/after videos of bug &amp; fix, and visually verifies the fix.</li>
+<li><strong>CorePatch</strong> — splits a huge (million-line) codebase into ~50 subsections so the agent can review each separately; good for cleanup; unfinished.</li>
+<li><strong>CrapFleet</strong> — runs Codex inside CrapBox to enable <strong>multiplayer Codex</strong>: share a session link so maintainers can view/talk-to/take-over a session.</li>
+<li><strong>ClickClock</strong> — self-built messaging platform (originally to enable controlled end-to-end chat testing without anti-bot CAPTCHAs), now also a backup team chat.</li>
+<li><strong>Whisper Flow</strong> — voice/speech-to-text button used to talk to Codex; can listen in on a live team conversation and start building.</li>
+<li><strong>Go (Golang)</strong> — preferred language for throwaway tools purely because agents are fast in it.</li>
+<li><strong>Node.js</strong> — underlying runtime of OpenClaw; cited re: "cross-platform is a lie" Windows <code>EPERM</code> bugs.</li>
+<li><strong>Blacksmith</strong> — third-party vendor whose "test box" concept inspired CrapBox; its early instability/downtime prompted building a wrapper.</li>
+<li><strong>CodeRabbit, Greptile ("grab")</strong> — existing AI review tools he tried; good for reviews but didn't auto-group/close issues, prompting Claw Sweeper.</li>
+<li><strong>Slack</strong> — the chat platform they effectively (accidentally) rebuilt as ClickClock for testing/backup.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p>None explicitly announced as Microsoft product releases/previews/GA. This is an experience/philosophy talk, not a product-launch session. Everything shown is the speaker's own homemade open-source/internal tooling for maintaining <strong>OpenClaw</strong> (Claw Sweeper, GOG, Octopool, CrapBox, Mantis, CorePatch, CrapFleet, ClickClock, Release Bar) — presented as personal "slop" tools, with CorePatch noted as not yet finished. No version numbers, GA/preview status, or roadmap commitments were stated.</p>
+<h2 id="demos">💡 Demos</h2>
+<p>The whole talk is a live, screen-driven tour (improvisational, with "let's see if this works" moments). Notable on-screen demonstrations and the point each proved:
+- <strong>The "slop" tools website</strong> — a catalogue of all the little tools built to build OpenClaw → proves the sheer volume of friction-driven tooling and that the polish doesn't matter.
+- <strong>Claw Sweeper dashboard</strong> ("18 Codex working right now") — shows the long explanatory comment + array of issues to solve → proves issue triage/closing is fully automatable at scale (~15k issues closed).
+- <strong>Projects-folder Codex prompt</strong> ("what should I work on?") — enumerates all repos + open issues → proves working "one level above" the project.
+- <strong>Issue browser</strong> — select text → parsed, agent pre-selects "do these 8, skip these 2" → proves micro-friction removal compounds focus.
+- <strong>GOG / Gmail draft + calendar features</strong> — spotted mid-demo → proves owning the stack lets the agent add <em>and</em> end-to-end-verify features.
+- <strong>Octopool</strong> ("let's see if this actually works") — <code>gh</code> shim routing through Cloudflare/GitHub App → proves the 5k→15k token rate-limit workaround.
+- <strong>Release Bar</strong> — filter by days-since-last-release → proves at-a-glance release/attention triage across many projects.
+- <strong>CrapBox</strong> — ephemeral boxes running tests, fanning out across OSes/providers, with VNC and agent computer-use → proves offloaded, parallel, cross-platform, UI-capable testing.
+- <strong>Mantis</strong> — ping on PR → before/after bug videos + visual verification → proves end-to-end visual fix verification with the human only watching a video.
+- <strong>Implied auto-review / CrapFleet / ClickClock</strong> walkthroughs supporting each tool's narrative.</p>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<p><strong>Stats</strong>
+- <strong>&gt;10,000</strong> issues open at peak (GitHub display caps at <strong>5,000</strong>).
+- <strong>~15,000</strong> issues closed via Claw Sweeper.
+- Personal GitHub rate limit <strong>~5,000 req/hr</strong> → GitHub App <strong>~15,000 req/hr</strong> (Octopool's whole basis).
+- Test runtime crept <strong>10s → 30s → minutes → ~5 min</strong>, optimised to <strong>~1 min</strong> on a 40-core Mac Studio (melting smaller machines).
+- CrapBox failover providers grew to <strong>~20</strong> via community PRs.
+- CorePatch splits a project into <strong>~50</strong> subsections; full changeset coverage would need <strong>thousands</strong> of Codex sessions.
+- He once ran the manual <code>/review</code> loop <strong>10 times in one day</strong> (adding LINE support).
+- Coding agents: <strong>&lt;1 year</strong> old, <strong>~6 months</strong> since they got "good."</p>
+<p><strong>Quotes</strong>
+- "It's still called a pull request. I call it a <strong>prompt request</strong>."
+- "Your job should be: <strong>what can I do to help my agent build software faster</strong> — and even more, it's all about <strong>closing the loop</strong>."
+- "<strong>Any problem is just a prompt away.</strong> Building this thing is never the hard thing; <strong>maintaining</strong> the thing is the hard thing."
+- "<strong>Listen to your body. Listen when you're annoyed.</strong> Annoyance is an amazing signal that we can automate this."
+- "You need to <strong>build the tools to build the tools</strong>."
+- "<strong>We're not limited anymore by intelligence... everything we're limited by is our own imagination.</strong>"
+- "If you only take two ideas from this talk: <strong>try auto-review and try CrapBox.</strong>"
+- "My slop is better than your slop."
+- "<strong>You can just do stuff.</strong>"
+- (On AI volume) "Let's not pretend any of that is written by humans anymore... <strong>you can't fight the world; you have to figure out a way to deal with it.</strong>"</p>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li class="task-list-item"><input type="checkbox" disabled> Add a <strong>one-line auto-review rule to <code>AGENTS.md</code></strong> ("before commit/landing a PR, run auto-review") and have the CLI agent call itself for a fresh-context review loop.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Stand up an <strong>ephemeral cloud test box</strong> (CrapBox-style): repo pre-checked-out, rsync changes, run heavy/parallel tests off-machine; add OS/provider fan-out + VNC for UI bugs.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Keep a <strong><code>vision.md</code></strong> per repo (explicit want/don't-want) and wire it into the standard agent prompt for triage.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Write project <strong>invariants</strong> into <code>AGENTS.md</code>; periodically ask the agent to flag confusing/contradictory instructions and clean them (reduce token burn).</li>
+<li class="task-list-item"><input type="checkbox" disabled> Adopt the <strong>"annoyance → build a throwaway tool" reflex</strong>; let the agent build it in any language (speed of agent &gt; your language preference).</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li class="task-list-item"><input type="checkbox" disabled> How are tokens/cost actually governed at "infinite tokens" scale — what would a budgeted version of Claw Sweeper look like?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Security review process for agent-configured infra (Cloudflare/Octopool) — how to catch a weakened security setting?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Which of these tools (if any) are/will be open-sourced or usable outside OpenClaw?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li class="task-list-item"><input type="checkbox" disabled> Our own agent/dev tooling, CI/test offloading, and OpenClaw workflows.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Open-source/issue-triage automation and maintainer dashboards.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<h2 id="-2026-build-session-list">- <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></h2>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="BRK244.html"><span class="pager-dir">← Previous</span><span class="pager-code">BRK244</span><span class="pager-title">Agent supervision is the new senior engineering skill</span></a>
+    <a class="pager pager-next" href="BRK246.html"><span class="pager-dir">Next →</span><span class="pager-code">BRK246</span><span class="pager-title">Foundry IQ: Fuel agents with enterprise knowledge and agentic retrieval</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

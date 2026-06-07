@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEM345 — From prompt to app, build AI powered apps on Windows</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEM345</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=wMSRtYCL_HU" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">From prompt to app, build AI powered apps on Windows</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Windows AI Platforms PM + WinUI/Skills &amp; Agents Developer (Microsoft)</span>
+      <span class="meta-item">⏱️ 22m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="windows">Windows</span><span class="chip" data-tag="windows-ai">Windows Ai</span><span class="chip" data-tag="on-device-ai">On Device Ai</span><span class="chip" data-tag="copilot-pc">Copilot Pc</span><span class="chip" data-tag="winui">Winui</span><span class="chip" data-tag="agents">Agents</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Two Microsoft presenters — a developer working on WinUI <strong>skills &amp; agents tooling</strong> (drives the demos) and a PM on <strong>Windows AI platforms</strong> (the AI/model side). Exact names not stated in captions; they joke "that's me, that's him" without naming themselves.<br>
+<strong>Duration:</strong> ~22 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=wMSRtYCL_HU">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>A deck-free, terminal-only, demo-heavy session showing how to <strong>build real WinUI apps on Windows entirely through GitHub Copilot agents</strong> and how to <strong>run AI models on-device</strong> using the Windows AI stack. The hook: a fully offline media-processing app (transcripts, summaries, burned-in captions, video search) built ~100% by Copilot in roughly a day — the presenters say they never looked at the code. The core thesis is <strong>"everything a human needs to build an app, an agent needs too"</strong>: file→new templates, a way to run packaged apps from the CLI, API/control lookup, app UI inspection/automation, and a model tool chain. They ship a WinUI Copilot plugin (via <strong>awesome-copilot</strong>) plus CLI tools (<code>dotnet new winui</code>, <code>dotnet run</code>, <strong>WinApp</strong>, <strong>WinApp search</strong>, <strong>WinAppD</strong> API search, <strong>WinApp UI</strong> inspect/invoke) that cut agent token usage by <strong>over 70%</strong>. The headline announcement is the <strong>WinML CLI</strong> (announced that day) — a streamlined model tool chain (<code>winml export/analyze/optimize/perf/build</code>) that takes a Hugging Face PyTorch model → ONNX → analyzed → optimized → perf-tested, ready to run on CPU/GPU/<strong>NPU</strong> of a Copilot+ PC. They demo it on a <strong>CLIP vision transformer</strong> to add a "find frames" feature that semantically searches a 2-hour video on the NPU (~3 ms/inference, 300+ fps).</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Agents need the same tools humans do.</strong> The session's central argument: if a human uses file→new, looks up APIs, reads stack traces, and optimizes models, then agents must be able to do all of that via CLI tooling too.</li>
+<li><strong>You can build production WinUI apps without touching code.</strong> The demo app was built ~100% with GitHub Copilot in about a day's work; the team "has not looked at the code for this application at all" and threw out the UI ~4 times while experimenting.</li>
+<li><strong>The whole talk is terminal-first, no PowerPoint.</strong> Even the closing "deck" is a custom terminal presentation app the presenter built with Copilot (markdown-driven), because they "refuse to go to PowerPoint."</li>
+<li><strong>Windows AI stack = bring-your-own-model or built-in primitives.</strong> Whether you bring your own model, pull from Hugging Face, or use Windows SDK AI primitives (Phi Silica, etc.), the goal is to make running AI models on Windows easy.</li>
+<li><strong>WinUI Copilot plugin</strong> is installable in seconds: <code>plugin install WinUI@awesome-copilot</code>. <strong>awesome-copilot</strong> is a repository of plugins/skills for Copilot.</li>
+<li><strong>Skills are just markdown.</strong> "Anybody can build a skill." The WinUI plugin ships skills for design, dev workflow, packaging, code review, test/report setup — everything an agent needs to build WinUI apps.</li>
+<li><strong>New <code>dotnet new winui</code> templates</strong> (released a few weeks before Build) let agents scaffold manifests/XAML/CS files correctly instead of guessing.</li>
+<li><strong><code>dotnet run</code> now launches a fully <em>packaged</em> WinUI app from the command line</strong> — previously impossible (you needed Visual Studio's F5). Achieved via the new <strong>WinApp</strong> CLI.</li>
+<li><strong>WinApp CLI</strong> (installable via WinGet) gives apps <strong>package identity</strong> so they can call identity-gated APIs: notifications, AI APIs like <strong>Phi Silica</strong>, and shell integrations.</li>
+<li><strong>Context-window hygiene via lookup tools.</strong> Instead of dumping all API/control docs into skills (poisoning context), agents call CLI tools on demand: <strong>WinApp search</strong> (samples from WinUI Gallery / AI Dev Gallery / Community Toolkit Gallery) and <strong>WinAppD</strong> (API/namespace search).</li>
+<li><strong>These tools save over 70% of token usage</strong> for agents building WinUI apps — a direct cost saving.</li>
+<li><strong>Agents can drive the finished app.</strong> <strong>WinApp UI</strong> can launch apps, inspect the live visual tree, list interactive elements, click/invoke buttons, and take screenshots — enabling end-to-end build-and-verify loops.</li>
+<li><strong>WinML CLI (announced today)</strong> streamlines the fragmented model-prep pipeline (convert PyTorch→ONNX, optimize, quantize, compile-to-hardware) into one tool chain with both a one-shot <code>build</code> command and step-by-step subcommands.</li>
+<li><strong>Model analysis finds fusion opportunities.</strong> <code>winml analyze</code> walks the ONNX graph operator-by-operator, emits an optimization recipe (e.g. fuse MatMul+Add into a Gemm), which <code>winml optimize</code> then applies to reduce compute nodes.</li>
+<li><strong>Hardware-aware by default on Copilot+ PCs.</strong> Execution providers shown: <strong>OpenVINO EP</strong> (Intel CPU/GPU/NPU) and <strong>TRT/RTX EP</strong> (NVIDIA GPU). Optimized ONNX stays platform-agnostic/portable unless you choose to compile to a specific hardware graph.</li>
+<li><strong>NPU is the smart default.</strong> <code>winml perf</code> defaulted to the <strong>NPU</strong> on the Copilot+ device, leaving the GPU free for heavy video processing — different models on different chips, running simultaneously without contention. Result: ~3 ms average inference, 300+ frames/sec.</li>
+<li><strong>Real outcome:</strong> the "find frames" feature (built by Copilot from the CLI + model in ~20-25 min) semantically searched a 2-hour video and surfaced Jensen Huang's leather jacket as the top match — all on the NPU.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="session-framing-build-with-ai-run-ai-in-your-app-no-slides">Session framing: build <em>with</em> AI, run AI <em>in</em> your app — no slides</h3>
+<p>The two presenters open casually (long Build day, "ready for dinner"). They scope the talk to two intertwined ideas: (1) <strong>building Windows applications with Copilot / agents</strong> (using the WinUI skills + tooling), and (2) <strong>using AI inside your Windows apps</strong> via Windows platform APIs to "make your applications real." One presenter is a <strong>developer</strong> on skills &amp; agents; the other is a <strong>PM</strong> on <strong>Windows AI platforms</strong> ("how to use AI as well as build <em>with</em> AI"). They commit to staying out of PowerPoint and doing <strong>mostly live demos in the terminal</strong>.</p>
+<h3 id="the-demo-app-a-fully-offline-media-processor-built-100-by-copilot">The demo app: a fully offline media processor built ~100% by Copilot</h3>
+<p>The first demo is a <strong>sample WinUI app</strong> built with GitHub Copilot + the team's skills. Scenario: you're a <strong>YouTuber</strong> who wants to process a media file before upload — <strong>generate transcripts</strong>, <strong>generate a summary</strong>, <strong>burn captions into the video</strong>, apply effects/processes — and do it <strong>fully offline</strong>.</p>
+<p>Stack used in the app:
+- <strong>Whisper</strong> for transcription (runs completely offline).
+- <strong>Foundry Local</strong> running <strong>Qwen 3 14B</strong> (14-billion-parameter model) — the PM clarifies the "name drops": <strong>Project Local</strong> and <strong>Microsoft Foundry on Windows</strong> are names for parts of the <strong>Windows AI stack</strong>.
+- Hardware: a <strong>Razer Blade</strong> device with a strong GPU (≈ RTX <strong>5080</strong>), capable of running the 14B model and generating output entirely offline.</p>
+<p>Build story: started ~a month ago, but effectively <strong>~one full day</strong> of work, <strong>100% through Copilot</strong>, and <strong>"we have not looked at the code for this application at all."</strong> They iterated heavily — <strong>threw out the UI ~4 times</strong> ("let's try a Jupiter-type look"), just experimenting. This sets up the rest of the session: show the <em>tooling Copilot uses</em> so the audience can do the same.</p>
+<h3 id="installing-the-winui-plugin-from-awesome-copilot">Installing the WinUI plugin from awesome-copilot</h3>
+<p>In GitHub Copilot, the presenter has a <strong>WinUI plugin</strong> installed. <code>plugin list</code> shows it. Install it yourself with:</p>
+<pre><code>plugin install WinUI@awesome-copilot
+</code></pre>
+<p><strong>awesome-copilot</strong> = a repository of plugins, skills, and things you can do for Copilot (download many different ones). The plugin ships <strong>skills</strong> — <code>skills list</code> shows WinUI skills for <strong>design, dev workflow, packaging, code review, test/report setup</strong> — i.e. "all the things an agent needs to know to build WinUI applications." The PM is "so happy to see packaging there" (the part humans get stuck on most). Key point: <strong>skills are just markdown files; anybody can build one.</strong></p>
+<h3 id="tooling-that-lets-agents-actually-build-winui-apps">Tooling that lets agents actually build WinUI apps</h3>
+<p>Beyond markdown skills, the team <strong>shipped CLI tools</strong> bundled with the skills so agents can <em>do</em> the work, not just read about it.</p>
+<p><strong>1) New WinUI templates</strong> (released a few weeks earlier):</p>
+<pre><code>dotnet new winui
+</code></pre>
+<p>Lets agents scaffold a WinUI app quickly without guessing how to create manifest, XAML, and CS files — equivalent to starting a new template in Visual Studio, but <strong>CLI-first because agents prefer CLI tooling over the Visual Studio GUI.</strong></p>
+<p><strong>2) Run a <em>packaged</em> app from the CLI</strong> (newly possible):</p>
+<pre><code>dotnet run   # on a WinUI app → runs fully packaged on the machine
+</code></pre>
+<p>Analogous to hitting <strong>F5</strong> in Visual Studio, but <strong>previously there was no way to run a <em>packaged</em> app from the command line.</strong></p>
+<h3 id="winapp-cli-package-identity-windows-app-dev-commands">WinApp CLI — package identity + Windows app dev commands</h3>
+<p>The mechanism behind <code>dotnet run</code> working for packaged apps is a new CLI called <strong>WinApp</strong>, installable via <strong>WinGet</strong> ("or whatever"). It exposes many commands for Windows application development. A key capability: <strong>giving applications package identity</strong> so they can call APIs that <strong>require identity</strong>, including:
+- <strong>Notifications</strong>
+- <strong>AI APIs</strong> like <strong>Phi Silica</strong> (captioned as "my Silica")
+- <strong>Shell integrations</strong></p>
+<p>(The PM jokes it "knows how to look out for dogs" — a playful nod to shell/identity integration.)</p>
+<h3 id="lookup-tools-instead-of-context-window-poisoning">Lookup tools instead of context-window poisoning</h3>
+<p>A recurring design principle: <strong>don't stuff everything an agent might need into the skills/context</strong> — that bloats and "poisons" the context window. Instead, give agents <strong>CLI tools they call on demand</strong> to fetch exactly what they need (which control to use, which API to use). This keeps the agent <strong>actively aware of what it's building and how</strong>.</p>
+<p><strong>WinApp search</strong> — finds samples and returns their code:</p>
+<pre><code>WinApp search tab      # e.g. search &quot;tab&quot;
+</code></pre>
+<p>It surfaces matching samples from the <strong>WinUI Gallery</strong>, the <strong>AI Dev Gallery</strong>, and the <strong>Community Toolkit Gallery</strong>. The agent can then <strong>pull the code</strong> for a sample (e.g. a <code>TabView</code>) — the <strong>XAML</strong> and the <strong>.NET</strong> code — plus extra guidance so it knows exactly how to use the control. The presenters note agents often <strong>get stuck on random things and burn time</strong>, so they packed in plenty of "how to handle certain situations" info.</p>
+<p><strong>Token savings:</strong> by giving agents these lookup tools, they measured <strong>over 70% reduction in token usage</strong> when building apps — so adopting the skills/tools both builds the app <em>and</em> lowers your token bill.</p>
+<p><strong>WinAppD</strong> — searches <strong>APIs/namespaces</strong> (vs. <code>WinApp search</code> for samples/controls). Building an AI-powered app, they search for AI APIs:</p>
+<pre><code>WinAppD ... use ml models
+</code></pre>
+<p>It returns relevant namespaces such as the <strong>Machine Learning</strong> namespace, the <strong>ONNX Runtime</strong> namespace, and the <strong>Phi Silica</strong> namespace (for AI text) — and the team's <strong>language model</strong> shows up there too. The agent then drills in to get the code, how to use it, and <em>when</em> to use it. Net effect: <strong>"instead of shipping everything an agent needs to know, the agent looks it up whenever it needs it."</strong></p>
+<h3 id="winapp-ui-agents-launch-inspect-and-drive-the-finished-app">WinApp UI — agents launch, inspect, and drive the finished app</h3>
+<p>After building, an agent should <strong>test and verify</strong> the app works. <strong>WinApp UI</strong> lets an agent:
+- <strong>Launch</strong> applications
+- <strong>Inspect</strong> them (read the <strong>live visual tree</strong>)
+- List <strong>interactive elements</strong>
+- <strong>Click / invoke</strong> buttons
+- Take <strong>screenshots</strong></p>
+<p>Live demo on the terminal itself:</p>
+<pre><code>WinApp UI inspect       # inspect the terminal → live visual tree + interactive elements (e.g. &quot;new tab&quot; button)
+WinApp UI invoke &lt;button&gt;  # invoke the new-tab button → a new terminal tab opens
+</code></pre>
+<p>This closes the loop: agents can <strong>interact with real apps end-to-end (100%)</strong>, confirm features functionally work, and self-verify without a human.</p>
+<h3 id="winml-cli-the-model-tool-chain-announced-today">WinML CLI — the model tool chain (announced today)</h3>
+<p>The <strong>headline announcement</strong>: <strong>WinML</strong>, a new CLI <strong>announced that day</strong>. It solves the problem that <strong>finding a model on Hugging Face ≠ having a model you can run on Windows</strong>.</p>
+<p>Motivating example: the app needed <strong>per-frame captions</strong> so you can <strong>search video content / grab highlights</strong> — a capability <strong>not yet</strong> in the built-in Windows AI APIs. The PM contrasts this with built-in <strong>primitives</strong> (language models like <strong>Phi Silica</strong>, plus video/audio processing) that Windows bakes in as <strong>turnkey API-level solutions</strong>. For non-primitive capabilities, you go to <strong>Hugging Face</strong> and find a model — here, a <strong>CLIP</strong> <strong>vision transformer</strong> model.</p>
+<p>Why it's normally hard (the fragmented steps WinML streamlines):
+- Most published models are <strong>PyTorch</strong> → must be made <strong>Windows-friendly</strong>.
+- <strong>Convert to ONNX</strong> so they run with <strong>ONNX Runtime</strong>.
+- <strong>Optimize</strong> and possibly <strong>quantize</strong> (model often too big).
+- Optionally <strong>compile</strong> for a <strong>specific hardware configuration</strong>.</p>
+<p>WinML offers <strong>two top-level approaches</strong>:
+1. <strong>One-shot <code>build</code></strong> — <code>winml build</code> with a build configuration exports the model locally, analyzes its graph, then optimizes (and optionally quantizes) in a streamlined run. <em>(Pizza analogy: order online and it's "ready when it's ready.")</em>
+2. <strong>Step-by-step subcommands</strong> — to understand "how the pizza is made." They demo this path.</p>
+<p><strong>Step 1 — Export (PyTorch → ONNX):</strong></p>
+<pre><code>winml export -m &lt;hugging-face-model-id&gt; -o clip.onnx
+</code></pre>
+<p>Grab the <strong>model ID</strong> from Hugging Face, pass <code>-m</code> for the model name and <code>-o</code> for the output <code>.onnx</code>. On the demo network they <strong>don't wait for the cloud download</strong> — they use a <strong>pre-downloaded</strong> CLIP ViT model already converted to ONNX on disk.</p>
+<p><strong>Step 2 — Analyze (graph + optimization recipe):</strong></p>
+<pre><code>winml analyze -m clip.onnx --optim-config optim.json
+</code></pre>
+<p><em>(Captioned as "ONNX analyze"; it's the WinML analyze step.)</em> It checks <strong>which operators can leverage the target hardware</strong> and <strong>which have optimization opportunity</strong>, walking the <strong>entire model graph operator-by-operator</strong> to find operators that can be <strong>fused</strong>. Execution providers observed in the analysis output:
+- <strong>OpenVINO EP</strong> → Intel <strong>CPU</strong>, <strong>GPU</strong>, and <strong>NPU</strong> providers.
+- <strong>TRT / RTX EP</strong> → the device's <strong>NVIDIA GPU</strong>.</p>
+<p>The emitted JSON is tiny but important: it flags that a <strong>MatMul</strong> (matrix multiply) followed by an <strong>Add</strong> can be <strong>fused into a single operator</strong> (a <strong>Gemm</strong>) — a recipe to feed the next step.</p>
+<p><strong>Step 3 — Optimize (apply the recipe):</strong></p>
+<pre><code>winml optimize -m clip.onnx -c optim.json
+</code></pre>
+<p>Applies the fusion recipe → <strong>fewer compute nodes</strong> → better performance. Important detail: <strong>after optimization the model is still platform-agnostic</strong> and portable to other devices. You <em>may</em> optionally <strong>compile to the hardware graph layer</strong> for a specific config (pre-compiled, ready to go) — <strong>not done in this demo</strong> to preserve portability.</p>
+<p><strong>Step 4 — Perf test:</strong></p>
+<pre><code>winml perf -m clip.onnx
+</code></pre>
+<p>By default runs <strong>100 iterations</strong> of prepared test cases across popular Hugging Face model categories, giving a quick read on real-device performance. With <strong>no device target specified on a Copilot+ PC, it defaults to the NPU</strong> — which is exactly what they want, <strong>leaving the GPU free for heavy video processing</strong>. Result: <strong>~3 ms average inference</strong>, <strong>300+ frames/sec</strong>. Takeaway: <strong>different models can run on different chips simultaneously</strong> (NPU vs GPU) without hurting each other's performance.</p>
+<h3 id="recap-parity-between-humans-and-agents-and-inception-tooling">Recap: parity between humans and agents, and "inception" tooling</h3>
+<p>The closing message: a lot of what was once a <strong>Visual Studio-only</strong> experience is now <strong>available in the terminal</strong>, so <strong>both humans and agents</strong> can do it:
+- Humans <strong>look up APIs</strong> → agents can too (WinAppD).
+- Humans read <strong>stack traces</strong> to debug crashes → "industry" (the agent tooling) has the same.
+- Humans <strong>optimize models</strong> → agents have the exact same tools (WinML).</p>
+<p>Framing used throughout: <strong>"If I ask you to build me a house, you won't <em>manifest</em> a house — you need the tools."</strong> Same for agents. <strong>"Everything a human requires to learn, there is a matching agent skill."</strong> And by making it easier for agents, <strong>you make it easier for humans</strong> too. The presenter underscores how <strong>cheap and fast</strong> building apps has become — even the <strong>terminal presentation app</strong> used to deliver this "deck" was built with Copilot in markdown, and (because they hated editing markdown) they had Copilot build them <strong>a whole new PowerPoint-style editor app</strong> — "I feel like I'm in inception."</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>GitHub Copilot</strong> — the agent used to build the entire app and tooling (plugins/skills, chat-driven dev).</li>
+<li><strong>WinUI</strong> — the UI framework for the demo app; subject of the Copilot plugin and skills.</li>
+<li><strong>WinUI Copilot plugin</strong> — <code>plugin install WinUI@awesome-copilot</code>; ships skills + CLI tools.</li>
+<li><strong>awesome-copilot</strong> — community repository of Copilot plugins/skills.</li>
+<li><strong>Windows AI stack / Windows AI APIs</strong> — umbrella for on-device AI on Windows.</li>
+<li><strong>Microsoft Foundry on Windows / Foundry Local ("Project Local")</strong> — runs local models (e.g. Qwen 3 14B) offline.</li>
+<li><strong>Phi Silica</strong> — built-in local <strong>language model</strong> primitive, integrated as a turnkey Windows AI API (identity-gated).</li>
+<li><strong>Whisper</strong> — offline speech-to-text used for transcription in the app.</li>
+<li><strong>Qwen 3 14B</strong> — 14B-parameter model run locally via Foundry Local.</li>
+<li><strong>CLIP vision transformer (ViT)</strong> — Hugging Face model used for image/text embeddings ("find frames").</li>
+<li><strong>Hugging Face</strong> — source for the CLIP model.</li>
+<li><strong>ONNX / ONNX Runtime</strong> — target model format and runtime on Windows.</li>
+<li><strong><code>dotnet new winui</code></strong> — new WinUI project templates for agents/humans.</li>
+<li><strong><code>dotnet run</code> (packaged)</strong> — runs a fully packaged WinUI app from the CLI.</li>
+<li><strong>WinApp CLI</strong> — Windows app dev commands; grants <strong>package identity</strong> (installable via WinGet).</li>
+<li><strong>WinApp search</strong> — finds samples (WinUI Gallery, AI Dev Gallery, Community Toolkit Gallery) and returns code.</li>
+<li><strong>WinAppD</strong> — API/namespace search (Machine Learning, ONNX Runtime, Phi Silica namespaces).</li>
+<li><strong>WinApp UI</strong> — launch/inspect/click/invoke/screenshot apps for agent verification.</li>
+<li><strong>WinML CLI</strong> — new model tool chain: <code>winml build/export/analyze/optimize/perf</code>.</li>
+<li><strong>Execution Providers:</strong> <strong>OpenVINO EP</strong> (Intel CPU/GPU/<strong>NPU</strong>), <strong>TRT/RTX EP</strong> (NVIDIA GPU).</li>
+<li><strong>Galleries:</strong> WinUI Gallery, AI Dev Gallery, Community Toolkit Gallery.</li>
+<li><strong>WinGet</strong> — used to install the WinApp CLI.</li>
+<li><strong>Copilot+ PC / NPU</strong> — target hardware; NPU is the default inference device.</li>
+<li><strong>Razer Blade (RTX 5080-class GPU)</strong> — demo device running the 14B model offline.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>WinML CLI — announced <em>today</em></strong> at the session: a streamlined model tool chain (export PyTorch→ONNX, analyze graph, optimize/quantize, optional hardware compile, perf test) for getting Hugging Face models running on Windows CPU/GPU/NPU. <em>(Explicitly called "a tool that we just announced today.")</em></li>
+<li><strong><code>dotnet new winui</code> templates</strong> — released <strong>a few weeks before Build</strong>; lets agents scaffold WinUI apps (manifests/XAML/CS) without guessing. <em>(Recent, not GA status stated.)</em></li>
+<li><strong><code>dotnet run</code> for packaged WinUI apps</strong> — newly possible ("something you couldn't do before"); run a fully packaged app from the CLI via WinApp.</li>
+<li><strong>WinApp / WinApp search / WinAppD / WinApp UI tooling</strong> — presented as new agent-facing CLI tooling shipped with the WinUI skills (package identity, sample search, API search, UI automation).</li>
+<li><strong>WinUI Copilot plugin on awesome-copilot</strong> — publicly installable with skills for design, dev workflow, packaging, code review, test/report.</li>
+</ul>
+<blockquote>
+<p><strong>GA vs preview note:</strong> The presenters did <strong>not</strong> state formal GA/preview/public-preview labels for these. WinML is explicitly a same-day <strong>announcement</strong>; <code>dotnet new winui</code> is described as released “a few weeks ago.” Treat exact channel/availability as <strong>unspecified in this session</strong>.</p>
+</blockquote>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Offline media-processing WinUI app</strong> — take a media file and generate transcripts (Whisper), summaries (Qwen 3 14B via Foundry Local), burn in captions, apply effects — all <strong>fully offline</strong> on a Razer Blade. Built ~100% by Copilot in ~a day; UI reworked ~4 times.</li>
+<li><strong>Plugin/skills tour in Copilot</strong> — <code>plugin list</code> (WinUI plugin present), <code>skills list</code> (design, dev workflow, packaging, code review, test/report).</li>
+<li><strong>Templates + run</strong> — <code>dotnet new winui</code> to scaffold, then <code>dotnet run</code> to launch a <strong>packaged</strong> app from the CLI.</li>
+<li><strong>Sample lookup</strong> — <code>WinApp search tab</code> returns <code>TabView</code> samples + XAML/.NET code from the galleries.</li>
+<li><strong>API lookup</strong> — <code>WinAppD ... use ml models</code> surfaces Machine Learning / ONNX Runtime / Phi Silica namespaces.</li>
+<li><strong>Agent UI automation</strong> — <code>WinApp UI inspect</code> on the terminal shows the live visual tree + the “new tab” button; <code>WinApp UI invoke</code> opens a new terminal tab.</li>
+<li><strong>WinML step-by-step pipeline</strong> — <code>export</code> (HF model → ONNX), <code>analyze</code> (graph + <code>--optim-config</code> JSON; spots MatMul+Add → Gemm fusion; shows OpenVINO + RTX EPs), <code>optimize</code> (apply recipe), <code>perf</code> (100 iterations, defaults to <strong>NPU</strong>, <strong>~3 ms</strong> avg, <strong>300+ fps</strong>).</li>
+<li><strong>“Find frames” feature</strong> — built by Copilot in ~20-25 min from the CLI + CLIP model; samples key frames from a <strong>2-hour</strong> Build keynote video, embeds them, compares against a query (“a person … leather jacket”), returns <strong>top 5</strong> — #1 is <strong>Jensen Huang</strong> in his leather jacket; ran <strong>entirely on the NPU</strong>.</li>
+<li><strong>Terminal “deck”</strong> — the closing recap is a custom terminal presentation app (<code>presents</code>) built with Copilot in markdown; plus a Copilot-built markdown editor app for authoring slides (“inception”).</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>Over 70% token savings</strong> for agents building WinUI apps when using these lookup tools/skills.</li>
+<li><strong>~3 ms average inference</strong> on the NPU for the optimized CLIP model → <strong>300+ frames/sec</strong>.</li>
+<li><strong><code>winml perf</code> defaults to 100 iterations</strong> across popular Hugging Face model categories.</li>
+<li><strong>~1 day</strong> of effective work to build the full offline app, <strong>~100% via Copilot</strong>, <strong>“we have not looked at the code … at all.”</strong></li>
+<li><strong>UI thrown out ~4 times</strong> during experimentation (incl. a “Jupiter-type look”).</li>
+<li><strong>~20-25 minutes</strong> for Copilot to build the entire “find frames” feature.</li>
+<li><strong>2-hour video</strong> searched on-device for the leather-jacket demo.</li>
+<li><strong>Qwen 3 14B</strong> (14-billion-parameter model) running offline on a <strong>Razer Blade / ~RTX 5080</strong>.</li>
+<li>
+<blockquote>
+<p><em>“Everything a human requires to learn, there is a matching agent skill.”</em></p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p><em>“If I ask you to build me a house, you're not going to manifest a house — you're going to need the tools to build the house. Same thing with agents.”</em></p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p><em>“It's so cheap now to build applications. It's crazy.”</em></p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p><em>“I refuse to go to PowerPoint because I'm a developer.”</em></p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p><em>“Anybody can build a skill. It's just markdown files.”</em></p>
+</blockquote>
+</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Install the WinUI Copilot plugin: <code>plugin install WinUI@awesome-copilot</code>, then <code>skills list</code>.</li>
+<li>Scaffold + run a packaged app: <code>dotnet new winui</code> → <code>dotnet run</code>; install <strong>WinApp</strong> via WinGet and test package identity.</li>
+<li>Run the WinML pipeline on a small Hugging Face model end-to-end: <code>winml export → analyze --optim-config → optimize → perf</code>; compare NPU vs GPU vs CPU.</li>
+<li>Reproduce a CLIP “find frames” style semantic video search on a Copilot+ PC NPU.</li>
+<li>Try <code>WinApp UI inspect</code>/<code>invoke</code> to let an agent self-verify a built app.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What are the official <strong>GA/preview</strong> channels for WinML CLI, WinApp CLI, and the WinUI templates? Any licensing/telemetry notes?</li>
+<li>How does WinML's <code>analyze</code>/<code>optimize</code> compare to existing <strong>Olive</strong> / ONNX Runtime tooling — is WinML a wrapper or distinct?</li>
+<li>Which NPUs are supported beyond Intel (OpenVINO) and NVIDIA (TRT/RTX) — Qualcomm/Snapdragon EP coverage?</li>
+<li>Is <strong>awesome-copilot</strong> first-party/Microsoft-curated or community? Trust/quality model for installed skills?</li>
+<li>Confirm exact speaker names + the language model that “shows up” in WinAppD (Phi Silica vs another).</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>On-device / edge AI app development on Copilot+ PCs and Windows AI Foundry.</li>
+<li>Agent-driven app development workflows (Copilot + skills/CLI tooling) and token-cost optimization.</li>
+<li>Anyone shipping WinUI apps that embed local models (transcription, summarization, vision search).</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li>WinUI + AI-assisted workflows: <a class="wikilink wikilink--resolved" href="OD854.html">OD854 - Building WinUI Apps with C# First Patterns and AI Assisted Workflows</a></li>
+<li>On-device AI / NPU routing: <a class="wikilink wikilink--resolved" href="BRKSP90.html">BRKSP90 - Stop routing docstrings to 70B models on-device AI on Snapdragon</a></li>
+<li>On-device → cloud orchestration: <a class="wikilink wikilink--resolved" href="BRKSP92.html">BRKSP92 - Scale agentic AI from on-device to cloud orchestration</a></li>
+<li>Hugging Face models → production: <a class="wikilink wikilink--resolved" href="DEM320.html">DEM320 - Hugging Face open-source models to production on Foundry</a></li>
+<li>AI building blocks for .NET apps: <a class="wikilink wikilink--resolved" href="OD805.html">OD805 - AI Building Blocks for NET Add intelligence to your C sharp apps</a></li>
+<li>AI at the edge: <a class="wikilink wikilink--resolved" href="OD837.html">OD837 - Build and deploy AI at the edge for real-world impact</a></li>
+<li>AI to the edge with .NET MAUI: <a class="wikilink wikilink--resolved" href="OD803.html">OD803 - Taking your AI to the edge with NET MAUI</a></li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEM341.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEM341</span><span class="pager-title">Any agent, any cloud: Standardized tracing with Foundry+OpenTelemetry</span></a>
+    <a class="pager pager-next" href="DEM346.html"><span class="pager-dir">Next →</span><span class="pager-code">DEM346</span><span class="pager-title">WSL improvements and the new Containers CLI and APIs</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

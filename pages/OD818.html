@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OD818 — The AI-native Data Engineer</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">OD818</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=I-m7bUUprzY" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">The AI-native Data Engineer</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Pierro Morano (PM Lead, Developer Experience for Data Engineering &amp; Data Science, Microsoft Fabric); Rocky Rockman (Principal Software Engineer, SQL Server Telemetry &amp; Intelligence Team)</span>
+      <span class="meta-item">⏱️ 31m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="data-engineering">Data Engineering</span><span class="chip" data-tag="fabric">Fabric</span><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="analytics">Analytics</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Pierro Morano — Product Management Lead for the developer experience for data engineering &amp; data science in Microsoft Fabric; Rocky Rockman — Principal Software Engineer on the SQL Server telemetry &amp; intelligence team (3–4 year Fabric customer)<br>
+<strong>Duration:</strong> ~31 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=I-m7bUUprzY">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>This session reframes the data-engineering role for the AI era: the engineer still <em>owns</em> the architecture, quality, and outcomes, but delegates the implementation grind to AI. Pierro frames the shift from the "traditional" data engineer to the "AI-native" one and argues there is <strong>no single best surface</strong> — you match the AI interaction model (Fabric web portal, VS Code IDE, or CLI/terminal) to the task while keeping engineering control of the important decisions. Two product experiences anchor this: the enhanced <strong>Copilot chat in Fabric notebooks</strong> (web/portal) and the <strong>Fabric Data Engineering extension for VS Code</strong> (now MCP- and tools-enhanced so Copilot is Fabric-aware). A live demo shows a Fabric-aware notebook agent ingesting a streaming event-stream feed into a medallion (bronze→silver) architecture by reading repo "skills." Rocky then delivers the practical heart of the talk: the <strong>"Ralph loop"</strong> mentality — put AI in a tightly bounded box with a well-defined task and good hints, and let it work tirelessly — demonstrated on a real local dev-container setup that mounts production OneLake read-only (Blob Fuse), runs Spark locally (Livy + Fabric Spark), and uses Copilot CLI + deterministic CLI tools + AI-friendly code structure to build, test, and ship a bronze→silver pipeline that later runs at scale in Fabric Spark.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li>The AI-native data engineer is <strong>not a different person</strong> — it's the same job evolved. The engineer keeps ownership of architecture, quality, and the end result; AI accelerates the <em>implementation</em>.</li>
+<li><strong>No single best surface.</strong> Pick the tool for the task: Fabric web portal (zero setup, visual exploration, collaboration), VS Code IDE (professional dev workflow, GitHub Copilot, source control), CLI/terminal (scriptable, repeatable, automation-focused).</li>
+<li><strong>Match the AI interaction model to the task:</strong> conversational/step-by-step for exploration, debugging, and ad-hoc analysis (stay close to the data); delegate-and-review for repeatable or operational work.</li>
+<li>Microsoft as a product team is investing <strong>beyond code generation</strong> — in the foundations that make AI useful for real engineers: APIs, tools, skills, and better context/experience.</li>
+<li>Two key experiences: <strong>Copilot chat in Fabric notebooks</strong> (portal) and the <strong>Fabric Data Engineering VS Code extension</strong> enhanced with <strong>MCP and tools</strong> to make a custom GitHub Copilot agent Fabric-aware.</li>
+<li><strong>"Skills" are repo-discoverable instruction files</strong> (YAML front matter + markdown) that ground Copilot. In the demo, Copilot scanned a built-in folder, found two skills (E2E medallion architecture, event house authoring), and produced a solid implementation plan from them.</li>
+<li>Medallion ingestion best practices surfaced by Copilot: parse the raw JSON <code>value</code> string into columns, add metadata (ingestion timestamp, batch ID) for lineage, write to a Delta bronze table in <strong>append-only</strong> mode with a <strong>checkpoint</strong> (crash-safe resume, no dupes/loss), then validate row counts.</li>
+<li><strong>Stay in control with explicit constraints:</strong> scope to specific phases (bronze + silver only), name explicit lakehouse targets, forbid edits to certain cells, and instruct Copilot to reuse existing setup — the demo did all of these.</li>
+<li>Rocky's core mental model: the <strong>"Ralph loop"</strong> (after Ralph Wiggum) — AI is a charming, simple, <em>tireless</em> worker; put it in a <strong>context-bounded box</strong> with a well-defined task and good hints and it will keep trying until it succeeds. Control comes from <em>you</em> providing rich, bounded context.</li>
+<li><strong>Mount production OneLake locally, read-only, via Blob Fuse</strong> (standard Linux ADLS driver) inside a VS Code dev container, then use <em>local</em> compute (local Spark via Livy) to query real production Delta tables — "best of both worlds."</li>
+<li><strong>Parallelize AI across machines.</strong> A single engineer can throw 10 Copilot CLIs across 10 GitHub Actions runners / dev boxes at a problem — doing the work of ~10 people — instead of serializing tasks themselves.</li>
+<li><strong>Author your code in an AI-friendly way.</strong> A shared interface/trait (<code>DataTransformer</code>: <code>DataFrame → DataFrame</code>) lets you tell AI "control-F for this, reuse existing patterns, comply with our code" — bounding it to testable, on-pattern output, exactly like onboarding a human engineer.</li>
+<li><strong>Pair skills with deterministic CLI tools.</strong> Skills give flexibility; deterministic tools (e.g. a TS tool that runs Spark SQL and returns markdown) give <em>repeatable</em> behavior the AI can invoke reliably.</li>
+<li><strong>Give AI the same "eyes" a human has.</strong> Let it <code>DESCRIBE</code> tables, sample raw rows, and receive encoding hints (e.g. "the body is base64-encoded JSON") so it can do the same cognitive analysis you'd do visually — freeing you for higher-impact work (requirements, schema decisions).</li>
+<li><strong>Trust-building CI loop:</strong> generate code + unit tests (seeded with a "North Star" gold-standard test), run Spark jobs locally, auto-fix-and-retry without a human in the loop, test on real OneLake production data via Azure DevOps/GitHub Actions <em>before</em> merging, then run the same Spark code in Fabric Spark at scale (up to ~200 nodes × 64 cores).</li>
+<li>The foundation persists even as models/tools churn: <strong>ground AI in your context, structure code to be AI-extensible, and provide an excellent local dev environment.</strong></li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-the-role-is-evolving-not-disappearing">Framing: the role is evolving, not disappearing</h3>
+<p>Pierro opens by positioning AI as something that changes <em>how</em> engineers work — not merely by generating code, but by helping rethink the <strong>full developer workflow</strong> across Fabric, VS Code, and CLI. He contrasts two columns:
+- <strong>Traditional data engineer (left):</strong> building pipelines, writing ETL logic, debugging issues, managing dependencies, ensuring data flows reliably. This work is <em>still critical</em>.
+- <strong>AI-native data engineer (right):</strong> the <em>same</em> role, evolved. The engineer still owns <strong>architecture, quality, and the end result</strong>, but uses AI to accelerate implementation.</p>
+<p>From a <strong>product standpoint</strong>, this means Microsoft invests not only in code generation but in the <strong>foundations that make AI useful for real engineers</strong>: APIs, tools, skills, and better context and experience. The encouragement to the audience: figure out which of these tools makes <em>you</em> more productive.</p>
+<h3 id="microsoft-fabric-foundation-for-newcomers">Microsoft Fabric foundation (for newcomers)</h3>
+<p>Fabric brings the core experiences data teams need into <strong>one unified platform</strong>: databases, data orchestration, analytics, real-time intelligence, and Power BI. The point that matters in the AI age is that these experiences are <strong>not isolated</strong> — they're connected through the Fabric platform with <strong>OneLake</strong> as the common data foundation, plus shared governance and security.</p>
+<h3 id="choosing-the-right-power-tool-there-is-no-single-best-surface">Choosing the right "power tool" — there is no single best surface</h3>
+<p>The key thesis: <strong>no single surface is best for every engineer or every task.</strong> Three surfaces, each with a sweet spot:
+1. <strong>Fabric web portal</strong> — great for <strong>zero setup</strong>, visual exploration, collaboration, and quick access to data.
+2. <strong>IDE in VS Code</strong> — where many professional developers and data engineers are most productive: <strong>GitHub Copilot, source control</strong>, and more.
+3. <strong>CLI / terminal</strong> — best when the task is <strong>scriptable, repeatable, and automation-focused</strong>.</p>
+<h3 id="matching-the-ai-interaction-model-to-the-task">Matching the AI <em>interaction model</em> to the task</h3>
+<p>Not every task needs the same AI experience:
+- <strong>Exploration, debugging, ad-hoc analysis</strong> → want a <strong>conversational flow</strong>: stay close to the data and guide the AI step by step.
+- <strong>Repeatable / operational work</strong> → <strong>delegate more of the execution</strong> while you review the plan and results.</p>
+<p>The simple rule: <em>match the AI interaction model to the task and keep engineering control of the important decisions.</em></p>
+<h3 id="the-two-anchor-experiences">The two anchor experiences</h3>
+<ol>
+<li><strong>Enhanced Copilot chat in Fabric notebooks</strong> — helps users work directly in the <strong>Fabric portal</strong>.</li>
+<li><strong>Fabric Data Engineering extension in VS Code</strong> — now enhanced with <strong>MCP (Model Context Protocol) and tools</strong> that make a <strong>custom GitHub Copilot agent aware of Fabric context</strong> (e.g. it can resolve lakehouses, interact with Fabric resources).</li>
+</ol>
+<h3 id="demo-1-fabric-aware-notebook-agent-streaming-event-stream-medallion-bronzesilver">Demo 1 — Fabric-aware notebook agent: streaming event-stream → medallion (bronze→silver)</h3>
+<p><strong>Scenario:</strong> read an event stream in a <strong>Spark notebook leveraging Kafka</strong>, bridging Spark and <strong>RTI (Real-Time Intelligence)</strong> in Fabric. The stream arrives as JSON; goal is to transform it into Delta tables following <strong>medallion architecture</strong> and <strong>event hub / event house</strong> best practices. The presenter admits being <em>unfamiliar with streaming</em>, so leans on Copilot — a deliberate "learn-with-AI" framing.</p>
+<p><strong>Notebook setup:</strong>
+- Done in the <strong>new Fabric Data Engineering VS Code extension</strong>, using the <strong>new Fabric-aware notebook agent mode</strong> to integrate a new <em>social media feed</em> from an event stream.
+- <strong>Cell 1</strong> = a parameter cell. <strong>Cell 2</strong> = connects to the Fabric event stream as a <strong>Kafka source</strong>, decoding the binary key/value columns to strings.
+- Running the cells, events start arriving — each record is a <strong>JSON payload with customer-feedback details</strong>.</p>
+<p><strong>Prompt to Copilot (paraphrased from transcript):</strong> <em>"Can you check this notebook that reads from event-streaming social media feeds and suggest a plan to incorporate it into our medallion architecture and event house authoring best practices in my built-in folders?"</em></p>
+<p><strong>How Copilot grounded itself:</strong> it <strong>scanned the built-in folder</strong> and discovered <strong>two available skills</strong> — <em>E2E medallion architecture</em> and <em>event house authoring</em>. By reading the <strong>medallion architecture skill</strong>, it generated a solid implementation plan.</p>
+<p><strong>Plan — Phase 1 (Bronze layer):</strong>
+1. <strong>Parse the <code>value</code> column</strong> (currently one big JSON string) into structured form.
+2. <strong>Add tracking / metadata columns</strong> — break the payload into individual columns and add <strong>ingestion timestamp</strong> and <strong>batch ID</strong> so every record can be traced back to its source.
+3. <strong>Write to a Delta bronze table in append-only mode</strong>, adding a <strong>checkpoint</strong> — so if the notebook crashes and restarts it picks up exactly where it left off, avoiding duplicates or data loss.
+4. <strong>Validate</strong> — check row counts to confirm data is flowing.</p>
+<p><strong>Plan — Silver layer:</strong> read from the bronze Delta table just created, apply <strong>quality rules</strong> (e.g. remove duplicates), do <strong>schema conformance</strong>, and write <strong>curated data to a silver table</strong>. The plan also proposed <em>additional</em> steps — a <strong>gold layer</strong>, <strong>event house optimizations</strong>, and even a <strong>graphical view of the proposed architecture</strong>.</p>
+<p><strong>Staying in control (the key teaching moment):</strong> rather than letting Copilot run the whole plan, the presenter constrains it:
+- Continue with <strong>Phase 1 and Phase 2 only</strong> (bronze + silver).
+- Make <strong>lakehouse targets explicit</strong>: <code>Retail LH</code> for bronze, <code>Retail curated LH</code> for silver.
+- <strong>Preserve existing setup</strong> — do <strong>not</strong> modify the first two cells; implement everything <strong>starting from cell 3</strong>, keeping all new steps in the same notebook.</p>
+<p>Copilot identifies the two lakehouses using the <strong>Fabric notebook MCP server</strong>, proceeds with the plan, leaves the first two cells untouched, and adds <strong>clear markdown cells</strong> (handy for team collaboration). After a few iterations the final notebook has readable markdown cells, a cell to control the incoming streaming data, etc.</p>
+<p><strong>Execution:</strong> the presenter asks Copilot to <strong>run the notebook</strong> and to <strong>skip one debugging cell</strong>. Copilot understands the current cell organization, runs it, and during execution <strong>confirms the number of incoming streaming records</strong> being written into the bronze and silver tables. On completion, data is visibly flowing through the pipeline — transformed from the original JSON events into Delta tables in the bronze and silver lakehouses. <em>"This saved me a significant amount of time."</em> Closing best practice: <strong>have another team member review and validate</strong> the notebook before moving forward.</p>
+<h3 id="rockys-mental-model-the-ralph-loop">Rocky's mental model — the "Ralph loop"</h3>
+<p>Rocky introduces AI through <strong>Ralph Wiggum</strong> (The Simpsons): charming, simple, <em>not too bright but extremely hard-working</em>. Give Ralph a task <strong>plus the hints</strong> to achieve it, and he becomes the <strong>hardest worker in the room</strong>. In AI terms this is the <strong>"Ralph loop"</strong> (a real, momentum-gaining industry term — he suggests searching for it). The essence:
+- Place AI into a <strong>context-bounded box</strong> with a <strong>well-defined task</strong>.
+- Like Ralph, AI will <strong>try its hardest</strong> to achieve what you asked — but <strong>it's up to you to place it in the right context</strong>.</p>
+<p>This frame recurs throughout: control and quality come from <em>bounding</em> the AI well, not from babysitting every keystroke.</p>
+<h3 id="rockys-team-architecture-workflow">Rocky's team architecture &amp; workflow</h3>
+<p><strong>Ingestion:</strong> like other enterprises, the team uses the <strong>medallion architecture</strong>. Data arrives at <strong>very high velocity</strong> from all sorts of sources (e.g. Kafka, as Pierro showed) and lands in <strong>Delta Lake</strong> as <strong>bronze</strong> — <em>no schema, no structure, no columnar compression</em>.</p>
+<p><strong>First job of the data engineer — "schema on read":</strong> apply a robust schema to the bronze data. The schema may be complex (XML, nested JSON, etc.). Get it into <strong>columnar format</strong> and store it in Delta Lake in a <strong>well-compressed structure</strong> so queries run fast.</p>
+<p><strong>The local-compute trick (3 years of OneLake experience):</strong> because Rocky works in <strong>VS Code</strong>, he wants to use the <strong>compute power of his local machine</strong> against <strong>production data in OneLake</strong>:
+- Windows users know <strong>OneLake Explorer</strong>; here he uses a <strong>Linux VS Code dev container</strong> with a mount called <strong>Blob Fuse</strong> — a standard Linux driver (search "Blob Fuse driver for ADLS"). It mounts <strong>OneLake as a read-only mount</strong> into the local file system.
+- On screen: <code>/tmp/mount/onelake</code> (shown as "TMP mount One Lake") — a local drive exposing OneLake Delta tables locally. In the demo, <strong>three lakehouses</strong> from the Fabric production workspace are mounted, with <strong>hundreds of Delta tables</strong> (high-partition data) visible via <code>tree</code>.</p>
+<p><strong>Simulating Fabric Spark locally:</strong> the team runs <strong>Spark locally</strong> to use local compute on data living in OneLake. The local stack:
+- <strong>Livy server</strong> (REST API to Spark), <strong>Fabric Spark</strong>, the <strong>Hive API</strong>, and the <strong>Copilot CLI</strong>.
+- Transform with regular Spark code (<strong>PySpark or Scala</strong>) <em>or</em> with <strong>dbt (Data Build Tool)</strong> — explicitly called out as <strong>gaining a lot of traction</strong> in the industry.
+- <strong>All of it is open source</strong>, with <strong>GitHub links</strong> provided to reproduce the demo locally.</p>
+<p><strong>Testing &amp; confidence loop:</strong> any locally written code runs <strong>full unit tests and full integration tests</strong> — on <strong>production data</strong>, on the local computer. Then:
+- <strong>Parallelize with the Ralph loop across machines</strong> — e.g. GitHub Actions CI machines or multiple dev boxes — running the loop <strong>across 10 different machines</strong>, effectively doing the work of <strong>10 users</strong>. Where Rocky previously <em>serialized</em> tasks (and got less done than the business needed), AI lets even a <strong>single person parallelize</strong> and "throw AI at the data-engineering problem" — while staying <strong>fully in control</strong>, because the human supplies lots of input (Ralph in his box).
+- <strong>Build confidence before merge:</strong> use <strong>Azure DevOps or GitHub Actions</strong> to test the generated code on <strong>OneLake's production data</strong> <em>before</em> merging the PR into <code>main</code>.
+- <strong>Scale up in Fabric on merge:</strong> after merging to <code>main</code>, the <strong>same Spark code</strong> runs on <strong>Fabric Spark</strong>, scaling to <strong>~200 nodes with 64 cores</strong> — far beyond local capacity. Net: <strong>best of both worlds</strong>, with the pipeline running confidently in production.</p>
+<h3 id="demo-2-local-dev-container-copilot-cli-and-a-bronzesilver-pipeline">Demo 2 — local dev container, Copilot CLI, and a bronze→silver pipeline</h3>
+<p><strong>Environment orientation:</strong> Rocky is inside <strong>VS Code running in the dev container</strong>, with the <strong>Fabric Data Engineering extension</strong> to interact with Fabric. On screen is a <strong>Copilot skill</strong> — authored as <strong>YAML front matter</strong> (so the Copilot CLI can <em>discover</em> what the skill does) plus <strong>markdown</strong> body.</p>
+<p><strong>Starting up:</strong> he turns on the <strong>locally running Copilot CLI</strong>, then shows OneLake mounted locally (<code>tree</code> of <code>/tmp/.../mount</code> → three production lakehouses; <code>tree -L 4</code> reveals the many Delta tables and high partitions). This is "production OneLake mounted locally."</p>
+<p><strong>The task:</strong> ingest a <strong>brand-new data source</strong> requested of him, moving it from <strong>bronze → silver</strong> (or gold).</p>
+<p><strong>Firing the skill (bounding the box):</strong>
+- He copies the skill's path and "fires it" into the Copilot task — the <strong>"Spark bronze to silver"</strong> skill.
+- The <strong>most important part is the authoring of the skill</strong>, which immediately places Copilot (here running <strong>Claude Opus</strong> — caption "Cloud Opus") into a <strong>bounded box</strong>:
+  - <strong>"You're not allowed to commit the code. You're not allowed to add the code. I'm going to review everything you produce."</strong>
+  - <strong>Hints about the codebase structure</strong> — it's a <strong>Scala</strong> codebase, <strong>quite complex</strong>, at least <strong>a few hundred thousand lines of code</strong> (serving the <strong>SQL Server OneLake data lake</strong>).
+- Crucial efficiency lesson: <strong>don't let Copilot rediscover the whole codebase every time</strong> — you'll <strong>run out of the context window</strong>. Instead, tell it the team's pattern: <strong>loader classes, transformer classes, driver classes</strong>; <strong>reuse as much code as possible</strong>, <strong>run unit tests</strong>, <strong>run the Spark jobs</strong>, then <strong>vacuum the table</strong> so production tables are in good format.</p>
+<p><strong>Copilot picks up context</strong> while reading, then asks <strong>which bronze tables to transform to silver</strong> (full database + table name).</p>
+<p><strong>The vibe-coded local UI:</strong> Rocky shows a small <strong>UI he "vibe coded" for his team</strong>, using <strong>Livy as an API</strong> to query local Spark, and <strong>local Spark to query OneLake</strong>. He picks an example table (an <strong>"Arc SQL Server extension"</strong> block), pastes a query, clicks <strong>Run</strong> — Livy on the local dev container + local Spark queries OneLake (possibly on the other side of the world) and returns the data. The <strong>bronze data has no schema</strong>; the <strong>body is unreadable by a human</strong> — a <strong>binary-encoded payload</strong>. That's "bronze."</p>
+<p><strong>Handing the bronze sample back to Copilot — and the deterministic-tools lesson:</strong>
+- He pastes the table reference back to Copilot. Key point: <strong>skills are great, but you also want deterministic code the AI can invoke</strong> for <strong>repeatable behavior</strong>.
+- His team built <strong>deterministic CLI tools</strong> — e.g. an <code>index.ts</code> skill/tool that lets a human <em>or</em> Copilot <strong>run regular Spark SQL statements and get results back as markdown</strong>.
+- Copilot then <strong><code>DESCRIBE</code>s the table</strong> to learn the schema and <strong>samples the raw data</strong> to see the data's shape.</p>
+<p><strong>Encoding hints — giving AI "the same eyes":</strong> you must tell it the <strong>encoding</strong> — in Rocky's case the body is <strong>base64-encoded JSON</strong>. With these tips Copilot figures out the data's shape. The insight: the <strong>same cognitive analysis a human does by eye</strong> (look at the data, infer structure) can be handed to Copilot by giving it the <strong>same eyes and tools</strong> (describe, sample, encoding hints). Then the manual grunt work — figuring out gzip compression, decoding, etc. — gets <strong>delegated to the machine</strong>, freeing the engineer to gather requirements and make schema decisions (the <strong>higher-impact</strong> work).</p>
+<p><strong>End-to-end walkthrough (kept running in the background "in the interest of time"):</strong>
+- <strong>AI-friendly code authoring is the most important thing.</strong> Analogy: a new human engineer can't grok an unstructured codebase; <strong>AI has a context window</strong> and can't read a billion lines either. So the team <strong>interfaces all code</strong> through an <code>extends DataTransformer</code> trait.
+- The <strong><code>DataTransformer</code> trait</strong> defines a single <strong>transformation method: <code>DataFrame → DataFrame</code></strong>. <strong>Every</strong> data transformer in the (huge) codebase implements it. You can <code>control-F</code> for <code>extends DataTransformer</code> and find them all.
+- Why it matters: you <strong>don't want AI writing untestable, off-pattern code</strong>. Bounding it to the trait keeps output <strong>testable and on-pattern</strong>. Rocky literally tells AI: <em>"search for it, control-F for it, look at my existing coding patterns, and any new code you generate has to comply with the code I have."</em> It's like <strong>onboarding a human engineer</strong> with your best practices.
+- Copilot then <strong>figures out the body format, data types, timestamps, JSON structure</strong> — deterministically, <strong>at machine speed</strong>. He further instructs it to <strong>reuse existing code</strong> rather than creating new classes — <em>"put the code in the best class where you think this data belongs"</em> — and it reuses, e.g., the team's <code>T&amp;I</code> (team name) <strong>JSON transformations</strong>.</p>
+<p><strong>Design proposal + guardrails:</strong>
+- AI presents a <strong>comprehensive design proposal</strong>: the <strong>schema</strong> and the <strong>destination table</strong>. It then <strong>pauses and prompts</strong> ("pause, do not proceed") — and <strong>~10 times out of 10 it complies</strong> with the stop instruction.
+- After validation, you tell it to <strong>write the code</strong>; you also pass <strong>coding standards</strong> — e.g. <strong>register new tables for liquid clustering and vacuuming</strong>.</p>
+<p><strong>Unit tests via a "North Star" gold standard:</strong>
+- Finally, AI is asked to <strong>generate unit tests</strong>. Rocky gives it a <strong>gold-standard reference test</strong> — an <strong>OpenTelemetry columnar integration test</strong> — as a <strong>North Star</strong>, so AI doesn't have to invent what good tests look like; it knows the team's <strong>robust best-practice</strong> expectations and generates matching test code.</p>
+<p><strong>Running the job + autonomous fix loop:</strong>
+- AI runs the <strong>Spark job</strong> (created via a <strong>Spark job definition</strong>) <strong>locally</strong> — again, you need a <strong>CLI tool</strong> that takes the <strong>driver class</strong> and runs it.
+- AI <strong>keeps running the code</strong>; if it fails, it <strong>makes code changes, rebuilds the JAR, reruns the tests</strong> — doing all of this <strong>without the human in the loop</strong>.
+- This might take <strong>1 hour, 2 hours, or 30 minutes — it doesn't matter.</strong> When everything is tested, <strong>open the PR</strong>, and the code quality is <em>"as good as if I sat here and wrote it myself."</em></p>
+<p><strong>Rocky's one-line summary of working with AI:</strong> <em>"Ground it in context, put it inside a box, and let Ralph Wiggum do what he does best — keep trying until what you asked for succeeds."</em></p>
+<h3 id="closing-principles-durable-beyond-any-single-tool">Closing principles (durable beyond any single tool)</h3>
+<p>Rocky and Pierro converge on a foundation that survives the daily churn of new models, tools, and skill sets:
+1. <strong>Ground AI in your context</strong> — repo structure, patterns, encoding, gold-standard examples.
+2. <strong>Write code in an AI-extensible manner</strong> — shared interfaces/traits, consistent patterns AI can find and comply with.
+3. <strong>Have an excellent local development environment</strong> — e.g. the <strong>VS Code dev container</strong>, with CI on <strong>GitHub Actions</strong> when PRs merge.</p>
+<p><strong>The full pipeline, end to end:</strong> dev container on VS Code locally → test via GitHub Actions on PR merge → fan out to <strong>10 GitHub Action machines, throwing 10 Copilot CLIs at the same problem</strong> → merge the unit tests → push to <strong>Fabric</strong>, where the code runs <strong>with as much confidence as needed</strong>. Rocky shares <strong>two Git repos</strong> (his GitHub handle): one <strong>dev container</strong> to build/reproduce locally, and one with <strong>sample code</strong> showing the <strong>GitHub skills and patterns</strong>.</p>
+<p>Pierro wraps up: in a short demo Rocky <strong>encapsulated many Fabric features and workloads</strong>. For those less familiar with Fabric, links to <strong>documentation, tutorials, and the YouTube channel</strong> are shared (subscribe and give feedback).</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Microsoft Fabric</strong> — unified data platform spanning databases, data orchestration, analytics, real-time intelligence, and Power BI; the connective tissue for the whole session.</li>
+<li><strong>OneLake</strong> — Fabric's common data foundation (single logical data lake) with shared governance and security; mounted locally read-only in Rocky's demo.</li>
+<li><strong>OneLake Explorer</strong> — Windows tool for browsing OneLake locally (Rocky uses Blob Fuse on Linux instead).</li>
+<li><strong>Copilot chat in Fabric notebooks</strong> — newly enhanced; lets users work with AI directly in the Fabric portal (the web-first surface).</li>
+<li><strong>Fabric Data Engineering extension for VS Code</strong> — IDE extension enhanced with <strong>MCP and tools</strong> so a custom GitHub Copilot agent is <strong>Fabric-aware</strong>; includes a <strong>Fabric-aware notebook agent mode</strong>.</li>
+<li><strong>Fabric notebook MCP server</strong> — MCP server used by the agent to resolve Fabric resources (e.g. identify the bronze/silver lakehouses).</li>
+<li><strong>GitHub Copilot</strong> — AI assistant used both in VS Code (notebook agent) and as <strong>Copilot CLI</strong> (terminal).</li>
+<li><strong>Copilot CLI</strong> — terminal-based Copilot used in Rocky's local dev-container demo to drive the bronze→silver pipeline.</li>
+<li><strong>Claude Opus</strong> (caption: "Cloud Opus") — the model Rocky runs inside the Copilot CLI for his demo.</li>
+<li><strong>Spark / Apache Spark</strong> — distributed compute engine; run <strong>locally</strong> in the demo and at scale in <strong>Fabric Spark</strong>.</li>
+<li><strong>Fabric Spark</strong> — managed Spark in Fabric; scales to <strong>~200 nodes × 64 cores</strong> for production runs.</li>
+<li><strong>PySpark / Scala</strong> — the two Spark languages referenced; Rocky's production codebase is <strong>Scala</strong> (hundreds of thousands of LOC).</li>
+<li><strong>dbt (Data Build Tool)</strong> — transformation tool called out as gaining significant industry traction; usable in the local workflow.</li>
+<li><strong>Livy</strong> — REST API server fronting Spark; used to query local Spark (and via it, OneLake) from a vibe-coded UI.</li>
+<li><strong>Hive API</strong> — part of Rocky's local Spark stack.</li>
+<li><strong>Delta Lake / Delta tables</strong> — open table format for the medallion layers (bronze/silver/gold).</li>
+<li><strong>Blob Fuse</strong> — standard Linux ADLS driver used to mount OneLake as a <strong>read-only</strong> local file system inside the dev container.</li>
+<li><strong>ADLS (Azure Data Lake Storage)</strong> — the storage layer Blob Fuse targets.</li>
+<li><strong>VS Code dev container</strong> — Linux containerized dev environment hosting the whole local toolchain.</li>
+<li><strong>Kafka</strong> — protocol/source used to read the Fabric event stream into the Spark notebook.</li>
+<li><strong>Event stream / Eventstream + RTI (Real-Time Intelligence)</strong> — Fabric streaming ingestion bridged into Spark in Demo 1.</li>
+<li><strong>Event House</strong> — Fabric real-time analytics store; "event house authoring" is one of the discovered skills and a best-practice target.</li>
+<li><strong>Copilot "skills"</strong> — repo-discoverable instruction files (<strong>YAML front matter + markdown</strong>) that ground Copilot; examples: <em>E2E medallion architecture</em>, <em>event house authoring</em>, <em>Spark bronze-to-silver</em>.</li>
+<li><strong>Deterministic CLI tools</strong> (e.g. an <code>index.ts</code> tool) — custom tools that run <strong>Spark SQL</strong> and return <strong>markdown</strong>, giving the AI repeatable, invokable behavior.</li>
+<li><strong><code>DataTransformer</code> trait/interface</strong> — Scala interface (<code>DataFrame → DataFrame</code>) every transformer implements, used to bound and constrain AI-generated code.</li>
+<li><strong>Spark job definition</strong> — Fabric construct used to run the generated Spark driver class locally and in Fabric.</li>
+<li><strong>Liquid clustering &amp; VACUUM / table vacuuming</strong> — Delta optimizations the AI is instructed to register/apply for healthy production tables.</li>
+<li><strong>OpenTelemetry columnar integration test</strong> — the "North Star" gold-standard unit/integration test Rocky feeds the AI as a quality reference.</li>
+<li><strong>GitHub Actions / Azure DevOps</strong> — CI used to test generated code on <strong>production OneLake data</strong> before merge, and to parallelize Copilot CLIs across runners.</li>
+<li><strong>Power BI</strong> — named as one of Fabric's unified experiences.</li>
+<li><strong>The "Ralph loop"</strong> — industry term/pattern (after Ralph Wiggum) for putting AI in a context-bounded box with a well-defined task and letting it iterate to success.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Fabric Data Engineering VS Code extension — enhanced with MCP and tools</strong> so a custom GitHub Copilot agent becomes <strong>Fabric-aware</strong>, including a new <strong>Fabric-aware notebook agent mode</strong> (resolves lakehouses, interacts with Fabric via the Fabric notebook MCP server). Presented as newly enhanced; specific preview/GA status was not stated.</li>
+<li><strong>Enhanced Copilot chat in Fabric notebooks</strong> — "newly enhanced" experience for working with AI directly in the Fabric portal. Preview/GA status not specified.</li>
+<li>No formal GA dates, pricing, or roadmap milestones were called out — the session is <strong>capability/workflow-focused</strong> rather than a launch announcement. Treat the above as "newly enhanced experiences shown," not dated releases.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Demo 1 — Fabric-aware notebook agent: streaming → medallion (bronze→silver).</strong> In the new Fabric Data Engineering VS Code extension, a Spark notebook reads a Fabric <strong>event stream via Kafka</strong> (JSON customer-feedback payloads). Copilot scans a built-in folder, discovers the <strong>medallion</strong> and <strong>event house authoring</strong> skills, and proposes a phased plan (bronze: parse value, add ingestion-timestamp/batch-ID metadata, append-only Delta write with checkpoint, validate row counts; silver: dedupe, schema conformance, curated table; plus optional gold/event-house/diagram). The presenter constrains it to <strong>bronze+silver only</strong>, names explicit lakehouses (<strong>Retail LH</strong>, <strong>Retail curated LH</strong>), forbids editing cells 1–2, and runs the notebook (skipping a debug cell). <strong>Proves:</strong> an unfamiliar engineer can ingest a streaming source into a best-practice medallion pipeline by grounding Copilot in repo skills while retaining tight control — and it visibly writes records into bronze/silver Delta tables.</li>
+<li><strong>Demo 2 — Local dev container + Copilot CLI bronze→silver on production OneLake.</strong> Rocky shows <strong>OneLake mounted read-only locally</strong> (Blob Fuse; three production lakehouses, hundreds of Delta tables), <strong>Spark running locally</strong> queried via <strong>Livy</strong> from a <strong>vibe-coded UI</strong>, and the <strong>Copilot CLI (Claude Opus)</strong> firing a <strong>"Spark bronze-to-silver" skill</strong>. He bounds the AI (no commit/add, human review, reuse loader/transformer/driver classes, comply with the <code>DataTransformer</code> trait), feeds a <strong>bronze sample + base64-JSON encoding hint</strong> plus a <strong>deterministic SQL CLI tool</strong>, and walks the end-to-end loop: design proposal → write code → register liquid clustering/vacuum → generate unit tests against an <strong>OpenTelemetry gold-standard test</strong> → run the Spark job locally → <strong>auto-fix/rebuild/retest without a human</strong> → open PR. <strong>Proves:</strong> with the right context, deterministic tools, and AI-friendly code structure, AI produces production-quality, on-pattern, tested pipeline code, parallelizable across many machines.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>"This is not a different person. It is the evolution of the same job"</strong> — Pierro, on the AI-native data engineer (the engineer still owns architecture, quality, and outcomes).</li>
+<li><strong>"Match the AI interaction model to the task and keep the engineering control of the important decisions."</strong> — Pierro's core rule for choosing surfaces/interaction styles.</li>
+<li><strong>"Ground it in context, put it inside a box, and let Ralph Wiggum do what he does best — keep trying until what you asked for succeeds."</strong> — Rocky's one-line philosophy.</li>
+<li><strong>~3–4 years</strong> — how long Rocky's team has been a Fabric customer.</li>
+<li><strong>A few hundred thousand+ lines of Scala</strong> — size of the production codebase serving the SQL Server OneLake data lake (why context-window discipline matters).</li>
+<li><strong>~200 nodes × 64 cores</strong> — scale Fabric Spark can reach for production runs (vs. limited local compute).</li>
+<li><strong>10 machines / 10 Copilot CLIs</strong> — Rocky can parallelize the Ralph loop across ~10 GitHub Action runners/dev boxes, doing the work of ~10 people as a single engineer.</li>
+<li><strong>"~10 times out of 10"</strong> — how reliably the AI obeys an explicit "pause, do not proceed" instruction when properly bounded.</li>
+<li><strong>"1 hour, 2 hours, or 30 minutes — it doesn't matter"</strong> — Rocky on the autonomous fix-build-test loop running unattended until the job succeeds.</li>
+<li>Auto-caption notes: speaker name appears as <strong>"Pierro Morano" / "Piero"</strong> (likely <em>Pierro</em>); model <strong>"Cloud Opus"</strong> is <strong>Claude Opus</strong>; <strong>"vibe coded"</strong> UI; <strong>"Arc SQL Server extension"</strong> table; team initials rendered <strong>"T&amp;I"</strong>. Corrected sensibly; not fabricated.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Mount <strong>OneLake read-only via Blob Fuse</strong> in a Linux <strong>VS Code dev container</strong> and query production Delta tables with <strong>local Spark + Livy</strong>.</li>
+<li>Author a <strong>Copilot "skill"</strong> (YAML front matter + markdown) for a real bronze→silver transform; pair it with a <strong>deterministic SQL CLI tool</strong> that returns markdown.</li>
+<li>Adopt an <strong>AI-friendly code interface</strong> (a <code>DataTransformer</code>-style <code>DataFrame → DataFrame</code> trait) so AI output stays testable and on-pattern.</li>
+<li>Seed AI with a <strong>gold-standard "North Star" unit/integration test</strong> before asking it to generate tests.</li>
+<li>Try the <strong>Fabric Data Engineering VS Code extension</strong> notebook agent mode against a Kafka event stream for a medallion ingest.</li>
+<li>Experiment with <strong>parallel Copilot CLIs across GitHub Actions runners</strong> (the "Ralph loop" at scale).</li>
+<li>Find and clone <strong>Rocky's two GitHub repos</strong> (dev container + sample skills/patterns) — links shown at end of the talk.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What are the <strong>preview/GA status and licensing</strong> for the enhanced Copilot-in-notebooks and the MCP-enhanced VS Code extension?</li>
+<li>How is <strong>read-only Blob Fuse access to production OneLake</strong> secured/governed (auth, RBAC, data egress) for local compute?</li>
+<li>How does <strong>context-window cost</strong> scale on a few-hundred-thousand-LOC repo even with loader/transformer/driver hints — what's the practical token budget?</li>
+<li>Where does <strong>dbt</strong> fit vs. native Spark in the Fabric-recommended pattern?</li>
+<li>What does the <strong>Fabric notebook MCP server</strong> expose as tools, and can it be used outside the notebook agent?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Anyone building <strong>medallion (bronze/silver/gold) pipelines</strong> in Microsoft Fabric.</li>
+<li><strong>Data engineers</strong> modernizing ETL with AI while keeping architectural control.</li>
+<li>Teams wanting a <strong>local-dev + CI + Fabric-Spark-at-scale</strong> workflow on OneLake.</li>
+<li><strong>Platform/DevEx leads</strong> evaluating Copilot skills, MCP, and AI-friendly code standards.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Fabric">Microsoft Fabric</span> / <span class="wikilink wikilink--unresolved" title="OneLake">OneLake</span> — the lakehouse + governed-storage foundation this session builds on.</li>
+<li><span class="wikilink wikilink--unresolved" title="Fabric Data Engineering extension for VS Code">Fabric Data Engineering extension for VS Code</span> / <span class="wikilink wikilink--unresolved" title="Copilot chat in Fabric notebooks">Copilot chat in Fabric notebooks</span> — the two AI surfaces demoed (IDE vs portal).</li>
+<li><span class="wikilink wikilink--unresolved" title="GitHub Copilot CLI">GitHub Copilot CLI</span> / <span class="wikilink wikilink--unresolved" title="MCP (Model Context Protocol)">MCP (Model Context Protocol)</span> — the terminal-agent + Fabric-aware tooling path ("Ralph loop").</li>
+<li><span class="wikilink wikilink--unresolved" title="Medallion architecture">Medallion architecture</span> (bronze → silver → gold) — the pipeline pattern both demos implement.</li>
+<li><a class="wikilink wikilink--resolved" href="OD812.html">OD812 - Fabric IQ Bringing enterprise intelligence into the developer workflow</a> — sibling Fabric session (semantic/ontology layer above the data-engineering layer).</li>
+<li>Related Build 2026 Fabric sessions: <strong>OD811</strong> (unified data platform), <strong>OD815</strong> (AI-ready data lake), <strong>OD819</strong> (Real-Time Intelligence), <strong>OD817</strong> (agentic analytics with Power BI).</li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="OD815.html"><span class="pager-dir">← Previous</span><span class="pager-code">OD815</span><span class="pager-title">Unify your entire data estate on a single, AI-ready data lake</span></a>
+    <a class="pager pager-next" href="OD819.html"><span class="pager-dir">Next →</span><span class="pager-code">OD819</span><span class="pager-title">Real-Time Intelligence: Building event-driven AI apps and agents</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

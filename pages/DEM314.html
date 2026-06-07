@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEM314 — Majorana 2: The Topological Leap Toward Quantum Computing at Scale</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEM314</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=rjgsMQ-CO7o" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Majorana 2: The Topological Leap Toward Quantum Computing at Scale</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Microsoft Quantum hardware physicist (15-year program veteran; name not stated in captions)</span>
+      <span class="meta-item">⏱️ 15m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="quantum">Quantum</span><span class="chip" data-tag="hardware">Hardware</span><span class="chip" data-tag="research">Research</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> A senior Microsoft Quantum hardware physicist (self-described 15-year veteran of the topological quantum program; specific name not captured in the auto-captions)<br>
+<strong>Duration:</strong> ~15 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=rjgsMQ-CO7o">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Microsoft is pursuing quantum computing via a distinctive <strong>topological qubit</strong> approach that encodes information in <strong>Majorana modes</strong> — exotic quantum states that are inherently protected from errors and decoherence. This talk presents "Majorana 2," the latest generation of the topological processing unit, built on a brand-new material stack that swaps aluminium for a <strong>lead (Pb) superconductor</strong>, yielding a claimed <strong>~1,000× improvement in qubit performance</strong> and a qubit <strong>lifetime extended from ~10 milliseconds up to a full minute</strong>. Because the qubits are tiny (~micron-scale) and fast (microsecond operations), a million-qubit chip could fit on something the size of a credit card. AI- and simulation-driven design compressed a decade's worth of progress into a single year, letting Microsoft <strong>pull its roadmap to a commercially viable quantum machine forward from 2033 to 2029</strong>.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li>Microsoft's quantum bet is justified by industry-disrupting potential: <strong>drug discovery</strong> (shorter therapy-development cycles), and <strong>energy/climate</strong> (better catalysts for carbon capture and nitrogen fixation).</li>
+<li>Strategy is a <strong>unified AI + Quantum + HPC</strong> approach: AI for design/optimization, quantum for fast computation and high-quality data generation, HPC to glue the hybrid workflows together. End goal: <strong>CPU + GPU + QPU working seamlessly</strong> in Microsoft's cloud.</li>
+<li>The program was conceived as a <strong>full-stack quantum machine</strong> from day one — not a qubit count race — spanning physical hardware → QPU → quantum error correction + classical compute → applications.</li>
+<li>Target qubit properties: <strong>small (~micron), fast (~microsecond operations), and reliable.</strong> Topological qubits uniquely satisfy all three.</li>
+<li>The reliability comes from a <strong>new phase of matter</strong> — a <strong>topological superconductor ("topoconductor")</strong> — engineered by combining a conventional superconductor + semiconductor under a magnetic field to host <strong>Majorana modes</strong>.</li>
+<li>New <strong>Majorana 2 material stack uses a lead (Pb) superconductor instead of aluminium</strong>; lead's <strong>parent gap is ~4× larger</strong>, which translates to a <strong>~1,000× improvement in qubit performance.</strong></li>
+<li>It was <strong>not a drop-in swap</strong> — the entire semiconductor stack was re-engineered (new substrate, optimized quantum well and interfaces) to work with lead. All within <strong>one year.</strong></li>
+<li>Qubits use <strong>H-shaped superconducting structures</strong> patterned on semiconductor, with separate <strong>tuning, control, and readout</strong> gate layers; a 2×2 array occupies only tens of microns². A <strong>million-qubit chip ≈ credit-card-sized.</strong></li>
+<li>Qubits are <strong>digitally controlled</strong> and co-integrated with <strong>cryo-CMOS on the same chip at millikelvin temperature</strong> to solve the input/output (wiring/control) bottleneck.</li>
+<li><strong>Readout is fast RF capacitance sensing</strong>: tiny capacitance changes over time map to qubit states (Z-basis measurement).</li>
+<li><strong>Qubit lifetime jumped from ~10 ms (aluminium devices) to up to ~1 minute</strong> — about a 1,000× gain — described as "enormous on the scale of qubits."</li>
+<li>AI-enabled design tools (from a partner "discovery" team) optimized <strong>100+ parameters</strong>, letting the team <strong>design the complex chip in under a month.</strong></li>
+<li>Headline roadmap acceleration: <strong>commercially viable quantum machine moved from 2033 → 2029.</strong></li>
+<li>The supporting paper is posted on <strong>Azure Quantum's website and on arXiv.</strong></li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="why-quantum-the-industry-disruption-thesis">Why quantum — the industry-disruption thesis</h3>
+<p>The talk opens with the motivation: quantum computing can potentially transform entire industries.
+- <strong>Healthcare:</strong> enabling certain drug discoveries via quantum computation could <strong>shorten the cycle for therapy development.</strong>
+- <strong>Energy &amp; climate:</strong> discovering/simulating certain catalysts could enable <strong>faster carbon capture</strong> and solve the <strong>nitrogen fixation</strong> problem.</p>
+<p>These are classic quantum-advantage candidates because they hinge on simulating quantum chemistry/materials that are intractable for classical machines.</p>
+<h3 id="the-unified-ai-quantum-hpc-strategy">The unified AI + Quantum + HPC strategy</h3>
+<p>Microsoft frames itself as uniquely positioned because it develops all three components in-house:
+- <strong>AI</strong> → design and optimization.
+- <strong>Quantum</strong> → faster computation <em>and</em> generation of <strong>high-quality data</strong> that AI then consumes.
+- <strong>HPC</strong> → the connective tissue supporting these <strong>hybrid workflows</strong>, making the overall approach practically useful.</p>
+<p>The end-state vision: <strong>CPU, GPU, and QPU all working seamlessly together</strong> within Microsoft's cloud offerings to solve commercially valuable problems.</p>
+<h3 id="full-stack-philosophy-not-a-qubit-count-race">Full-stack philosophy (not a qubit-count race)</h3>
+<p>From the program's inception, the goal was a <strong>full-stack quantum machine</strong>, explicitly <em>not</em> about individual qubits or raw qubit counts. The stack spans:
+1. <strong>Physical hardware</strong> and the <strong>quantum processing units (QPUs).</strong>
+2. <strong>Quantum error correction</strong> plus the <strong>classical compute</strong> required to run it.
+3. The <strong>top application layer</strong> — making the machine actually useful to a consumer.</p>
+<h3 id="bottom-up-qubit-requirements">Bottom-up qubit requirements</h3>
+<p>Working bottom-up from extensive studies, the team concluded the qubits must be:
+- <strong>Small</strong> — roughly micron-sized.
+- <strong>Fast</strong> — operations at the <strong>microsecond</strong> scale.
+- <strong>Reliable</strong> — most importantly.</p>
+<p>Satisfying <em>all three simultaneously</em> is very hard, which is why a fundamentally different approach was needed.</p>
+<h3 id="why-topological-information-immune-to-errors">Why topological — information immune to errors</h3>
+<p>The <strong>topological approach</strong> is where reliability "shines." The core idea: encode information in <strong>Majorana modes</strong> — exotic quantum degrees of freedom. Information stored this way is <strong>inherently protected from / immune to errors and decoherence</strong>, the very problem that plagues all other qubit platforms. (Decoherence — loss of quantum information to the environment — is the central enemy of every competing modality.)</p>
+<p>To get these degrees of freedom, the team had to <strong>invent a new material stack and a new phase of matter</strong> that supports them.</p>
+<h3 id="the-new-phase-of-matter-the-topoconductor">The new phase of matter — the "topoconductor"</h3>
+<p>Beyond the familiar phases (solid, liquid, gas), Microsoft engineered a <strong>topological superconductor</strong>, shortened to <strong>"topoconductor."</strong>
+- It emerges by <strong>combining a conventional superconductor with a conventional semiconductor</strong> in the right proportions, <strong>under a magnetic field.</strong>
+- <strong>Superconductor:</strong> conducts electricity with <strong>zero resistance.</strong>
+- <strong>Semiconductor:</strong> has controllable <strong>electron density.</strong>
+- Combined correctly, they generate a <strong>unique state hosting the Majorana modes</strong> used to encode information.
+- The engineering challenge was creating the <strong>right interface</strong> between superconductor and semiconductor so the layered material behaves as a <strong>single, unified phase of matter.</strong></p>
+<h3 id="fabrication-devices-built-atom-by-atom">Fabrication — devices built atom by atom</h3>
+<p>Quantum devices "live or die" on material quality and whether stringent constraints are met. New <strong>fabrication recipes</strong> were required.
+- Last year's results already showed a <strong>tremendously improved interface</strong> between the lower semiconductor and the superconductor versus where they started.
+- Key technique: fabricating devices <strong>atom by atom</strong> (illustrated in a short movie during the talk). This was "the key recipe for success."</p>
+<h3 id="majorana-2-the-lead-pb-superconductor-breakthrough">Majorana 2 — the lead (Pb) superconductor breakthrough</h3>
+<p>This year's headline improvement is a <strong>new material stack</strong> that replaces the <strong>aluminium</strong> superconductor with a <strong>lead (Pb) superconductor.</strong>
+- <strong>Lead's parent gap is ~4× larger than aluminium's.</strong>
+- That larger parent gap <strong>directly translates into a ~1,000× improvement in qubit performance</strong> (as reported in the accompanying paper).
+- Crucially it was <strong>not a simple "drop and replace"</strong> — the <strong>entire semiconductor stack</strong> had to change to accommodate lead:
+  - <strong>Switched the substrate.</strong>
+  - <strong>Optimized the quantum well.</strong>
+  - <strong>Optimized all the interfaces</strong> in the stack.
+- All of this was achieved <strong>within one year.</strong></p>
+<blockquote>
+<p>The speaker, a 15-year program veteran, notes the AI-and-simulation-enabled progress of this single year <strong>equals the progress made in the entire first decade</strong> of their tenure — i.e. the development cycle is dramatically accelerating.</p>
+</blockquote>
+<p>The paper is available on the <strong>Azure (Azure Quantum) website</strong> and on <strong>arXiv.</strong></p>
+<h3 id="the-qubit-array-h-structures-and-gate-layers">The qubit array — H-structures and gate layers</h3>
+<p>With the material recipe in hand, the team builds qubits from it.
+- Qubits are based on <strong>H-shaped structures</strong> — superconducting layers patterned on top of semiconductor.
+- Demonstrated as a <strong>2×2 array.</strong>
+- The array is wired by distinct <strong>gate layers</strong> corresponding to <strong>tuning, control, and readout.</strong>
+- To perform <strong>single-qubit or two-qubit measurements</strong>, the team <strong>activates the right quantum dots / layers</strong> for that operation.</p>
+<h3 id="scale-million-qubits-on-a-credit-card">Scale — million qubits on a credit card</h3>
+<p>Scale is a recurring emphasis (note the <strong>micron</strong> scale bar):
+- <strong>Four qubits occupy only tens of microns².</strong>
+- Therefore a <strong>million-qubit chip could fit on a chip the size of a credit card.</strong>
+- Small, <strong>densely packed</strong> qubits enable a <strong>modular structure</strong> capable of solving very large, commercially viable problems.</p>
+<h3 id="digital-control-cryo-cmos-solving-the-io-problem">Digital control + cryo-CMOS (solving the I/O problem)</h3>
+<p>The qubits operate at <strong>millikelvin temperatures.</strong> A major engineering hurdle is the <strong>input/output problem</strong> — getting control/readout signals in and out of an ultra-cold, ultra-dense chip.
+- Qubits are <strong>digitally controlled.</strong>
+- They are <strong>coupled with cryo-CMOS on the same chip</strong>, placed at the <strong>same millikelvin stage</strong> as the topological qubits, so the control electronics sit right next to the qubits and tame the I/O bottleneck.
+- (In the chip photo: a quantum chip powered by the <strong>topological core</strong> on the left, with the cryo-CMOS co-integrated.)</p>
+<h3 id="measurement-fast-rf-capacitance-readout">Measurement — fast RF capacitance readout</h3>
+<p>A real fabricated device was shown (false-color H-structures with the tuning/control/readout gates visible).
+- The <strong>lower qubit was tuned up</strong> and subjected to a <strong>fundamental measurement</strong> by connecting a <strong>loop</strong> at the top and measuring the qubit state in the <strong>Z basis (Z configuration).</strong>
+- Readout is done via a <strong>fast RF readout scheme</strong> that measures <strong>capacitance as a function of time.</strong>
+- <strong>Small changes in capacitance correspond to different qubit states (0 and 1).</strong></p>
+<h3 id="the-lifetime-result-milliseconds-to-a-minute">The lifetime result — milliseconds to a minute</h3>
+<p>The pivotal data point:
+- <strong>Qubit lifetime increased up to ~1 minute</strong> — "enormous on the scale of qubits."
+- The <strong>previous aluminium-based device maxed out at ~10 milliseconds.</strong>
+- That's roughly a <strong>1,000× improvement in lifetime.</strong>
+- Attributed to "thinking about everything all together" — <strong>materials → design</strong>, all <strong>enabled by AI and simulations</strong>, optimizing the entire qubit array.</p>
+<h3 id="velocity-roadmap-pulled-forward">Velocity → roadmap pulled forward</h3>
+<p>Being able to <strong>iterate a new material stack, new design, and new system and measure the devices all within one year</strong> gave the team confidence in the approach and in their development velocity.
+- This confidence let Microsoft <strong>accelerate the roadmap to a commercially viable quantum machine from 2033 to 2029.</strong></p>
+<h3 id="ai-accelerated-design">AI-accelerated design</h3>
+<p>The design itself was heavily accelerated by AI, via collaboration with a partner <strong>discovery team.</strong>
+- They fed in <strong>all the design rules and requirements</strong> and <strong>optimized over 100+ parameters.</strong>
+- Using the partners' <strong>AI-enabled tools</strong>, they <strong>designed this complex chip in less than a month.</strong></p>
+<h3 id="closing-thesis">Closing thesis</h3>
+<p>The punchline: Microsoft <strong>turned a hard physics problem into a roadmap for a scalable quantum computer.</strong> The secret to meeting the stringent requirements of quantum computing at scale is <strong>better materials, better interfaces, better fabrication, better algorithms, and better designs — pushing on all cylinders simultaneously.</strong> The talk closes to take questions.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Majorana 2 (topological QPU)</strong> — Microsoft's latest topological quantum processing unit built on the new lead-based material stack; the subject of the talk.</li>
+<li><strong>Topological qubit / Majorana modes</strong> — qubits that encode information in exotic Majorana quantum states, inherently protected from errors/decoherence.</li>
+<li><strong>Topological superconductor ("topoconductor")</strong> — the engineered new phase of matter (superconductor + semiconductor + magnetic field) that hosts the Majorana modes.</li>
+<li><strong>Lead (Pb) superconductor</strong> — new superconducting material replacing aluminium; ~4× larger parent gap → ~1,000× qubit performance gain.</li>
+<li><strong>Cryo-CMOS</strong> — control electronics co-integrated on-chip at millikelvin temperature to digitally control qubits and solve the I/O problem.</li>
+<li><strong>H-structure qubit array</strong> — superconducting H-shaped structures on semiconductor, organized into tuning/control/readout gate layers (shown as a 2×2 array).</li>
+<li><strong>RF capacitance readout scheme</strong> — fast radio-frequency readout measuring capacitance-vs-time to distinguish qubit states.</li>
+<li><strong>Topological core</strong> — the core powering the demonstrated quantum chip.</li>
+<li><strong>Unified AI + Quantum + HPC stack</strong> — Microsoft's overarching strategy combining AI (design/optimization), quantum (computation/data), and HPC (hybrid workflow support), targeting CPU+GPU+QPU in the cloud.</li>
+<li><strong>Azure Quantum (Azure website)</strong> — where the supporting research paper is posted (also on arXiv).</li>
+<li><strong>AI-enabled design tools (partner "discovery" team)</strong> — used to optimize 100+ parameters and design the chip in under a month.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>New Majorana 2 material stack</strong> announced: a <strong>lead (Pb) superconductor</strong> replacing aluminium, claimed to deliver a <strong>~1,000× improvement in qubit performance</strong> (driven by lead's ~4× larger parent gap).</li>
+<li><strong>New quantum processing unit (QPU)</strong> built with this material stack, with <strong>cryo-CMOS co-integrated on the same chip.</strong></li>
+<li><strong>Qubit lifetime improvement</strong> to <strong>up to ~1 minute</strong> (from ~10 ms in the prior aluminium device).</li>
+<li><strong>Roadmap acceleration:</strong> commercially viable quantum machine target <strong>moved from 2033 → 2029.</strong></li>
+<li><strong>Supporting research paper</strong> published on the <strong>Azure Quantum website</strong> and on <strong>arXiv</strong> (status: published/available; specific GA/preview labels not applicable — this is research hardware, not a shipping product).</li>
+</ul>
+<blockquote>
+<p>Note: This is a research/hardware milestone talk. No commercial product GA or public preview availability dates were stated beyond the 2029 commercial-machine roadmap target.</p>
+</blockquote>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Chip photograph walkthrough</strong> — the speaker showcased the actual quantum chip: a topological-core-powered quantum chip with <strong>cryo-CMOS co-integrated on the same chip</strong>, illustrating the digital-control / millikelvin co-location design that addresses the I/O problem.</li>
+<li><strong>"Atom by atom" fabrication movie</strong> — a short film showing devices being fabricated atom by atom, used to prove the fabrication-quality recipe behind the improved superconductor/semiconductor interface.</li>
+<li><strong>Real fabricated device + live measurement data</strong> — false-color image of the H-structure device with visible tuning/control/readout gates, accompanied by an actual <strong>Z-basis measurement of the lower qubit</strong>: a <strong>capacitance-vs-time trace</strong> whose small steps correspond to qubit states 0/1 — demonstrating working tune-up and fast RF readout, and underpinning the <strong>~1-minute lifetime</strong> result.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>~1,000× improvement in qubit performance</strong> from the lead superconductor's larger parent gap.</li>
+<li><strong>Lead parent gap ≈ 4× larger</strong> than aluminium.</li>
+<li><strong>Qubit lifetime: up to ~1 minute</strong> (vs <strong>~10 ms</strong> maximum for the previous aluminium device) — roughly <strong>1,000× longer.</strong></li>
+<li><strong>Four qubits in tens of microns²</strong>; <strong>a million-qubit chip could fit on a credit-card-sized chip.</strong></li>
+<li><strong>100+ parameters optimized</strong> by AI tools; <strong>chip designed in under a month.</strong></li>
+<li><strong>Roadmap pulled forward from 2033 to 2029</strong> for a commercially viable quantum machine.</li>
+<li>Qubit targets: <strong>micron-sized, microsecond operations, highly reliable.</strong></li>
+<li><em>"We turned the hard physics problem into a roadmap for a scalable quantum computer."</em></li>
+<li><em>"The level of improvement ... that happened over the last year is equivalent to the level of progress that we've made in the first decade of my ... tenure"</em> (speaker has been with the program <strong>15 years</strong>).</li>
+<li>Qubits operate at <strong>millikelvin temperatures.</strong></li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Find and read the cited paper on the <strong>Azure Quantum site / arXiv</strong> for the lead-superconductor topoconductor and the ~1-minute lifetime claim; verify the parent-gap → performance scaling argument.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: Is the ~1-minute "lifetime" a <strong>coherence (T₂)</strong>, relaxation (T₁), or parity/Majorana lifetime? How many of the "qubits" demonstrated are full <strong>topological qubits</strong> vs. enabling sub-components? What error rates / gate fidelities accompany the lifetime number? What does "commercially viable" mean concretely for the 2029 target (qubit count, logical qubits)?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: Quantum-advantage use cases in <strong>chemistry/materials simulation</strong> (catalysts, nitrogen fixation, carbon capture) and <strong>drug discovery</strong>; the broader <strong>CPU+GPU+QPU hybrid cloud</strong> architecture story; Microsoft's prior <strong>Majorana 1</strong> announcement for comparison.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<h2 id="-microsoft-build-2026">- <span class="wikilink wikilink--unresolved" title="Microsoft Build 2026">Microsoft Build 2026</span></h2>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEM312.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEM312</span><span class="pager-title">Multi-agents in action with 3 AI agents, 3 frameworks, tools &amp; models</span></a>
+    <a class="pager pager-next" href="DEM320.html"><span class="pager-dir">Next →</span><span class="pager-code">DEM320</span><span class="pager-title">Hugging Face open-source models to production on Microsoft Foundry</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

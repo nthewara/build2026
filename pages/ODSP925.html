@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ODSP925 — Deliver production-ready AI search on unstructured data with RAG</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">ODSP925</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=4qjrKSe3QF8" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Deliver production-ready AI search on unstructured data with RAG</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Ed Charbonneau (Progress Software)</span>
+      <span class="meta-item">⏱️ 14m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="rag">Rag</span><span class="chip" data-tag="unstructured-data">Unstructured Data</span><span class="chip" data-tag="vector-search">Vector Search</span><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="dotnet">.NET</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Ed Charbonneau — Principal Developer Advocate, Progress Software; 10-time Microsoft MVP<br>
+<strong>Duration:</strong> ~14 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=4qjrKSe3QF8">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>A vendor-led introduction to Retrieval Augmented Generation (RAG) and why it's the answer to making sense of the ~400 million TB of data the world generates <em>every day</em>. Ed Charbonneau frames RAG within the broader family of "context augmented generation" — distinguishing plain context-stuffing and cache-augmented generation from true RAG, which uses a <strong>vector database + semantic (vector) search</strong> to retrieve grounded, citable information into an LLM's context window. He argues that hand-built, in-house RAG stacks are complex, hard to scale, and hard to cost-predict because they glue together many vendors' pieces (UI, embedding/chat models, document parsers, evaluation) and demand software-engineering + data-science + AI expertise simultaneously. The pitch: <strong>Progress Agentic RAG</strong>, a RAG-as-a-Service platform that handles ingestion of structured/unstructured documents, agent-driven extraction + embedding, hybrid (keyword + semantic + graph) search reranked by an agent, and built-in quality evaluation (the "Remy" agent) — consumable via a no-code UI/widget builder or via .NET, TypeScript/JavaScript, and Python SDKs and REST APIs. A .NET + Blazor demo shows a financial dashboard ingesting SEC-filing PDFs and returning <em>structured</em> chart data through the C# SDK's <code>AskAsync</code> method.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>The data problem is the whole motivation for RAG.</strong> The world now generates/collects ~400 million TB (≈0.4 zettabytes) per day, ≈147 zettabytes/year — far beyond what humans can process unaided, so AI (LLMs) is mandatory for sense-making.</li>
+<li><strong>"Context augmented generation" is the umbrella concept.</strong> It simply means adding data to an LLM's context window so it can answer questions about that data. Understand this first; RAG is a specialized member of this family.</li>
+<li><strong>Three flavours sit on a scale:</strong> (1) plain <strong>context augmentation</strong> (drop a file/transcript into the context window — e.g. the Gemini "summarize" button on YouTube), (2) <strong>cache augmented generation</strong> (store more data as vectors in memory and pull pertinent pieces in — e.g. GitHub Copilot in VS Code indexing your project files), and (3) <strong>RAG</strong> (a dedicated vector <em>database</em> for large-volume storage + semantic retrieval).</li>
+<li><strong>Retrieval ≠ keyword search.</strong> RAG's "retrieval" uses <strong>vector search</strong> for <em>semantic similarity</em> (meaning) rather than exact-keyword matching — you find content that <em>means</em> the same thing, not just content containing the same words.</li>
+<li><strong>The RAG loop:</strong> ingest → embed → store in vector DB → vector-search on a query → retrieve relevant chunks → inject into LLM context → generate a new, grounded response → optionally emit <strong>citations</strong>.</li>
+<li><strong>Citations are a first-class feature, not a nicety.</strong> They trace answers back to their source and <em>prove the answer is grounded in real knowledge</em> — "showing receipts" that the answer wasn't hallucinated.</li>
+<li><strong>Embedding models extract meaning from text</strong> so semantic search is possible; <strong>chunking</strong> breaks large documents into smaller bite-size pieces that are easier to ingest, embed, and store.</li>
+<li><strong>RAG enables "generative AI search"</strong> — letting users query huge datasets in natural language without learning query syntax, and treating unstructured sources (websites, PDFs, images, video) <em>as if</em> they were a relational database.</li>
+<li><strong>End-to-end RAG is genuinely hard to build in-house.</strong> You need a UI, embedding + chat models, a data strategy, document providers/parsers (PDF, Office, video, images → text), and quality evaluation — typically from multiple vendors, requiring software-engineering + data-science + AI expertise. It's hard to scale and hard to predict cost.</li>
+<li><strong>The market is moving to <em>agentic</em> RAG.</strong> A cited VentureBeat article notes enterprises transitioning <em>away</em> from in-house RAG stacks that lacked agentic retrieval — i.e. agents that <strong>rerank</strong> search results and <strong>evaluate</strong> system metrics during ingestion/retrieval.</li>
+<li><strong>Progress Agentic RAG = RAG-as-a-Service.</strong> Pre-built document providers ingest video/audio/chat logs/docs; in-system agents extract key text, tags, entities and generate embeddings via LLMs.</li>
+<li><strong>Hybrid search + agent reranking is the core retrieval strategy:</strong> keyword + semantic + <strong>graph</strong> search, all reranked by an agent — broader than vector-only RAG.</li>
+<li><strong>"Remy" is an embedded evaluation/quality agent</strong> that continuously assesses system stability as data is ingested and retrieved (the agentic-evaluation piece in-house stacks were missing).</li>
+<li><strong>Two consumption paths:</strong> no-code (UI dashboard + HTML <strong>widget builder</strong> for quick search experiences with citations) and code-first (<strong>SDKs for .NET, TypeScript/JavaScript, Python + REST APIs</strong>) for custom agents, UIs, and full app architectures.</li>
+<li><strong>Structured output from unstructured data is the standout SDK trick:</strong> the C# SDK <code>AskAsync</code> method accepts a plain class type (e.g. <code>ChartAugmentedAnswer</code>); it's turned into a JSON schema the retrieval agent fills from search results, then deserialized back into your object — so you get chart-ready <em>structured</em> data out of PDFs.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="why-rag-matters-the-data-deluge">Why RAG matters — the data deluge</h3>
+<p>Ed opens by grounding RAG in a data-scale argument he's been making since an <strong>M3 conference talk in 2016</strong> on the future of data storage and its relationship to machine learning. Back then the estimate was <strong>44 zettabytes</strong> collected by 2020. By <strong>2026</strong>, the world generates/collects roughly <strong>400 million terabytes per day</strong> worldwide — about <strong>0.4 zettabytes/day</strong>, or <strong>~147 zettabytes/year</strong>. The point: humans cannot make use of data at that scale without AI. His 2016 prescription was machine learning; today ML is "a commodity in the form of large language models," and the job of sifting data for answers is done by <strong>human operators assisted by agentic systems</strong>. RAG is how you connect those LLMs to <em>your</em> data.</p>
+<h3 id="context-augmented-generation-the-parent-concept">Context augmented generation — the parent concept</h3>
+<p>Before defining RAG, Ed insists on defining <strong>context augmented generation</strong>, because it sets the scale of the architectures involved. Definition: <strong>adding data to the context window of an LLM</strong> so you can ask questions about that data.
+- <strong>Simplest form — direct context loading:</strong> upload a file into the context window and query it. Real-world example: the <strong>Gemini button on some YouTube videos</strong> — click it and the video's <em>transcript</em> is loaded into the LLM's context window, letting you query the video conversationally.</p>
+<h3 id="cache-augmented-generation-the-middle-tier">Cache augmented generation — the middle tier</h3>
+<p>A richer form: take <em>more</em> data and store it in <strong>vector memory</strong>, then search that memory structure, pull out pertinent pieces, and insert those into the LLM's context.
+- Real-world example: <strong>GitHub Copilot inside VS Code.</strong> The agent keeps memory of the conversation; your <strong>project files are loaded into memory as vector data</strong> for fast semantic searching; the LLM has all of this in its context. When you ask it to write code, it reaches into its cache, retrieves pertinent data, and uses it to generate code, answer questions, create summaries, etc.
+- Mental model: cache-augmented generation = vector memory used as a fast, in-context cache, as opposed to a dedicated, large-scale vector <em>database</em>.</p>
+<h3 id="retrieval-augmented-generation-the-definition">Retrieval Augmented Generation — the definition</h3>
+<p>RAG is "another form of context augmented generation," but this time it uses a <strong>vector database</strong> to <strong>store and retrieve information from large volumes using semantic similarity</strong>. Two halves:
+- <strong>Retrieval</strong> = finding useful information through <strong>vector search</strong>. Crucially <em>different from traditional keyword search</em>: instead of matching exact keywords, you use AI to find content with <strong>semantically similar meaning</strong>.
+- <strong>Augmented generation</strong> = once relevant info is found, <strong>retrieve it from the vector DB</strong> and <strong>place it into the LLM's context window</strong>, then ask the LLM to <strong>generate a new response</strong> using that information.
+- <strong>Citations</strong> can be requested so users trace where information originated. Ed stresses citations prove the answer is <strong>grounded in real knowledge</strong> — the system can "show receipts that prove the answer was not hallucinated."</p>
+<h3 id="how-data-gets-into-a-vector-database-embedding-chunking">How data gets into a vector database — embedding &amp; chunking</h3>
+<p>The ingestion mechanics:
+1. <strong>Ingest resources</strong> (documents, etc.).
+2. <strong>Pass them through a vector embedding model.</strong> The embedding model <strong>extracts the meaning from the text</strong> so searches can be done by semantic similarity (it turns text into vectors that encode meaning).
+3. <strong>Chunk large documents.</strong> If a document is big enough, split it into <strong>smaller bite-size pieces</strong> — this makes it easier to ingest and store in the vector DB (and keeps each stored unit semantically coherent and retrievable).</p>
+<h3 id="generative-ai-search-what-rag-unlocks">Generative AI search — what RAG unlocks</h3>
+<p>Because RAG can store large volumes, it's "perfect for generative AI search." <strong>Generative AI search</strong> empowers users to:
+- Query large datasets in <strong>natural language</strong>, without memorizing specific query syntax.
+- Make sense of large volumes of <strong>business data stored in unstructured formats</strong> — websites, PDFs, images, videos, and more.
+- Do all of this <em>as if</em> the data were coming from a <strong>relational database</strong>, thanks to AI. This "structured query feel over unstructured sources" is the experience RAG is selling.</p>
+<h3 id="why-end-to-end-rag-is-hard-the-build-vs-buy-argument">Why end-to-end RAG is hard (the build-vs-buy argument)</h3>
+<p>Ed is candid that a real end-to-end RAG architecture is <strong>complex</strong> and usually multi-vendor. To ship one yourself you need:
+- A <strong>user interface</strong>.
+- <strong>Embedding models</strong> and <strong>chat models</strong>.
+- A <strong>data strategy</strong>.
+- <strong>Document providers</strong> that translate every document type (PDF, Office files, video, images, etc.) <strong>into text</strong> so it can be embedded into the vector DB.
+- <strong>Evaluation</strong> of the quality of data flowing in and out of the RAG system.</p>
+<p>Gluing these together demands <strong>software engineering + data science + AI expertise</strong> simultaneously. The result is <strong>difficult to scale</strong> and <strong>difficult to predict cost</strong>. He cites a recent <strong>VentureBeat article</strong> reporting enterprises <strong>transitioning away from their in-house RAG stacks</strong> — stacks that lacked the fundamentals of <strong>agentic RAG</strong>, where <strong>agents help rerank search results and evaluate system metrics</strong> as data is ingested and retrieved. (This is the gap the product pitch fills.)</p>
+<h3 id="progress-agentic-rag-the-platform">Progress Agentic RAG — the platform</h3>
+<blockquote>
+<p>⚠️ Caption note: the auto-captions garble the product name throughout (rendered variously as "Progress GenAI RAG", "Progress Corticon", "Progress OpenEdge RAG"). Corticon and OpenEdge are <em>other</em> Progress products; in context the speaker is consistently describing one offering — <strong>Progress Agentic RAG</strong>, the RAG-as-a-Service platform he names at the start. Treated as one product below.</p>
+</blockquote>
+<p>Progress Agentic RAG is positioned as a <strong>complete, end-to-end RAG-as-a-Service</strong> that solves the above problems for you:
+- <strong>Ingests all sorts of documents</strong> — video, audio, chat logs, and other info. <strong>Document providers are already in place</strong> to ingest data, so you don't build parsers.
+- <strong>Handles both structured and unstructured data.</strong>
+- <strong>In-system agents</strong> extract <strong>key text, tags, entities</strong>, and <strong>generate embeddings</strong>, all using large language models.
+- <strong>Hybrid search</strong> = <strong>keyword search + semantic search + graph search</strong>, with results <strong>reranked by an agent</strong> (this is the "agentic" differentiator).
+- <strong>Remy</strong> — an embedded <strong>quality &amp; evaluation metric/agent</strong>: an AI agent that <strong>evaluates system stability as data is ingested and retrieved</strong>.
+- <strong>Management UI</strong> — a system administrator logs in to ingest/manage data, <strong>orchestrate AI agents</strong>, and check evaluation metrics. Dashboard surfaces metrics on <strong>quality, storage, and recently-ingested resources</strong>.
+- <strong>Two build paths:</strong>
+  - <strong>Fast / no-code:</strong> an <strong>HTML widget builder</strong> to create robust search experiences (including citation + retrieval) deployable via HTML snippets — good for quick turnarounds.
+  - <strong>Custom / code-first:</strong> <strong>SDKs for .NET, TypeScript/JavaScript, and Python</strong>, plus <strong>REST APIs</strong>, for custom agents, custom UIs, and complete application architectures.</p>
+<h3 id="ingestion-extraction-in-the-ui-demo-walkthrough-part-1">Ingestion &amp; extraction in the UI (demo walkthrough — part 1)</h3>
+<p>From the <strong>Upload</strong> tab you can ingest <strong>files, folders, links, text resources, entire site maps, and Q&amp;A resources</strong>. File resources can be any Office type, plus <strong>videos, images, and audio (e.g. MP3)</strong>. Ed has pre-ingested <strong>SEC filings / financial reports</strong> from major companies (Amazon, Apple, etc.). Opening <strong>Apple's SEC filing</strong> shows:
+- The original <strong>PDF</strong> stored in a <em>file field</em> (the whole filing, ingested into the system).
+- <strong>Generated fields</strong> — data <strong>extracted from the PDF by background AI agents</strong>.
+- Those extraction <strong>agents are configured on an Agent screen</strong>, where you can <strong>test and evaluate</strong> them in the UI. The highlighted agent is configured to <strong>extract chart-friendly data</strong> from the unstructured files — a step that helps the <strong>retrieval agent</strong> find the right data when you later query the system with <em>structured</em> data types.
+- A <strong>simple search window</strong> lets you sanity-check ingested data: asking <em>"What was Apple's revenue?"</em> returns <em>"Apple's total net sales from 2024 were $391 million"</em>. (Spoken figure; note Apple's FY2024 net sales were ~$391 <strong>billion</strong> — the captions/wording compress "billion," but the demo's point is the grounded retrieval, not the exact magnitude.) That simple search can be turned into a <strong>widget</strong> via <em>Create widget</em> and deployed to a webpage with HTML snippets.</p>
+<h3 id="going-custom-with-the-c-sdk-blazor-demo-walkthrough-part-2">Going custom with the C# SDK + Blazor (demo walkthrough — part 2)</h3>
+<p>For something more advanced, Ed switches to <strong>Visual Studio</strong> and a <strong>Blazor Server</strong> app using the <strong>C# SDK</strong> to build a fully custom UI over Progress Agentic RAG.
+- The SDK exposes a <strong>search interface</strong> with an <strong><code>AskAsync</code></strong> method.
+- <strong>Structured-output pattern (the key idea):</strong> <code>AskAsync</code> optionally takes a <strong>structure you want the system to fulfill</strong> — <em>just a plain class object</em>. Here it's a class called <strong><code>ChartAugmentedAnswer</code></strong>, passed along with the user's request.
+- When that type is passed in, it's <strong>turned into a JSON structure/schema</strong>. The <strong>retrieval agent</strong> sees that JSON, <strong>maps values from the search results into it</strong>, and <strong>fulfills all the requested properties</strong>.
+- The filled JSON is <strong>serialized back into the <code>ChartAugmentedAnswer</code> object</strong> inside the app, which can then be displayed as <strong>text <em>and</em> charts</strong>.
+- The running browser app is a fully customized UI built with the <strong>Telerik UI for Blazor</strong> component library, backed by the Progress Agentic RAG <strong>C# SDK</strong>.</p>
+<h3 id="custom-ui-in-action-demo-walkthrough-part-3">Custom UI in action (demo walkthrough — part 3)</h3>
+<p>In the chat interface, preset suggestions let you e.g. <strong>compare Nvidia and Google's revenue</strong> with one click, or type a natural-language query. Comparing <strong>Nvidia vs Google</strong> returns a <strong>detailed textual comparison</strong> <em>and</em> an openable <strong>chart</strong> — the <strong>structured data</strong> requested from Progress Agentic RAG is relayed back to the Blazor app and handed off to <strong>UI components for chart rendering</strong>. The takeaway Ed draws: this shows the <strong>depth of customization</strong> possible — any front-end tech you like, backed by the platform + SDKs.</p>
+<h3 id="where-to-learn-more">Where to learn more</h3>
+<p>Visit <strong>progress.com</strong>; a <strong>QR code on screen</strong> gathers all presentation resources, <strong>including the financial-services application</strong> that uses the <strong>C# SDK + Blazor</strong>.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Progress Agentic RAG</strong> — the session's headline product; a RAG-as-a-Service platform for ingesting, embedding, searching, and evaluating structured/unstructured data end-to-end. <em>(Product name garbled in captions as "GenAI RAG / Corticon / OpenEdge RAG"; resolved here.)</em></li>
+<li><strong>Hybrid search (keyword + semantic + graph), agent-reranked</strong> — Progress Agentic RAG's core retrieval engine.</li>
+<li><strong>"Remy" evaluation agent</strong> — embedded AI agent that evaluates system stability/quality during ingestion and retrieval.</li>
+<li><strong>Document providers</strong> — pre-built parsers that translate PDFs, Office files, video, images, and audio (MP3) into text for embedding.</li>
+<li><strong>Widget builder (HTML)</strong> — no-code way to publish a search experience (with citations + retrieval) via HTML snippets.</li>
+<li><strong>Progress Agentic RAG SDKs</strong> — .NET (<strong>C#</strong>), TypeScript/JavaScript, and Python, plus <strong>REST APIs</strong>, for custom agents/UIs/architectures.</li>
+<li><strong><code>AskAsync</code> method</strong> — C# SDK call that accepts a target class (e.g. <code>ChartAugmentedAnswer</code>) and returns structured, schema-filled results.</li>
+<li><strong>Telerik UI for Blazor</strong> — Progress's component library used to build the custom demo dashboard UI.</li>
+<li><strong>Blazor Server</strong> (spoken "Blazer") — .NET web UI framework hosting the custom demo app.</li>
+<li><strong>Large language models (LLMs)</strong> — the chat/generation and extraction/embedding engines underpinning RAG.</li>
+<li><strong>Vector embedding model</strong> — extracts meaning from text into vectors enabling semantic similarity search.</li>
+<li><strong>Vector database</strong> — stores large volumes of embedded data for semantic retrieval (the heart of RAG).</li>
+<li><strong>Vector search / semantic similarity</strong> — meaning-based retrieval, contrasted with keyword search.</li>
+<li><strong>Chunking</strong> — splitting large documents into smaller pieces for ingestion/embedding/storage.</li>
+<li><strong>Citations / grounding</strong> — traceability feature proving answers come from real source data, not hallucination.</li>
+<li><strong>Context augmented generation</strong> — umbrella concept: adding data to an LLM's context window.</li>
+<li><strong>Cache augmented generation</strong> — storing more data as vectors in memory and pulling pertinent pieces into context.</li>
+<li><strong>GitHub Copilot in VS Code</strong> — cited as a real-world example of cache-augmented generation (project files as vector memory).</li>
+<li><strong>Gemini "summarize" button on YouTube</strong> — cited example of plain context augmentation (transcript loaded into context).</li>
+<li><strong>SEC filings (Amazon, Apple, Nvidia, Google)</strong> — sample financial PDFs ingested in the demo.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p>None explicitly announced. This is an introductory/educational session plus a product overview of an existing <strong>Progress Agentic RAG</strong> platform; no previews, GA dates, or roadmap items were stated. (The clearest "new to you" item is simply the platform itself and its agentic hybrid-search + "Remy" evaluation capabilities, presented as available today.)</p>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Ingestion + AI extraction in the Progress Agentic RAG UI:</strong> Uploaded SEC-filing PDFs (Apple/Amazon, etc.); showed the original PDF stored alongside <strong>generated fields</strong> extracted by background AI agents; demonstrated the <strong>Agent screen</strong> where an extraction agent is configured to pull <strong>chart-friendly data</strong> from unstructured files. <em>Point proved:</em> unstructured PDFs become queryable, partially-structured data automatically, priming the retrieval agent for structured queries.</li>
+<li><strong>Simple search → widget:</strong> Asked <em>"What was Apple's revenue?"</em> and got a grounded answer (<em>"total net sales from 2024 were $391M"</em> as spoken), then converted that search into a deployable <strong>HTML widget</strong>. <em>Point proved:</em> zero-code path from ingested data to an embeddable search experience with citations.</li>
+<li><strong>C# SDK + Blazor structured retrieval:</strong> In Visual Studio, used <code>AskAsync</code> with a <code>ChartAugmentedAnswer</code> class → platform serializes it to JSON, the retrieval agent fills it from search results, and it deserializes back into the app object. <em>Point proved:</em> you can get <strong>structured, chart-ready data</strong> out of unstructured PDFs via a plain C# class.</li>
+<li><strong>Custom Blazor dashboard in the browser:</strong> A Telerik-UI-for-Blazor financial dashboard; clicked <strong>"compare Nvidia and Google revenue"</strong> (and free-text queries) to get a <strong>text comparison + an openable chart</strong> rendered from the returned structured data. <em>Point proved:</em> full UI customization and rich visualizations over any front-end, backed by the SDK.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>~400 million TB / day</strong> generated worldwide in 2026 — <em>"about 0.4 zettabytes a day, or 147 zettabytes per year."</em></li>
+<li><strong>44 zettabytes</strong> — the 2016-era estimate (from his M3 2016 talk) for data collected <strong>by 2020</strong>.</li>
+<li><strong>"It's not humanly possible to make use of all that data we collect without using some sort of AI."</strong></li>
+<li><strong>"Instead of searching for exact keywords, we use AI to search for content with semantic similar meaning."</strong></li>
+<li>On citations: <strong>"The system can show receipts that prove the answer was not hallucinated."</strong></li>
+<li>Demo answer: <strong>"Apple's total net sales from 2024 were $391 million"</strong> <em>(as spoken; Apple's FY2024 net sales were ~$391 </em><em>billion</em><em> — caption/phrasing compresses the magnitude).</em></li>
+<li>Speaker credentials: <strong>Principal Developer Advocate at Progress Software, 10-time Microsoft MVP.</strong></li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Reproduce the <strong><code>AskAsync</code> + plain-class structured-output</strong> pattern conceptually with Azure OpenAI structured outputs / JSON schema to compare DX vs the Progress SDK.</li>
+<li>Spin up a tiny RAG loop (embed → vector DB → semantic search → grounded answer + citation) over a few PDFs to internalize chunking + citation grounding hands-on.</li>
+<li>Evaluate <strong>hybrid search (keyword + semantic + graph) with agentic reranking</strong> in an Azure-native stack (Azure AI Search supports hybrid + semantic ranking) to see how close you can get without a managed RAGaaS.</li>
+<li>Try the demo's <strong>SEC-filing → chart</strong> scenario with <strong>Azure AI Search + a chart-friendly extraction prompt</strong> to map the idea onto Microsoft-first tooling.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What exactly is "<strong>graph search</strong>" in their hybrid mix — knowledge-graph traversal over extracted entities, or graph-of-chunks? How is the graph built during ingestion?</li>
+<li>How does <strong>"Remy"</strong> quantify "system stability" during ingestion/retrieval — what metrics does it surface, and can it gate bad ingestions?</li>
+<li>What's the real cost/scaling model of a managed RAGaaS like this vs. the in-house-stack costs Ed says are "difficult to predict"?</li>
+<li>Where's the boundary between "cache augmented generation" and "RAG" in practice — at what data volume do you graduate from vector <em>memory</em> to a vector <em>database</em>?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Anyone designing <strong>production RAG over unstructured enterprise docs</strong> (PDFs, Office, video/audio) who's weighing build-vs-buy.</li>
+<li><strong>.NET / Blazor</strong> teams wanting LLM-backed search with <strong>structured (chart-ready) outputs</strong> via an SDK.</li>
+<li>Architects evaluating <strong>agentic retrieval</strong> (rerankers + evaluation agents) vs. classic vector-only RAG.</li>
+<li>Our own Azure AI Search RAG work — useful conceptual contrast (hybrid search, citations/grounding, chunking, evaluation) even though the product is a third-party (Progress) platform, not Azure.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="RAG (Retrieval Augmented Generation)">RAG (Retrieval Augmented Generation)</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Vector search &amp; embeddings">Vector search &amp; embeddings</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Azure AI Search">Azure AI Search</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Chunking strategies for RAG">Chunking strategies for RAG</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Grounding &amp; citations in LLM apps">Grounding &amp; citations in LLM apps</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Blazor">Blazor</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Build 2026">Microsoft Build 2026</span></li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="ODSP923.html"><span class="pager-dir">← Previous</span><span class="pager-code">ODSP923</span><span class="pager-title">Create enterprise apps with AI and MCP</span></a>
+    <a class="pager pager-next" href="ODSP929.html"><span class="pager-dir">Next →</span><span class="pager-code">ODSP929</span><span class="pager-title">Build modern .NET apps with Uno Platform, AI, and visual tools</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

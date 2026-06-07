@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OD837 — Build and deploy AI at the edge for real-world impact</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">OD837</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=5RTUT3U96bc" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Build and deploy AI at the edge for real-world impact</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Cosmos Darwin (Product Manager, Microsoft Azure)</span>
+      <span class="meta-item">⏱️ 22m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="edge-ai">Edge Ai</span><span class="chip" data-tag="iot">Iot</span><span class="chip" data-tag="robotics">Robotics</span><span class="chip" data-tag="ai">AI</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Cosmos Darwin — Product Manager, Microsoft Azure<br>
+<strong>Duration:</strong> ~22 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=5RTUT3U96bc">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>"Physical AI" — combining language models and generative AI with robots and physical systems — is poised to extend AI's benefits to domains (inspections, construction, logistics, retail stocking, food prep) that information-worker AI has largely skipped. Cosmos Darwin and his team built a <strong>basic agentic robot</strong> that picks and places objects in response to messy, natural, fluid spoken instructions. The entire intelligence stack runs <strong>locally</strong> on a small industrial computer (Lenovo ThinkEdge SE100 with an NVIDIA RTX 2000 GPU) wired over USB to an RGB camera, an omnidirectional microphone, and a 6-DoF tabletop robot arm. The software stack uses Microsoft's <strong>adaptive cloud</strong> technologies: <strong>Azure Linux</strong> + <strong>K3s</strong>, <strong>Foundry Local</strong> (now packaged as a Linux container image, enabled by Azure Arc) hosting the models, <strong>small form factor infrastructure</strong> (cloud provisioning/management of edge devices, in preview), and <strong>Azure IoT Operations</strong> for telemetry back to the cloud. The models: <strong>NeMoTron Speech</strong> (NVIDIA speech-to-text), open-vocabulary vision detectors, and <strong>Qwen-3 1.7B</strong> for reasoning + tool calling (pick / place / pick-and-place / stop). The novel part is the agentic interpretation of messy inputs; the motion planning/execution is conventional robotics. All components are available off-the-shelf in preview today.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Physical AI is the next frontier:</strong> AI's productivity gains have been unevenly distributed — concentrated on documents/spreadsheets/information workers — while physical-world work (inspection, repair, construction, warehousing, retail stocking, food prep) has barely changed in 1-2 decades.</li>
+<li><strong>Why robots struggled here:</strong> Robots excel in controlled, repetitive environments (e.g., factories) but historically fail where interacting with people and a changing "open world" environment is core to the job.</li>
+<li><strong>Agentic robotics changes the equation:</strong> Recent advances in AI models — especially the ability to run language models locally — enable a shift from rigid conventional robotics to an <em>agentic</em> approach that can reason about messy inputs and adapt to a changing environment.</li>
+<li><strong>Natural, fluid interaction:</strong> The demo robot accepts rambly, conversational commands with no strict syntax and no start/stop ceremony — it reasons about intent even when the instruction is messy.</li>
+<li><strong>Continuous perception &amp; adaptation:</strong> Because it's continuously listening and looking, the robot adapts mid-task when objects are moved or instructions change midstream (e.g., "Wait, I changed my mind…").</li>
+<li><strong>Everything runs locally on the edge:</strong> All intelligence runs on a single small industrial computer co-located with the robot, connected over plain USB — no cloud calls at runtime.</li>
+<li><strong>Approachable, off-the-shelf hardware:</strong> Deliberately budget, off-the-shelf peripherals (a webcam-like UVC RGB camera, a UAC omnidirectional mic, a 6-DoF arm with gripper) — nothing fancy, no depth camera — so anyone can replicate it at home.</li>
+<li><strong>Foundry Local on Linux:</strong> Foundry Local — previously on Windows then Windows+Android — is now packaged as a <strong>container image for Linux</strong>, hosting all AI models locally with an <strong>OpenAI-compatible REST API</strong> (a drop-in replacement for cloud inference calls).</li>
+<li><strong>Model trio behind the demo:</strong> NeMoTron Speech (STT, free in the Foundry Local catalog, very low error rate), open-vocabulary vision detectors (returning object coordinates + axis of rotation), and <strong>Qwen-3 1.7B</strong> (reasoning + tool calling) — all free in the catalog and running on-device.</li>
+<li><strong>Tool calling is the brain:</strong> The small language model simply chooses among four tools — <strong>pick, place, pick-and-place, stop</strong> — based on what it sees and hears; the rest (motion planning + arm execution) is conventional robotics.</li>
+<li><strong>Local inference = predictable low latency + GPU acceleration:</strong> Foundry Local auto-detects hardware accelerators (the SE100's NVIDIA RTX 2000) and lights up the full top-to-bottom stack (driver → device plugin → user-mode libs) for you — sped up Qwen reasoning <strong>by many times</strong> without the app code touching the GPU.</li>
+<li><strong>Cloud control plane for edge fleets:</strong> Small form factor infrastructure brings cloud provisioning/management (previously Azure Local on big servers) to small industrial devices — provision via ownership voucher, pick the OS from the portal (no keyboard/monitor), get an ARM resource, and grant access via Microsoft Entra ID instead of post-it passwords or shared SSH keys.</li>
+<li><strong>Azure IoT Operations for fleet telemetry:</strong> Streams real-time operational data (e.g., requested pick/place coordinates) up to the cloud (Microsoft Fabric) with built-in connectors (OPC UA, HTTP, ONVIF), an industrial-grade MQTT broker, and in-flight data transformation — critical for diagnosing fleets across many locations.</li>
+<li><strong>All available in preview today:</strong> Small form factor infrastructure, Foundry Local as a Linux container image (enabled by Azure Arc), and Azure IoT Operations are all available off-the-shelf to try right now.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-the-opportunity-challenge-of-physical-ai">Framing: The Opportunity &amp; Challenge of Physical AI</h3>
+<p>The session reframes the usual AI narrative. When we talk about AI — including at Build — it's usually a chatbot on a computer screen. The speaker argues there is far more potential in bringing AI <strong>out into the physical world</strong>.</p>
+<p>The benefits of AI advances have <strong>not been evenly distributed</strong>. The common examples are documents and spreadsheets — essentially <em>information workers</em> benefiting. Several categories of work have <em>not</em> seen the same change:
+- <strong>Inspections, maintenance, and repairs</strong> out in the physical world.
+- <strong>Construction / job sites</strong> — much building happens outside factories; look around any job site and you won't see many robots, just people.
+- <strong>Logistics, distribution, and warehousing</strong> — looks much the same as a decade or two ago; productivity gains haven't materialized.
+- <strong>Brick-and-mortar retail and quick-serve restaurants</strong> — stocking shelves, food prep — largely untouched by recent AI gains.</p>
+<p><strong>The common theme:</strong> in all of these, <em>interacting with other people</em> and <em>interacting with a changing, open-world environment</em> is a core part of the work. This is exactly what robots have historically struggled with. Robots excel in <strong>controlled environments doing the same task repeatedly</strong> (a factory is the canonical example), but struggle to make inroads where the environment is dynamic — so this work looks much as it has for decades.</p>
+<p><strong>What's changing:</strong> With recent advances in AI models — and the ability to <strong>run them locally</strong> — it's now possible to move from conventional <em>robotics</em> to a more <em>agentic</em> approach to robots that may handle these dynamic tasks better.</p>
+<h3 id="the-demo-a-basic-agentic-robot">The Demo: A Basic Agentic Robot</h3>
+<p>Expectations were set explicitly: <em>"it's not going to take anyone's job,"</em> but it demonstrates the potential of combining AI — especially language models — with physical systems.</p>
+<p>In the demo, the presenter interacts with a small tabletop robot arm using natural speech:
+- "Hey robot, can you pick up the red cube? … and put it in the bowl. Wait — I changed my mind, can you give it to me?" → robot hands it over.
+- "Now, pick up the green brick. … Now, put it in this green bowl." → robot complies.</p>
+<p><strong>Why the interaction is notable:</strong>
+- <strong>No strict command syntax</strong> and no need to start/stop the robot — the human interacts naturally and fluidly, simply saying what they want, even in rambly sentences ("please would you mind maybe picking up that thing there?").
+- Because it's an <strong>agentic robot</strong>, it <strong>reasons about what it heard</strong> and figures out intent even when the input from the person is messy.
+- It <strong>responds as the environment changes</strong> — continuously listening and looking — so when objects are moved or the instruction changes midstream, it adapts and keeps going.</p>
+<p>The presenter extrapolates: imagine a different <strong>embodiment</strong> with more sophisticated hardware and a broader repertoire of skills acting as a <strong>helpful collaborator</strong> in spaces where people historically couldn't benefit from a robot collaborator due to the challenges above.</p>
+<h3 id="how-it-works-hardware-setup">How It Works — Hardware Setup</h3>
+<p>All the intelligence to make the robot work runs on <strong>one small industrial computer</strong>, physically on the table co-located with the robot (visible in the video background):
+- <strong>Compute:</strong> <strong>Lenovo ThinkEdge SE100</strong> — chosen because it's industrial-grade with an <strong>optional NVIDIA discrete GPU</strong>. Many other devices would also work; this was just their choice.
+- <strong>Connection:</strong> plain <strong>USB</strong>, nothing fancy, to three peripherals.
+- <strong>Peripheral 1 — Camera:</strong> a <strong>UVC-compliant RGB camera</strong>, positioned over the workspace looking down at the table. (Not a depth camera — essentially a classic webcam.)
+- <strong>Peripheral 2 — Microphone:</strong> a <strong>UAC-compliant omnidirectional microphone</strong> to capture speech.
+- <strong>Peripheral 3 — Robot arm:</strong> a small tabletop arm with <strong>6 degrees of freedom</strong> (a 7th if you count the gripper attachment).</p>
+<p>All peripherals are deliberately <strong>approachable, off-the-shelf, budget options</strong> — there's very little stopping you from trying this at home.</p>
+<h3 id="how-it-works-software-stack">How It Works — Software Stack</h3>
+<p>On the small industrial computer:
+- <strong>OS:</strong> <strong>Azure Linux</strong>.
+- <strong>Model host:</strong> <strong>Foundry Local</strong>, originally on Windows, then Windows + Android, and <strong>now newly packaged as a container image you can run on Linux</strong> — a great fit for this scenario. Foundry Local hosts all the AI models used.</p>
+<h3 id="how-it-works-runtime-pipeline">How It Works — Runtime Pipeline</h3>
+<p>At runtime, the system comes together as three pipelines feeding a reasoning model:</p>
+<p><strong>1. Speech pipeline (audio → text)</strong>
+- Audio from the microphone is <strong>split into utterances</strong>, then fed into <strong>NeMoTron Speech streaming</strong>.
+- <strong>NeMoTron</strong> is a <strong>speech-to-text model developed by NVIDIA</strong>, available <strong>free in the Foundry Local catalog</strong>, and one of the best models for performance and very low error rate.
+- It reliably transcribed everything said even though the presenter was <strong>facing away from the mic, not speaking clearly, with ambient noise</strong>. Output: text of what the user said.</p>
+<p><strong>2. Vision pipeline (frames → coordinates + rotation)</strong>
+- Frames from the overhead camera are <strong>continuously captured</strong> and fed into a variety of vision models, including an <strong>open-vocabulary detector model</strong>, to recognize everything on the surface.
+- Recognizes color blocks and the bowls/containers, a human hand, and — though not shown in the demo — <strong>everyday objects</strong> like sunglasses or a wedding ring.
+- For each detection it returns the <strong>coordinates within the frame</strong> of where the object was seen, and where applicable the <strong>orientation / major axis of rotation</strong> (critical for the arm to grasp the object correctly).</p>
+<p><strong>3. Reasoning (the most important part)</strong>
+- The text (from speech) and coordinates (from vision) are fed into a <strong>small language model running locally</strong> on the industrial computer.
+- For the demo they chose <strong>Qwen-3</strong> — free in the Foundry Local catalog and supporting <strong>reasoning and tool calling</strong>. They used the <strong>1.7 billion parameter</strong> version (a small language model); with more compute you could run a larger version and possibly handle more complex instructions.
+- Given the inputs, the language model <strong>chooses among a set of available tool calls</strong>. The demo exposed <strong>four tools</strong>:
+  - <strong>pick</strong> — pick up an item at a location.
+  - <strong>place</strong> — put an item somewhere at another location.
+  - <strong>pick-and-place</strong> — both as one movement.
+  - <strong>stop</strong> — e.g., when the user says "Wait," the model interprets it as a <strong>stop</strong> tool call.
+- In the running example, it's a <strong>pick-and-place</strong> call where the <strong>pick target = the red cube</strong> and the <strong>place target = the hand (the presenter)</strong>.</p>
+<p><strong>4. Execution (conventional robotics)</strong>
+- Once interpreted, the chosen tool call is <strong>converted into a sequence of movements</strong> that are <strong>planned out</strong>, and the <strong>robot arm executes</strong> them.
+- This part is <strong>no different from the past</strong> — it's conventional robotics. The novel value is the <strong>flexibility / "humanness"</strong> of interpreting very messy inputs, figuring out intent, and completing the task if it's within the available toolset.</p>
+<h3 id="adaptive-cloud-tech-1-small-form-factor-infrastructure">Adaptive Cloud Tech #1 — Small Form Factor Infrastructure</h3>
+<ul>
+<li>The "industrial computer" used to run the whole demo.</li>
+<li>Microsoft Azure has offered cloud capabilities for years (e.g., <strong>provisioning and managing machines from the cloud</strong>) that were previously <strong>limited to Azure Local on big servers</strong>.</li>
+<li><strong>What's new:</strong> those capabilities are now <strong>available in preview for smaller industrial form factors</strong>.</li>
+<li><strong>Demo flow in the Azure portal:</strong></li>
+<li>Go to provision a machine; input the <strong>ownership voucher</strong> for the Lenovo SE100; the portal picks it up.</li>
+<li><strong>Choose the software stack to install</strong> straight from the cloud portal — <strong>no keyboard or monitor needed</strong>. (They chose Azure Linux.)</li>
+<li>After provisioning, you get a <strong>resource representation in Azure Resource Manager</strong> — a <strong>"provisioned machine" resource type</strong> that looks and works much like a cloud VM, with visibility and management functions.</li>
+<li>Example: <strong>grant a colleague access</strong> to the machine directly from the portal using <strong>Microsoft Entra ID</strong> — no password on a post-it, no emailed SSH key.</li>
+<li><strong>Why it matters:</strong> essential when scaling to <strong>hundreds or thousands</strong> of devices distributed across many locations — managing everything through the <strong>cloud control plane</strong> is extremely helpful.</li>
+</ul>
+<h3 id="adaptive-cloud-tech-2-foundry-local-linux-container">Adaptive Cloud Tech #2 — Foundry Local (Linux container)</h3>
+<ul>
+<li>Used the <strong>Linux container image</strong> flavor of Foundry Local.</li>
+<li>Stack on the device: <strong>Azure Linux</strong> + a <strong>K3s</strong> (small single-node Kubernetes) to keep things straight. Their application code (just <strong>Python</strong>, nothing fancy) is packaged as a <strong>container</strong>, and <strong>Foundry Local is deployed alongside it as a container</strong>.</li>
+<li>Foundry Local exposes an <strong>OpenAI-compatible REST API</strong> for inferencing requests — so you <strong>don't host the AI models in your own code</strong> (which is clunky and runs into size/agility issues).</li>
+<li><strong>Specific advantages highlighted:</strong></li>
+<li><strong>Trusted, authoritative model access:</strong> name the model (e.g., <strong>Qwen-3 1.7B</strong>) in a config file; Foundry Local retrieves a <strong>trusted copy from the Foundry Local online catalog</strong>, downloads it, and runs it <strong>entirely locally</strong> — <strong>no calls to the cloud after that</strong>.</li>
+<li>The catalog has <strong>many options</strong>, including <strong>NeMoTron Speech</strong>.</li>
+<li><strong>Drop-in cloud replacement:</strong> access the running model via an endpoint just like in the cloud — except it's running <strong>locally next to your code</strong>, giving <strong>super predictable latency</strong> (vital for real-time physical-world interaction).</li>
+<li><strong>Automatic hardware acceleration:</strong> Foundry Local <strong>detects available hardware accelerators</strong> and lights them up. On the SE100 (which has an <strong>NVIDIA RTX 2000</strong>), the <strong>whole top-to-bottom stack lines up</strong> — <strong>kernel-mode driver → device plugin → user-mode libraries inside the container</strong> — so your <strong>app code doesn't touch the GPU</strong> yet still benefits from <strong>GPU-accelerated inference</strong>.</li>
+<li><strong>Result:</strong> sped up Qwen reasoning <strong>by a factor of many times</strong> (they tried both ways — a huge boost).</li>
+<li>In the Azure portal you can <strong>see GPU usage</strong> — each time Qwen interprets instructions, there's a <strong>small spike</strong> in GPU usage (shown via a pre-release tool / screenshot that may change before release).</li>
+</ul>
+<h3 id="adaptive-cloud-tech-3-azure-iot-operations">Adaptive Cloud Tech #3 — Azure IoT Operations</h3>
+<ul>
+<li>A <strong>suite of platform services</strong> to <strong>connect to devices and protocols</strong> in your local environment, route their <strong>data up to the cloud</strong>, and potentially <strong>route commands back</strong> (e.g., mission plans for a robot).</li>
+<li>Includes <strong>built-in connectors</strong> for <strong>OPC UA, HTTP, ONVIF</strong>, and an <strong>industrial-grade MQTT broker</strong>. As data flows into the broker, you <strong>configure how it's transformed and sent to the cloud</strong> — e.g., for analysis in <strong>Microsoft Fabric</strong>.</li>
+<li><strong>The monitoring problem in the demo:</strong> the robot's <strong>span/reach</strong> is small (maybe ~half a meter), but the <strong>camera's field of view is larger</strong>. So the camera can see an object the robot is asked to grab, but the <strong>arm physically can't reach it</strong>. For a single tabletop robot this is easy to diagnose by eye — but <strong>across many field locations</strong>, real-time telemetry is everything.</li>
+<li><strong>Deployment:</strong> On the <strong>K3s</strong> instance, IoT Operations was deployed using the <strong>extension approach</strong> — <strong>both IoT Operations and Foundry are available as extensions</strong> (a couple of clicks or a single YAML file).</li>
+<li><strong>Operations experience:</strong> approachable enough for an <strong>operations persona</strong> (not just IT) who knows about millimeter offsets, etc. You <strong>configure how data flows</strong> from a discovered asset (here, the robot arm) up into a <strong>cloud workspace</strong>, and can <strong>transform the data in flight</strong> — e.g., unit conversions, adding/removing properties. In their case they <strong>removed the Z coordinate</strong> (irrelevant for reach checks), so data arrives in <strong>Microsoft Fabric already cleaned and formatted</strong> for the data team.</li>
+<li><strong>What they configured:</strong> stream <strong>all the coordinate requests</strong> — every time the robot is asked to grab something at a location, it <strong>streams back the requested coordinates</strong> so they can <strong>analyze whether each was safe or unsafe to reach</strong>, all in <strong>real time</strong>.</li>
+</ul>
+<h3 id="closing-thesis">Closing Thesis</h3>
+<p>Advances in AI together with <strong>Azure's adaptive cloud approach</strong> are making it easier than ever to <strong>build and operate intelligent physical systems</strong>. This year and in the years ahead, we'll have to <strong>update our notion of what tasks AI can be extended to</strong> with an <strong>agentic approach to robotics</strong>. Everything shown is <strong>available off-the-shelf to try now</strong>.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Microsoft adaptive cloud approach</strong> — the umbrella strategy spanning the technologies below.</li>
+<li><strong>Foundry Local</strong> — local model host; previously Windows, then Windows + Android, <strong>now a Linux container image</strong> (enabled by Azure Arc); OpenAI-compatible REST API; trusted model catalog; automatic hardware accelerator detection.</li>
+<li><strong>Azure Local</strong> — referenced as where cloud provisioning/management capabilities previously lived (on big servers).</li>
+<li><strong>Small form factor infrastructure</strong> — cloud provisioning/management for small industrial edge devices (preview); ownership voucher provisioning; "provisioned machine" ARM resource type.</li>
+<li><strong>Azure IoT Operations</strong> — platform services suite; connectors (OPC UA, HTTP, ONVIF); industrial-grade MQTT broker; in-flight data transformation; deployed as a K3s extension.</li>
+<li><strong>Azure Arc</strong> — enables Foundry Local as a Linux container image.</li>
+<li><strong>Azure Linux</strong> — OS running on the edge device.</li>
+<li><strong>K3s</strong> — small single-node Kubernetes on the device; hosts app + Foundry Local + IoT Operations as containers/extensions.</li>
+<li><strong>Microsoft Entra ID</strong> — identity-based access grant to the edge device from the cloud portal.</li>
+<li><strong>Azure Resource Manager (ARM)</strong> — provides the cloud resource representation of the provisioned edge machine.</li>
+<li><strong>Microsoft Fabric</strong> — cloud destination for streamed/analyzed telemetry data.</li>
+<li><strong>Azure portal</strong> — used for provisioning, access management, and viewing GPU usage.</li>
+<li><strong>Models:</strong></li>
+<li><strong>NeMoTron Speech</strong> (NVIDIA) — streaming speech-to-text; free in the Foundry Local catalog; very low error rate.</li>
+<li><strong>Open-vocabulary vision detector model(s)</strong> — object recognition returning coordinates + axis of rotation.</li>
+<li><strong>Qwen-3 (1.7B)</strong> — small language model; reasoning + tool calling; free in the Foundry Local catalog.</li>
+<li><strong>Hardware:</strong></li>
+<li><strong>Lenovo ThinkEdge SE100</strong> — industrial edge computer with optional NVIDIA discrete GPU.</li>
+<li><strong>NVIDIA RTX 2000</strong> (RTX 2000E shown on-device) — the GPU used.</li>
+<li><strong>UVC-compliant RGB camera</strong> (overhead, webcam-class, not depth).</li>
+<li><strong>UAC-compliant omnidirectional microphone</strong>.</li>
+<li><strong>6-DoF tabletop robot arm</strong> (+ gripper as 7th DoF).</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Small form factor infrastructure</strong> — cloud provisioning and management capabilities (previously limited to <strong>Azure Local on big servers</strong>) are <strong>now available in preview for smaller industrial form factors</strong>.</li>
+<li><strong>Foundry Local as a Linux container image</strong> — newly packaged to run on <strong>Linux</strong> (previously Windows, then Windows + Android), <strong>enabled by Azure Arc</strong>, <strong>available as a preview</strong>.</li>
+<li><strong>Azure IoT Operations</strong> — highlighted as available for you to try (deployable as a K3s extension alongside Foundry).</li>
+<li>All three are positioned as <strong>off-the-shelf, available in preview right now</strong>.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Agentic robot pick-and-place (live demo video):</strong> A 6-DoF tabletop arm responds to natural, conversational speech — picks up a red cube, then mid-instruction the user says "Wait, I changed my mind, give it to me" and the robot hands it over; then picks up a green brick and places it in a green bowl. Demonstrates natural/fluid interaction, no strict syntax, continuous listening/looking, and mid-task adaptation.</li>
+<li><strong>Cloud provisioning of the edge device (Azure portal):</strong> Inputting the <strong>ownership voucher</strong> for the Lenovo SE100, choosing <strong>Azure Linux</strong> as the software stack from the portal (no keyboard/monitor), and getting a <strong>provisioned machine ARM resource</strong>; then <strong>granting a colleague access via Microsoft Entra ID</strong>.</li>
+<li><strong>GPU usage visualization:</strong> A screenshot/portal view of the <strong>NVIDIA RTX 2000E</strong> in the device showing <strong>GPU usage spikes</strong> each time Qwen interprets instructions (via a pre-release tool that may change before release).</li>
+<li><strong>Azure IoT Operations configuration:</strong> Configuring data flow from the <strong>discovered robot arm asset</strong> up to a cloud workspace, <strong>transforming data in flight</strong> (e.g., removing the Z coordinate), and <strong>streaming all requested pick/place coordinates</strong> in real time to analyze safe vs. unsafe reach — landing cleaned data in <strong>Microsoft Fabric</strong>.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>6 degrees of freedom</strong> on the robot arm (7th if counting the gripper).</li>
+<li><strong>Qwen-3 1.7 billion parameters</strong> — the small language model used for reasoning + tool calling.</li>
+<li><strong>4 tools</strong> exposed to the model: pick, place, pick-and-place, stop.</li>
+<li><strong>GPU acceleration sped up Qwen reasoning by "a factor of many times"</strong> (a "huge boost" vs. CPU-only).</li>
+<li><strong>Robot reach ~half a meter</strong>, smaller than the camera's field of view — the source of the "can see but can't reach" telemetry scenario.</li>
+<li><strong>No cloud calls at runtime</strong> — after the model is downloaded from the Foundry Local catalog, everything runs locally inside the Foundry Local container.</li>
+<li>
+<blockquote>
+<p><em>"It's not going to take anyone's job, but it does serve to sort of show the potential of combining AI, especially language models, with physical systems."</em></p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p><em>"Robots excel when you're in a controlled environment, you're doing the exact same task over and over… but all of those examples are domains where robots have struggled to make inroads."</em></p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p><em>"The benefits from those advancements have not been evenly distributed."</em></p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p><em>"We are going to have to update our notion of what types of tasks it is possible to extend AI to with an agentic approach to robotics."</em></p>
+</blockquote>
+</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Replicate the setup at home — off-the-shelf 6-DoF arm, UVC webcam, UAC omnidirectional mic, and a small edge box; the presenter explicitly says there's little stopping you.</li>
+<li>Stand up <strong>Foundry Local as a Linux container</strong> on a K3s single-node cluster; pull <strong>Qwen-3 1.7B</strong> and <strong>NeMoTron Speech</strong> from the catalog and hit the OpenAI-compatible REST endpoint.</li>
+<li>Test the <strong>GPU auto-acceleration</strong> path on an NVIDIA-equipped edge device (e.g., RTX 2000) and benchmark reasoning latency with vs. without GPU.</li>
+<li>Try <strong>small form factor infrastructure</strong> preview: provision an edge device from the Azure portal via ownership voucher and manage access through Microsoft Entra ID.</li>
+<li>Wire up <strong>Azure IoT Operations</strong> as a K3s extension to stream coordinate telemetry into Microsoft Fabric, with in-flight transforms (e.g., drop Z).</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>Which specific <strong>open-vocabulary detector model(s)</strong> were used for the vision pipeline (the talk doesn't name them)?</li>
+<li>What's the end-to-end <strong>latency budget</strong> (speech → vision → reasoning → motion) for it to feel "real time"?</li>
+<li>How does the agentic interpretation degrade with a <strong>larger Qwen</strong> vs. 1.7B on more complex, multi-step instructions?</li>
+<li>What are the <strong>safety/guardrail</strong> patterns for tool calling when the model misinterprets a messy instruction near people?</li>
+<li>Pricing/licensing and preview availability boundaries for <strong>small form factor infrastructure</strong> and <strong>Foundry Local on Linux</strong>.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Edge AI / physical AI / agentic robotics POCs.</li>
+<li>Manufacturing, logistics/warehousing, retail stocking, food prep, field inspection/maintenance scenarios.</li>
+<li>Anyone running <strong>local LLM inference at the edge</strong> with Foundry Local + Azure Arc.</li>
+<li>Fleet management of distributed edge devices via Azure control plane + IoT Operations.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Foundry Local">Foundry Local</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Azure IoT Operations">Azure IoT Operations</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Azure Arc">Azure Arc</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Azure Local">Azure Local</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Adaptive Cloud">Adaptive Cloud</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Edge AI">Edge AI</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Agentic Robotics / Physical AI">Agentic Robotics / Physical AI</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Build 2026">Microsoft Build 2026</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="OD836.html"><span class="pager-dir">← Previous</span><span class="pager-code">OD836</span><span class="pager-title">From Test Kitchen to Table: A Demo-driven Tour of Foundry Portal for AI Developers</span></a>
+    <a class="pager pager-next" href="OD839.html"><span class="pager-dir">Next →</span><span class="pager-code">OD839</span><span class="pager-title">AI solutions built to power industrial innovation and sovereign control</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

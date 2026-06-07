@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEMSP393 — Orchestrate omnichannel AI agents with Foundry and Twilio</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEMSP393</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=JmSXpYisEVQ" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Orchestrate omnichannel AI agents with Foundry and Twilio</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Rachel (Product Manager, Twilio)</span>
+      <span class="meta-item">⏱️ 22m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ai-foundry">Ai Foundry</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="twilio">Twilio</span><span class="chip" data-tag="omnichannel">Omnichannel</span><span class="chip" data-tag="voice">Voice</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Rachel — Product Manager, Twilio<br>
+<strong>Duration:</strong> ~22 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=JmSXpYisEVQ">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>This Twilio partner demo shows how to build a single <strong>omnichannel AI agent</strong> (voice, SMS, and chat) by combining <strong>Twilio Agent Connect (TAC)</strong> with <strong>Microsoft Azure AI Foundry</strong>. The core problem it solves is customer-experience "amnesia" — agents forgetting that a customer emailed last week, called this week, or already changed something seconds ago — which produces disjointed, frustrating support experiences. The solution pairs two best-in-class, complementary platforms: Twilio owns the channels, real-time conversation management, and <strong>persistent cross-channel memory</strong>, while Foundry provides the models, agent framework, and <strong>Voice Live API</strong>. The headline architectural shift is moving deployment from Azure <strong>Container Apps</strong> to Microsoft's new <strong>hosted agents</strong> primitive (public preview), giving each conversation its own isolated, serverless, scale-to-zero sandbox with built-in observability, traces, and evals. The live demo proves the payoff: a fast voice call that changes a flight seat, then an SMS that already <em>knows</em> the seat was just changed — same agent, shared memory, minimal engineering effort.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li>AI spend surged <strong>44% year-over-year</strong> (Gartner), yet value lags: <strong>56% of leaders</strong> say they're getting nothing from AI and only <strong>6% of brands</strong> improved CX scores in 2025.</li>
+<li>The root customer-experience failure is <strong>memory loss / amnesia across channels</strong> — agents don't remember prior emails, calls, or web visits, creating disjointed experiences (e.g. being asked "what do you need?" right after being texted that your flight is delayed).</li>
+<li>Building a real omnichannel virtual agent with memory, knowledge, and data that you can put in front of customers is genuinely <strong>hard to deploy and scale</strong> — very few people in the room had done it.</li>
+<li>Twilio + Microsoft launched a <strong>native integration</strong> between <strong>Microsoft Foundry</strong> and <strong>Twilio Agent Connect (TAC)</strong> specifically to reach production with <strong>lower engineering effort</strong>.</li>
+<li>The two platforms are <strong>complementary, not overlapping</strong>: Twilio handles every channel + region + shared customer memory; Foundry provides intelligence (Voice Live API, foundational models, Agent Framework SDK).</li>
+<li><strong>Twilio Agent Connect (TAC)</strong> is the bridge: one <strong>open-source SDK</strong> with <strong>two connectors</strong> (one to Twilio, one to Foundry) that stitches them into a single agent across all channels.</li>
+<li>TAC has two main components: an <strong>Agent Framework connector</strong> (routes Twilio voice/messaging events into the Microsoft Agent Framework, handles Cosmos DB session persistence + contextual memory injection) and a <strong>Voice Live connector</strong> (direct streaming inference over WebSockets to Foundry Voice Live for low latency).</li>
+<li>The integration first shipped on <strong>Azure Container Apps</strong>, but traditional compute was built for <strong>stateless</strong> web services/APIs where users share instances — <strong>agents need long-lived, stateful, per-user sessions</strong>.</li>
+<li>Multi-tenant agents that write files, execute code, and access credentials create a <strong>security/isolation problem</strong> (customer A must never reach customer B's data), which Container Apps doesn't naturally solve.</li>
+<li>Microsoft built <strong>hosted agents</strong> as a new <strong>compute primitive</strong> for exactly this pattern: per-session dedicated sandbox, predictable cold starts, <strong>scale to zero</strong>, state persistence, unique agent identity, and out-of-the-box observability/evals/policies.</li>
+<li>Hosted agents recently went to <strong>public preview</strong> with <strong>WebSocket support</strong> and an <strong>Invocations API</strong>, which let Twilio switch its deployment to a <strong>fully serverless</strong> option (minimal ops burden, no idle costs).</li>
+<li>The new architecture is dramatically simplified: Twilio events flow over <strong>HTTP into an API Management gateway</strong> (validates the Twilio signature, adds auth, maps each Twilio conversation ID → a hosted-agent session ID), then routes into the hosted-agent sandbox, which calls Foundry for model inference; <strong>voice uses native WebSocket hosting</strong> for low latency.</li>
+<li>Deployment is essentially one <strong><code>azd up</code></strong> command that provisions the API Management instance and a hosted agent with TAC running inside it; the only inputs are an API key and the hosted-agents URL.</li>
+<li>Because it runs on hosted agents, you get <strong>traces, monitor, evals, and a playground for free</strong> — no extra work to build them.</li>
+<li>Critical deployment detail: paste the <strong>public API Management URL</strong> into Twilio (the hosted-agent URL is <strong>not public</strong>) as the webhook for both the phone number (voice) and the conversation config (SMS).</li>
+<li>The demo agent ran on <strong>GPT-4.1 mini</strong> ("chat GBT45 mini" in captions); the <strong>voice path is Twilio Conversation Relay</strong> under the hood, now embedded in the TAC repo, connecting to Foundry's <strong>Voice Live API</strong>.</li>
+<li>There is <strong>no extra charge</strong> for the integration itself — you pay only for the Twilio channels and Foundry services you use.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="why-this-session-exists-the-ai-value-gap">Why this session exists: the AI value gap</h3>
+<p>The talk opens by framing a paradox. Global AI spend has surged <strong>44% year-over-year</strong> (per Gartner), and every business is being asked how they use AI in workflows and how they build AI products for customers. Yet the returns aren't there: <strong>56% of leaders report getting nothing out of AI</strong>, and only <strong>6% of brands improved their customer-experience (CX) scores in 2025</strong>. So there's a massive jump in monetary investment without matching results — companies say they aren't finding value, and end consumers aren't enjoying the AI experiences businesses build for them. The session is positioned as Twilio's answer to <em>why</em> that gap exists and how to close it for customer-facing agents.</p>
+<h3 id="the-core-problem-cross-channel-amnesia">The core problem: cross-channel "amnesia"</h3>
+<p>Twilio's diagnosis is that the primary challenge is <strong>memory loss</strong>. When a customer interacts with a business — via a virtual agent, a human agent, or a digital channel — there's amnesia: the system doesn't remember you emailed last week, called this week, or searched the website three weeks ago. Traditional CX suffers from this amnesia <strong>across channels</strong>, producing a disjointed end-customer experience. Rachel uses relatable failure modes everyone recognizes: getting transferred and repeating yourself over and over; calling and getting disconnected; or the airline that texts you "your flight is delayed" and then the agent answers with "what do you need help with?" The customer's frustration ("you just texted me my flight was delayed — why don't you know that?") is the emotional core of the problem.</p>
+<h3 id="second-problem-building-omnichannel-agents-is-genuinely-hard">Second problem: building omnichannel agents is genuinely hard</h3>
+<p>Beyond memory, actually <strong>deploying and scaling</strong> an omnichannel AI agent is complex. Rachel polls the room — how many have built a virtual agent they've actually put in front of customers? — and almost nobody had. The point: making an agent that is omnichannel, has memory, has the right knowledge, and has the right data is <em>not</em> simple. These two challenges (amnesia + deployment complexity) are the justification for the integration.</p>
+<h3 id="the-solution-foundry-twilio-agent-connect-native-integration">The solution: Foundry + Twilio Agent Connect native integration</h3>
+<p>In response, Twilio and Microsoft launched a <strong>native integration</strong> between <strong>Microsoft Foundry</strong> and <strong>Twilio Agent Connect (TAC)</strong>. The explicit design goal is reaching <strong>production with lower engineering effort</strong> and shipping a <strong>real, production-ready agent</strong>.</p>
+<p>The division of labor:
+- <strong>Foundry side:</strong> build, optimize, and govern AI agents out of the box, with a vast selection of models to choose from.
+- <strong>Twilio side:</strong> real-time conversation management, <strong>persistent memory</strong>, and <strong>multi-channel orchestration</strong> via a new product launched "a couple weeks ago" called <strong>Twilio Agent Connect</strong>.</p>
+<p>The thesis is that these are <strong>two best-in-class, complementary (not overlapping) platforms</strong>, and the value is combining them into <strong>one agent</strong>:
+- <strong>Twilio (left of the diagram):</strong> handles every single channel, in every region, with <strong>shared customer memory across them</strong>.
+- <strong>Foundry:</strong> provides the intelligence — the <strong>Voice Live API</strong>, the <strong>foundational models</strong>, and the <strong>Agent Framework SDK</strong>.
+- <strong>Twilio Agent Connect:</strong> the <strong>bridge</strong> — <strong>one open-source SDK with two connectors</strong> (one to Twilio, one to Foundry) that creates <strong>one agent across all channels</strong>.</p>
+<h3 id="deployment-v1-azure-container-apps">Deployment v1: Azure Container Apps</h3>
+<p>The first deployment option out of the gate was <strong>Azure Container Apps</strong>, chosen for <strong>full control over the agent runtime</strong> on <strong>production-grade Azure infrastructure</strong>, with <strong>session persistence</strong> via a <strong>Cosmos DB</strong> connection. Architecturally (left → right): Twilio channels connect via <strong>WebSockets</strong> to your Container Apps; the app connects to <strong>Azure Cosmos DB</strong> for state management; and it calls <strong>Foundry</strong> for the models.</p>
+<h3 id="why-container-apps-wasnt-the-right-fit-for-agents">Why Container Apps wasn't the right fit for agents</h3>
+<p>The key learning: <strong>traditional compute wasn't built for agents.</strong> Container Apps / traditional compute was designed for <strong>stateless web services and APIs</strong> where multiple users share the same instance. <strong>Agents, by contrast, need long-lived, stateful, per-user sessions.</strong> Rachel illustrates with customer A and customer B both calling the same agent: that agent is writing files, executing code, and accessing credentials, which creates a <strong>security and isolation problem</strong> — customer A must never somehow access customer B's information. Shared-instance stateless compute doesn't cleanly solve that.</p>
+<h3 id="microsofts-answer-hosted-agents-new-compute-primitive">Microsoft's answer: hosted agents (new compute primitive)</h3>
+<p>To address exactly this pattern, <strong>Microsoft invested in hosted agents</strong> as a <strong>new compute primitive</strong>. The <strong>six key benefits</strong>:
+1. <strong>Per-session dedicated sandbox</strong> — every session gets its own isolated sandbox (solving the A/B isolation problem).
+2. <strong>Predictable cold starts.</strong>
+3. <strong>Scale to zero</strong> — pay nothing while the agent isn't doing anything.
+4. <strong>State persistence.</strong>
+5. <strong>Unique agent identity.</strong>
+6. <strong>Out-of-the-box observability</strong> — evaluations, policies, traces, and a playground.</p>
+<p>The punchline Rachel repeats: it's no longer hard to <em>get</em> an agent — the hard part is making it <strong>enterprise ready</strong>, and hosted agents close that gap.</p>
+<h3 id="deployment-v2-hosted-agents-the-better-option">Deployment v2: hosted agents (the better option)</h3>
+<p>Because Microsoft took <strong>hosted agents into public preview with WebSocket support and the Invocations API</strong>, Twilio was able to <strong>switch its deployment option to hosted agents</strong>. The Container App option still exists, but hosted agents is described as a <strong>much better solution</strong>: <strong>fully serverless</strong>, <strong>minimal operational burden</strong>, and you get all six hosted-agent benefits <strong>plus native WebSocket integration</strong>.</p>
+<p>The new (much simpler) architecture:
+- <strong>Twilio</strong> handles <strong>voice, SMS, and chat</strong>.
+- Events flow over <strong>HTTP into an API Management gateway</strong> at the top, which:
+  - <strong>validates the Twilio signature</strong>,
+  - <strong>adds auth</strong>, and
+  - <strong>maps each Twilio conversation ID → a hosted-agent session ID</strong>, giving every conversation its <strong>own dedicated sandbox</strong>.
+- From there it <strong>routes into the hosted-agent sandbox</strong> where the agent logic runs, which connects to <strong>Azure Foundry for model inference</strong>.
+- The result is <strong>fully serverless — no compute, no scaling, no idle costs.</strong>
+- A noted nuance: the bottom of the diagram shows <strong>HTTP for the omnichannel events</strong> and <strong>WebSocket hosting</strong> for the <strong>low-latency, native voice channel</strong> connection.</p>
+<h3 id="what-tac-actually-is-and-why-you-need-it-in-the-middle">What TAC actually is (and why you need it in the middle)</h3>
+<p>Rachel addresses the natural question: why do you need this extra thing between Twilio channels and hosted agents? <strong>TAC is a connector</strong> with <strong>two main components</strong>:
+1. <strong>Agent Framework connector</strong> (top right) — routes Twilio events across <strong>voice and messaging</strong> directly into the <strong>Microsoft Agent Framework</strong>; also handles <strong>session persistence with Cosmos DB</strong> and <strong>contextual memory injection</strong> (this is where the cross-channel memory lives).
+2. <strong>Voice Live connector</strong> — provides the <strong>direct integration with Foundry Voice Live</strong>, doing <strong>streaming inference over WebSockets</strong> to make voice fast. This is why the demo voice call responds quickly.</p>
+<h3 id="live-demo-the-repo-and-the-secret-sauce">Live demo: the repo and the "secret sauce"</h3>
+<p>Rachel switches to a live demo, starting with the <strong>open-source repo: "Twilio Agent Connect Microsoft"</strong> (a QR code + link are promised at the end). The repo has READMEs and a <strong>new "agent framework hosted agents" deploy option</strong>. Inside the agent file is the <strong><code>TacHostedAgentsApp</code> class</strong> ("TAC hosted agents app class") — the piece that <strong>connects hosted-agent requests originating from Twilio into TAC</strong>, installable in your own Python code via <strong>pip</strong>. This class is described as "the secret sauce behind all of this."</p>
+<p>Deployment was a single <strong><code>azd up</code></strong> command (she doesn't run it live because it takes 5–10 minutes and "we'd all just sit here silently watching it"). The command <strong>provisions the API Management instance and a hosted agent with TAC running directly inside it.</strong></p>
+<h3 id="live-demo-what-was-deployed-airline-use-case">Live demo: what was deployed (airline use case)</h3>
+<p>Rachel shows what she'd already deployed last week — an <strong>airline demo</strong>, "version one." It deployed with no manual work beyond supplying her <strong>API key</strong> and <strong>hosted-agents URL</strong>. Out of the box she gets the hosted-agents goodies: <strong>traces, monitor, evals, and a playground.</strong></p>
+<p>A crucial connection detail: the deploy also stands up an <strong>API Management service</strong>, and its <strong>URL is public</strong> — so <strong>that</strong> is the URL pasted into Twilio, <strong>not</strong> the hosted-agent URL (which is <strong>not public</strong>).</p>
+<h3 id="live-demo-wiring-twilio-to-the-webhook-voice-sms">Live demo: wiring Twilio to the webhook (voice + SMS)</h3>
+<ul>
+<li><strong>Voice:</strong> In Twilio → Phone Numbers → the chosen number's <strong>voice configuration</strong>, the <strong>webhook URL</strong> is the <strong>API Management gateway URL</strong> — telling that phone number to point to the API Management endpoint.</li>
+<li><strong>SMS:</strong> In Twilio → <strong>Conversation configurations</strong> → the airline build, the <strong>SMS webhook endpoint</strong> is pasted in the same way.</li>
+</ul>
+<p>This is the entire "connection" — the public API Management URL bound to both the phone number (voice) and the conversation config (SMS).</p>
+<h3 id="live-demo-the-voice-call-changing-a-seat">Live demo: the voice call (changing a seat)</h3>
+<p>Rachel calls the agent on speakerphone. Twilio handles speech in/out, <strong>TAC bridges into the Foundry Agent Framework</strong>, and <strong>Foundry powers the reasoning</strong>. The scenario: a customer calling to change a flight.</p>
+<p>Transcript of the exchange:
+- <strong>Agent:</strong> "Thanks for calling Airlines. I see you're calling from a number associated with an existing reservation. Are you calling about your flight <strong>543 to Seattle departing tomorrow</strong>?"
+- <strong>Caller:</strong> "Yes, I am. I need to change my seat. I'd like a window seat."
+- <strong>Agent:</strong> "You are currently booked in <strong>23B</strong>. I can easily move you to <strong>23A</strong>, a window seat. Would you like me to do that?"
+- <strong>Caller:</strong> "Yes, please update the seat."
+- <strong>Agent:</strong> "Done. I've updated your reservation for flight to seat <strong>23A</strong>. Have a great flight."</p>
+<p>The point proved: the agent recognized the caller from their number (<strong>profile resolution</strong>), and the voice call was <strong>fast with no real delay</strong>.</p>
+<h3 id="live-demo-the-sms-that-remembers-the-payoff">Live demo: the SMS that remembers (the payoff)</h3>
+<p>This is the climax — proving cross-channel memory. After the voice call, Rachel mirrors her phone and <strong>texts</strong> the same number (same agent): <em>"Hey, I forgot to add a bag to my reservation. Can I add one for my flight?"</em></p>
+<p>The agent replies that it sees she's on <strong>flight 543, in seat 23A</strong> — the seat she changed to <strong>two seconds earlier on the voice call</strong>. It has that context <strong>immediately</strong>, then quotes that <strong>adding one bag will cost $45</strong> and asks to confirm. She says yes; it responds "great, safe travels — I've added your bag."</p>
+<p>The lesson: <strong>same phone number, conversation moved from voice to SMS, and the agent knows who she is via profile resolution and remembers the prior conversation</strong> — enabling a more educated, continuous conversation. Although a simple example, it generalizes to many use cases.</p>
+<h3 id="live-demo-observability-traces">Live demo: observability / traces</h3>
+<p>The traces are slow to appear (a recurring caveat — "they take a few minutes"), but eventually she shows the <strong>input and agent response from the SMS conversation</strong>, plus <strong>metadata</strong> revealing the model in use: <strong>GPT-4.1 mini</strong> ("chat GBT45 mini"). The emphasis: "we didn't have to do anything to build this — it's out of the box with hosted agents."</p>
+<h3 id="qa-highlights">Q&amp;A highlights</h3>
+<ul>
+<li><strong>Where's the business logic / can I customize?</strong> The repo ships <strong>generic examples</strong> ("you're a helpful agent"), and the README documents how to <strong>change the personality prompt, connect knowledge sources, and add tools</strong>. You can also customize via <strong>hosted agents inside Foundry</strong> — change the model, add data, add evals, connect knowledge. You get <strong>optionality</strong>: do it in the TAC repo <em>or</em> in Foundry hosted agents.</li>
+<li><strong>"It sounds like you go directly to OpenAI / you used Conversation Relay before."</strong> Originally, when Twilio launched <strong>Conversation Relay</strong>, that was the approach because the integrated deployment options didn't exist. Now that <strong>Microsoft added WebSocket support and Twilio-signature validation</strong>, this <strong>direct integration</strong> is possible. It makes <strong>voice calls faster</strong>, and for customers who <strong>don't want to own the WebSocket infrastructure</strong>, Microsoft owns it for them. You <em>can</em> still build it yourself with <strong>Conversation Relay (C Relay)</strong> and own your own infrastructure for full control — but many customers said they don't want to own that, or want a direct deployment option, or want <strong>evals/observability</strong> (which raw Conversation Relay doesn't have). Importantly: <strong>Conversation Relay is embedded within the TAC repo</strong> — same product, just an SDK that deploys it more easily with the direct connection. (Confirmed again later: the voice response uses <strong>Conversation Relay connecting to the Voice Live API</strong> in Microsoft.)</li>
+<li><strong>ISV / multi-company use case — one server per company?</strong> With TAC <em>before</em> the Foundry integration, you'd want a <strong>different server per company</strong> (and probably a different subaccount). For <strong>hosted agents</strong>, Rachel doesn't yet know Microsoft's recommendation — whether an ISV should use <strong>multiple projects/resources</strong> or keep them in <strong>one</strong> with tenant-level separation — and offers to <strong>follow up with Microsoft partners</strong>.</li>
+<li><strong>On the difficult raw connection:</strong> Twilio built products <strong>on top of</strong> the connection because of feedback that the <strong>raw connection is difficult and has latency issues</strong> — the SDK/products make it work more seamlessly. She encourages testing the repo against whatever attendees built previously.</li>
+</ul>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Twilio Agent Connect (TAC)</strong> — newly launched (~2 weeks prior) open-source SDK that bridges Twilio and Foundry; one SDK, two connectors; handles real-time conversation management, persistent memory, and multi-channel orchestration.</li>
+<li><strong>Microsoft / Azure AI Foundry</strong> — provides agent intelligence: model selection, build/optimize/govern agents, Agent Framework SDK, Voice Live API, model inference.</li>
+<li><strong>Hosted agents</strong> — Microsoft's new compute primitive for agents: per-session sandbox, scale-to-zero, state persistence, unique identity, out-of-the-box observability/evals/policies; recently in public preview with WebSocket support + Invocations API.</li>
+<li><strong>Azure Container Apps</strong> — the original deployment option; full runtime control on production-grade Azure infra; still available but superseded by hosted agents for this use case.</li>
+<li><strong>Azure Cosmos DB</strong> — state management / session persistence store for the agent.</li>
+<li><strong>Azure API Management</strong> — gateway that validates the Twilio signature, adds auth, maps Twilio conversation ID → hosted-agent session ID; exposes the <strong>public</strong> webhook URL pasted into Twilio.</li>
+<li><strong>Foundry Voice Live API</strong> — streaming voice inference endpoint; TAC's Voice Live connector integrates with it over WebSockets for low latency.</li>
+<li><strong>Microsoft Agent Framework</strong> — the framework into which TAC's Agent Framework connector routes Twilio voice/messaging events.</li>
+<li><strong>Twilio Conversation Relay (C Relay)</strong> — Twilio's voice product connecting to Microsoft's Voice Live API; now embedded inside the TAC repo and used under the hood for the demo's voice path.</li>
+<li><strong><code>TacHostedAgentsApp</code> class</strong> — Python class (pip-installable) that connects Twilio-originated hosted-agent requests into TAC; the "secret sauce."</li>
+<li><strong><code>azd up</code></strong> (Azure Developer CLI) — single command that provisions the API Management instance + a hosted agent with TAC inside; ~5–10 min to run.</li>
+<li><strong>GPT-4.1 mini</strong> — the chat model powering the demo agent (rendered as "chat GBT45 mini" in captions).</li>
+<li><strong>WebSockets</strong> — transport for low-latency voice (Twilio ↔ Foundry / hosted agents).</li>
+<li><strong>Twilio channels</strong> — voice, SMS, and chat, all unified behind one agent.</li>
+<li><strong>Twilio profile resolution</strong> — identifies the customer from their phone number to carry context across channels.</li>
+<li><strong>Hosted-agents observability suite</strong> — traces, monitor, evals, and a playground, available out of the box.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Twilio Agent Connect (TAC)</strong> — newly launched product (~2 weeks before the talk) providing real-time conversation management, persistent memory, and multi-channel orchestration; open-source SDK with Twilio + Foundry connectors.</li>
+<li><strong>Native Foundry ↔ Twilio Agent Connect integration</strong> — the headline integration enabling a single omnichannel agent with lower engineering effort; <strong>no extra cost</strong> beyond channels + Foundry services used.</li>
+<li><strong>New "agent framework hosted agents" deploy option in the TAC repo</strong> — a fully serverless deployment path on Microsoft hosted agents (alongside the existing Container Apps option).</li>
+<li><strong>Microsoft hosted agents</strong> — in <strong>public preview</strong>, recently gaining <strong>WebSocket support</strong> and an <strong>Invocations API</strong>, which enabled Twilio's serverless deployment. (Stated as the enabling Microsoft platform capability; preview status noted.)</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong><code>azd up</code> deployment walkthrough (shown, not run live):</strong> Demonstrated that one <code>azd up</code> command provisions the API Management instance + a hosted agent with TAC inside, requiring only an API key and hosted-agents URL. Proved deployment simplicity / low engineering effort.</li>
+<li><strong>Repo tour:</strong> Showed the open-source "Twilio Agent Connect Microsoft" repo, the hosted-agents deploy option, READMEs, and the <code>TacHostedAgentsApp</code> class — proving it's installable (pip), documented, and customizable (personality prompt, knowledge sources, tools).</li>
+<li><strong>What got deployed (airline agent, version one):</strong> Showed the already-deployed hosted agent in Foundry with its traces, monitor, evals, and playground — proving the observability suite comes free, with no manual setup beyond an API key + hosted-agents URL.</li>
+<li><strong>Twilio wiring:</strong> Showed pasting the public API Management URL as the webhook for both the phone number's voice configuration and the conversation config's SMS endpoint — proving the entire "connection" is just one public URL bound to voice + SMS.</li>
+<li><strong>Live voice call (change a seat):</strong> Called the agent on speakerphone; it recognized the caller by number, confirmed flight 543 to Seattle, and moved the seat from 23B to 23A — proving low-latency, accurate voice handling via TAC → Foundry Agent Framework reasoning.</li>
+<li><strong>Cross-channel memory (the payoff demo):</strong> Texted the same number afterward to add a bag; the agent already knew it was flight 543, seat 23A (changed seconds earlier on voice) and quoted the $45 bag fee — proving persistent, shared memory across voice and SMS via profile resolution. This was the central "magic" the architecture is built to deliver.</li>
+<li><strong>Trace inspection:</strong> Pulled up the SMS conversation's trace showing input, agent response, and metadata (model = GPT-4.1 mini) — proving end-to-end observability is available out of the box.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>44%</strong> — year-over-year surge in global AI spend (per Gartner).</li>
+<li><strong>56%</strong> — share of leaders who say they're getting <strong>nothing</strong> out of AI.</li>
+<li><strong>6%</strong> — share of brands that <strong>improved</strong> their CX scores in 2025.</li>
+<li><strong>$45</strong> — cost to add one bag, quoted by the agent in the SMS demo.</li>
+<li><strong>Flight 543 to Seattle, seat 23B → 23A</strong> — the airline demo's concrete details (window seat change).</li>
+<li><strong>GPT-4.1 mini</strong> — the model powering the demo agent.</li>
+<li><strong>~5–10 min</strong> — time for the <code>azd up</code> deployment to complete ("we'd all just sit here silently watching it").</li>
+<li>
+<blockquote>
+<p>"My flight's late. You just texted me that my flight was delayed. Why don't you know that my flight's delayed?" — the relatable amnesia failure that frames the whole problem.</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>"It's really not hard now to get an agent. The hard part is actually making it enterprise ready." — the thesis for why hosted agents matter.</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>"They're not overlapping platforms. They're really complimentary." — on Twilio + Foundry working together.</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>"There's no extra money to use this integration. You're just paying for the channels and the foundry services that you're using."</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Clone the <strong>Twilio Agent Connect Microsoft</strong> open-source repo and run the <strong><code>azd up</code></strong> hosted-agents deploy with a test Foundry API key.</li>
+<li>Reproduce the <strong>voice → SMS memory handoff</strong> with the airline sample, then swap the personality prompt / connect a knowledge source per the README.</li>
+<li>Compare voice latency of the <strong>direct TAC integration</strong> vs a hand-rolled <strong>Conversation Relay</strong> setup.</li>
+<li>Explore the free <strong>hosted-agents observability</strong> (traces, monitor, evals, playground) on a deployed agent.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>For an <strong>ISV/multi-tenant</strong> scenario, does Microsoft recommend <strong>multiple projects/resources</strong> per company or <strong>one project with tenant separation</strong> in hosted agents? (Rachel flagged this as open — follow up with MS partners.)</li>
+<li>What are the <strong>pricing details</strong> of hosted agents at scale (scale-to-zero economics, cold-start frequency) for high-volume contact centers?</li>
+<li>Where exactly does <strong>contextual memory injection</strong> store/scope data in Cosmos DB, and what are the retention/PII controls?</li>
+<li>GA timeline for <strong>hosted agents</strong> (currently public preview)?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Building omnichannel customer-support / contact-center agents (voice + SMS + chat) with shared memory.</li>
+<li>Anyone evaluating <strong>Azure AI Foundry hosted agents</strong> as a serverless agent runtime vs Container Apps.</li>
+<li>Twilio customers modernizing from Conversation Relay to a managed, observable deployment.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Build 2026">Microsoft Build 2026</span> — parent event for this partner demo session.</li>
+<li><span class="wikilink wikilink--unresolved" title="Azure AI Foundry">Azure AI Foundry</span> — the model + agent platform powering the agent's reasoning and Voice Live.</li>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Agent Framework">Microsoft Agent Framework</span> — the framework TAC routes Twilio voice/messaging events into.</li>
+<li><span class="wikilink wikilink--unresolved" title="Hosted agents">Hosted agents</span> — Microsoft's new per-session, scale-to-zero compute primitive central to this talk.</li>
+<li><span class="wikilink wikilink--unresolved" title="Twilio Agent Connect">Twilio Agent Connect</span> — the open-source bridging SDK (Twilio + Foundry connectors).</li>
+<li><span class="wikilink wikilink--unresolved" title="Azure Cosmos DB">Azure Cosmos DB</span> — state/session persistence store for cross-channel memory.</li>
+<li><span class="wikilink wikilink--unresolved" title="Azure API Management">Azure API Management</span> — the gateway that validates Twilio signatures and maps conversation → session IDs.</li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEMSP390.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEMSP390</span><span class="pager-title">Create multimodal AI agents with persistent memory</span></a>
+    <a class="pager pager-next" href="DEMSP394.html"><span class="pager-dir">Next →</span><span class="pager-code">DEMSP394</span><span class="pager-title">Scale enterprise .NET apps with AI-assisted cross-platform workflows</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

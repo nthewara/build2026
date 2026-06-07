@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ODSP940 — Create enterprise AI apps at scale with Bolt and Microsoft</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">ODSP940</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=w8vAY4vK3HQ" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Create enterprise AI apps at scale with Bolt and Microsoft</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Will (Bolt), Joe (Bolt)</span>
+      <span class="meta-item">⏱️ 15m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="bolt">Bolt</span><span class="chip" data-tag="low-code">Low Code</span><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="enterprise">Enterprise</span><span class="chip" data-tag="azure">Azure</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Will (Bolt) &amp; Joe (Bolt) — both from Bolt / StackBlitz<br>
+<strong>Duration:</strong> ~15 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=w8vAY4vK3HQ">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Bolt (from StackBlitz) and Microsoft show how prompt-driven app building can move from quick prototypes to <strong>governed, production-ready enterprise applications</strong>. The core argument: most AI app builders assume a blank canvas, but enterprises already have existing apps, governed cloud environments, design standards, and security requirements — so the real question is "can AI-generated work fit into what we already have?" Bolt's collaboration with Microsoft Azure and Microsoft 365 answers this by letting teams start from existing conversation/context (in Microsoft Copilot), build with approved <strong>design systems</strong>, drive automation via the <strong>Bolt CLI</strong>, and produce reviewable front-end code that deploys into Azure via GitHub/Azure DevOps workflows and Microsoft identity/security tooling. The session demos three pillars — design systems, the Bolt CLI, and the Bolt interface — culminating in a full travel app with auth, a database, and an OpenAI-backed server function built in just a couple of prompts.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Speed alone isn't enough for enterprises.</strong> Prompt-driven development shortens the gap between idea and working software, but developers and IT need governance, control, and a clear deployment path for what happens <em>after</em> generation.</li>
+<li><strong>The blank-canvas assumption is the problem.</strong> Most AI app builders start from scratch; enterprises instead need to <em>increment existing applications</em>, add features safely, and get code developers can review, govern, and deploy without rewriting everything.</li>
+<li><strong>Bolt = a controlled path from idea to application</strong>, not just a faster generator. Developers define standards and approved foundations <em>up front</em>, so creators (PMs, designers, operators) can move fast while output still fits the org's technical foundation.</li>
+<li><strong>Developers don't have to be the first to prompt.</strong> They pre-approve foundations, environments, and the deployment path; the broader team then builds within those guardrails.</li>
+<li><strong>Three pillars</strong> drive the workflow: (1) <strong>Design systems</strong> — a shared, approved foundation so every project starts with the right components/patterns/brand instead of a blank canvas; (2) <strong>Bolt CLI</strong> — programmatic interaction to bundle assets, connect repos/workflows, and publish standards; (3) <strong>Bolt interface</strong> — an intuitive build surface for the whole team.</li>
+<li><strong>Microsoft Copilot is the planning layer.</strong> A conversation/requirements doc becomes a clean project brief (design goals, layout, UI ideas, audience, constraints, success criteria), then Copilot tags the <strong>Bolt agent</strong> and hands a structured prompt directly to Bolt — no lost requirements.</li>
+<li><strong>Copilot ↔ Bolt is a direct integration.</strong> You can "Build" straight from Copilot, and even tag the Bolt agent inside direct-message conversations to apply discussed changes to the project.</li>
+<li><strong>Bolt CLI bundles a local component library into a Bolt design system.</strong> It makes sense of your code + design artifacts/docs, generates a <strong>Storybook</strong> instance to browse components, and removes some of the agents' non-deterministic behavior — giving developers control over exactly what code gets produced.</li>
+<li><strong>Component libraries flow from VS Code → Copilot → Bolt.</strong> A bundled tarball (or a private NPM registry) feeds the design system, so generated apps reuse pre-built, approved code via <code>package.json</code>.</li>
+<li><strong>Real-time collaboration is built in.</strong> Share a project URL to co-access the agent chat live, see who's prompting and when, comment on parts of the project, and queue fixes for the Bolt agent.</li>
+<li><strong>Full app capabilities ship from prompts:</strong> email/Google authentication, a database with user management, file storage, secrets, analytics, domains &amp; hosting — plus <strong>server functions</strong> that call external APIs (e.g. OpenAI GPT-5) with securely stored secrets.</li>
+<li><strong>Plan mode</strong> lets you preview the agent's intended implementation (and answer clarifying questions) before it builds — saving time and tokens.</li>
+<li><strong>Built-in database security scan</strong> runs before publishing; with no issues found, the site publishes to a live URL ready for customers.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="the-enterprise-problem-with-prompt-driven-development">The enterprise problem with prompt-driven development</h3>
+<p>Prompt-driven development has already transformed what individual creators can do: a product manager, designer, or developer can describe an idea and quickly get a working prototype, internal tool, or new feature on screen. That speed is powerful because it shortens the distance between an idea and something people can actually use.</p>
+<p>But for enterprise teams, <strong>speed on its own is not enough</strong> — especially for the developers and IT teams responsible for what happens <em>after</em> something is generated. The fundamental flaw: most AI app-building tools assume you're starting from a <strong>blank canvas</strong>. That's fine for prototypes and some internal tools, but it's not how most enterprise software works. Large organizations already have:
+- Existing applications
+- Governed cloud environments
+- Developer workflows
+- Design standards
+- Security requirements</p>
+<p>So the developer problem is reframed. It's not "<em>can</em> AI generate an app?" — it's <strong>"can this fit into what we already have?"</strong> Can teams increment existing applications, add features safely, and give developers code they can review, govern, and deploy <strong>without rewriting everything from scratch</strong>?</p>
+<p>The real question for a Microsoft Build audience: <em>How do you make AI-powered app creation faster while keeping developers in control of the code, approved foundations, environments, and deployment path?</em></p>
+<h3 id="how-the-bolt-microsoft-collaboration-answers-it">How the Bolt × Microsoft collaboration answers it</h3>
+<p>With <strong>Bolt on Microsoft Azure and Microsoft 365</strong>, teams start from the <strong>conversation and context they already have</strong>, then move toward applications that fit inside infrastructure they already trust. Concretely:
+- <strong>Bolt-generated front-end code</strong> can be reviewed, extended, and deployed into <strong>Azure</strong>.
+- Teams connect that work into their <strong>GitHub and Azure DevOps</strong> workflows, <strong>Microsoft identity and security</strong> tooling, and the <strong>governance patterns</strong> enterprise developers already use.
+- Developers don't have to be the first person prompting in Bolt to benefit — they <strong>define the standards</strong> and <strong>approve foundations, environments, and the deployment path</strong>, so creators move faster while output still fits the org's technical foundation.</p>
+<p>The summary positioning: <strong>Bolt is not just a faster way to generate an app — it's a controlled path from idea to application.</strong></p>
+<h3 id="the-three-pillars-covered-in-the-demo">The three pillars covered in the demo</h3>
+<ol>
+<li><strong>Design systems</strong> — gives every team a shared foundation. An organization makes its approved design system available in Bolt, so every project starts with the right components, patterns, and brand standards instead of a blank canvas.</li>
+<li><strong>Bolt command line interface (CLI)</strong> — gives developers a programmatic way to interact with Bolt. They can bring in approved assets, connect existing repos and workflows, and make the organization's technical standards available to the broader team.</li>
+<li><strong>Bolt interface</strong> — gives everyone on the team an intuitive, capable place to build. PMs, designers, operators, and developers can prompt, iterate, and create features while still working within the foundations developers have approved.</li>
+</ol>
+<p><strong>The goal (stated explicitly):</strong> accelerate app creation for the whole organization <em>while preserving governance, security, and developer standards</em>.</p>
+<h3 id="part-1-starting-in-microsoft-copilot-wills-demo-the-planning-layer">Part 1 — Starting in Microsoft Copilot (Will's demo: the planning layer)</h3>
+<p>The work starts <strong>before anyone opens Bolt</strong>, in <strong>Microsoft Copilot</strong>. A team turns a conversation, set of requirements, or early product idea into a clean <strong>project brief</strong>.</p>
+<ul>
+<li><strong>Initial prompt (example):</strong> "We run a travel website. For our blog post, we want to create a new template that highlights the photos related to the travel destinations rather than the blog heading text. Can you suggest a starter template page we can move to from what we have now?"</li>
+<li>Copilot immediately returns <strong>design goals, a layout structure, UI ideas, and more</strong>. This is the <strong>planning layer</strong> — Copilot captures the goal, audience, user needs, constraints, success criteria, and any technical or brand requirements that should shape the application.</li>
+<li><strong>Refinement prompt:</strong> "Optimize this for SEO." → Copilot adds a hero section, an SEO intro, a structured snapshot, and more.</li>
+<li><strong>Handoff to Bolt:</strong> tag the Bolt agent → "Summarize this conversation in a prompt for Bolt." It outlines the plan. Tag Bolt again and ask it to <strong>build with these specifications</strong>. Because <strong>Copilot connects directly with Bolt</strong>, you select <strong>Build</strong> and the prompt is sent over to Bolt, where the project starts building.</li>
+</ul>
+<p><strong>In Bolt:</strong> the project is created with a <strong>full hero carousel</strong> focusing on images, as requested. The <strong>agent history</strong> shows it executed the plan and put a focus on SEO. In full-screen preview you can scroll and inspect the built page — it has <strong>hover animations</strong> and finishing touches like chapters and zoom-on-hover, a "complete guide to Kyoto," a <strong>bento grid</strong> of place photos, and an elegant preview of related destinations.</p>
+<p><strong>Iterating from a teammate conversation:</strong> to give destinations more focus on the image, you can have a discussion with a colleague, then <strong>tag the Bolt agent directly in that conversation</strong> to read it and make the changes in the project. The Bolt agent highlights destination images more (image over text). After Build + preview, the related-destinations section changes from a <strong>three-column grid to a single column</strong>, putting much more focus on each destination's background image.</p>
+<p><strong>Why this matters:</strong> creating the brief by going back and forth with Copilot gives the team a <strong>shared source of truth before building</strong>. Copilot structures the project's intent using <strong>organizational context</strong>, and the direct Bolt integration means <strong>no lost requirements, decisions, or constraints</strong>. You can also tag the Bolt agent directly in DMs.</p>
+<h3 id="part-2-the-developers-perspective-with-the-bolt-cli-joes-demo">Part 2 — The developer's perspective with the Bolt CLI (Joe's demo)</h3>
+<p>Joe frames a common developer reality: PMs request the ability to work with <strong>code and components the dev team has already built</strong>, and in the modern era of design tools, AI tools, and many systems, you need to work across many contexts. The demo: take a <strong>component library from a local environment</strong>, send it to Bolt, and have the Bolt agent use it to build new internal applications, examples, or prototypes with that specific code.</p>
+<ul>
+<li><strong>Setup:</strong> open a <strong>VS Code</strong> instance containing a small <strong>component library</strong> (a set of components) plus a demo website — a small travel application with destinations. The <em>content</em> of the site isn't the point; the point is the <strong>process of sharing pre-built code</strong> so other team members can prototype with it.</li>
+<li><strong>Tool:</strong> the <strong>Bolt CLI</strong>. Out of the gate it can, among other things, <strong>bundle and create a design system</strong> — it goes through your code and any design artifacts/documentation you give it to make sense of how to work with your components, so it can build new applications on top of that existing material.</li>
+<li><strong>Core value proposition:</strong> start to <strong>remove the non-deterministic qualities of the agents</strong> and give developers <strong>control over what's produced and what code is used</strong> as part of the system.</li>
+<li><strong>Workflow:</strong> Joe uses a small <strong>skill that wraps the Bolt CLI</strong> to provide context about the tools, then prompts (in Copilot's chat): <em>"Let's go ahead and use the Bolt CLI to create a design system and publish it within Bolt."</em> The agent (in Copilot) completes and creates a <strong>design system inside Bolt</strong>.</li>
+<li><strong>Viewing it in Bolt:</strong> go to <strong>bolt.new</strong> → personal profile → <strong>Settings → Design system</strong>. Bolt has an <strong>agent that gets trained on and understands the specifics of your component library/design system</strong>. (Joe pre-ran this so there's no waiting.) Opening it shows a generated <strong>Storybook instance</strong> to traverse and navigate the components — viewable in context, and usable as a <strong>catalyst to build new internal apps/prototypes</strong> from the team's existing code.</li>
+</ul>
+<p><strong>Building with the design system:</strong>
+- In the prompt area, <strong>select "design system"</strong> and choose the component library (a "Poet"/component library).
+- Prompt: <em>"Let's build a travel destinations landing page."</em> The Bolt agent <strong>invokes the design system abilities</strong> and builds a travel app based on the packaged content/component library.
+- <strong>Inspecting generated code:</strong> look at <code>package.json</code> — Joe <strong>bundled a tarball</strong> of the local component library (from VS Code) and dropped it into Bolt. Alternatively you can pull from a <strong>private NPM registry</strong> (configurable in Bolt under packages &amp; private registries). Bundling lets you provision and <strong>share the library across many applications/circumstances quickly</strong>.
+- <strong>Recap of the flow:</strong> straight from the <strong>VS Code instance → Copilot → Bolt</strong>, using all the seeded local code/components. The result is an app the <strong>PMs can pick up and build with</strong>, handed back to Will.</p>
+<h3 id="part-3-building-the-full-app-in-the-bolt-interface-back-to-will">Part 3 — Building the full app in the Bolt interface (back to Will)</h3>
+<p><strong>Collaboration:</strong> sharing the <strong>project URL</strong> lets multiple people access the project and the <strong>agent chat in real time</strong> — seeing who's prompting and when. Teams can <strong>collaboratively comment</strong> on parts of the project and <strong>queue fixes</strong> for the Bolt agent.</p>
+<p><strong>Adding authentication:</strong>
+- Prompt: <em>"Please add user auth with email so a user can log in and save travel plans to their account. By clicking the plan-a-trip feature, it should open a modal asking them for their desired destinations."</em>
+- Model selected: <strong>Claude Opus 4.7</strong> ("Oakus 4.7" in captions). Run in <strong>plan mode</strong> + build.
+- <strong>Plan mode</strong> shows what the agent intends <em>before</em> it acts — often saving time and tokens. The generated plan: set up a <strong>database with authentication</strong>, the <strong>plan-a-trip model</strong>, and more. No clarifying questions → implement.
+- <strong>Result:</strong> create an account and sign in. The <strong>database</strong> is viewable via an icon — user authentication with <strong>email sign-in</strong> enabled (and <strong>Google sign-in</strong> can also be enabled), <strong>user management</strong> showing all created accounts, plus <strong>file storage, secrets, analytics, domains, and hosting</strong>. Testing <strong>plan a trip</strong> opens a modal — using the <strong>same design system</strong> as the rest of the site — asking for travel destinations.</p>
+<p><strong>Adding a server function (OpenAI integration):</strong>
+- Prompt: <em>"Please create a server function which uses the OpenAI GPT-5 model. I will provide my OpenAI API key. After I enter my desired destinations, travel dates, and notes and click save trip, it should send this info to OpenAI and create an itinerary for me. While generating, I should see a spinner inside the save-trip button, and the modal should refresh with this itinerary once generated."</em>
+- Plan mode → it <strong>asks clarifying questions</strong> (answered) → turn off plan mode → build.
+- After building, the agent <strong>asks for the OpenAI API key</strong>. Add it under <strong>Secrets</strong> → paste → <strong>Create secret</strong> → securely saved.
+- <strong>Test:</strong> plan a trip — <em>Patagonia, 1st–4th December, two travelers, "I love hiking."</em> → <strong>Save trip</strong> → "generating itinerary" (spinner) → the <strong>server function calls the OpenAI API</strong> and generates a <strong>4-day Patagonia itinerary</strong>. Built in essentially <strong>two prompts</strong>.</p>
+<p><strong>Publishing:</strong> the project can be collaborated/shared or <strong>published directly</strong>. A built-in <strong>database security scan</strong> reports <strong>no issues</strong>, so it publishes to a <strong>live site</strong> ready to be viewed by customers.</p>
+<h3 id="closing">Closing</h3>
+<p>The demo covered building with your <strong>enterprise design system</strong>, <strong>programmatically interacting with Bolt via the CLI</strong>, and using the <strong>Bolt interface</strong>. For more, see Bolt's YouTube channel and <strong>bolt.new</strong>. The Microsoft × Bolt partnership lets you bring your <strong>organization's context via Microsoft 365</strong>, the <strong>scalability and reliability of Microsoft Azure</strong>, plus the <strong>speed of Bolt</strong>.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Bolt</strong> (from StackBlitz) — AI app-building platform; the controlled path from idea to governed, production-ready application.</li>
+<li><strong>Bolt interface (bolt.new)</strong> — the build surface where the whole team prompts, iterates, previews, and ships apps.</li>
+<li><strong>Bolt agent</strong> — the AI agent inside Bolt that builds/edits projects; can be tagged from Copilot and from conversations/DMs.</li>
+<li><strong>Bolt CLI</strong> — programmatic interface to Bolt; bundles/creates and publishes design systems, brings in approved assets, connects repos/workflows.</li>
+<li><strong>Bolt Design systems</strong> — approved, reusable component/pattern/brand foundation made available in Bolt (managed under personal profile → Settings → Design system).</li>
+<li><strong>Microsoft Copilot</strong> — the planning layer; turns conversations/requirements into a structured project brief and hands a prompt directly to Bolt.</li>
+<li><strong>Microsoft Azure</strong> — target cloud for deploying Bolt-generated code; provides scalability and reliability.</li>
+<li><strong>Microsoft 365</strong> — brings organizational context into the workflow.</li>
+<li><strong>GitHub &amp; Azure DevOps</strong> — developer workflows Bolt work can connect into.</li>
+<li><strong>Microsoft identity &amp; security tooling</strong> — governance/security integration for enterprise deployment.</li>
+<li><strong>Storybook</strong> — component explorer instance generated by Bolt from the design system to browse components in context.</li>
+<li><strong>VS Code</strong> — local environment hosting the component library/demo site before sharing into Bolt.</li>
+<li><strong>Private NPM registry / tarball bundling</strong> — two ways to feed a component library into Bolt (via <code>package.json</code>).</li>
+<li><strong>Claude Opus 4.7</strong> — model selected in Bolt for the auth build (captioned "Oakus 4.7").</li>
+<li><strong>OpenAI GPT-5</strong> — model called by the generated server function to produce a travel itinerary.</li>
+<li><strong>Bolt platform capabilities shown:</strong> authentication (email + Google sign-in), database, user management, file storage, secrets, analytics, domains &amp; hosting, server functions, plan mode, real-time collaboration/comments, built-in database security scan, one-click publish to a live site.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Bolt × Microsoft partnership / "Bolt on Microsoft Azure and Microsoft 365"</strong> is positioned as the headline collaboration — enabling enterprise app creation that brings in M365 context, deploys to Azure, and connects to GitHub/Azure DevOps and Microsoft identity/security tooling. (Presented as an available/collaborative capability rather than with explicit preview/GA dates.)</li>
+<li>No specific preview/GA status, dates, or version numbers were stated for individual features. Beyond the partnership framing, <strong>no other product launches were explicitly announced</strong> — the session is a capability/workflow walkthrough.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Demo 1 — Copilot → Bolt planning handoff (Will):</strong> Built a travel-blog template from a Copilot conversation. Refined for SEO, summarized the conversation into a Bolt prompt, tagged the Bolt agent, and clicked Build → Bolt produced a hero-carousel, image-focused page with hover animations, a Kyoto guide, and a bento photo grid. <em>Proves:</em> org context/requirements flow losslessly from Copilot into a built Bolt project, and the Bolt agent can be tagged inside conversations to apply changes.</li>
+<li><strong>Demo 2 — Bolt CLI + design system from local code (Joe):</strong> Took a local component library in VS Code, used the Bolt CLI (via a Copilot-driven skill) to bundle and publish a design system into Bolt, viewed it as a generated Storybook, then prompted Bolt to build a travel landing page that consumed the bundled library (tarball in <code>package.json</code>; private NPM registry as an alternative). <em>Proves:</em> developers can seed approved, pre-built code into Bolt so the team builds on a controlled, deterministic foundation.</li>
+<li><strong>Demo 3 — Full app build in the Bolt interface (Will):</strong> Added email/Google auth + a database with user management via plan mode; then added a server function calling OpenAI GPT-5 to generate a Patagonia itinerary, storing the API key in Secrets; ran a database security scan (no issues) and published to a live site. <em>Proves:</em> production-grade features (auth, DB, secrets, external API server functions) plus governance (plan mode, security scan) ship in ~two prompts with built-in collaboration.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li>"<strong>Bolt is not just a faster way to generate an app, but it's a controlled path from idea to application.</strong>"</li>
+<li>"<strong>The goal is simple: accelerate app creation for the whole organization while preserving governance, security, and developer standards.</strong>"</li>
+<li>"Most AI app-building tools assume you are starting from a <strong>blank canvas</strong>… but it's not how most enterprise software works."</li>
+<li>"The developer problem is not just <em>can AI generate an app?</em> It is, <strong>can this fit into what we already have?</strong>"</li>
+<li>The core value of the design-system/CLI path: "we're starting to take some of the overall <strong>non-deterministic qualities of the agents</strong>, remove some of that, and give you back the <strong>control</strong> of actually what's produced."</li>
+<li>Full app (auth + database + OpenAI-backed server function generating a 4-day Patagonia itinerary) built in essentially <strong>two prompts</strong>.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Bundle a local component library into a Bolt design system via the <strong>Bolt CLI</strong> (tarball vs private NPM registry) and build a sample app on top of it; test the <strong>Copilot → Bolt "Build"</strong> handoff; try <strong>plan mode</strong> to compare token usage vs straight build; wire a <strong>server function</strong> calling OpenAI with a key stored in Bolt <strong>Secrets</strong>; deploy Bolt front-end output into <strong>Azure</strong> via GitHub/Azure DevOps.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: What exactly does "deploy into Azure" cover — App Service / Static Web Apps / Container Apps? How deep is the GitHub/Azure DevOps + Microsoft identity integration (SSO/Entra ID)? Is the Bolt database first-party or a partner backend, and where does it run relative to Azure governance? Pricing/licensing of "Bolt on Azure + M365"? Availability/GA status of the partnership? Does the design-system training keep components in sync as the source library evolves?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: Enterprise/low-code app teams wanting governed AI app generation; platform/dev-tooling teams standardizing on approved design systems; Microsoft customers consolidating on Copilot + M365 + Azure who want faster front-end delivery without losing governance, security, or code review.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="ODSP938.html"><span class="pager-dir">← Previous</span><span class="pager-code">ODSP938</span><span class="pager-title">Mitigate software supply chain risks in GitHub Actions</span></a>
+    <span class="pager pager-empty"></span>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

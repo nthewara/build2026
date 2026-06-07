@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OD802 — Building for the agentic web with .NET 11</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">OD802</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=z2ppHjPRTjQ" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Building for the agentic web with .NET 11</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Daniel Roth</span>
+      <span class="meta-item">⏱️ 44m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="dotnet">.NET</span><span class="chip" data-tag="dotnet11">Dotnet11</span><span class="chip" data-tag="aspnet-core">Aspnet Core</span><span class="chip" data-tag="blazor">Blazor</span><span class="chip" data-tag="agentic-web">Agentic Web</span><span class="chip" data-tag="aspire">Aspire</span><span class="chip" data-tag="ai">AI</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Daniel Roth (Principal Product Manager, ASP.NET Core &amp; Blazor, .NET team)<br>
+<strong>Duration:</strong> ~44 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=z2ppHjPRTjQ">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>A tour of what's coming for ASP.NET Core and Blazor in <strong>.NET 11</strong>, organised around six roadmap themes: address top feedback, strengthen the foundation (perf/security/observability), invest in the modern stack (minimal APIs, SignalR, Blazor), simplify distributed apps with Aspire, enable agentic web apps, and improve Copilot-assisted .NET development. The headline message: most foundational gains (faster Kestrel, native OpenTelemetry, hardened security) come <strong>just by upgrading — no code changes</strong>. Blazor gets a big push toward <strong>static server-side rendering (SSR) parity with MVC</strong> (temp data, async + client validation without interactivity, new form components), plus a <strong>WebAssembly runtime move from mono to CoreCLR</strong> (preview in .NET 11, stable in .NET 12) and a new <strong>Blazor WebWorker</strong> template. Aspire integration gains a new <strong>Blazor Gateway</strong> for production-grade WASM hosting with service discovery + end-to-end telemetry. For the agentic web, ASP.NET Core hosts agents via the <strong>Microsoft Agent Framework</strong>, supports protocols like <strong>OpenAI responses, A2A, AGUI, and MCP (C# SDK)</strong>, and previews <strong>Blazor AI components</strong>. Finally, Microsoft is making coding agents smarter about .NET via the <strong>.NET Skills repo/marketplace</strong>, custom agents, tools, and eval suites.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>.NET 11 ASP.NET Core roadmap</strong> is on GitHub (<code>aka.ms/aspnet/roadmap</code>) and is structured around <strong>six themes</strong>; everything in the talk maps to one of them.</li>
+<li><strong>Upgrade-only wins:</strong> faster TLS handshakes in Kestrel, efficient malformed-request shedding, <strong>Zstandard compression</strong> (Brotli-level ratios at much lower CPU), and <strong>runtime async</strong> all land with no code changes.</li>
+<li><strong>Observability is now native:</strong> ASP.NET Core emits <strong>OpenTelemetry semantic-convention tags out of the box</strong> — every request is traced without adding the OTel ASP.NET Core instrumentation package.</li>
+<li><strong>Security modernisation:</strong> hardened Kestrel, AI-model-driven security scanning of the codebase, <strong>fetch-metadata-header-based CSRF</strong> (Fetch-Site / Fetch-Mode), and <strong>automatic auth token refresh</strong> for long-lived SignalR/Blazor Server connections.</li>
+<li><strong>Modern stack is the innovation focus</strong> (minimal APIs, SignalR, Blazor); MVC / Razor Pages / API Controllers remain supported and benefit from foundational improvements but aren't where new features go.</li>
+<li><strong>Async validation</strong> is coming to minimal APIs and Blazor (validate against a DB/external service without blocking); <strong>OpenAPI 3.2</strong> support added with proper binary file responses.</li>
+<li><strong>Blazor static SSR parity with MVC</strong> is a marquee theme: temp data, session-state binding, output caching, <code>EnvironmentBoundary</code>, <code>Label</code>/<code>DisplayName</code> components, <strong>client-side validation with no interactivity required</strong>, and <strong>localized data-annotation validation messages</strong>.</li>
+<li><strong>Blazor Server scalability:</strong> new <strong>pause/resume</strong> for idle circuits to free held resources, plus Aspire-assisted scaling.</li>
+<li><strong>Blazor WebAssembly runtime consolidation:</strong> moving from <strong>mono → CoreCLR</strong> (preview in .NET 11, stable in .NET 12) so WASM 3.0 features (multi-threading, 64-bit memory) are built once on the shared runtime.</li>
+<li><strong>Blazor WebWorker</strong> template ships now: run CPU-intensive .NET work off the UI thread today (message-passing, not shared-memory — loads a second WASM runtime, so use judiciously).</li>
+<li><strong>C# unions</strong> are finally coming and are being lit up across the ASP.NET Core stack for richer API contracts, more expressive component parameters, and better type safety.</li>
+<li><strong>New Blazor Gateway (Aspire):</strong> a production-grade replacement for the long-standing Blazor dev server — serves standalone WASM via <code>MapStaticAssets</code>, proxies API calls (no CORS), flows service-discovery config, and collects browser OpenTelemetry into the Aspire dashboard.</li>
+<li><strong>Agentic web support:</strong> host agents inside ASP.NET Core with the <strong>Microsoft Agent Framework</strong>; built-in hosting for <strong>OpenAI responses, A2A, AGUI</strong> protocols; act as an <strong>MCP server or client</strong> via the MCP C# SDK; all integrated with DI, auth, middleware, observability.</li>
+<li><strong>AGUI (Agent–User Interaction protocol):</strong> open, event-driven wire format between agents and UIs enabling streaming, tool-execution display, state sharing, front-end tool calls, and human-in-the-loop; <strong>preview</strong> in Microsoft Agent Framework, with <strong>prototype Blazor AI components</strong> in progress.</li>
+<li><strong>AI-assisted .NET dev</strong> invests in four areas — <strong>agentic skills, custom agents, tools (C# LSP, .NET Inspect CLI), and eval test suites</strong> — distributed via the <strong>.NET Skills repo/marketplace</strong> (<code>dotnet/skills</code>).</li>
+<li><strong>Try it today:</strong> <code>get.net 11</code> (SDK/previews), <code>dot.net/ai</code> (Extensions AI / Agent Framework / MCP C# SDK), <code>aspire.dev</code>, and the <code>dotnet/skills</code> repo.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-the-demands-on-modern-web-apps">Framing: the demands on modern web apps</h3>
+<p>Daniel Roth (Principal PM for ASP.NET Core &amp; Blazor) opens by noting the rising bar for modern web apps: users want more <strong>performance, airtight security, and full observability</strong> in production; apps must be <strong>modern and interactive</strong>, are mostly <strong>cloud-native and distributed</strong>, and increasingly need <strong>agentic capabilities</strong> — apps that <em>reason, use tools, and collaborate with people in real time</em>. Developers want to build more, faster, with <strong>AI as a partner</strong>, and the platform underneath must continuously improve. .NET 11 is positioned to address the needs of the most demanding modern web apps.</p>
+<h3 id="the-six-net-11-aspnet-core-themes">The six .NET 11 ASP.NET Core themes</h3>
+<p>The roadmap (published earlier this year on GitHub, <code>aka.ms/aspnet/roadmap</code>) is organised around six themes, and the whole talk is a walk through them:
+1. <strong>Address top feedback &amp; pain points</strong> — issues, comments, and 👍 reactions directly drive the backlog; they aim to close as many top-voted issues as possible.
+2. <strong>Strengthen the foundation</strong> — performance, security, observability; the things that make .NET trustworthy.
+3. <strong>Invest in the modern stack</strong> — minimal APIs, SignalR, Blazor: where active innovation happens.
+4. <strong>Simplify building distributed web apps</strong> — deep collaboration with the <strong>Aspire</strong> team.
+5. <strong>Enable building agentic web apps</strong> — <strong>Microsoft Agent Framework</strong>, <strong>MCP C# SDK</strong>, new AI-driven UI patterns.
+6. <strong>Copilot-assisted web development</strong> — make AI coding assistants love .NET via agent skills, custom agents, tools, and eval suites.</p>
+<h3 id="theme-2-strengthening-the-foundation">Theme 2 — Strengthening the foundation</h3>
+<p>Foundations get attention every release because they're what you can count on, and <strong>you get them just by upgrading</strong>. .NET runs some of the world's biggest services at Microsoft — <strong>Entra, Bing, Teams, Xbox, and most of Azure</strong> — and those workloads push the bar up for everyone.</p>
+<p><strong>Performance:</strong>
+- <strong>Reduced TLS handshake overhead in Kestrel</strong> → faster short-lived connections.
+- <strong>Optimised handling of malformed requests</strong> → shed bad traffic efficiently and free capacity for real users.
+- <strong>Zstandard (zstd) compression support</strong> → Brotli-level compression ratios at much lower CPU cost.
+- <strong>Runtime async</strong> — a more efficient async implementation (worked on with the runtime team) that works great across the platform, including web.</p>
+<p><strong>Security:</strong>
+- <strong>Hardening Kestrel</strong>, the cross-platform high-performance web server.
+- <strong>Running security scans on the codebase using the latest AI models</strong> to keep the platform secure and trustworthy.
+- <strong>Modernised CSRF protection</strong> using <strong>fetch metadata headers</strong> (e.g. <code>Fetch-Site</code>, <code>Fetch-Mode</code>) based on the latest OWASP/OAuth recommendations.
+- <strong>Automatic auth token refresh</strong> for long-lived connections (SignalR, Blazor Server) — a long-standing request closing a real usability gap.</p>
+<p><strong>Observability:</strong>
+- ASP.NET Core now <strong>emits OpenTelemetry semantic-convention tags natively</strong> — every request is automatically traced using OTel conventions without external instrumentation.
+- <strong>Full OpenTelemetry support for Blazor WebAssembly</strong> is in progress so <strong>component-level metrics and traces from the browser</strong> show up in the same dashboards as server telemetry.</p>
+<p>Net result: upgrade to .NET 11 and apps run <strong>faster, safer, more observable — no code changes required</strong>.</p>
+<h3 id="theme-3-investing-in-the-modern-stack">Theme 3 — Investing in the modern stack</h3>
+<p>Investment is focused on the <strong>modern stack: minimal APIs, SignalR, Blazor</strong>. Other parts (MVC, Razor Pages, API Controllers) remain fully supported and benefit from the foundational improvements, but aren't where new innovation lands.</p>
+<p><strong>Minimal APIs (and Blazor):</strong>
+- <strong>Async validation</strong> — validation logic can do long-running work (DB/external service checks) without blocking.
+- <strong>OpenAPI 3.2</strong> support with proper <strong>binary file responses</strong>.
+- Fixed a long-standing <strong>testing pain point</strong>: using <code>WebApplicationFactory</code> with minimal APIs and setting up <strong>custom configuration</strong>.</p>
+<p><strong>SignalR:</strong>
+- <strong>Auth token refresh</strong> for long-lived connections (as above).
+- <strong>Correlation ID support</strong> for distributed tracing.</p>
+<p><strong>Blazor</strong> (a lot happening — the session's biggest area):
+- <strong>Filling out static server-side rendering (SSR)</strong> so you can use static SSR "without compromise": <strong>temp data, binding to session state, output caching, client validation without interactivity, async validation, and much more.</strong>
+- <strong>Server scalability via pause/resume</strong> — free up resources held by <strong>idle circuits</strong>.
+- <strong>WebAssembly runtime consolidation:</strong> transition the .NET WASM runtime from <strong>mono → CoreCLR</strong>; <strong>preview in .NET 11, stable in .NET 12</strong>. New capabilities (multi-threading, 64-bit memory, other <strong>WASM 3.0</strong> features) land on the CoreCLR base runtime so they don't have to be built twice.
+- <strong>Blazor WebWorker</strong> project template (available now) to move CPU-intensive work off the UI thread today.
+- <strong>C# unions</strong> — union support is finally coming to C#, lit up across the ASP.NET Core stack for richer API contracts, more expressive component parameters, and better type safety.</p>
+<h3 id="demo-block-1-minimal-apis-openapi-32-native-otel">Demo block 1 — Minimal APIs: OpenAPI 3.2 + native OTel</h3>
+<p>In a minimal API project, <strong>OpenAPI 3.2</strong> is wired up and configured. Opening the OpenAPI document in the browser confirms 3.2. What 3.2 adds: <strong>structured tags, better support for streaming responses</strong> (e.g. server-sent events), and <strong>better representation of different auth flows</strong>. The console output shows <strong>out-of-the-box OpenTelemetry semantic conventions</strong> for the HTTP request, response, and route — with <strong>no additional instrumentation</strong>. In code, all that's needed is adding the <strong>trace source for <code>Microsoft.AspNetCore</code></strong>; you no longer have to add the OTel ASP.NET Core instrumentation package (though you may still want it for the extra niceties). Native support just makes it more efficient.</p>
+<h3 id="demo-block-2-blazor-static-ssr-feature-parity">Demo block 2 — Blazor static SSR feature parity</h3>
+<p>A major Blazor focus in .NET 11 is giving you <strong>SSR feature parity with MVC</strong> for things that weren't available in Blazor yet. Demoed side-by-side with Visual Studio:
+- <strong><code>EnvironmentBoundary</code> component</strong> — conditionally render content based on the current ASP.NET Core environment (e.g. only in Development, or Development+Staging; or <em>exclude</em> content in Production). It's the Blazor equivalent of MVC's <strong>environment tag helper</strong>.
+- <strong><code>Label</code> component</strong> — easily set up labels for Blazor forms using a normal C# expression pointing at a model property; generates a label with a friendly display name correctly associated with its input element. Also works in a <strong>wrapping pattern</strong> (wrap the input).
+- <strong><code>DisplayName</code> component</strong> — produces the friendly name for a property; demoed generating friendly column headings in a <strong>QuickGrid</strong> data grid, and also usable to generate a label (effectively what the <code>Label</code> component does for you).
+- <strong>QuickGrid <code>OnRowClick</code></strong> — a new component parameter to wire up an event handler when a user clicks a row; hands you the <strong>model instance</strong> used to render that row (demoed selecting a person and displaying it).
+- <strong>Temp data</strong> (<code>[SupplyParameterFromTempData]</code>) — like MVC temp data: save a small piece of data to be read after a subsequent navigation (classic <strong>POST → redirect → GET</strong> pattern). Demo: clicking a button does a POST that saves the <strong>server time</strong> into a status-message property; the <code>[SupplyParameterFromTempData]</code> attribute marks that property to be saved into and read back out of temp data when the page loads. This was a <strong>full-page navigation, not interactive</strong>. Refreshing clears it (temp data is transient, usually stored in a <strong>cookie</strong>, though other providers are supported).
+- <strong>Virtualization enhancements</strong> — the <code>Virtualize</code> component renders a huge list (demoed with <strong>10,000 items</strong>) but only renders currently-visible parts. Previously you had to specify a <strong>fixed item size/height</strong>; now it handles <strong>variable item heights</strong> automatically while staying fast.</p>
+<h3 id="demo-block-3-validation-without-interactivity-localization-async">Demo block 3 — Validation without interactivity, localization, async</h3>
+<ul>
+<li><strong>Client-side validation with no interactivity:</strong> a static SSR form validates as you type/tab off, yet <strong>no Blazor Server WebSocket and no WebAssembly</strong> is loaded (DevTools confirms the only socket is VS's browser-refresh). Blazor now ships <strong>built-in client-side validation logic</strong> via a <strong>lightweight JavaScript validation library</strong> (no jQuery dependency) so you don't "fall off the cliff" from static SSR into having to enable interactivity just for form validation. It uses the <strong>same data-validation attributes</strong> as MVC/Razor Pages.</li>
+<li><strong>Localized validation messages:</strong> switching the form language English → Spanish renders <strong>localized validation error messages</strong> — <strong>data-annotation-based validation messages now get localization</strong>, a long-standing pain point addressed in .NET 11.</li>
+<li><strong>Async validation:</strong> a form requiring a <strong>unique username</strong> — trying <code>admin</code> shows a "checking the database…" UI experience and then a "taken" error; this is an <strong>asynchronous, long-running</strong> check (not synchronous), with UI feedback during the check. In code, the <strong><code>EditContext</code></strong> now exposes APIs for <em>is validating / is validation faulted / are validation messages available</em>, plus a <strong><code>ValidateAsync</code></strong> method on <code>EditContext</code>. Microsoft is also adding <strong>async validation support to <code>System.ComponentModel.DataAnnotations</code></strong> in the core libraries (still coming) so you'll be able to annotate types with async validation attributes that plug into this experience.</li>
+</ul>
+<h3 id="demo-block-4-blazor-webworker-cpu-intensive-work-off-the-ui-thread">Demo block 4 — Blazor WebWorker (CPU-intensive work off the UI thread)</h3>
+<p>A <strong>Blazor WebWorker</strong> runs .NET code on WASM in the browser but <strong>not on the UI thread</strong> — in a separate web worker. There's a <strong>new project template</strong> (search "WebWorker"). It provides a <strong>WebWorker client class</strong> to create clients (which spin up JavaScript to set up the .NET runtime in a worker) and an <strong><code>InvokeAsync</code></strong> method to call code on the worker thread. Demo: a <code>DataWorker.AnalyzeSalesData</code> method marked <strong><code>[JSExport]</code></strong> crunches a large set of sales records. Running ~<strong>a quarter-million records on the UI thread freezes a "health" counter</strong>; running the same on the <strong>web worker keeps the counter chugging</strong> and the UI navigable.</p>
+<p><strong>Caveats (stated explicitly):</strong> this is <strong>not true multi-threading</strong> — <strong>no shared memory</strong> between worker and UI thread; think of it like a <strong>separate process with message passing</strong>. It <strong>loads a second .NET WASM runtime</strong> in the worker, so it can be <strong>memory-heavy</strong> — be judicious. Still a "very cool" way to offload CPU-intensive work with the existing runtime today.</p>
+<h3 id="theme-4-distributed-cloud-ready-apps-with-aspire">Theme 4 — Distributed &amp; cloud-ready apps with Aspire</h3>
+<p>Modern web apps are distributed: front end, back-end APIs, AI services, databases, caches — lots of moving parts. <strong>Aspire</strong> provides <strong>orchestration, observability, and configuration management</strong> for distributed apps, with a great local-dev experience and a clean deployment story. In the .NET 11 timeframe they're <strong>deepening Blazor + Aspire integration</strong>:
+- Make <strong>Blazor WebAssembly work properly with Aspire</strong> — configuration, <strong>service discovery</strong>, OpenTelemetry, and simplified debugging from the browser through to the back end.
+- <strong>Simplify Blazor Server scaling</strong> via Aspire.</p>
+<p>To enable this there's a <strong>new Blazor-specific Aspire host integration package</strong> and a new <strong>Blazor Gateway service</strong> that sits between the browser and the back end. The Gateway:
+- <strong>Serves standalone Blazor WASM apps via <code>MapStaticAssets</code></strong> (gets all the optimisations).
+- <strong>Proxies API calls</strong> to back-end services → <strong>no CORS needed</strong>.
+- <strong>Flows configuration / service-discovery data</strong> to the client.
+- <strong>Collects OpenTelemetry</strong> from the client to populate the Aspire dashboard.
+- Handles <strong>session affinity</strong>.
+- <strong>Replaces the long-standing Blazor dev server</strong> with something <strong>production-grade</strong> — good for local dev <em>and</em> deployable as a production service to host standalone WASM with the right optimisations.</p>
+<h3 id="demo-block-5-standalone-blazor-wasm-fully-integrated-with-aspire">Demo block 5 — Standalone Blazor WASM fully integrated with Aspire</h3>
+<p>Solution layout: a <strong>standalone Blazor WASM</strong> project (no server component), a <strong>back-end minimal API</strong> (weather), the <strong>Aspire AppHost</strong> (orchestrates front end + back end), the <strong>ServiceDefaults</strong> project (health checks, resiliency, etc.), and a <strong>new <code>ClientServiceDefaults</code> project</strong> for browser-specific concerns (analogous to the new ServiceDefaults template <strong>MAUI</strong> has for native mobile). There's a <strong>new "Blazor WebAssembly service defaults" template</strong> to set this up.</p>
+<p>In <code>AppHost.cs</code> (referencing the <strong>new Blazor Aspire hosting integration package</strong>): the API project is set up normally; a new <strong><code>AddBlazorWasmProject</code>-style</strong> entry for the WASM app references the API (so Aspire knows the front end calls it and gives it a real endpoint); and a <strong><code>WithBlazorClientApp</code></strong> call wires up the <strong>Blazor Gateway</strong> to host the WASM app, expose the API endpoints it needs, and collect client OpenTelemetry for end-to-end visibility.</p>
+<p>Running the AppHost brings up the <strong>Aspire dashboard</strong> showing the <strong>Gateway</strong> (with the WASM app nested under it) and the <strong>API</strong>. Browsing the Blazor app, the counter and weather page work — the weather page calls the API successfully. In code, the WASM app's <code>HttpClient</code> uses the <strong>Aspire service-discovery convention</strong> ("talk to the weather API; Aspire, resolve the URL"), and the Gateway flows that service-discovery config into the WASM app so the URL resolves correctly. <strong>Structured logs</strong> show the request being proxied through the Gateway to the back end and succeeding; <strong>traces</strong> show the full end-to-end flow (browser → server → Gateway uses service discovery → proxy to API → weather data returned). <strong>Metrics</strong> from the WASM app (e.g. number of page navigations, which pages were browsed) surface in the dashboard because it's <strong>exporting OpenTelemetry from the browser</strong>. A <strong>dashboard-launched debugging experience</strong> (attach the debugger from the dashboard) is also planned/coming.</p>
+<h3 id="theme-5-making-web-apps-agentic">Theme 5 — Making web apps agentic</h3>
+<p>Modern web apps increasingly include <strong>AI agents that reason, plan, use tools, and interact with the user in real time</strong> — a new set of web-framework requirements. Microsoft wants ASP.NET Core and Blazor to be the best place to build these. Working closely with the <strong>Microsoft Agent Framework</strong> team, you can <strong>host agents directly inside ASP.NET Core apps</strong> and tap into AI services like <strong>Microsoft Foundry</strong>. Built-in hosting support covers multiple agentic protocols:
+- <strong>OpenAI responses protocol</strong> — chat completions and function calling.
+- <strong>A2A (Agent-to-Agent)</strong> — multi-agent orchestration.
+- <strong>AGUI</strong> — real-time agent-to-human / user-interface interactions.
+- <strong>MCP (Model Context Protocol)</strong> — expose your app's functionality as an <strong>MCP server</strong> to other agentic apps, or act as an <strong>MCP client</strong> consuming tools/resources from other servers, via the <strong>MCP C# SDK</strong>.</p>
+<p>All of this integrates naturally with ASP.NET Core <strong>middleware, dependency injection, authentication, and observability</strong>.</p>
+<p><strong>Building agentic UIs</strong> has its own challenges: streaming messages, showing tool execution and reasoning in progress, <strong>synchronizing state</strong> between agent and UI (so the agent knows what the user is looking at), <strong>multimodal inputs</strong> (speech, images, video), and <strong>human-in-the-loop</strong> workflows where the human stays in control.</p>
+<p><strong>AGUI (Agent–User Interaction protocol)</strong> is an <strong>open, event-driven protocol that standardizes the wire format between agents and UIs</strong>, letting you focus on the UI instead of plumbing. <strong>AGUI support in Microsoft Agent Framework is currently in preview.</strong> Microsoft is also building a set of <strong>Blazor AI components</strong> to make agentic UIs straightforward. (Learn more at the AGUI spec site, <code>agui.com</code>.)</p>
+<h3 id="demo-block-6-agui-dojo-in-react-and-then-in-blazor">Demo block 6 — AGUI Dojo, in React and then in Blazor</h3>
+<p>The <strong>AGUI Dojo</strong> sample app showcases many AGUI scenarios across different agent-framework backends (including the Microsoft Agent Framework). The reference front end is <strong>JavaScript + React</strong> using components from <strong>Copilot Kit</strong> (usable with a .NET back end). Daniel then shows a <strong>.NET + Blazor implementation of the AGUI Dojo</strong>:
+- <strong>Server side (Microsoft Agent Framework):</strong> to create an AGUI endpoint you just call <strong><code>MapAGUI</code></strong> and point it at the agent to host; multiple agents are wired up this way. Agent Framework is built on <strong>Microsoft.Extensions.AI</strong> abstractions, so you can wire up <strong>tools</strong> (e.g. an agent with a <strong><code>GetWeather</code></strong> tool to fetch current weather from the server).
+- <strong>Client side:</strong> an <strong>AGUI chat client</strong> implementation is provided that is itself an implementation of the <strong><code>IChatClient</code></strong> interface from Microsoft.Extensions.AI — so it plugs seamlessly into that infrastructure while adding UI-specific affordances based on the AGUI protocol. One affordance is <strong>front-end tools</strong> — tools available not just from the server but from the <strong>client</strong> (e.g. a tool that lets the agent call down into the client to <strong>change the background color</strong> of the UI).</p>
+<p>Running the Blazor AGUI Dojo, the demo shows:
+- <strong>Streaming chat</strong> — ask it to generate a sonnet and get streaming text back.
+- <strong>Front-end tool call</strong> — "please change the background color on the front end" gets plumbed back to the agent, which calls back into the client to execute the tool.
+- <strong>Back-end tool call with custom widgets</strong> — invoking a back-end weather tool renders a <strong>custom weather widget</strong> (AGUI has affordances for rendering custom widgets on tool invocation).
+- <strong>Human-in-the-loop</strong> — collaborate on a plan: a custom component renders where you select which parts of the plan you like, then <strong>confirm</strong> or <strong>reject</strong> (rolling it back) — true human↔agent interaction with the human in control.
+- <strong>Long-running / generative flows</strong> — ask the agent to execute a plan (e.g. "a plan for going to Mars") and get <strong>streamed progress updates</strong> into the UI via specific AGUI events.
+- <strong>Full state sharing</strong> between the UI state and the agent, so the agent can be a <strong>full collaborator</strong> in the UI experience.</p>
+<p>The sample also shows <strong>prototype Blazor AI components</strong>: an <strong><code>AgentBoundary</code></strong> component for the chat interface (point it at the agent to drive it), a <strong>messages</strong> component, and <strong>agent loading indicator</strong> components. Daniel stresses the <strong>names are still prototype</strong> ("don't get too attached") but they show the direction.</p>
+<h3 id="theme-6-improving-ai-assisted-net-web-development">Theme 6 — Improving AI-assisted .NET web development</h3>
+<p>AI coding assistants (e.g. Copilot) are great partners <em>when they understand your frameworks</em>, but they struggle with unfamiliar features — picking the wrong pattern, missing a new feature, or generating code that compiles but isn't idiomatic. Microsoft is investing in <strong>four areas</strong> to make AI assistance genuinely smarter about .NET:
+1. <strong>Agentic skills</strong> — a variety of ASP.NET Core and Blazor AI skills giving coding agents new capabilities/expertise; found and installed from curated <strong>.NET plugins</strong> in the <strong>.NET Skills repo/marketplace</strong> (<code>dotnet/skills</code>).
+2. <strong>Custom agents</strong> — specialized personas for .NET work (back-end ASP.NET Core dev, front-end Blazor dev, tester, doc writer, architect), each with deep framework knowledge and a focused skill set; they're exploring which personas matter most.
+3. <strong>Tools</strong> — command-line tools/executables that give agents new capabilities: e.g. the <strong>C# LSP</strong> (rich semantic engine for navigating/editing code), the <strong>.NET Inspect</strong> CLI (query .NET APIs across NuGet packages and local projects), and other MCP servers (e.g. <strong>Playwright</strong> integration). They're exploring which CLI/MCP tools to include for .NET.
+4. <strong>Eval test suites</strong> — evaluation tests for real .NET coding tasks to <strong>measure</strong> whether skills/custom agents/tools actually move the needle. "If we can't measure it, we don't really know if it works."</p>
+<h3 id="demo-block-7-blazor-plan-ui-change-skill-kanban-refactor">Demo block 7 — Blazor "Plan UI change" skill (Kanban refactor)</h3>
+<p>Visiting <strong><code>dotnet/skills</code></strong> shows the repo/marketplace with plugins for many .NET scenarios, including <strong>ASP.NET Core</strong> and <strong>Blazor</strong>. The Blazor plugin includes brand-new skills for authoring components, handling user inputs, configuring auth, coordinating components, and more. A notable one is <strong>"Plan UI change,"</strong> which helps the agent break a UI into composite parts — agents tend to create <strong>big monolithic components</strong> instead of decomposing into subcomponents, and this skill instructs the agent to do better.</p>
+<p>Demo: asking an agent to build a <strong>Kanban board</strong> Blazor app <strong>without</strong> the skill produced a working board but a ~<strong>300–400-line</strong> single <code>Board.razor</code> file (poor factoring). Adding the Blazor plugin and asking again produced a <strong>refactored version with proper subcomponents and component parameters</strong> flowing data through the app — more idiomatic, equally functional (styling slightly different since it was a different agent run). Skills are added on a <strong>need-only basis</strong> so they don't contaminate the context window, and they're <strong>heavily tested with eval suites</strong> for real-world benefit.</p>
+<h3 id="recap-the-big-picture-for-net-11-web">Recap — the big picture for .NET 11 web</h3>
+<ul>
+<li><strong>Strengthen the foundation:</strong> more performance, security, observability — often driven by the largest .NET services in the world, flowing straight into your apps on upgrade.</li>
+<li><strong>Invest in the modern stack:</strong> minimal APIs, SignalR, Blazor — C# unions, async validation, OpenAPI improvements, and more.</li>
+<li><strong>Blazor specifically:</strong> static SSR feature parity with MVC, server scalability, and the new <strong>CoreCLR-based WASM runtime</strong>.</li>
+<li><strong>Distributed apps with Aspire:</strong> better Blazor WASM support, service discovery, end-to-end observability, and a production-grade <strong>Blazor Gateway</strong> hosting story.</li>
+<li><strong>Position .NET for the agentic web</strong> with the Microsoft Agent Framework, <strong>AGUI</strong> support, and <strong>Blazor AI components</strong>.</li>
+<li><strong>Make AI smarter about .NET</strong> with agentic skills, custom agents, tools, and eval suites.</li>
+<li>Throughout, keep addressing <strong>top feedback and pain points</strong>.</li>
+</ul>
+<h3 id="how-to-get-involved-today">How to get involved today</h3>
+<ul>
+<li><strong><code>get.net 11</code></strong> — install the .NET 11 preview SDK, try new templates, kick the tires, give feedback.</li>
+<li><strong><code>dot.net/ai</code></strong> — Microsoft.Extensions.AI, Microsoft Agent Framework, MCP C# SDK for building agentic apps.</li>
+<li><strong><code>aspire.dev</code></strong> — "aspirify" your .NET apps.</li>
+<li><strong><code>dotnet/skills</code></strong> — install the new .NET skills.</li>
+<li>Build something cool and share your experience to help improve the platform.</li>
+</ul>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>.NET 11</strong> — the release this session is about (in preview at Build 2026).</li>
+<li><strong>ASP.NET Core</strong> — the web framework; foundational + modern-stack improvements throughout.</li>
+<li><strong>Blazor</strong> — Microsoft's web UI framework; the session's largest focus (SSR parity, WASM, agentic UIs).</li>
+<li><strong>ASP.NET Core .NET 11 roadmap</strong> — published on GitHub at <code>aka.ms/aspnet/roadmap</code>; six themes.</li>
+<li><strong>Kestrel</strong> — cross-platform high-performance web server; hardened + faster TLS handshakes in .NET 11.</li>
+<li><strong>Zstandard (zstd) compression</strong> — new compression giving Brotli-level ratios at lower CPU cost.</li>
+<li><strong>Runtime async</strong> — more efficient async implementation worked on with the runtime team.</li>
+<li><strong>OpenTelemetry (OTel)</strong> — semantic-convention tags now emitted natively by ASP.NET Core; WASM telemetry coming.</li>
+<li><strong>Fetch metadata headers (Fetch-Site / Fetch-Mode)</strong> — basis for modernised CSRF protection.</li>
+<li><strong>Minimal APIs</strong> — modern-stack pillar; async validation, OpenAPI 3.2, testing fixes.</li>
+<li><strong>SignalR</strong> — real-time pillar; auth token refresh + correlation ID for distributed tracing.</li>
+<li><strong>OpenAPI 3.2</strong> — latest OpenAPI version supported: structured tags, streaming (SSE) responses, better auth-flow representation, binary file responses.</li>
+<li><strong><code>WebApplicationFactory</code></strong> — test host; custom-configuration pain point with minimal APIs fixed.</li>
+<li><strong>MVC / Razor Pages / API Controllers</strong> — still supported; benefit from foundational improvements but not the innovation focus.</li>
+<li><strong><code>EnvironmentBoundary</code></strong> — new Blazor component: conditionally render by ASP.NET Core environment (MVC environment-tag-helper equivalent).</li>
+<li><strong><code>Label</code> component</strong> — new Blazor form-label component (expression-based or wrapping pattern).</li>
+<li><strong><code>DisplayName</code> component</strong> — new Blazor component producing a property's friendly name (grid headings, labels).</li>
+<li><strong>QuickGrid</strong> — Blazor data grid; gains <code>OnRowClick</code> (returns the row's model instance) and <code>DisplayName</code>-driven headings.</li>
+<li><strong>Temp data / <code>[SupplyParameterFromTempData]</code></strong> — MVC-style temp data in Blazor (POST→redirect→GET), usually cookie-backed.</li>
+<li><strong><code>Virtualize</code> component</strong> — now supports <strong>variable item heights</strong> (previously fixed-size only); demoed with 10,000 items.</li>
+<li><strong>Client-side validation library</strong> — lightweight JS validation (no jQuery) for static SSR forms without interactivity; uses MVC/Razor-Pages data-validation attributes.</li>
+<li><strong>Localized data-annotation validation messages</strong> — validation errors now localizable (demoed EN→ES).</li>
+<li><strong><code>EditContext</code> async APIs / <code>ValidateAsync</code></strong> — new APIs for validating-state, faulted-state, messages, and async validation.</li>
+<li><strong><code>System.ComponentModel.DataAnnotations</code></strong> — gaining async validation attribute support (still coming).</li>
+<li><strong>Blazor Server pause/resume</strong> — free resources held by idle circuits for better scalability.</li>
+<li><strong>CoreCLR WASM runtime</strong> — Blazor WebAssembly moving mono→CoreCLR (preview .NET 11, stable .NET 12); WASM 3.0 features (multi-threading, 64-bit memory) on the shared runtime.</li>
+<li><strong>Blazor WebWorker</strong> — new project template + WebWorker client class + <code>InvokeAsync</code> to run CPU-intensive .NET code off the UI thread (message-passing; loads a 2nd WASM runtime).</li>
+<li><strong><code>[JSExport]</code></strong> — marks a .NET method callable from JS / the web worker (demoed on <code>AnalyzeSalesData</code>).</li>
+<li><strong>C# unions</strong> — coming to C#, lit up across ASP.NET Core for richer contracts, expressive params, type safety.</li>
+<li><strong>.NET Aspire</strong> — orchestration, observability, and configuration for distributed apps; deeper Blazor integration in .NET 11.</li>
+<li><strong>Blazor Gateway</strong> — new production-grade service hosting standalone WASM (<code>MapStaticAssets</code>), proxying APIs (no CORS), flowing service discovery, collecting client OTel, session affinity; replaces the old Blazor dev server.</li>
+<li><strong>Blazor Aspire hosting integration package</strong> — referenced in AppHost; <code>WithBlazorClientApp</code> wires up the Gateway.</li>
+<li><strong>ClientServiceDefaults project + "Blazor WASM service defaults" template</strong> — browser-specific service defaults (analogous to MAUI's native-mobile ServiceDefaults).</li>
+<li><strong>Service discovery (Aspire convention)</strong> — WASM <code>HttpClient</code> resolves API URLs via Aspire; Gateway flows the config.</li>
+<li><strong>Aspire dashboard</strong> — shows resources, structured logs, traces, and metrics (including browser/WASM telemetry).</li>
+<li><strong>Microsoft Agent Framework</strong> — host agents inside ASP.NET Core; built on Microsoft.Extensions.AI; supports AGUI/A2A/OpenAI-responses; provides <code>MapAGUI</code>.</li>
+<li><strong>Microsoft Foundry</strong> — AI services that hosted agents can tap into.</li>
+<li><strong>OpenAI responses protocol</strong> — supported agentic protocol for chat completions + function calling.</li>
+<li><strong>A2A (Agent-to-Agent) protocol</strong> — supported protocol for multi-agent orchestration.</li>
+<li><strong>AGUI (Agent–User Interaction protocol)</strong> — open, event-driven UI↔agent wire format; preview in Agent Framework (spec at <code>agui.com</code>).</li>
+<li><strong>MCP (Model Context Protocol) + MCP C# SDK</strong> — expose your app as an MCP server or act as an MCP client.</li>
+<li><strong>Microsoft.Extensions.AI / <code>IChatClient</code></strong> — abstractions the Agent Framework and the AGUI chat client build on.</li>
+<li><strong><code>MapAGUI</code></strong> — endpoint helper to host an Agent Framework agent over AGUI.</li>
+<li><strong>AGUI Dojo</strong> — sample app showcasing AGUI scenarios across backends; React/Copilot-Kit version + new Blazor version.</li>
+<li><strong>Copilot Kit</strong> — provides the React components for the reference AGUI Dojo front end.</li>
+<li><strong>Blazor AI components (prototype)</strong> — <code>AgentBoundary</code>, messages, agent-loading-indicator components for agentic UIs.</li>
+<li><strong>.NET Skills repo/marketplace (<code>dotnet/skills</code>)</strong> — curated .NET plugins/skills for coding agents (ASP.NET Core, Blazor).</li>
+<li><strong>Custom agents</strong> — proposed .NET personas (back-end dev, front-end dev, tester, doc writer, architect).</li>
+<li><strong>C# LSP</strong> — semantic engine giving agents rich code navigation/editing.</li>
+<li><strong>.NET Inspect (CLI)</strong> — lets an agent query .NET APIs across NuGet packages and local projects.</li>
+<li><strong>Playwright (MCP)</strong> — example MCP server adding capabilities to agents.</li>
+<li><strong>Eval test suites</strong> — measure real-world coding-agent effectiveness for skills/agents/tools.</li>
+<li><strong>MAUI ServiceDefaults template</strong> — referenced as the native-mobile analogue to the new Blazor client defaults.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p>All of the following are <strong>.NET 11</strong> work; many are already shipping in the <strong>.NET 11 previews</strong>, with some items explicitly forward-looking:
+- <strong>Foundational upgrade-only improvements</strong> (shipping/in-preview): faster Kestrel TLS handshakes, malformed-request shedding, <strong>Zstandard compression</strong>, runtime async, fetch-metadata CSRF, auto auth-token refresh for SignalR/Blazor Server, <strong>native OpenTelemetry semantic conventions</strong>.
+- <strong>Full OpenTelemetry for Blazor WebAssembly</strong> — in progress (component-level browser metrics/traces in the same dashboards).
+- <strong>OpenAPI 3.2 support</strong> in minimal APIs — available in previews.
+- <strong>Async validation</strong> for minimal APIs and Blazor — available in previews; <strong>async data-annotation attribute support in the core libraries is still coming</strong>.
+- <strong>Blazor static SSR parity features</strong> (in previews): <code>EnvironmentBoundary</code>, <code>Label</code>, <code>DisplayName</code>, QuickGrid <code>OnRowClick</code>, temp data, variable-height virtualization, client-side validation without interactivity, <strong>localized data-annotation validation messages</strong>.
+- <strong>Blazor Server pause/resume</strong> for idle circuits.
+- <strong>Blazor WebAssembly runtime move to CoreCLR</strong> — <strong>preview in .NET 11, stable in .NET 12.</strong>
+- <strong>Blazor WebWorker project template</strong> — available now in previews.
+- <strong>C# unions</strong> — coming to C# and being lit up across ASP.NET Core.
+- <strong>Blazor Gateway + Blazor Aspire hosting integration package + Blazor WASM service-defaults template</strong> — new for .NET 11; <strong>dashboard-launched debugging is planned/"coming."</strong>
+- <strong>Agentic hosting in ASP.NET Core</strong> via Microsoft Agent Framework (OpenAI responses, A2A, AGUI, MCP via the MCP C# SDK).
+- <strong>AGUI support in Microsoft Agent Framework</strong> — <strong>currently in preview</strong>; <strong>Blazor AI components are prototype</strong> (names not final).
+- <strong>.NET Skills repo/marketplace (<code>dotnet/skills</code>)</strong> — new Blazor/ASP.NET Core skills "just landed recently," with <strong>custom agents, tools, and eval suites</strong> being explored/built.</p>
+<h2 id="demos">💡 Demos</h2>
+<ol>
+<li><strong>Minimal API — OpenAPI 3.2 + native OTel:</strong> browsed the OpenAPI doc (confirmed 3.2) and the console showing out-of-the-box OpenTelemetry semantic conventions for HTTP request/response/route; code only adds the <code>Microsoft.AspNetCore</code> trace source. <em>Proved:</em> OpenAPI 3.2 and zero-instrumentation tracing on upgrade.</li>
+<li><strong>Blazor static SSR components:</strong> <code>EnvironmentBoundary</code>, <code>Label</code>, <code>DisplayName</code> (incl. QuickGrid headings), QuickGrid <code>OnRowClick</code> (selects/displays a person), temp data via <code>[SupplyParameterFromTempData]</code> (POST→redirect→GET server-time message), and variable-height virtualization with 10,000 items. <em>Proved:</em> MVC-grade SSR features now exist in Blazor.</li>
+<li><strong>Validation:</strong> client-side validation on a non-interactive static SSR page (DevTools shows no Blazor WebSocket / no WASM), EN→ES <strong>localized</strong> validation messages, and <strong>async</strong> unique-username check (<code>admin</code> taken) with in-flight UI and <code>EditContext.ValidateAsync</code>. <em>Proved:</em> rich validation without falling off the interactivity cliff, localized, and async-capable.</li>
+<li><strong>Blazor WebWorker:</strong> crunching ~250k sales records — UI-thread run freezes a health counter; web-worker run (<code>[JSExport]</code> <code>AnalyzeSalesData</code>) keeps the counter and UI responsive. <em>Proved:</em> offload CPU-intensive work off the UI thread today (with the message-passing/2nd-runtime caveats).</li>
+<li><strong>Standalone Blazor WASM + Aspire:</strong> AppHost wiring the API, WASM project, and <strong>Blazor Gateway</strong>; Aspire dashboard shows Gateway (WASM nested) + API; weather page works via Aspire <strong>service discovery</strong>; structured logs + traces show end-to-end proxying through the Gateway; <strong>browser-exported metrics</strong> (page navigations) appear in the dashboard. <em>Proved:</em> production-grade WASM hosting with full config/service-discovery/observability.</li>
+<li><strong>AGUI Dojo (React → Blazor):</strong> React/Copilot-Kit reference app, then a Blazor implementation — <code>MapAGUI</code> server endpoints with a <code>GetWeather</code> tool, an <code>IChatClient</code>-based AGUI chat client, <strong>front-end tool call</strong> (change background color), <strong>back-end tool call</strong> with a custom weather widget, <strong>human-in-the-loop</strong> plan confirm/reject, <strong>streaming long-running</strong> plan ("going to Mars"), and full UI↔agent state sharing; plus prototype <code>AgentBoundary</code>/messages/loading components. <em>Proved:</em> you can build rich agentic UIs in Blazor with AGUI.</li>
+<li><strong>Blazor "Plan UI change" skill:</strong> a Kanban app built <strong>without</strong> the skill (~300–400-line monolithic <code>Board.razor</code>) vs <strong>with</strong> the skill (cleanly factored subcomponents + component parameters), both functional. <em>Proved:</em> .NET Skills make coding agents produce more idiomatic, better-factored Blazor.</li>
+</ol>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>.NET 11 ASP.NET Core roadmap = 6 themes</strong> (feedback, foundation, modern stack, distributed/Aspire, agentic, Copilot-assisted dev).</li>
+<li><strong>4 investment areas</strong> for AI-assisted .NET dev: agentic skills, custom agents, tools, eval suites.</li>
+<li><strong>Zstandard ≈ Brotli-level compression ratios at much lower CPU cost.</strong></li>
+<li><strong>CoreCLR WASM runtime:</strong> preview in <strong>.NET 11</strong>, stable in <strong>.NET 12</strong>.</li>
+<li><strong>Virtualization demo:</strong> ~<strong>10,000 items</strong> rendered efficiently with variable heights.</li>
+<li><strong>WebWorker demo:</strong> ~<strong>a quarter-million (250k)</strong> sales records — froze the UI thread, smooth on a worker.</li>
+<li><strong>Kanban-skill demo:</strong> monolithic board file ≈ <strong>300–400 lines</strong> before the skill vs cleanly factored subcomponents after.</li>
+<li>.NET runs some of the <strong>biggest services in the world at Microsoft — Entra, Bing, Teams, Xbox, and most of Azure</strong> — and those workloads push the bar for everyone.</li>
+<li><em>"When you upgrade to .NET 11, your apps run faster, safer, and are more observable. No code changes required."</em></li>
+<li><em>"If we can't measure it, we don't really know if it works. The eval suite helps keep us honest."</em></li>
+<li><em>"We want AI coding assistants to love working with .NET as much as you do."</em></li>
+<li><em>"Don't get too attached to the specific names here"</em> — re: prototype Blazor AI component names.</li>
+<li>Speaker: <strong>Daniel Roth</strong>, Principal Product Manager for ASP.NET Core and Blazor.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Install the <strong>.NET 11 preview SDK</strong> (<code>get.net 11</code>) and scaffold a <strong>Blazor WebWorker</strong> project; benchmark a real CPU-bound task on/off the UI thread.</li>
+<li>Stand up the <strong>standalone Blazor WASM + Aspire + Blazor Gateway</strong> sample; confirm service discovery + browser OTel land in the Aspire dashboard.</li>
+<li>Build a minimal <strong>AGUI</strong> endpoint with <code>MapAGUI</code> + a server tool, and try a <strong>front-end tool</strong> (e.g. change UI state) using the Blazor AGUI chat client.</li>
+<li>Install the <strong>Blazor</strong> and <strong>ASP.NET Core</strong> plugins from <code>dotnet/skills</code>; rerun a UI task (Kanban-style) with/without the <strong>"Plan UI change"</strong> skill to compare factoring.</li>
+<li>Turn on <strong>OpenAPI 3.2</strong> + verify native <strong>OpenTelemetry</strong> tags appear without the OTel instrumentation package.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>When does the <strong>CoreCLR WASM</strong> preview ship in a .NET 11 preview, and what's the perf/size delta vs mono?</li>
+<li>What's the <strong>memory overhead</strong> of a Blazor WebWorker (second WASM runtime) in practice for typical workloads?</li>
+<li>Timeline for <strong>async data-annotation attributes</strong> in <code>System.ComponentModel.DataAnnotations</code> (the core-library half of async validation)?</li>
+<li>Will the <strong>Blazor AI component</strong> names/APIs stabilize before .NET 11 GA, and where to track them?</li>
+<li>Does the <strong>Blazor Gateway</strong> fully replace reverse-proxy/CORS setups in production, and how does session affinity behave at scale?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Any .NET web modernization (upgrade-only perf/security/observability wins).</li>
+<li>Teams building <strong>Blazor static SSR</strong> apps wanting MVC-parity (forms, validation, temp data).</li>
+<li><strong>Aspire</strong> adopters hosting standalone Blazor WASM with end-to-end telemetry.</li>
+<li>Teams building <strong>agentic web apps / agentic UIs</strong> on .NET (Agent Framework, AGUI, MCP).</li>
+<li>Improving <strong>Copilot/coding-agent</strong> effectiveness on .NET codebases via the .NET Skills.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+<li>Microsoft Agent Framework / Microsoft.Extensions.AI sessions</li>
+<li>.NET</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="OD801.html"><span class="pager-dir">← Previous</span><span class="pager-code">OD801</span><span class="pager-title">Modernize intelligent apps and agents with .NET that scale as you grow</span></a>
+    <a class="pager pager-next" href="OD803.html"><span class="pager-dir">Next →</span><span class="pager-code">OD803</span><span class="pager-title">Taking your AI to the edge with .NET MAUI</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ODSP922 — Develop a conversational search experience without rebuilding your app</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">ODSP922</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=avlMmJZUPuU" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Develop a conversational search experience without rebuilding your app</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Greg Khrist (Cloud Ecosystem Architect, Elastic), Jonathan Simon (Senior Product Marketing Engineer, Elastic)</span>
+      <span class="meta-item">⏱️ 25m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="search">Search</span><span class="chip" data-tag="conversational-ai">Conversational Ai</span><span class="chip" data-tag="rag">Rag</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="elastic">Elastic</span><span class="chip" data-tag="azure">Azure</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Greg Khrist (Cloud Ecosystem Architect, Elastic) · Jonathan Simon (Senior Product Marketing Engineer, Elastic)<br>
+<strong>Duration:</strong> ~25 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=avlMmJZUPuU">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>This Elastic-partner session shows how to upgrade an existing app from traditional search to a conversational, agentic AI search experience <strong>without re-architecting the application</strong>. Using <strong>Elastic Agent Builder</strong> (now generally available) plus a model deployed in <strong>Microsoft Foundry</strong>, Jonathan Simon takes a fictitious camping-gear e-commerce site ("Wayfinder Supply Company") that already has lexical/hybrid search and adds an AI-powered "trip planner" concierge agent. The walkthrough demonstrates wiring in a third-party LLM via an Azure connector, building a workflow → MCP tool → agent chain, grounding answers in your own product catalog and CRM data, and dropping the resulting agent back into the React/FastAPI app with only an API call. The core message: every tool and agent you build in Agent Builder is exposed as an MCP tool / REST API, so adding conversational search to an existing app is an integration job, not a rebuild. Elastic is available on the Azure Marketplace (deployed, managed, billed through Microsoft) for a frictionless zero-to-production path.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>You don't rebuild the app</strong> — the existing Wayfinder site keeps its React front end and Python/FastAPI back end; the conversational agent is added by calling a new API endpoint, not by re-architecting.</li>
+<li><strong>Elastic Agent Builder is now Generally Available</strong> (it was in technical preview previously) and is therefore supported for production workloads.</li>
+<li><strong>Models are the engine, your data is the fuel</strong> — Greg's framing: "a model without the right context, without the right data, is just a very expensive auto complete." Elastic supplies the grounding/context-engineering layer; Microsoft Foundry supplies the models.</li>
+<li><strong>Elastic ships three solutions on one platform</strong>: Search, Observability, and Security — all fed by bringing your own data into Elastic.</li>
+<li><strong>Elastic Search now spans three retrieval modes</strong>: lexical (exact-match), semantic (vector-based), and <strong>agentic</strong> (AI agents built with Agent Builder).</li>
+<li><strong>Procurement is frictionless</strong> — Elastic is natively on the Azure Marketplace ("Elastic serverless"), deployed/managed/billed through Microsoft, so no separate vendor relationship or procurement motion.</li>
+<li><strong>Everything you build in Agent Builder is an MCP tool</strong> — with an API key, any external app can call your workflows, tools, and agents; agent operations are also accessible via REST API.</li>
+<li><strong>Workflows are the building block</strong>: versioned, typed-input, multi-step units that can call external MCP servers via HTTP POST, with per-step on-failure handlers (retries + delays) and console logging.</li>
+<li><strong>The tool chain is layered</strong>: Workflow → Tool (workflow/ESQL/index-search/MCP types) → Agent (instructions + assigned tools) → integrated back into your app.</li>
+<li><strong>Hybrid search solves vocabulary mismatch</strong> — a lexical search for "coats" returns nothing (no product uses that word), but hybrid (vector) search correctly returns jackets because the catalog text was run through Elastic's inference service into a vector database.</li>
+<li><strong>Agent reasoning is transparent</strong> — both Agent Builder's UI and the integrated web app surface a live "thinking/reasoning" trace showing each tool call (weather, clickstream, product searches) as the agent works.</li>
+<li><strong>LLM choice is flexible and pre-wired</strong> — Agent Builder ships pre-configured connectors (Anthropic by default, plus many others); you can add any model via a "create connector" flow (e.g. an Azure/Foundry-deployed Mistral Large 3).</li>
+<li><strong>Bring-your-own-model via Foundry is fast</strong> — deploying Mistral Large from the Foundry catalog and wiring its target URI + API key into an Elastic connector took only a couple of minutes on stage.</li>
+<li><strong>The agent can write your integration code</strong> — you can ask the agent in-chat to "generate an example Python API call" to itself, producing starter code (requests import, URL, API key, prompt, query, print response).</li>
+<li><strong>Grounded answers blend multiple data sources</strong> — the trip-planner agent fuses product catalog (semantic search), user clickstream/affinity (ESQL), live weather/road safety (MCP workflow), and CRM customer profile (MCP workflow) into one recommendation.</li>
+<li><strong>Free on-ramps exist</strong> — Agent Builder docs, a public GitHub repo for the Wayfinder app (with README), a free no-install workshop, and a QR code for a 7-day free Elastic-on-Azure trial.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="the-setup-two-fast-moving-ecosystems-meeting">The setup: two fast-moving ecosystems meeting</h3>
+<p>Greg Khrist (Cloud Ecosystem Architect, Elastic) opens by framing the demo as sitting at the intersection of two things moving fast: the <strong>Microsoft AI ecosystem</strong> (Azure OpenAI and <strong>Foundry IQ</strong>, giving developers a powerful environment to discover, evaluate, and deploy LLMs) and <strong>Elastic's ability to bring your own data into the AI conversation</strong>. His central thesis: a powerful model is necessary but not sufficient — <em>"a model without the right context, without the right data, is just a very expensive auto complete."</em> The value Elastic adds is grounding answers in <em>your</em> data so the model produces "grounded, relevant, trustworthy AI answers… powered by your data and not just the model's training data."</p>
+<h3 id="why-azure-marketplace-matters-the-procurement-story">Why Azure Marketplace matters (the procurement story)</h3>
+<p>Greg stresses the commercial/operational friction Elastic removes. Elastic is <strong>natively available on the Azure Marketplace</strong> — deployed, managed, and <strong>billed through your Microsoft Marketplace</strong>. The benefits he calls out:
+- Go from <strong>zero to production-grade AI search</strong> without leaving the Azure ecosystem.
+- <strong>No separate procurement motion.</strong>
+- <strong>No additional vendor relationships to manage.</strong>
+- "Elastic on Azure the way Azure customers expect things to work."</p>
+<p>When you pair Elastic with the models you're already exploring in the <strong>Microsoft Foundry model catalog</strong> (Azure OpenAI or others), you get grounded, trustworthy answers. This is the "best of Microsoft's AI platform + Elastic's context engineering and search retrieval" pitch.</p>
+<h3 id="what-the-demo-will-cover-jonathans-agenda">What the demo will cover (Jonathan's agenda)</h3>
+<p>Jonathan Simon (Senior Product Marketing Engineer, Elastic) lays out the path:
+1. Quick overview of Elastic's solutions.
+2. Introduce Agent Builder.
+3. Demo a fictitious e-commerce site — <strong>Wayfinder Supply Company</strong> (camping gear).
+4. Tour Elastic Agent Builder.
+5. Build a <strong>workflow</strong>.
+6. Build an <strong>MCP tool</strong> from that workflow.
+7. Build an <strong>agent</strong> that uses the tool.
+8. Integrate the agent back into the Wayfinder web app.
+9. Walk through the Wayfinder architecture.</p>
+<h3 id="elastics-three-solutions-one-platform">Elastic's three solutions (one platform)</h3>
+<p>Elastic offers <strong>Search, Observability, and Security</strong>, all powered by bringing your data into the platform:
+- <strong>Search</strong> — bring any data into Elastic for "blazing fast" <strong>lexical exact-match</strong> search, <strong>semantic</strong> (vector-based) search, and now <strong>agentic</strong> search powered by AI agents built with Agent Builder.
+- <strong>Observability</strong> — bring your logs in; Elastic uses AI to <strong>parse and partition logs into a structured format</strong>, enabling application performance monitoring (APM), metrics, and instant visibility into running apps.
+- <strong>Security</strong> — for protecting systems, monitoring endpoints, or running a SOC; features include <strong>attack discovery</strong> and <strong>automatic remediation via workflows</strong> to stay ahead of modern threats.</p>
+<p><strong>Getting started on Azure:</strong> log in to Azure → Microsoft Marketplace → search <strong>"Elastic serverless"</strong> → the three solutions appear → click <strong>Get it now</strong> → a full-featured Elastic project is created.</p>
+<h3 id="the-ga-announcement-elastic-agent-builder">The GA announcement: Elastic Agent Builder</h3>
+<p>Jonathan announces that <strong>Elastic Agent Builder</strong>, after being in <strong>technical preview</strong> "for a while," is now <strong>officially Generally Available</strong> — meaning it's ready for <strong>production workloads</strong>. He says the best way to explain it is to show it, and moves into the demo.</p>
+<h3 id="demo-part-1-the-starting-point-a-normal-e-commerce-site">Demo part 1 — The starting point: a normal e-commerce site</h3>
+<p>The Wayfinder site sells camping gear. All products, descriptions, and titles were <strong>generated with generative AI</strong>, and search is powered by Elastic. Standard e-commerce behaviour works: browse gear, click an item to see images/details/title, add to cart. The search box offers three modes already present: <strong>chat-based search, hybrid search, and lexical search</strong>.</p>
+<p><strong>Vocabulary-mismatch demonstration (the key "why hybrid" moment):</strong>
+- Typing <strong>"jackets"</strong> → a clean list of jackets (lexical match works).
+- Typing <strong>"coats"</strong> → <strong>no results</strong>, because <strong>no product contains the word "coat"/"coats"</strong> in its title or description.
+- Switching to <strong>hybrid search</strong> for "coats" → jackets are returned. Why? The titles and descriptions were run through the <strong>Elastic inference service</strong> to create vectors stored in a <strong>vector database</strong>; hybrid search therefore knows "coats" are semantically similar to "jackets" and returns the right results.</p>
+<h3 id="demo-part-2-the-gap-an-agent-that-doesnt-exist-yet">Demo part 2 — The gap: an agent that doesn't exist yet</h3>
+<p>Jonathan raises the bar: what if users could ask a sophisticated, natural-language question to an <strong>AI-powered trip planner</strong>, e.g. <em>"Plan a 3-day backpacking trip to Yosemite next weekend"</em>? Running it returns an error — <strong>"trip planner agent is not built yet."</strong> That's the hook: the rest of the session builds that agent in Elastic Agent Builder.</p>
+<h3 id="demo-part-3-agent-builder-out-of-the-box">Demo part 3 — Agent Builder out of the box</h3>
+<p>The Agent Builder interface already has, with <strong>zero configuration on install</strong>:
+- An <strong>enabled agent</strong>.
+- A pre-configured <strong>LLM</strong> the agent can use (currently <strong>Anthropic</strong>), with a dropdown of many other <strong>pre-configured LLMs</strong> available by default.</p>
+<p><strong>Adding a model that isn't in the list:</strong>
+- Click <strong>Manage</strong> → see all pre-configured LLMs → <strong>Create connector</strong> → search <strong>"Azure"</strong> → select Azure.
+- You now need somewhere to find/deploy/run the model — <strong>Microsoft Foundry running in Azure</strong>.</p>
+<h3 id="demo-part-4-deploying-a-model-in-microsoft-foundry-and-wiring-it-in">Demo part 4 — Deploying a model in Microsoft Foundry and wiring it in</h3>
+<p>In Microsoft Foundry, no models are deployed initially. Steps shown:
+1. <strong>Deploy base model</strong> → large catalog of models appears.
+2. Select <strong>Mistral Large</strong> (specifically deploys "Mistral large"), use <strong>default settings</strong>, deploy — <em>"that was pretty fast."</em>
+3. Go to the deployment's <strong>Details</strong> → copy the <strong>target URI</strong>.
+4. Back in the Elastic connector settings → paste the URI.
+5. Return to Foundry → grab the <strong>API key</strong> → enter it for authentication.
+6. Name the connector <strong>"Mistral Large 3"</strong> → <strong>Save and test</strong>.
+7. Settings save; a test interface runs a <strong>"hello world" prompt</strong> → <strong>test successful</strong>.
+8. Back in Agent Builder's LLM selector → <strong>Mistral Large 3</strong> now appears as a selectable model.</p>
+<p>Takeaway he states: <em>"right out of the box, Agent Builder is a great place for you to try out agents with LLMs and your own data."</em></p>
+<h3 id="demo-part-5-building-the-workflow-get-customer-profile">Demo part 5 — Building the workflow (get customer profile)</h3>
+<p>The first building block for the trip planner is a <strong>workflow</strong>. Jonathan opens Workflows (a few already exist), creates a new one, and pastes a pre-saved definition from <strong>Visual Studio Code</strong>. Walking through the workflow elements:
+- <strong>version</strong> — workflows are versioned.
+- <strong>name</strong> — <code>get customer profile</code>.
+- <strong>input</strong> — takes a <code>userId</code> input of type <strong>string</strong>.
+- <strong>trigger</strong> — this one is <strong>triggered manually</strong> (other trigger types exist).
+- <strong>steps</strong> — one or more; this has a single step, <strong><code>call CRM MCP</code></strong>, which does an <strong>HTTP POST to an external MCP server</strong> to fetch the customer profile.
+- <strong>on-failure handler</strong> — each step can define failure handling; here it <strong>retries twice</strong> with a <strong>1-second delay</strong> between attempts.
+- <strong>logging</strong> — workflows can <strong>log their output</strong>; this logs the profile to the console (<code>log profile to the console</code>).</p>
+<p><strong>Running it:</strong> save → run → prompted for the <code>userId</code> value → enters <code>user member</code> (caption-garbled; the input is the user identifier) → run → <strong>successful</strong>. The response shows the <strong>log profile output</strong> in a readable format: customer <strong>Alex Heiker</strong> (caption renders it both "Heiker"/"Hiker"), his <strong>loyalty tier</strong>, <strong>lifetime purchases</strong>, <strong>lifetime value</strong>, and <strong>purchase history</strong>. The workflow works.</p>
+<h3 id="demo-part-6-turning-the-workflow-into-a-tool">Demo part 6 — Turning the workflow into a tool</h3>
+<p>Next, create a <strong>tool</strong> that uses the workflow. Path: Agent Builder → <strong>More</strong> menu → <strong>View all tools</strong> → <strong>New tool</strong>. Tool types available:
+- <strong>ESQL tool</strong> — uses <strong>Elastic Search Query Language</strong> (similar to SQL but "even more powerful").
+- <strong>Index Search tool</strong> — straight search against an Elastic index.
+- <strong>Workflow tool</strong> — wraps a workflow (the type used here).
+- <strong>MCP tool</strong> — <strong>currently in tech preview</strong>; lets you <strong>chain tools together</strong> to create a complex workflow.</p>
+<p>Steps: select <strong>Workflow</strong> type → pick the <strong>Get Customer Profile</strong> workflow → give a <strong>tool ID</strong> (copied from VS Code: <code>tool workflow get customer profile</code>) → paste the <strong>description</strong> → <strong>Save and test</strong>. Because the underlying workflow needs a <code>userId</code>, the tool's test flyout asks for the same input; entering the user identifier and submitting returns the same <strong>Alex Heiker</strong> profile (loyalty tier, lifetime value, purchase history). </p>
+<p><strong>Critical reusability point:</strong> <em>"any tool that you create in Agent Builder, it's officially an MCP tool. So with an API key, you can access that tool from any other application that you're building."</em></p>
+<h3 id="demo-part-7-building-the-agent">Demo part 7 — Building the agent</h3>
+<p>Create an agent: Agents → <strong>More</strong> → <strong>View all agents</strong> → <strong>New agent</strong>. Values are copied from VS Code:
+- <strong>agent ID</strong> → named the <strong>trip planner agent</strong>.
+- <strong>customer/custom instructions</strong> — a <strong>markdown</strong> block specifying exactly how the agent should behave: search the product catalog, generate a trip plan, which areas to search for trip plans, and additional details.
+- <strong>display name</strong> and <strong>description</strong>.</p>
+<p><strong>Assigning tools:</strong> open the <strong>Tools</strong> tab → sort by ID → enable the newly created <strong><code>tool workflow get customer profile</code></strong> tool plus <strong>three other tools</strong> (total of four). Then <strong>Save and chat</strong>, which drops you into Agent Builder with the trip planner agent selected for quick testing (you can switch agents via a dropdown).</p>
+<h3 id="demo-part-8-running-the-agent-and-the-reasoning-trace">Demo part 8 — Running the agent and the reasoning trace</h3>
+<p>Test prompt: <em>"Plan a 3-day backpacking trip to Yosemite this weekend."</em> Run it. A standout feature: Agent Builder shows a <strong>summary of what it's thinking/reasoning</strong>, expandable to see exact steps. The observed reasoning chain:
+- Knows "this weekend" is <strong>March 13th–15th</strong>.
+- Gets <strong>weather conditions</strong> for those dates and <strong>road alerts</strong>.
+- Runs an <strong>ESQL query</strong> for the user's <strong>past clickstream</strong>.
+- Searches for <strong>waterproof tents</strong>, then <strong>rain jackets</strong>, then gets <strong>more tent details</strong>.
+- Searches <strong>sleeping bags suitable for the expected temperatures</strong>, gets <strong>more sleeping-bag details</strong>.</p>
+<p>Result ("Voilà"): a <strong>backpacking trip itinerary to Yosemite</strong> with a <strong>trip overview</strong>, <strong>weather conditions</strong>, <strong>product recommendations</strong> matched to the trip's conditions/timing, and a <strong>suggested 3-day itinerary</strong>.</p>
+<h3 id="demo-part-9-agent-operations-via-api-self-generated-code">Demo part 9 — Agent operations via API + self-generated code</h3>
+<p>Beyond the chat UI, <strong>all agent functions are accessible via API</strong>, making integration into existing apps easy. Jonathan demonstrates a clever trick: instead of (or in addition to) reading the agent API docs, you can <strong>ask the agent to write the integration code</strong>: <em>"Hey, generate an example Python API call to the trip planner agent with the prompt that we ran before."</em> It returns <strong>simple Python</strong>: imports the <code>requests</code> library, sets the <strong>URL</strong> to reach the agent, notes you'll need an <strong>API key</strong>, includes the <strong>prompt</strong>, performs the <strong>query</strong>, and <strong>prints the response</strong>. The point: you can collaborate with the agent to generate starter code for integrating it into your apps.</p>
+<h3 id="demo-part-10-integrating-back-into-the-wayfinder-web-app">Demo part 10 — Integrating back into the Wayfinder web app</h3>
+<p>With the agent built, integrate it back into Wayfinder. The app is written so that <strong>if the trip planner agent is available, it works; if not, it shows the "not yet implemented" error</strong> from earlier. After refreshing: click <strong>Trip planner</strong> → choose a suggested prompt → "this weekend" → run. It works. Like the Agent Builder UI, the web app also <strong>surfaces the reasoning</strong> (expandable): planning the Yosemite trip, <strong>getting the customer profile</strong>, searching for <strong>waterproof rain gear</strong> by temperature, <strong>sleeping bags</strong> for expected temps, <strong>backpacks</strong>, and <strong>tents</strong>. </p>
+<p>The integrated result shows: a <strong>3-day Yosemite backpacking trip plan</strong>, <strong>weather conditions</strong>, <strong>recommended gear</strong>, and — in a side pane — <strong>all recommended gear with one-click "add to cart" buttons</strong>, plus a way to <strong>view/print the itinerary</strong> to bring on the trip. Summary of the journey: <em>"We went from an e-commerce site that had chat, hybrid, and lexical search to using Agent Builder to build an agent that powered a concierge-type trip planner with product recommendations… tied to an LLM that's running on Microsoft Foundry."</em></p>
+<h3 id="the-architecture-wayfinder-web-app-tour">The architecture (Wayfinder web app tour)</h3>
+<p>Top-to-bottom data flow:
+1. <strong>Front end</strong> — written in <strong>React</strong>. User submits a query (e.g. "plan my trip to Yosemite").
+2. That sends an <strong>HTTP request</strong> to the <strong>back end</strong> — <strong>Python running a FastAPI server</strong>.
+3. The Python back end makes an <strong>API query to the Elastic stack</strong> running the <strong>trip planner agent</strong>.
+4. The Agent Builder agent has access to <strong>four tools</strong>:
+   - <strong>product search</strong> — <strong>semantic search</strong> against the product catalog.
+   - <strong>get user affinity</strong> — an <strong>ESQL query</strong> against the user's data (clickstream/affinity).
+   - <strong>check trip safety</strong> — runs a <strong>workflow</strong> that does an <strong>HTTP POST to an MCP server</strong> for <strong>weather information</strong>.
+   - <strong>get customer profile</strong> (the one built live) — runs the <strong>get customer profile</strong> workflow → <strong>HTTP POST to an external MCP server</strong> that <strong>queries a CRM service</strong>.</p>
+<p>All four tools together produce the trip planner experience. The architecture cleanly illustrates the layered pattern: front end → API → Elastic agent → (semantic search tools + ESQL tools + workflow-backed MCP tools → external services).</p>
+<h3 id="resources-on-ramps">Resources &amp; on-ramps</h3>
+<p>Jonathan closes with starter resources:
+- <strong>Agent Builder documentation.</strong>
+- <strong>GitHub repo</strong> for the <strong>Wayfinder Supply web app</strong> — all the code to run it on your own machine, with a detailed <strong>README</strong> explaining how everything works.
+- A <strong>free, no-install workshop</strong> to try it yourself.
+- A <strong>QR code</strong> to get <strong>Elastic running on Azure free for 7 days</strong>.</p>
+<p>Greg wraps up, inviting attendees to visit Elastic at <strong>Microsoft Build Conference 2026</strong> and scan a QR code to learn more.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Elastic Agent Builder</strong> — the headline tool; build workflows, tools, and agents to add agentic AI search to apps. <strong>Now GA.</strong></li>
+<li><strong>Elastic Search</strong> — search solution with lexical (exact-match), semantic (vector), and agentic retrieval.</li>
+<li><strong>Elastic Observability</strong> — APM, metrics, and AI-driven log parsing/partitioning into structured format.</li>
+<li><strong>Elastic Security</strong> — endpoint/SOC protection with attack discovery and automatic remediation via workflows.</li>
+<li><strong>Elastic inference service</strong> — generates vectors from text (titles/descriptions) for semantic/hybrid search.</li>
+<li><strong>Elastic vector database</strong> — stores the embeddings that power hybrid/semantic search.</li>
+<li><strong>ESQL (Elastic Search Query Language)</strong> — SQL-like but more powerful query language; one of the tool types and used for user-affinity/clickstream queries.</li>
+<li><strong>Elastic Workflows</strong> — versioned, typed-input, multi-step units with on-failure handlers (retries/delays) and logging; can call external MCP servers via HTTP POST.</li>
+<li><strong>Elastic serverless (Azure Marketplace listing)</strong> — search term in Microsoft Marketplace that surfaces the three solutions; one-click "Get it now" provisions a full Elastic project.</li>
+<li><strong>MCP (Model Context Protocol) tools/servers</strong> — every Agent Builder tool is exposed as an MCP tool; workflows POST to external MCP servers (CRM, weather); an MCP tool type (tech preview) chains tools.</li>
+<li><strong>Microsoft Foundry</strong> — Azure environment to discover/deploy/run models from a large catalog; used to deploy the LLM.</li>
+<li><strong>Foundry IQ</strong> — referenced as part of Microsoft's LLM discovery/evaluation/deployment environment.</li>
+<li><strong>Microsoft Foundry model catalog</strong> — the catalog of deployable models (Azure OpenAI and others).</li>
+<li><strong>Azure OpenAI</strong> — example model source within Foundry.</li>
+<li><strong>Mistral Large (deployed as "Mistral Large 3" connector)</strong> — the specific model deployed in Foundry and wired into Elastic via an Azure connector.</li>
+<li><strong>Anthropic</strong> — the default pre-configured LLM in Agent Builder.</li>
+<li><strong>Azure Marketplace / Microsoft Marketplace</strong> — deployment, management, and billing channel for Elastic.</li>
+<li><strong>React</strong> — Wayfinder web app front end.</li>
+<li><strong>Python + FastAPI</strong> — Wayfinder web app back end.</li>
+<li><strong>Visual Studio Code</strong> — used to store/copy workflow, tool, and agent definitions during the demo.</li>
+<li><strong>Wayfinder Supply Company app</strong> — fictitious camping-gear e-commerce demo app (open-sourced on GitHub).</li>
+<li><strong>Tool types in Agent Builder</strong> — ESQL tool, Index Search tool, Workflow tool, MCP tool (tech preview).</li>
+<li><strong>Agent tools used by the trip planner</strong> — product search, get user affinity, check trip safety, get customer profile.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Elastic Agent Builder is now Generally Available (GA).</strong> Previously in <strong>technical preview</strong> "for a while"; Jonathan explicitly announces it is now officially GA and ready for <strong>production workloads</strong>. This is the session's primary announcement.</li>
+<li><strong>MCP tool type is in technical preview</strong> — the Agent Builder tool type that lets you <strong>chain tools together</strong> into complex workflows is called out as currently tech preview (the Workflow/ESQL/Index Search tool types are not flagged as preview).</li>
+<li><strong>Elastic is natively available on the Azure Marketplace</strong> ("Elastic serverless"), deployed, managed, and billed through Microsoft Marketplace — positioned as a current capability rather than a brand-new announcement.</li>
+<li>No other GA/preview status changes were stated. Foundry, Foundry IQ, Azure OpenAI, and the specific models (e.g. Mistral Large) are referenced as existing Microsoft platform capabilities, not new releases announced here.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<p>The session is essentially one continuous end-to-end live demo, broken into stages:
+- <strong>Wayfinder e-commerce baseline</strong> — browsing camping gear, viewing product details, add-to-cart; three existing search modes (chat, hybrid, lexical). <em>Proves:</em> the app already works with conventional Elastic search before any AI agent is added.
+- <strong>Lexical vs hybrid search ("coats" vs "jackets")</strong> — lexical "coats" returns nothing; hybrid "coats" returns jackets via vectors from the Elastic inference service. <em>Proves:</em> semantic/vector search overcomes vocabulary mismatch that exact-match search cannot.
+- <strong>The missing trip-planner agent</strong> — natural-language trip request errors with "agent not built yet." <em>Proves:</em> the gap the rest of the demo fills; sets up the "add it without rebuilding" narrative.
+- <strong>Adding a model via Foundry</strong> — deploy Mistral Large in Microsoft Foundry, copy target URI + API key into an Elastic Azure connector, hello-world test passes, model appears in Agent Builder. <em>Proves:</em> bring-your-own-model integration is fast (a couple of minutes) and any catalog model can power the agent.
+- <strong>Building a workflow (get customer profile)</strong> — paste workflow YAML/definition, run with a user ID, get back Alex Heiker's CRM profile (loyalty tier, lifetime value, purchase history) via HTTP POST to an MCP server. <em>Proves:</em> workflows can call external systems with retries/logging and are the reusable unit of work.
+- <strong>Workflow → tool → agent chain</strong> — wrap the workflow as an MCP tool, then create the trip planner agent with markdown instructions and four assigned tools. <em>Proves:</em> the layered composition model and that every tool is reusable/MCP-exposed.
+- <strong>Running the agent with a visible reasoning trace</strong> — "Plan a 3-day backpacking trip to Yosemite this weekend" produces a multi-step reasoning chain (weather, road alerts, clickstream ESQL, tents, rain jackets, sleeping bags) and a full itinerary with weather + product recommendations. <em>Proves:</em> the agent orchestrates multiple tools/data sources transparently.
+- <strong>Self-generated integration code</strong> — asking the agent to write an example Python API call to itself produces working starter code. <em>Proves:</em> integration friction is low; the agent helps you wire it in.
+- <strong>Integrated Wayfinder trip planner</strong> — the same experience now works inside the React/FastAPI app, with reasoning trace, recommended-gear pane with add-to-cart buttons, and a printable itinerary. <em>Proves:</em> the agent slots into the existing app via an API call — no rebuild.
+- <strong>Architecture walkthrough</strong> — React front end → FastAPI back end → Elastic agent with four tools (product search/semantic, get user affinity/ESQL, check trip safety/weather MCP workflow, get customer profile/CRM MCP workflow). <em>Proves:</em> the clean separation enabling "no rebuild" integration.</p>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>"A model without the right context, without the right data, is just a very expensive auto complete."</strong> — Greg Khrist, framing why grounding/your-data matters (the session's signature line).</li>
+<li><strong>Three Elastic solutions:</strong> Search, Observability, Security — on one platform fed by your data.</li>
+<li><strong>Three search modes</strong> in Elastic Search: lexical (exact-match), semantic (vector), agentic (Agent Builder agents).</li>
+<li><strong>Four tools</strong> power the trip-planner agent: product search, get user affinity, check trip safety, get customer profile.</li>
+<li><strong>Retry policy demoed:</strong> on-failure handler retries <strong>twice</strong> with a <strong>1-second delay</strong> between attempts.</li>
+<li><strong>"This weekend" resolved to March 13th–15th</strong> by the agent for the Yosemite itinerary.</li>
+<li><strong>7-day free trial</strong> of Elastic on Azure (via QR code).</li>
+<li><strong>"Zero to production-grade AI search deployment without leaving the Azure ecosystem"</strong> — Greg, on the Azure Marketplace path.</li>
+<li>Customer profile returned in demo: <strong>Alex Heiker</strong> — with loyalty tier, lifetime purchases, lifetime value, and purchase history.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Clone the <strong>Wayfinder Supply</strong> GitHub repo and run it locally (React front end + Python/FastAPI back end) to study the agent integration pattern end-to-end.</li>
+<li>Run the <strong>free no-install workshop</strong> to build a workflow → MCP tool → agent without provisioning anything.</li>
+<li>Spin up <strong>Elastic on Azure</strong> via the Marketplace ("Elastic serverless") using the <strong>7-day free trial</strong>; confirm the one-click "Get it now" provisioning.</li>
+<li>Deploy a model in <strong>Microsoft Foundry</strong> (e.g. Mistral Large or an Azure OpenAI model) and wire it into Agent Builder via the <strong>Azure connector</strong> (target URI + API key).</li>
+<li>Build a <strong>Workflow tool</strong> and a couple of <strong>ESQL tools</strong>, then compose an agent; test the live <strong>reasoning trace</strong>.</li>
+<li>Exercise an agent purely via its <strong>REST/MCP API</strong> with an API key — replicate the self-generated Python <code>requests</code> snippet against my own agent.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>Where exactly does <strong>hybrid search</strong> combine lexical + vector scores (RRF? linear)? The talk shows the behaviour but not the ranking algorithm.</li>
+<li>What are the <strong>pricing/billing</strong> mechanics when Elastic is billed through Azure Marketplace vs. inference costs for the embeddings + LLM calls?</li>
+<li>For the <strong>MCP tool type (tech preview)</strong> — what's the GA timeline, and how does tool-chaining differ from a multi-step workflow?</li>
+<li>How are <strong>secrets/API keys</strong> for external MCP servers (CRM, weather) and the Foundry connector stored/rotated in Elastic?</li>
+<li>What are the <strong>latency and cost</strong> characteristics of an agentic query (multiple tool calls + LLM reasoning) vs. plain hybrid search at e-commerce scale?</li>
+<li>Does the agent's <strong>reasoning trace</strong> surface to end users by default, and is it safe/desirable to expose in production?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Any team with an <strong>existing search-backed app</strong> wanting to add natural-language/conversational search without re-architecting.</li>
+<li>E-commerce / catalog search, support/knowledge search, and internal enterprise search use cases needing <strong>RAG-style grounding</strong> on proprietary data.</li>
+<li>Azure-centric orgs wanting <strong>frictionless procurement</strong> (Marketplace billing) and <strong>Foundry-hosted models</strong> paired with a retrieval/context layer.</li>
+<li>Architects evaluating <strong>MCP-based tool composition</strong> and agent-as-API integration patterns.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Elastic Agent Builder">Elastic Agent Builder</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Foundry">Microsoft Foundry</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Model Context Protocol (MCP)">Model Context Protocol (MCP)</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Hybrid Search &amp; Vector Embeddings">Hybrid Search &amp; Vector Embeddings</span></li>
+<li><span class="wikilink wikilink--unresolved" title="RAG - Retrieval Augmented Generation">RAG - Retrieval Augmented Generation</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Azure Marketplace - SaaS procurement">Azure Marketplace - SaaS procurement</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Conversational &amp; Agentic Search">Conversational &amp; Agentic Search</span></li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="ODSP919.html"><span class="pager-dir">← Previous</span><span class="pager-code">ODSP919</span><span class="pager-title">Move from data to intelligence with Oracle MCP and Microsoft IQ</span></a>
+    <a class="pager pager-next" href="ODSP923.html"><span class="pager-dir">Next →</span><span class="pager-code">ODSP923</span><span class="pager-title">Create enterprise apps with AI and MCP</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

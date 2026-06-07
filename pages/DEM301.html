@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEM301 — Rethinking CI: Actions, AI Agents, and the End of Commit-Fail-Commit</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEM301</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=Mt11hZql5Kc" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Rethinking CI: Actions, AI Agents, and the End of Commit-Fail-Commit</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Cil (Product Manager, GitHub), Dennis (Product Manager, GitHub)</span>
+      <span class="meta-item">⏱️ 23m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ci-cd">Ci Cd</span><span class="chip" data-tag="github-actions">Github Actions</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="devops">DevOps</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Cil — Product Manager, GitHub (presenter/driver) · Dennis — Product Manager, GitHub (co-presenter, supporting)<br>
+<em>(Both names are auto-caption transcriptions; "Cil" in particular is caption-uncertain. Dennis is also referred to once as "Denzon," likely the same person.)</em><br>
+<strong>Duration:</strong> ~23 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=Mt11hZql5Kc">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>GitHub Actions usage is exploding (550M → 850M jobs/week in 2026, much of it AI/agent-driven), and a recurring pain point is the <strong>"commit-fail-commit" loop</strong> — endlessly adding print statements, re-committing, and re-running just to figure out why a workflow failed or behaved oddly. This demo-heavy session shows two emerging tools that break that loop: (1) <strong>Agentic Workflows</strong> — markdown-authored workflows infused with agent logic, demonstrated via a pre-built <strong>"CI Doctor" / "CI Failure Doctor"</strong> template that auto-triggers on workflow failure, performs root-cause analysis, and files a GitHub issue with diagnosis and fix suggestions (going to <strong>public preview next week</strong>); and (2) a <strong>sneak-peek Actions Debugger</strong> — a real interactive debugger that connects to the live Actions runner over the <strong>Debug Adapter Protocol (DAP)</strong>, letting you inspect variables/contexts, run shell commands on the runner, and diagnose strange-but-passing workflows without any commit churn (still internal, no release date, gated on security).</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Actions usage is accelerating massively</strong>: ~2.8M jobs/week in early Jan, 550M/week at the start of 2026, 850M/week by early May — roughly a <strong>60% jump in a few months</strong>, driven heavily by AI and agents (though CI remains the primary use case).</li>
+<li>The <strong>commit-fail-commit cycle</strong> is the core problem being targeted: commit → run → something looks off → add a print statement → re-commit → re-run → repeat until you stumble onto the cause. It's slow and frustrating.</li>
+<li>Two complementary solutions: an <strong>agent-based diagnostic</strong> (good when there's clear failure data) and an <strong>interactive runner debugger</strong> (good when the workflow <em>succeeds but behaves wrong</em>).</li>
+<li><strong>Agentic Workflows</strong> let you author workflows in <strong>markdown</strong> (expressing intent in natural language) instead of writing raw Actions YAML by hand; a compile step turns the markdown into runnable YAML.</li>
+<li>The <strong>CI Doctor / CI Failure Doctor</strong> is a pre-built agentic workflow template that <strong>auto-triggers when a specified workflow fails</strong>, runs an agent to do <strong>root-cause analysis</strong>, and opens a <strong>GitHub issue</strong> with the diagnosis, the offending data, and concrete fix suggestions — all in the background, no manual trigger needed.</li>
+<li>Agentic workflows are <strong>fully customizable</strong>: you can edit the markdown prompt directly, and you can use <strong>Copilot to help write/modify</strong> that prompt (e.g. the presenter added a custom <code>/slash</code> command protocol to feed the CI Doctor extra info mid-investigation).</li>
+<li>The authoring flow uses the <strong><code>gh aw</code> GitHub CLI extension</strong> (<code>gh aw compile</code>) which compiles the markdown into a <strong><code>.lock.yml</code></strong> Actions file — deliberately named <code>.lock.yml</code> to distinguish agentic from traditional (non-agentic) workflows. You recompile whenever the markdown changes and commit the result.</li>
+<li>Agentic workflow files are <strong>just files in your repo</strong> — shareable across teammates and repos like any other file; recipients can recompile and/or further customize them.</li>
+<li>GitHub ships a <strong>growing library of pre-built agentic workflow templates</strong> (CI doctor, issue triage, PR triage, automatic/continuous documentation, continuous improvement, multi-repo coordination) addable via a wizard.</li>
+<li>Issues filed by the CI Doctor can be <strong>assigned to a coding agent</strong> (which starts a session and attempts the fix) or assigned to a human teammate — closing the loop from detection → diagnosis → remediation.</li>
+<li>The <strong>Actions Debugger</strong> is a genuine interactive debugger for <strong>GitHub-hosted runners</strong>, built on the <strong>Debug Adapter Protocol (DAP)</strong> so it works with any DAP-capable client (VS Code shown; the lead engineer uses Neovim).</li>
+<li>With the debugger you can <strong>inspect the full GitHub context, environment variables, and (redacted) secrets</strong>, <strong>step through workflow steps</strong>, and <strong>run arbitrary shell commands directly on the runner</strong> to test hypotheses live — no print-statement churn.</li>
+<li><strong>Availability:</strong> Agentic Workflows → <strong>public preview next week</strong> (search "GitHub Agentic Workflows"). Actions Debugger → <strong>internal/unreleased, no date</strong>, held back specifically over <strong>security/abuse concerns</strong> because it grants direct runner access.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="the-problem-the-commit-fail-commit-loop">The problem: the "commit-fail-commit" loop</h3>
+<p>GitHub Actions adoption has been climbing at an unprecedented rate. The presenters cite concrete numbers: at the very beginning of January 2026 they were running ~<strong>2.8 million jobs per week</strong>; by the start of 2026 (the year) that was <strong>550 million per week</strong>; and just a month earlier (early May) it was <strong>850 million per week</strong> — described as nearly a <strong>60% increase in only a few months</strong>. A lot of the growth comes from AI and agents, but <strong>CI remains the primary way people use Actions</strong>.</p>
+<p>The recurring friction users hit is the <strong>commit-fail-commit cycle</strong> (also said as "fail-commit, fail-commit"). The pattern: you commit a change, run a workflow, and something looks off — maybe it outright <strong>fails</strong>, or maybe it <strong>succeeds but looks weird/wrong</strong>. The only tool most people have is to make a small change (add a <code>print</code> statement, tweak something), <strong>re-commit, re-run</strong>, and keep iterating until they eventually break out of the loop by luck or persistence. A show of hands in the room confirmed it's a widely shared pain. The session presents <strong>two ways to break out of this loop faster</strong>:
+1. An <strong>agent-based solution</strong> — using <strong>agentic workflows</strong> to let AI diagnose problems automatically when they arise.
+2. An <strong>Actions Debugger</strong> (sneak peek) — to dig <em>inside the runner itself</em> to troubleshoot.</p>
+<h3 id="what-agentic-workflows-are">What Agentic Workflows are</h3>
+<p><strong>Agentic Workflows</strong> are a way to create an Actions workflow but <strong>infuse agent logic into it</strong>. Instead of hand-writing Actions YAML, you <strong>author in markdown</strong> — you express <em>what you want to do</em> in natural language markdown, and the system turns that into Actions YAML. A given agentic workflow file contains a small amount of <strong>traditional YAML</strong> (triggers/config) plus a body that is <strong>mostly markdown</strong> (the agent's instructions/prompt).</p>
+<p>The presenter polled the audience — a good number had heard of and were using Agentic Workflows already, so they're gaining traction.</p>
+<h3 id="demo-1-the-ci-doctor-diagnoses-a-failing-workflow">Demo 1 — The CI Doctor diagnoses a failing workflow</h3>
+<p>The starting point is a <strong>standard (non-agentic) Actions workflow</strong>: it runs a Python script that reads a handful of files (each just a bunch of <strong>key/value pairs</strong>), sums them up, and returns a value. The presenter runs it and it <strong>fails</strong> — the Python error is essentially <em>"cannot concatenate string"</em> (a <code>TypeError</code> from mixing strings and integers).</p>
+<p>The key move: going back to the list of workflow runs, there's a second workflow that fired <strong>right after</strong> the failure — the <strong>"CI Failure Doctor"</strong>, which is an <strong>agentic workflow</strong>. It's configured to <strong>trigger automatically any time</strong> a specified workflow (here, the "demo sum key counts from files" workflow) <strong>fails</strong>. When that happens it runs an agent that <strong>analyzes what happened</strong>, produces <strong>root-cause analysis</strong>, and suggests solutions.</p>
+<p>Looking at the file backing it, you notice something distinctive about agentic workflows: instead of a plain workflow YAML file you see the <strong>agentic workflow (markdown) file</strong>. Opening it reveals a little traditional Actions YAML up top, then mostly markdown — e.g. <em>"You are the CI failure doctor. You are investigating failed GitHub Actions to identify root causes and patterns,"</em> followed by a lot of detailed instructions on <strong>how to do the analysis, what steps/components to return, and how to work through the problem</strong>.</p>
+<p>This CI Doctor is one of several <strong>pre-built templates</strong> GitHub provides (findable online, addable via a <strong>wizard</strong>): CI doctor, <strong>issue triage</strong>, <strong>PR triage</strong>, <strong>automatic documentation</strong>, and others — including this one tuned to <strong>identify and resolve open issues</strong>.</p>
+<p><strong>Customization (Q&amp;A):</strong> Yes, it's just an <code>.md</code> file you can edit freely, and editing it changes the behavior. Beyond hand-editing, you can use <strong>Copilot to help build and edit the prompt</strong>. The presenter, noticing the agent was producing some odd results, used Copilot to <strong>add a custom <code>/slash</code> command protocol</strong> so they could feed the CI Doctor <strong>additional information mid-investigation</strong> to steer it.</p>
+<h3 id="from-markdown-to-a-runnable-workflow-gh-aw-compile-lockyml">From markdown to a runnable workflow: <code>gh aw compile</code> → <code>.lock.yml</code></h3>
+<p>Q&amp;A continues on what physically happens to the <code>.md</code> file. The flow:
+- You put the <code>.md</code> file into your repo.
+- You install <strong><code>gh aw</code></strong> — <strong>"AW" is the Agentic Workflows extension for the GitHub CLI</strong>.
+- You run <strong><code>gh aw compile</code></strong>. This validates and may emit <strong>warnings</strong> (in the demo it warned that the workflow should be <strong>restricted to the <code>main</code> branch</strong> — the presenter had removed that restriction just for the demo).
+- Compilation turns the markdown into an <strong>Actions YAML file</strong> that isn't really human-readable but that Actions knows how to execute. The output is committed as a <strong><code>.lock.yml</code></strong> file. The name <code>.lock.yml</code> was deliberately chosen to <strong>differentiate agentic workflows from non-agentic ones</strong> (since many people will still have traditional workflows).
+- Whenever you change the markdown, you <strong>recompile</strong> and commit the regenerated lock file. (In the demo, since it was already compiled, recompiling added nothing.)</p>
+<p>Mental model the co-presenter summarized: <em>"As a human I start with MD; the agentic-workflows process lets me convert that into an actual workflow — it converts to a <code>.lock.yml</code>."</em></p>
+<h3 id="sharing-agentic-workflows-across-teammates-and-repos-qa">Sharing agentic workflows across teammates and repos (Q&amp;A)</h3>
+<p>Because agentic workflows are just files, you can <strong>share any agentic workflow you've defined</strong> with anyone in your org/repos exactly like any other repo file. Teammates can then <strong>further customize it or just recompile it</strong> and add it to their own workflows. They behave like any other file/workflow you work with. GitHub itself is <strong>building more and more of these agentic workflows</strong> to solve common problems it keeps seeing, and is continuously <strong>adding to and iterating on</strong> them.</p>
+<h3 id="the-ci-doctors-output-an-investigation-issue-agent-assignment">The CI Doctor's output: an investigation issue + agent assignment</h3>
+<p>When the CI Failure Doctor finishes, it pops up a <strong>"CI Failure Investigation"</strong> issue. In the demo it reports the failure was a <strong><code>TypeError</code></strong> because a particular file (referred to as "counts 13") contained <strong>string values instead of integer values</strong> — which is correct, since the presenter <strong>deliberately introduced</strong> that error to force the failure. The issue:
+- Explains <em>why</em> it failed (strings instead of integers).
+- Notes that the summing function <strong>isn't doing any type casting</strong>.
+- Provides <strong>suggested actions</strong> — here, <strong>adding a casting operation</strong> to force the values to integers even when they're strings, plus adding a <strong>data validation step</strong> to the workflow.</p>
+<p>From the filed issue you can then <strong>assign it to a coding agent</strong>, which <strong>starts a session and attempts to fix all the errors</strong> automatically. Alternatively you can <strong>assign it to a human</strong> teammate (the presenter jokes about assigning it to "Denzon"/Dennis to take a crack at it). The <code>/slash</code> customization also lets you <strong>inject more context</strong> into the issue once you've spotted an additional root cause, speeding things up — once you know the problem, you just assign it to an agent and it handles the fix.</p>
+<p><strong>End-to-end recap (co-presenter):</strong> An automated agentic workflow was <strong>triggered by an event</strong> (CI failing). The CI Doctor agentic workflow <strong>immediately kicks off</strong>, <strong>produces an issue</strong> for you to review, and you <strong>didn't have to trigger anything yourself</strong> — it all runs in the background.</p>
+<h3 id="where-agents-arent-enough-workflows-that-succeed-but-misbehave">Where agents aren't enough: workflows that <em>succeed but misbehave</em></h3>
+<p>The CI Doctor shines when a workflow has <strong>failed with obvious data to diagnose</strong>. But a nastier class of problem is when the <strong>workflow doesn't fail — it succeeds, but in a strange way</strong>; something doesn't add up. In those cases an agentic workflow surfacing information <strong>might not be enough</strong> — you need to <strong>start rooting around</strong> in the actual execution. That motivates the second tool.</p>
+<h3 id="demo-2-the-actions-debugger-sneak-peek">Demo 2 — The Actions Debugger (sneak peek)</h3>
+<p><strong>Setup:</strong> There's an open <strong>PR</strong> with a workflow that runs on the PR. The workflow is supposed to <strong>identify all the markdown (<code>.md</code>) files modified by the PR</strong> and <strong>add links to them in the PR description</strong>, so reviewers can jump from the PR straight to a <strong>well-rendered version</strong> of each changed doc. (The team uses this on their own workflow because they write many docs in markdown.) So far one file, <strong><code>page two</code></strong>, has been added.</p>
+<p>The presenter switches to <strong>VS Code</strong>, copies <code>page two</code> to create <strong><code>page three</code></strong>, makes a small edit, saves, commits, and pushes. Back on the PR, the workflow reruns — but instead of linking <strong>both</strong> <code>page two</code> and <code>page three</code>, it <strong>only shows <code>page three</code></strong>. That's unexpected: the workflow <strong>succeeded but produced the wrong result</strong> — exactly the strange-but-passing scenario.</p>
+<p><strong>The old way:</strong> add a bunch of print statements, open the workflow, guess at the problem, iterate — slow.</p>
+<p><strong>The debugger way:</strong>
+1. Open the workflow run / job and choose <strong>Re-run</strong>. (Normally you'd "re-run with debug logging," but instead you <strong>enable the debugger</strong>.) Note: this is <strong>not released yet — still internal</strong>.
+2. The job kicks off and shows <strong>"waiting for debugger client to connect."</strong>
+3. <strong>Copy the link to the job</strong>, go to VS Code, and run <strong><code>gh ... debug running job</code></strong> (paraphrased as a GitHub command), part of a <strong>slightly modified version of the GitHub Actions extension</strong>, pasting in the job. Within a second the client <strong>connects to the running job</strong>.</p>
+<p><strong>Why DAP:</strong> The debugger uses the <strong>Debug Adapter Protocol (DAP)</strong> — a <strong>standardized protocol used by many debuggers</strong> for debugging different applications. It was chosen because it lets you <strong>tightly integrate with debuggers</strong>, and crucially means <strong>any DAP-supporting client works</strong>. VS Code is the presenter's choice, but the <strong>lead engineer prefers Neovim and does all of this in Neovim</strong>; lots of DAP integrations exist and it's easy to add.</p>
+<p><strong>What you can do once connected</strong> (you're attached to the <strong>runner's compute</strong>):
+- <strong>Run commands directly on the runner</strong> — e.g. <code>ls</code> to list files. <em>"You can run commands on the runner itself... that's the whole point of this."</em>
+- In the debugger's <strong>variables panel</strong>, inspect all <strong>context information</strong>: open the <strong>GitHub context</strong> to see its values, view defined <strong>environment variables</strong>, and see <strong>which secrets are defined</strong> — though <strong>secret values are redacted</strong> (you can see that a secret exists, not its contents).
+- <strong>Step through the workflow steps.</strong> The first two steps (checkout repo, set up Python) are unlikely culprits, so they're skipped over.</p>
+<p><strong>Finding the bug:</strong> The relevant step is <strong>"collect changed files,"</strong> which creates a <strong>temp directory</strong> and does a <strong><code>git diff</code> between two commits</strong>, writing the result out to a value. Inspecting the variables:
+- <strong>HEAD sha</strong> = <code>309c9…</code> — checking the PR, that matches the PR head. ✅
+- <strong>base sha</strong> = <code>a07ff…</code> — but that's the commit <strong>right before</strong> the PR head, i.e. the workflow is <strong>diffing the last two commits of the PR</strong>, not the PR against <code>main</code>.
+- The <strong>actual head of <code>main</code></strong> is something <strong>completely different</strong>.</p>
+<p>So the workflow is doing a <strong>bad comparison</strong> — comparing the PR's last two commits instead of PR-vs-base, which is exactly why only <code>page three</code> (the most recent commit's change) showed up and <code>page two</code> didn't. The two values set via environment variables are <strong>wrong</strong>.</p>
+<p><strong>Verifying the fix live (without committing):</strong> Rather than guess, the presenter hunts for the correct base sha <em>inside the runner</em>:
+- Look in the <strong>GitHub context → event context → <code>pull_request</code></strong>, which has a <strong><code>base</code></strong> object, which has a <strong><code>.sha</code></strong> — value <code>b49a57…</code>, which matches the real base. ✅
+- To double-check before changing code, <strong>run the command directly on the runner</strong>: <code>git diff --name-only &lt;base&gt; &lt;after&gt;</code>, pasting in the correct base sha and the <strong><code>after</code></strong> sha (pulled from context). Because that particular base var isn't set, it's done <strong>manually</strong>, but that's manageable.
+- Running it now returns <strong>both files</strong> — confirming the fixed comparison is correct.</p>
+<p>From here you could <strong>step through every remaining step</strong>, inspect all values, regenerate the files, and even run all the steps at the end — but the problem is already understood. The presenter can now <strong>go back, make the one change, commit, and be done</strong> — <em>"the debugger has told me exactly where I was looking for. I didn't have to commit a bunch of stuff, do print statements, or add extra steps."</em> You <strong>jump in, do some research, find what you need, make the change, commit — done.</strong></p>
+<p><strong>Recap (co-presenter):</strong> It's a <strong>real debugger for the runners</strong> — you can jump in, play around, run commands, and inspect everything <strong>within the context of any DAP-accepting client</strong>. DAP is designed for debugging, so it handles <strong>stepping over</strong> and <strong>returning/inspecting variables</strong> natively.</p>
+<h3 id="availability-security-posture-and-feedback">Availability, security posture, and feedback</h3>
+<ul>
+<li><strong>Agentic Workflows → public preview next week.</strong> Search <strong>"GitHub Agentic Workflows"</strong> online to find the preview site, which includes a <strong>CLI quick-start</strong> and <strong>many examples</strong> (issue management, <strong>continuous documentation</strong>, <strong>continuous improvement</strong>, with <strong>multi-repository coordination</strong> in progress).</li>
+<li><strong>Actions Debugger → still internal, no release date.</strong> It was shown only as a sneak peek of what the team is building. Because it allows <strong>direct access to your runners</strong>, the team is <strong>very concerned about security and abuse</strong> and is spending <strong>extra time</strong> ensuring the <strong>appropriate level of protection</strong> so teams get maximum value <strong>without opening security holes</strong>. No date because <strong>security is paramount</strong>, but they wanted to show it because it's compelling.</li>
+<li><strong>Feedback strongly requested</strong> on both agentic workflows and the debugger via <strong>GitHub's public forums</strong> — it's the best channel for the team to track. For agentic workflows especially (actively iterated, public preview next week), feedback and <strong>use-case stories</strong> are valuable because they let GitHub <strong>build more pre-built agentic workflows</strong> to accelerate users' processes.</li>
+</ul>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>GitHub Actions</strong> — CI/CD automation platform; the subject of the whole talk; usage scaling to ~850M jobs/week.</li>
+<li><strong>Agentic Workflows</strong> — Actions workflows authored in <strong>markdown</strong> with embedded agent logic, compiled to runnable YAML; going to public preview next week.</li>
+<li><strong><code>gh aw</code> (Agentic Workflows CLI extension)</strong> — GitHub CLI extension for agentic workflows; <strong><code>gh aw compile</code></strong> turns the markdown into a <code>.lock.yml</code> Actions file.</li>
+<li><strong><code>.lock.yml</code></strong> — the compiled, machine-readable Actions YAML output of an agentic workflow; the <code>.lock</code> suffix distinguishes agentic from non-agentic workflows.</li>
+<li><strong>CI Doctor / CI Failure Doctor</strong> — pre-built agentic workflow template that auto-triggers on workflow failure, does root-cause analysis, and files a diagnosis issue with fix suggestions.</li>
+<li><strong>Pre-built agentic workflow templates</strong> — library including issue triage, PR triage, automatic/continuous documentation, continuous improvement, and (in progress) multi-repository coordination; addable via a wizard.</li>
+<li><strong>GitHub Copilot</strong> — used to help author/edit the agentic workflow markdown prompt (e.g. adding the custom <code>/slash</code> command protocol).</li>
+<li><strong>GitHub coding agent / issue assignment to an agent</strong> — a CI Doctor issue can be assigned to an agent that starts a session and attempts the fix automatically (or assigned to a human).</li>
+<li><strong>Actions Debugger</strong> (unreleased, internal) — interactive debugger that attaches to a live GitHub Actions runner to inspect state and run commands.</li>
+<li><strong>Debug Adapter Protocol (DAP)</strong> — the standardized debugging protocol the Actions Debugger is built on; enables any DAP-capable client to connect.</li>
+<li><strong>GitHub Actions VS Code extension (modified)</strong> — provides the <code>gh ... debug running job</code> command used to attach the debugger to a running job.</li>
+<li><strong>VS Code</strong> — the presenter's DAP client of choice for the debugger demo.</li>
+<li><strong>Neovim</strong> — the lead engineer's DAP client of choice; cited to show DAP client-agnosticism.</li>
+<li><strong>Python</strong> — language of the demo CI script (reads key/value files and sums values; failed with a <code>TypeError</code>).</li>
+<li><strong><code>git diff</code> (<code>--name-only</code>)</strong> — the comparison the "collect changed files" step runs; the bug was a wrong base/head sha pairing.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>GitHub Agentic Workflows → public preview "next week"</strong> (relative to Build 2026). Preview site (search "GitHub Agentic Workflows") includes CLI quick-start and examples; multi-repository coordination is actively being built.</li>
+<li><strong>GitHub Actions Debugger → previewed as a sneak peek; NOT released, no date.</strong> Still an internal project; release gated on security/abuse hardening because it grants direct runner access.</li>
+<li>Ongoing: GitHub is <strong>continuously adding new pre-built agentic workflow templates</strong> for common problems.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>CI Doctor on a failing workflow:</strong> A standard Python Actions workflow was made to fail with a deliberate <code>TypeError</code> (strings where integers were expected). The <strong>CI Failure Doctor</strong> agentic workflow <strong>auto-triggered on the failure</strong>, ran an agent, and <strong>filed a "CI Failure Investigation" issue</strong> correctly identifying the bad file, explaining the missing type casting, and suggesting fixes (add casting + a data-validation step). Demonstrated that the issue can then be <strong>assigned to a coding agent</strong> to auto-fix. <em>Point proved:</em> failures can be diagnosed and routed to a fix <strong>automatically, in the background, with zero manual triggering</strong> — replacing the first half of the commit-fail-commit loop.</li>
+<li><strong>Authoring + compiling an agentic workflow:</strong> Showed the CI Doctor's underlying <strong>markdown file</strong> (the <code>You are the CI failure doctor…</code> prompt + a little YAML), live use of <strong>Copilot to add a custom <code>/slash</code> command protocol</strong> to the prompt, and <strong><code>gh aw compile</code></strong> turning the markdown into a committed <strong><code>.lock.yml</code></strong> (including a warning to restrict it to <code>main</code>). <em>Point proved:</em> agentic workflows are human-authorable, AI-assisted, customizable, and shareable like any repo file.</li>
+<li><strong>Actions Debugger on a strange-but-passing workflow:</strong> A PR workflow meant to link all modified <code>.md</code> files in the PR description <strong>only linked <code>page three</code>, not <code>page two</code></strong> — succeeded but wrong. The presenter <strong>re-ran with the debugger enabled</strong>, attached from <strong>VS Code over DAP</strong> (<code>gh … debug running job</code>), inspected the <strong>GitHub context / env vars / (redacted) secrets</strong>, and found the <strong>"collect changed files"</strong> step was diffing the <strong>PR's last two commits</strong> (wrong base sha <code>a07ff…</code>) instead of PR-vs-base. They located the correct base sha (<code>b49a57…</code>) in the <strong><code>pull_request.base.sha</code></strong> context, <strong>ran <code>git diff --name-only</code> directly on the runner</strong> to verify it returned <strong>both files</strong>, then concluded they could fix-commit once and be done. <em>Point proved:</em> you can fully diagnose runner behavior <strong>interactively, without commit/print-statement churn</strong> — killing the second half of the loop.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>Actions job volume:</strong> ~<strong>2.8M jobs/week</strong> (early Jan) → <strong>550M jobs/week</strong> (start of 2026) → <strong>850M jobs/week</strong> (early May) — <em>"a 60% increase almost in only a few months."</em></li>
+<li><em>"The end of fail-commit, fail-commit"</em> — the framing for breaking the commit-fail-commit loop.</li>
+<li><em>"You are the CI failure doctor. You are investigating failed GitHub Actions to identify root causes and patterns."</em> — the CI Doctor agentic workflow's opening prompt.</li>
+<li><em>"You can even run commands on the runner itself… that's the whole point of this."</em> — on the Actions Debugger.</li>
+<li><em>"The debugger has told me exactly where I was looking for. I didn't have to commit a bunch of stuff, do a whole bunch of print statements… I jumped in, I did some research, and I was able to find what I need. I can make my change, commit, I'm done."</em></li>
+<li><em>"Given that this is allowing direct access to your runners, we are very concerned about security and abuse…"</em> — on why the debugger is unreleased.</li>
+<li><strong><code>.lock.yml</code> naming:</strong> <em>"We just put <code>.lock.yml</code> because we wanted something to differentiate between non-agentic workflows."</em></li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Install the <strong><code>gh aw</code></strong> CLI extension and add the <strong>CI Doctor</strong> template (via the wizard) to a test repo; deliberately break a workflow and watch it file a diagnosis issue.</li>
+<li>Try the broader template set — <strong>issue triage, PR triage, continuous documentation, continuous improvement</strong> — and see which map to real repo pain.</li>
+<li>Author a custom agentic workflow from scratch in markdown, then <strong>use Copilot</strong> to refine the prompt; practice the <strong><code>gh aw compile</code> → <code>.lock.yml</code> → commit</strong> loop.</li>
+<li>Experiment with the <strong>issue → assign to coding agent</strong> handoff to see how well auto-fix performs on real failures.</li>
+<li>Watch for the <strong>Actions Debugger</strong> preview; if it ships, try the <strong>DAP attach from Neovim</strong> path (not just VS Code).</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What are the <strong>security guardrails</strong> the team is building for direct runner access (who can attach, on which branches/repos, audit logging, time limits)?</li>
+<li>How are <strong>secrets redacted</strong> in the debugger's variable view, and can that be bypassed — what's the threat model?</li>
+<li>What does <strong>multi-repository coordination</strong> for agentic workflows look like in practice, and when does it land?</li>
+<li>What <strong>model(s)</strong> power the CI Doctor agent, and how are token/compute costs of auto-triggering on every failure managed at scale?</li>
+<li>Does the <code>.lock.yml</code> need to be <strong>kept in sync manually</strong> (recompile on every markdown edit), or is there CI enforcement to prevent drift?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Any team on <strong>GitHub Actions</strong> fighting flaky/opaque CI or the commit-fail-commit loop.</li>
+<li>DevOps/platform engineers standardizing <strong>reusable, AI-assisted CI diagnostics</strong> across repos.</li>
+<li>Anyone evaluating <strong>agent-in-the-loop CI/CD</strong> patterns (auto-triage → auto-fix) and the governance around agent runner access.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><a class="wikilink wikilink--resolved" href="DEM350.html">DEM350 - GitHub Agentic Workflows</a> — deeper/companion coverage of the same Agentic Workflows feature from Build 2026.</li>
+<li>Microsoft Build 2026 — GitHub Actions / Copilot coding-agent sessions (CI/CD + agents track).</li>
+<li>GitHub Agentic Workflows preview site (search "GitHub Agentic Workflows") — CLI quick-start + template examples.</li>
+<li>Debug Adapter Protocol (DAP) — the standard underpinning the Actions Debugger; relevant to any DAP-based tooling (VS Code, Neovim).</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEM300.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEM300</span><span class="pager-title">Supercharged profiling: Finding performance bugs with agents</span></a>
+    <a class="pager pager-next" href="DEM302.html"><span class="pager-dir">Next →</span><span class="pager-code">DEM302</span><span class="pager-title">Build and deploy an Azure app with your agent team</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

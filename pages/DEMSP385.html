@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEMSP385 — Build context-aware agents using GitHub Copilot, Elastic, and Azure AI</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEMSP385</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=tg2zMWEM3a0" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Build context-aware agents using GitHub Copilot, Elastic, and Azure AI</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Elastic Developer Advocate (partner demo, name not stated in captions)</span>
+      <span class="meta-item">⏱️ 18m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="elastic">Elastic</span><span class="chip" data-tag="github-copilot">GitHub Copilot</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="rag">Rag</span><span class="chip" data-tag="observability">Observability</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Elastic Developer Advocate (partner demo session; speaker name not stated in the captions — Elastic × Microsoft)<br>
+<strong>Duration:</strong> ~18 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=tg2zMWEM3a0">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>This is a hands-on partner demo showing how to make code review <strong>context-aware</strong> by wiring Elasticsearch into the GitHub pull-request flow. Instead of a PR review only answering "does the code compile / is it syntactically correct?", the demo adds a second, far more valuable question: <strong>"will this change re-trigger an incident we already had in production?"</strong> The trick is to feed past postmortems, RCAs, and OpenTelemetry traces (all stored in Elasticsearch) into an agent built with <strong>Elastic Agent Builder</strong>, invoked automatically from a <strong>GitHub Action</strong> on every PR. When a code diff semantically matches a prior production failure, the agent posts a PR comment with the specific incident date, root cause, the offending traces, and a suggested fix. The developer can then drop into <strong>VS Code + GitHub Copilot</strong> — which talks to the same Elastic data via an <strong>MCP server</strong> — to investigate and auto-apply the fix without ever leaving the editor. The core thesis: <em>move PR review from "looks syntactically fine" to "this exact change broke production on April 7th — maybe don't."</em></p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li>Traditional CI checks validate <strong>correctness</strong> (does it build, is it syntactically valid); this approach adds <strong>operational memory</strong> (did this pattern cause a real incident before).</li>
+<li>The architecture is a closed loop: <strong>PR pushed → GitHub Actions fire → call an Elastic workflow → which calls Elastic Agent Builder → semantic match against incidents/traces → comment pushed back to the PR.</strong></li>
+<li><strong>Elastic Agent Builder</strong> is Elastic's agent platform (run inside <strong>Kibana</strong>) for building and running custom agents over your Elastic data — agents have <strong>skills</strong>, <strong>tools</strong>, and <strong>custom instructions</strong>.</li>
+<li>Matching is <strong>semantic / vector search, not keyword matching</strong> — the agent looks for <em>patterns</em> (e.g. "concurrency / race condition") rather than literal string matches in the diff.</li>
+<li>Embeddings are generated <strong>in-cluster using Jina AI embeddings</strong> ("Gina AI" in the captions) across all postmortems, comments, and incident data, so a code change can be matched semantically to prior failures.</li>
+<li>The same underlying Elastic data and tools are exposed three ways: (1) automatically via the <strong>GitHub Action</strong>, (2) interactively by <strong>chatting with the agent in Kibana</strong>, and (3) inside <strong>VS Code via an MCP server + GitHub Copilot</strong> — pick whichever fits the developer's workflow.</li>
+<li>A <strong>GitHub Action workflow</strong> just gathers PR context (diff, title, repo, PR number) as environment variables, calls the Elastic workflow URL, and parses any returned match into a PR comment. End-to-end run takes <strong>~1 minute</strong> depending on data volume.</li>
+<li>The agent's tools are concrete Elastic queries: <strong>search incidents</strong> (semantic), <strong>find similar traces</strong> by HTTP route, and <strong>find latency spikes</strong> on those routes — backed by OpenTelemetry data in Elasticsearch.</li>
+<li>Elastic's tool queries use <strong>ES|QL</strong> (a newer SQL-like query language for Elastic) and a <strong><code>match</code> query function</strong> that is deceptively powerful — it performs semantic/vector search rather than literal keyword matching.</li>
+<li><strong>Skills</strong> can encode recurring failure knowledge: e.g. after a recurring race-condition incident, you add a skill that tells the agent specifically to watch for race conditions, making the LLM's generic awareness sharply targeted to <em>your</em> known problems.</li>
+<li>The agent doesn't just say "this looks risky" — it must <strong>cite evidence</strong>: the incident date, the root cause, sample traces, and concrete production impact, so the recommendation is defensible.</li>
+<li><strong>GitHub Copilot + MCP</strong> lets a developer investigate and <strong>auto-apply the suggested fix</strong> in VS Code (Copilot rewrites the code, removes the unsafe change, makes the DB statement thread/checkout-safe, even adds an extra safety check).</li>
+<li>This guards against the modern failure mode where a <strong>coding agent</strong> (not a human) confidently introduces a change that already broke production — the incident memory catches it regardless of who/what wrote the code.</li>
+<li>You don't need the full stack to get value: <strong>even just loading OpenTelemetry latency data</strong> lets you catch spikes; postmortems and RCAs add richer matching on top.</li>
+<li>The pattern works in <strong>dev too</strong> — run postmortems in dev, store those lessons in Elastic, and match against them to get ahead of issues before they reach production.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="the-problem-pr-review-only-checks-correctness-not-operational-history">The problem: PR review only checks correctness, not operational history</h3>
+<p>Today, when you push a PR, automated review tells you whether the code <em>works</em> — is it syntactically correct, does it pass the checks you've configured. If it fails, it's blocked; otherwise you merge. What that review <strong>doesn't</strong> tell you is whether the change will reproduce a failure you've already lived through. The speaker's framing: shift from <em>"now it looks good"</em> to <em>"it might be syntactically correct, but it hits the same production issue that happened last month."</em> The raw materials to answer that — <strong>postmortem incidents, RCAs, and OpenTelemetry traces</strong> — already exist in Elasticsearch; the demo ties them into the review.</p>
+<h3 id="high-level-architecture">High-level architecture</h3>
+<p>The end-to-end flow:
+1. You push a <strong>PR</strong> in GitHub.
+2. <strong>GitHub Actions</strong> fire — running whatever checks you already have.
+3. An added step calls an <strong>Elastic workflow</strong>, which in turn calls <strong>Elastic Agent Builder</strong> (Elastic's agent platform).
+4. Using <strong>semantic search</strong> over OpenTelemetry similarities and incident postmortems, the agent decides whether this change matches a known prior failure.
+5. If it matches, it <strong>pushes a comment back into the PR</strong>, and you decide what to do.
+6. Optionally, you <strong>drop into VS Code and use GitHub Copilot + the MCP servers</strong> (wired back to Elasticsearch) to investigate and fix.</p>
+<p>The whole point is to move review from "this looks fine" to "this is syntactically valid but it caused a production incident last month."</p>
+<h3 id="the-demo-app-wayfinder-e-commerce-inventory">The demo app: Wayfinder (e-commerce inventory)</h3>
+<p>The example application is <strong>Wayfinder</strong>, a fictional outdoor/adventure e-commerce store. The speaker's running gag: they're from Chicago, dream of climbing California's mountains, so they buy all the adventure gear and never use it. The <strong>critical correctness property</strong> is inventory accuracy under concurrency: if there's <em>one pair of boots left</em> and <em>three people try to buy it</em>, only <strong>one</strong> buyer must actually win the sale. This is the classic high-throughput <strong>race condition</strong> setup that the rest of the demo revolves around.</p>
+<h3 id="step-1-the-risky-refactor-the-pr">Step 1 — The risky refactor (the PR)</h3>
+<p>The speaker opens a PR with a small, innocuous-looking refactor intended to improve behaviour <strong>under high throughput</strong>. The substantive change: instead of doing an <strong>atomic checkout</strong> inline, the new code <strong>sets the quantity once and reuses a pre-computed value</strong> in a couple of places. It's a minor, <em>valid</em> change — it passes all normal checks because there's nothing syntactically wrong with it. (The speaker had several practice PRs queued up because it's a big event.) This is exactly the kind of change a human — or a coding agent — might happily approve.</p>
+<h3 id="step-2-the-elastic-pr-agent-comment">Step 2 — The Elastic PR agent comment</h3>
+<p>On the PR's conversation tab, alongside the usual checks, there's an <strong>Elastic PR agent</strong> check — the heart of the demo. Elastic Agent Builder runs through the diff and posts a comment along the lines of:</p>
+<blockquote>
+<p>"The PR introduces a critical <strong>race condition</strong> that previously caused a production incident."</p>
+</blockquote>
+<p>Crucially, the recommendation is <strong>not</strong> based purely on the LLM's training about code/reviews. It's grounded in <em>your actual data</em>:
+- It cites a specific incident: <strong>April 7th</strong>, which caused <strong>504 Gateway Timeouts</strong>.
+- It pulls <strong>OpenTelemetry (OTel) traces</strong> with specific trace examples.
+- It explains the <strong>root cause</strong> of the earlier incident and why this change is a bad idea.
+- It even includes a <strong>suggested fix</strong> to make the change without breaking production.</p>
+<p>The narrative: "you (or a coding agent) made this change before, and we broke production at least once — maybe don't do it again."</p>
+<h3 id="the-github-side-how-the-action-is-wired">The GitHub side — how the Action is wired</h3>
+<p>The setup is deliberately simple. The GitHub Action calls <strong>one workflow URL</strong>. In real time it takes about <strong>a minute</strong> to run, depending on how much production data, how many incidents/RCAs, etc. The workflow file:
+- Calls <strong>Elastic Agent Builder</strong>, optionally posting a comment if it matches a prior failure.
+- Passes the needed <strong>environment variables</strong>: PR number, title, repo — whatever the Elastic-side agents need.
+- The bulk of it is just <strong>gathering PR data to send to the agent</strong>: getting the diff, collecting context, instructing the agent to use its tools (e.g. searching OTel traces).
+- At the bottom, logic to <strong>parse the agent's response</strong> and, if something came back, generate the PR comment.</p>
+<p>So the GitHub responsibility is narrow: <strong>gather PR info + diff → send to Elastic → parse the result → comment.</strong></p>
+<h3 id="the-elastic-side-kibana-agent-builder-and-the-agents-configuration">The Elastic side — Kibana, Agent Builder, and the agent's configuration</h3>
+<p>Hopping into <strong>Kibana</strong> (Elastic's UI on top of Elasticsearch), the speaker opens the <strong>Agent Builder / Agent UI</strong> (described as fairly new — Elastic, "like everyone else here at Build", is embedding agents as much as possible). Key elements:</p>
+<ul>
+<li><strong>Conversation history</strong> — every run is stored, <em>including the automated GitHub-triggered ones</em>, so you can go back and see what each PR review did.</li>
+<li><strong>Skills vs Tools</strong> (an important distinction):</li>
+<li><strong>Skills</strong> provide <em>information/guidance</em> — how something should be done, info about a system, or a set of actions/procedures.</li>
+<li><strong>Tools</strong> provide <em>functions</em> — actual capabilities like querying Elasticsearch, doing semantic/vector search, reaching out to <strong>MCP servers</strong>, or running <strong>workflows</strong>.</li>
+<li><strong>Custom instructions</strong> — because it's a custom agent, you brief it: <em>"You are an AI pull-request reviewer. Wayfinder is the store. You have access to OpenTelemetry data, historical incidents, postmortems…"</em> The instructions walk the agent through the steps: <strong>fetch the PR diffs → identify the routes being used → look for patterns (not keywords) → use the tools.</strong> Tools don't have to be hardcoded into the instructions — they're injected automatically.</li>
+<li>The agent is explicitly told to <strong>look for patterns, not keywords</strong> — semantic lookup, not string matching — and, when it finds a match, to <strong>explain what the match is, how it was found, and give specific examples</strong>, so the verdict is "production actually broke" rather than a vague "seems like a bad idea."</li>
+</ul>
+<h3 id="skills-as-institutionalised-rca-knowledge">Skills as institutionalised RCA knowledge</h3>
+<p>A powerful idea: when you have a <strong>recurring incident</strong>, part of your postmortem/RCA can be <strong>creating a skill</strong> that teaches the agent to watch for that specific failure class — e.g. a skill that looks for <strong>race conditions</strong>. The LLM already "knows" what a race condition is, but a skill lets you be <em>very specific</em> about the failure modes that have actually bitten <em>your</em> system, so the agent's attention is focused where your real risk lives.</p>
+<h3 id="tools-in-detail-esql-and-the-semantic-match-function">Tools in detail — ES|QL and the semantic <code>match</code> function</h3>
+<p>The agent has several Elastic tools:
+- <strong>Find similar traces</strong> based on HTTP routes.
+- <strong>Find latency spikes</strong> on those routes.
+- <strong>Search incidents</strong> — matching against previous incidents.</p>
+<p>The speaker polls the room on <strong>ES|QL</strong> (Elastic's newer <strong>SQL-like query language</strong>) — few hands up, since it's newish. The incident-search tool is described as a "dead simple ES query," but the key subtlety is the <strong><code>match</code> query function</strong>: it looks like a keyword match but is actually doing <strong>semantic / vector search</strong>. This works because <strong>embeddings are generated in-cluster using Jina AI embeddings</strong> (captioned "Gina AI") across all postmortem incidents, comments, and data — so a full-text query can match <strong>semantically</strong> on what was going on, not just on literal terms. Tool descriptions are kept short in the demo but can be more verbose in a real production environment.</p>
+<h3 id="workflows-the-other-half-of-the-github-bridge">Workflows — the other half of the GitHub bridge</h3>
+<p>Earlier, the GitHub-side workflow gathered env vars and called an Elastic workflow. In Kibana, the speaker shows the <strong>Elastic-side workflow</strong> that receives it. Reviewing a run from the prior week's setup: it's straightforward — it collects the env vars / PR info and then <strong>calls the agent in Elasticsearch</strong>. The <strong>input</strong> is a body containing e.g. <strong>PR 37</strong> plus the passed context; the <strong>output</strong> (because it's a demo, it found a match) reported that it ran for PR 37, the <strong>agent responded 200</strong>, and the comment got sent back via the <strong>GitHub MCP tool</strong>. (The comment isn't stored in the workflow run itself — it's posted into GitHub.)</p>
+<h3 id="talking-to-the-agent-directly-interactive-mode-in-kibana">Talking to the agent directly (interactive mode in Kibana)</h3>
+<p>Beyond the automated path, because all the data is in Elastic and it's an agent, a developer can <strong>chat with the agent directly</strong> — even <em>before</em> submitting a PR. Example question: <em>"I'm looking at a PR that removes the atomic quantity check — are there any known patterns this matches?"</em> The agent then:
+- Calls its <strong>search-incident tool</strong> — looking for <strong>concurrency patterns</strong>, and actually invokes it <strong>three times</strong> with different phrasings/terminology to cover what you might be describing.
+- Returns <strong>five results</strong> per call (different results), then calls <strong>find similar traces</strong> for the endpoint to check for real events and <strong>latency spikes</strong>.
+- Produces a <strong>human-friendly answer</strong> grounded in evidence: it references the <strong>April 7th</strong> incident, a fix that was applied, and concrete impact — e.g. <strong>847 lock-contention events</strong> caused the production <strong>success rate (ability to actually sell items) to drop from 99.7% to 76%.</strong> It surfaces the <strong>postmortem</strong>, sample traces, and a <strong>recommendation</strong>.</p>
+<p>You can also ask about a <strong>specific endpoint</strong> ("I'm going to work on this endpoint — anything in past postmortems for it?") and the agent finds recent telemetry showing it broke. The throughline: every answer is grounded in <strong>real incidents, OTel traces, and postmortems</strong>, getting you ahead of breakage.</p>
+<h3 id="vs-code-github-copilot-mcp-the-developer-native-path">VS Code + GitHub Copilot + MCP (the developer-native path)</h3>
+<p>Many developers would rather <strong>never leave VS Code</strong> — and that's fully supported. In VS Code with <strong>GitHub Copilot</strong>, the speaker has the <strong>Elastic MCP server</strong> hooked up, so all the Elastic data and <strong>all the tools the agent has</strong> are exposed over the <strong>MCP protocol</strong>: find similar traces, search incidents, OpenTelemetry incident analysis, etc. The developer asks Copilot, in plain language: <em>"I got this PR comment for the inventory reserve — can you tell me what was happening and what went on?"</em> The same flow happens, <strong>without leaving the editor</strong>:
+- Copilot calls the same <strong>MCP tools</strong> (find similar traces, find latency spikes), analyses the data, and assembles a response: it was in a <strong>prepared statement</strong>, hit the cache rate, and <strong>matches exactly the pattern from April 7th</strong>.
+- The conclusion is the same: someone (or a coding agent) made this change before and it already broke; here's how to fix it.</p>
+<h3 id="auto-applying-the-fix-with-copilot">Auto-applying the fix with Copilot</h3>
+<p>Rather than editing by hand, the developer just says <strong>"yes"</strong> and lets <strong>Copilot make the change</strong>. Copilot:
+- Removes the early <strong>hard-coding of the new quantity</strong> and deletes the <strong>misleading comment</strong>.
+- Changes the <strong>DB statement (line 46)</strong> to be <strong>thread-safe / checkout-safe</strong>.
+- <strong>Adds a second check</strong>, noting that this still isn't <em>truly</em> transactional — it's doing its best to manage concurrency; if you wanted full guarantees you could make it an <strong>actual SQL transaction</strong>, but the code does what it can.</p>
+<p>Copilot then <strong>reports back</strong> on exactly what it changed, and the developer can <strong>commit and push</strong>.</p>
+<h3 id="validating-the-fix-the-test-harness">Validating the fix — the test harness</h3>
+<p>Finally, a quick terminal demo: a <strong>test harness fires 20 concurrent requests</strong> — the "one pair of boots, 20 eager buyers" scenario — to confirm only <strong>one</strong> buyer gets assigned the item. After the fix, the test passes: <em>"we wanted one, we got one."</em> Simple, but it closes the loop from "agent flagged the risk" to "fix applied" to "concurrency verified."</p>
+<h3 id="closing-thesis">Closing thesis</h3>
+<p>You don't have to adopt everything at once. Even just loading <strong>OpenTelemetry data</strong> lets you watch for <strong>latency-spike changes</strong>. Layer in <strong>postmortems and RCAs</strong> for richer matching. By calling <strong>Elasticsearch automatically as part of a GitHub Action</strong>, you get ahead of <strong>recurring production issues</strong>. And the same approach works in <strong>dev</strong>: run postmortems in dev, store those lessons in Elastic, and match against them so dev learnings prevent future breakage. (Sign-off: Elastic is in the other building with build-it-yourself Lego/clicky fidget things — thanks for hanging out.)</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Elasticsearch</strong> — the search/data store holding postmortems, RCAs, incident records, comments, and OpenTelemetry traces; queried semantically to match code changes to past failures.</li>
+<li><strong>Elastic Agent Builder</strong> — Elastic's agent platform (run within Kibana) for building/running custom agents over Elastic data, with skills, tools, custom instructions, and conversation history.</li>
+<li><strong>Kibana</strong> — Elastic's UI layered on Elasticsearch; hosts the Agent Builder / Agent UI used in the demo.</li>
+<li><strong>ES|QL</strong> — Elastic's newer SQL-like query language used to write the agent's tools (e.g. the incident-search query).</li>
+<li><strong><code>match</code> query function (semantic)</strong> — an Elastic query function that looks like keyword matching but performs semantic/vector search against in-cluster embeddings.</li>
+<li><strong>Jina AI embeddings</strong> (captioned "Gina AI") — the embedding model used <strong>in-cluster</strong> to vectorise postmortems, comments, and incident data for semantic matching.</li>
+<li><strong>OpenTelemetry (OTel) traces</strong> — the telemetry data (HTTP routes, latency, error traces) used to evidence incidents and detect latency spikes.</li>
+<li><strong>GitHub</strong> / <strong>GitHub Actions</strong> — the PR platform and CI; an Action gathers PR context and calls the Elastic workflow, then posts the agent's comment back to the PR.</li>
+<li><strong>GitHub MCP tool / GitHub MCP server</strong> — used by the Elastic workflow to post comments back into GitHub.</li>
+<li><strong>GitHub Copilot</strong> (in VS Code) — the in-editor AI that calls Elastic tools via MCP, explains incidents, and auto-applies the suggested fix.</li>
+<li><strong>MCP (Model Context Protocol) server (Elastic)</strong> — exposes all the agent's Elastic data and tools (find similar traces, search incidents, OTel incident analysis) to clients like Copilot/VS Code.</li>
+<li><strong>VS Code</strong> — the developer-native environment where the whole investigate-and-fix flow can happen without touching Kibana.</li>
+<li><strong>Wayfinder</strong> — the fictional adventure/outdoor e-commerce demo app whose inventory race condition drives the scenario.</li>
+<li><strong>Skills (Elastic agent)</strong> — encode procedural/system knowledge (e.g. "watch for race conditions") derived from recurring RCAs.</li>
+<li><strong>Tools (Elastic agent)</strong> — concrete functions: query Elasticsearch, semantic/vector search, find similar traces, find latency spikes, search incidents, call MCP servers, run workflows.</li>
+<li><strong>Workflows (Elastic)</strong> — orchestration that receives PR context, calls the agent in Elasticsearch, and returns results to GitHub.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p>None explicitly announced. This is a demo of an integration pattern rather than a product-launch session. The speaker notes that the <strong>Elastic Agent Builder / Agent UI is "fairly new"</strong> and that Elastic has been increasingly <strong>embedding agents</strong> into its products, and that <strong>ES|QL</strong> is "newish" — but no specific preview/GA dates, version numbers, or new releases were announced in the captions.</p>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>End-to-end PR review on a risky refactor:</strong> Pushed a PR to Wayfinder that replaced an atomic inventory checkout with a pre-computed/reused quantity. It passed all normal checks, but the <strong>Elastic PR agent</strong> commented that it reintroduces a <strong>race condition</strong> tied to the <strong>April 7th</strong> incident (504 timeouts), citing OTel traces, root cause, and a suggested fix. <em>Proved: review can be grounded in real operational history, not just code correctness.</em></li>
+<li><strong>Walkthrough of the GitHub Action workflow:</strong> Showed the (single-URL) workflow that gathers PR env vars/diff, calls Elastic (~1 min runtime), and parses the response into a PR comment. <em>Proved: the GitHub-side setup is minimal — just gather + call + parse.</em></li>
+<li><strong>Kibana Agent Builder configuration:</strong> Showed conversation history (including automated runs), the <strong>skills vs tools</strong> distinction, the agent's <strong>custom instructions</strong> ("AI PR reviewer… fetch diffs, identify routes, match patterns not keywords"), and the race-condition <strong>skill</strong>. <em>Proved: how the agent is briefed and how RCA knowledge is institutionalised.</em></li>
+<li><strong>Tool internals (ES|QL + semantic match):</strong> Showed the incident-search tool as a "dead simple ES query" whose <code>match</code> function actually does <strong>vector/semantic search</strong> via in-cluster Jina embeddings, plus find-similar-traces and find-latency-spikes tools. <em>Proved: matching is semantic, not keyword-based.</em></li>
+<li><strong>Elastic-side workflow run (PR 37):</strong> Showed the workflow that receives PR context and calls the agent; the run found a real incident match, returned <strong>agent response 200</strong>, and posted the comment via the GitHub MCP tool. <em>Proved: the GitHub↔Elastic round trip.</em></li>
+<li><strong>Interactive agent chat in Kibana:</strong> Asked the agent about removing the atomic quantity check; it called search-incident <strong>3×</strong> with varied phrasing (5 results each), found similar traces/latency spikes, and gave a grounded answer citing April 7th, <strong>847 lock-contention events</strong>, and a <strong>99.7% → 76%</strong> success-rate drop. <em>Proved: developers can query the same memory ad hoc, even pre-PR.</em></li>
+<li><strong>VS Code + Copilot + MCP investigation and auto-fix:</strong> Asked Copilot about the PR comment; it used Elastic MCP tools to confirm the April 7th pattern, then auto-applied the fix (removed unsafe hard-coding + misleading comment, made the DB statement thread/checkout-safe on line 46, added a second safety check) and reported back. <em>Proved: the developer can investigate and remediate without leaving the editor.</em></li>
+<li><strong>Concurrency test harness (20 requests):</strong> Fired 20 concurrent buy requests at the single-stock item; after the fix, exactly one buyer was assigned ("we wanted one, we got one"). <em>Proved: the applied fix actually holds under concurrent load.</em></li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>99.7% → 76%</strong> — the production success rate (ability to actually sell items) dropped this far during the original April 7th incident.</li>
+<li><strong>847 lock-contention events</strong> — the volume of contention events tied to that incident.</li>
+<li><strong>504 Gateway Timeouts</strong> — the user-facing symptom of the April 7th production incident.</li>
+<li><strong>April 7th</strong> — the date of the prior incident the agent repeatedly cites as evidence.</li>
+<li><strong>~1 minute</strong> — typical end-to-end runtime for the PR review (varies with data volume / number of incidents/RCAs).</li>
+<li><strong>PR 37</strong> — the example PR used in the Elastic-side workflow run (agent responded <strong>200</strong>).</li>
+<li><strong>3 calls / 5 results each</strong> — the agent invoked the search-incident tool three times with varied phrasing, returning five results per call.</li>
+<li><strong>20 requests</strong> — the concurrency test harness load against the single-stock item.</li>
+<li><strong>"Move from <em>now it looks good</em> to <em>it might be syntactically correct, but it hits a production issue that happened last month</em>."</strong> — the session's core thesis.</li>
+<li><strong>"We're looking for patterns, so not keywords… we're doing semantic look-up."</strong> — on how matching actually works.</li>
+<li><strong>"Production broke, probably don't — maybe don't do that."</strong> — the tone of an evidence-grounded agent recommendation.</li>
+<li><strong>"Maybe the coding agent decided this was a good idea, but we broke production at least once before — maybe you don't want to do it."</strong> — on catching risky changes regardless of whether a human or an agent wrote them.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Stand up an <strong>Elastic Agent Builder</strong> agent over a sample dataset of postmortems + OTel traces and wire it to a <strong>GitHub Action</strong> on a test repo to reproduce the PR-comment flow.</li>
+<li>Experiment with the <strong><code>match</code> query function + in-cluster Jina AI embeddings</strong> to confirm semantic (not keyword) matching of code diffs to incident text.</li>
+<li>Hook the <strong>Elastic MCP server</strong> into VS Code + GitHub Copilot and try the "explain + auto-fix" loop end-to-end.</li>
+<li>Build an Elastic <strong>skill</strong> that encodes a specific recurring failure class (e.g. race condition) and measure whether it sharpens the agent's recommendations.</li>
+<li>Write the same concurrency <strong>test harness</strong> (N parallel buy requests on a single-stock item) as a guardrail to validate fixes.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>How does the agent reliably extract "routes being used" from an arbitrary PR diff across different languages/frameworks?</li>
+<li>What governs match precision/recall — embedding model choice, how postmortems are written, ES|QL tuning? How do you avoid false-positive PR comments that annoy developers?</li>
+<li>Where does <strong>Azure AI</strong> fit (it's in the title but not detailed in the captions) — is it the model backing Copilot/Agent Builder, or an Azure-hosted embedding/LLM endpoint?</li>
+<li>What's the cost/latency profile at real production scale (many incidents/RCAs), given the demo quotes ~1 min?</li>
+<li>How are skills/instructions versioned and governed so the reviewer agent stays trustworthy over time?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Any team running <strong>CI/CD on GitHub</strong> that already has <strong>observability (OpenTelemetry)</strong> and <strong>postmortem/RCA</strong> practice — this turns that history into an active PR guardrail.</li>
+<li>Platform/SRE teams wanting to <strong>prevent recurring incidents</strong> rather than just detect them post-deploy.</li>
+<li>Teams adopting <strong>AI coding agents</strong> who need a safety net against confident-but-regressive changes.</li>
+<li>Anyone evaluating <strong>Elasticsearch as a RAG/agent substrate</strong> with semantic search over operational data.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="GitHub Copilot">GitHub Copilot</span> — The in-editor AI used here with the Elastic MCP server to investigate incidents and auto-apply fixes.</li>
+<li><span class="wikilink wikilink--unresolved" title="Model Context Protocol (MCP)">Model Context Protocol (MCP)</span> — The protocol exposing Elastic's tools/data to Copilot and other clients.</li>
+<li><span class="wikilink wikilink--unresolved" title="Elasticsearch">Elasticsearch</span> — The vector/semantic search store underpinning the context-aware agent.</li>
+<li><span class="wikilink wikilink--unresolved" title="OpenTelemetry">OpenTelemetry</span> — The trace/telemetry data used as evidence for incidents and latency spikes.</li>
+<li><span class="wikilink wikilink--unresolved" title="RAG - Retrieval Augmented Generation">RAG - Retrieval Augmented Generation</span> — The broader pattern of grounding agent answers in retrieved (here, semantically matched) operational data.</li>
+<li><span class="wikilink wikilink--unresolved" title="Race conditions and concurrency">Race conditions and concurrency</span> — The specific failure class the demo guards against (inventory checkout under load).</li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEMSP383.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEMSP383</span><span class="pager-title">Move AI workflows from test to production on Microsoft Foundry</span></a>
+    <a class="pager pager-next" href="DEMSP387.html"><span class="pager-dir">Next →</span><span class="pager-code">DEMSP387</span><span class="pager-title">Secure agent workflows in GitHub Copilot with NVIDIA OpenShell</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

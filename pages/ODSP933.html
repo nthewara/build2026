@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ODSP933 — Agentic infrastructure needs agentic observability</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">ODSP933</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=rXd7KDBmU5A" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Agentic infrastructure needs agentic observability</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Jimmy (Solutions Engineering Lead, Groundcover)</span>
+      <span class="meta-item">⏱️ 14m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="observability">Observability</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="monitoring">Monitoring</span><span class="chip" data-tag="sre">Sre</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Jimmy — Solutions Engineering Lead, Groundcover<br>
+<strong>Duration:</strong> ~14 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=rXd7KDBmU5A">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>A vendor session from <strong>Groundcover</strong> framed not as a product pitch but as a <strong>diagnosis</strong>: observability as a category is breaking because its consumer is changing from humans to agents. For 15 years, logs, traces, dashboards, and alerts were all optimised around <strong>human cognitive limits</strong> — less data, simpler views, smaller cardinality, summaries. But agents now write code, operate systems, and debug failures without a human in the loop, and they <em>thrive on more context</em>, not less. Jimmy walks through three structural failures — <strong>logs</strong> (events vs. reasoning trails), <strong>traces/sampling</strong> (sampling misses the journey, "200 OK means nothing"), and <strong>sensitivity/instrumentation</strong> (telemetry now holds PII/prompts; manual instrumentation can't keep up with AI velocity) — then argues for an architecture built for <strong>data abundance</strong>: complete system state, bring-your-own-cloud, zero instrumentation, and a "move the LLM up, push the analysis down" investigation model where the agent orchestrates and a deterministic backend does the analytical work. The closing thesis: <strong>observability is becoming the operating system for the agentic SDLC</strong>, and "AI can't fix what AI can't see."</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>The consumer of observability has changed from humans to agents</strong> — and once that happens, the assumptions underneath the entire category start to fail. This is a <em>systems</em> problem, not a "better dashboards / more AI features" problem.</li>
+<li><strong>Logs were built for events; agents produce decision breadcrumbs.</strong> Traditional logging assumes discrete events, stable schemas, and human-readable meaning ("request started," "cache missed"). Agents emit a <strong>reasoning trail</strong>, not an event stream.</li>
+<li>The question shifts from <em>"what happened?"</em> to <strong>"why did the agent make this decision?"</strong> — why these documents, why block this output, why retry this tool five times. Reasoning spans long time horizons and wide context windows.</li>
+<li><strong>Agent systems don't fail cleanly.</strong> The same input can produce different behaviours; the same workflow can make different decisions. Understanding the <strong>reasoning path</strong> matters more than the infrastructure path.</li>
+<li><strong>Sampling fundamentally breaks for agents.</strong> Head-based sampling of a non-deterministic flow tells you almost nothing — the one trace you keep may miss the path that mattered. Tail-based sampling collapses too (holding ~50,000 spans per session in memory "falls apart pretty quickly").</li>
+<li><strong>"200 OK means nothing"</strong> in agent systems — a success status only means <em>nothing crashed</em>. The infrastructure can succeed while the outcome is completely wrong (wrong context, wrong tool, hallucinated answer, misunderstood intent).</li>
+<li><strong>Agent failures are rare and non-deterministic</strong>, so sampling <em>guarantees</em> you miss the exact journey you needed to debug.</li>
+<li><strong>The economics break.</strong> Observability vendors historically charged for telemetry ingestion. Agents explode telemetry volume (thousands of spans, hundreds of tool calls per workflow), forcing a bad trade-off: keep the data and absorb cost, or cut visibility and hope key signals survive. Neither works.</li>
+<li><strong>Telemetry is now the most sensitive data in the company</strong> — it contains prompts, customer conversations, PII, financial info, internal business logic. Shipping it to a SaaS vendor becomes a <em>liability</em> discussion, not just a cost one.</li>
+<li><strong>Manual instrumentation is collapsing under AI velocity.</strong> AI generates services and workflows faster than humans can keep instrumentation current, so the observability layer itself must learn to <strong>instrument automatically</strong>.</li>
+<li><strong>We built the whole industry for the wrong consumer.</strong> Old optimisations (summaries, simpler systems, reduced telemetry) become <em>constraints</em> for agents, which perform better with full context and complete system state.</li>
+<li><strong>Better models don't automatically fix observability</strong> — smarter models on incomplete telemetry still make bad decisions. <strong>Context quality matters as much as (or more than) model quality.</strong> "The agent's reasoning is only as good as its data."</li>
+<li><strong>External agents are always "guests"</strong> — they don't control the API surface, indexing, or correlation primitives, so they operate on <strong>partial context</strong>, which is exactly what creates <strong>hallucinated diagnoses</strong> (a pointed critique of MCP-style demos).</li>
+<li><strong>Observability is becoming active, not passive</strong> — eventually instrumenting on the fly, raising fidelity dynamically, and supporting remediation during incidents. It becomes the <strong>operating system for the agentic SDLC</strong>, raising hard governance questions about autonomy, approval, and ownership of agent-driven actions.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="the-framing-a-diagnosis-not-a-product-pitch">The framing: a diagnosis, not a product pitch</h3>
+<p>Jimmy (Solutions Engineering Lead at <strong>Groundcover</strong>) opens with a historical setup: <em>"Once upon a time, humans wrote software, humans operated software, and humans debugged software. Observability was built around this."</em> Logs, traces, dashboards, and alerts all assumed <strong>a human investigator sitting in front of the data trying to figure out what happened</strong>.</p>
+<p>That world is changing. Agents now <strong>write code, operate systems, make decisions, debug failures, and interact with infrastructure without a human in the loop</strong>. The core thesis: once the <em>consumer</em> of observability changes from humans to agents, <strong>the assumptions underneath the category start to fail</strong>.</p>
+<p>He's explicit that this isn't a feature problem ("we need better dashboards or more AI features") — it's a <strong>systems problem</strong>. The operating assumptions underneath observability are changing. He calls the talk "a diagnosis" of something fundamental that stopped working once AI systems became part of the software lifecycle itself.</p>
+<h3 id="problem-1-logs-built-for-events-but-agents-produce-decision-breadcrumbs">Problem 1 — Logs: built for events, but agents produce decision breadcrumbs</h3>
+<p>Traditional logging assumes three things: <strong>discrete events, stable schemas, and human-readable meaning.</strong> Classic log lines are events: <em>request started, request completed, database failed, cache missed.</em></p>
+<p>Agents don't behave like that. A single agent <strong>retrieves documents, scores relevance, applies policies, retries tool calls, rewrites outputs, and re-evaluates context.</strong> What's produced is not an event stream — it's a <strong>reasoning trail</strong>.</p>
+<p>This changes the fundamental question. It's no longer <em>"what happened?"</em> but:
+- <strong>Why did the agent make this decision?</strong>
+- Why did it choose these documents?
+- Why did it block this output?
+- Why did it retry this tool five times?</p>
+<p>This reasoning happens <strong>across long time horizons and wide context windows</strong>, and Jimmy argues <em>no observability platform today was really designed for this.</em></p>
+<p>He contrasts determinism vs. non-determinism: traditional observability assumed systems were <strong>mostly deterministic</strong>, so you could usually reconstruct the story afterward (a request failed → a dependency timed out → a deployment introduced latency). <strong>Agent systems don't fail that cleanly</strong> — the same input can produce different behaviours, and the same workflow can make different decisions. Increasingly, <strong>understanding the reasoning path matters more than understanding the infrastructure path.</strong></p>
+<h3 id="problem-2-traces-sampling-sampling-breaks-and-status-codes-lie">Problem 2 — Traces &amp; sampling: sampling breaks and status codes lie</h3>
+<p><em>"APM was built for a world that no longer exists."</em></p>
+<p><strong>Head-based sampling:</strong> A random sample of a non-deterministic agent flow <strong>tells you almost nothing</strong>. The one trace you happen to keep may completely miss the reasoning path that actually mattered.</p>
+<p><strong>Tail-based sampling:</strong> Not a real answer either, because you're trying to <strong>hold tens of thousands of spans in memory</strong> waiting to decide whether something failed. At <strong>~50,000 spans per session</strong>, that approach "falls apart pretty quickly."</p>
+<p><strong>The "200 OK" problem (the standout line, repeated twice):</strong> <em>"200 OK means absolutely nothing now."</em> In traditional systems, a successful status code usually meant the system behaved correctly. In agent systems, it only means <strong>nothing crashed</strong>. The infrastructure can succeed while the <strong>outcome is completely wrong</strong> — the agent may have used the wrong context, selected the wrong tool, hallucinated an answer, or misunderstood intent. <strong>"No crash" no longer means "correct."</strong></p>
+<p>These failures are <strong>rare and non-deterministic</strong>, which makes them incredibly difficult to capture — and <strong>sampling guarantees you miss the exact journey you needed to debug.</strong></p>
+<p><strong>The broken economics:</strong> Observability vendors historically made money by charging you to <strong>ingest more telemetry</strong> — fine when telemetry growth was predictable. But agent systems <strong>explode telemetry volume</strong>: one workflow can generate thousands of spans, hundreds of tool calls, and massive amounts of contextual data. Teams are forced into a bad trade-off — <strong>keep the data and absorb the cost, or reduce visibility and hope the important signals survive.</strong> Neither option works.</p>
+<h3 id="problem-3-sensitivity-instrumentation-telemetry-is-now-your-most-sensitive-data">Problem 3 — Sensitivity &amp; instrumentation: telemetry is now your most sensitive data</h3>
+<p><em>"Your telemetry now contains things you never meant to store."</em> — prompts, customer conversations, PII, financial information, internal business logic.</p>
+<p>Telemetry has stopped being just <strong>technical metadata</strong>; it's now potentially <strong>the most sensitive data in the company.</strong> That changes the <strong>risk model</strong> completely: shipping all of it to a SaaS vendor is <strong>no longer just a cost discussion — it becomes a liability discussion.</strong></p>
+<p>Simultaneously, <strong>manual instrumentation is collapsing under AI velocity.</strong> Humans used to maintain instrumentation pipelines manually because systems evolved at <em>human speed</em>. Now AI <strong>generates services and workflows faster than teams can keep instrumentation current.</strong> The obvious implication: <strong>the observability layer itself has to learn to instrument automatically.</strong></p>
+<h3 id="the-unifying-insight-we-built-the-industry-for-the-wrong-consumer">The unifying insight: we built the industry for the wrong consumer</h3>
+<p>Zooming out, all three problems point to the same root cause: <strong>everything built in observability was optimised for the one thing agents don't have — human limits.</strong></p>
+<p>The field optimised for:
+- Less data
+- Simpler dashboards
+- Smaller cardinality
+- Reduced telemetry
+- Human-readable abstractions</p>
+<p>But <strong>agents don't need the simplifications humans need.</strong> In fact, <strong>agents improve with more context</strong>, which means many old optimisations become <strong>constraints</strong>.</p>
+<p>The contrast Jimmy draws:
+| Humans | Agents |
+|---|---|
+| Can't process 50,000 spans in a session | Can |
+| Need summaries | Need full context |
+| Simplify systems to understand them | Often perform better with the <strong>entire system state</strong> |</p>
+<p>The vivid framing: <em>"We're feeding agents a summary and expecting them to understand the entire book."</em> That's <strong>not a model problem — it's a data completeness problem.</strong></p>
+<h3 id="context-quality-model-quality">Context quality &gt; model quality</h3>
+<p>One of the biggest misconceptions in AI infrastructure right now, per Jimmy: assuming <strong>better models automatically solve observability.</strong> They don't — <em>"smarter models operating on incomplete telemetry still make bad decisions."</em> <strong>Context quality matters just as much as model quality, possibly more.</strong></p>
+<p>This grounds a <strong>slightly controversial point about MCP-style demos</strong>: an external agent is <strong>always a guest</strong>. It doesn't control the API surface, doesn't control indexing, doesn't control correlation primitives. It operates on <strong>partial context</strong> — and <em>"partial context is exactly what creates hallucinated diagnosis."</em> The distinction that matters: <strong>an agent confidently hallucinating a fix vs. an agent actually understanding what's wrong.</strong></p>
+<h3 id="the-proposed-architecture-built-for-data-abundance">The proposed architecture: built for data abundance</h3>
+<p>What agents actually need is an architecture built for <strong>data abundance</strong>, where agents reason over <strong>complete system state, not a curated slice.</strong> Jimmy notes Groundcover "happens to align very naturally with this shift," and calls out three architectural bets that mattered:</p>
+<ol>
+<li><strong>BYOC — Bring Your Own Cloud (transcribed as "DYOC").</strong> Everything stays inside <em>your</em> cloud. This matters for <strong>control, governance, and sensitive telemetry</strong> (directly answering the Problem-3 liability concern).</li>
+<li><strong>Zero instrumentation, zero friction.</strong> You can't depend on humans to manually keep instrumentation current in AI-generated systems (answering Problem 3's instrumentation collapse).</li>
+<li><strong>One platform regardless of authorship</strong> — whether the code was written by a human or an agent, because increasingly <strong>it's both.</strong></li>
+</ol>
+<h3 id="a-new-investigation-model-move-the-llm-up-push-the-analysis-down">A new investigation model: "Move the LLM up, push the analysis down"</h3>
+<p>This is the architectural heart of the talk. The model is <strong>not the execution engine.</strong> The division of labour:</p>
+<ul>
+<li><strong>The LLM's job:</strong> understand intent, decide the investigation strategy, generate <strong>deterministic operations</strong>, and interpret the results. (Orchestration.)</li>
+<li><strong>The backend's job:</strong> do the <strong>actual analytical work</strong> — close to the data, accurately, cheaply. (Execution.)</li>
+</ul>
+<p><em>"You don't want the model brute-forcing analysis over complete context. You want the model </em><em>orchestrating investigation</em><em> over a deterministic analytical system with complete telemetry."</em> This separation is a very different architecture from what most observability systems were originally designed for.</p>
+<h3 id="investigation-starts-from-intent-not-navigation">Investigation starts from intent, not navigation</h3>
+<p>Once you accept that model, <strong>investigation changes completely</strong>:
+- <strong>Old world:</strong> engineers <strong>click through dashboards manually</strong>, piecing together what happened.
+- <strong>New world:</strong> you start with a <strong>goal</strong> — <em>Why did this fail? What changed? Which customers were impacted?</em> The agent <strong>runs the investigation, gathers the right signals, materializes the right outputs, and returns an answer plus next actions — not a dashboard, an answer.</strong></p>
+<p>This also changes <strong>development workflows</strong>. Jimmy calls out a current anti-pattern bluntly: <em>"Right now, teams literally screenshot dashboards and paste them into Claude. That should not exist."</em> Instead, <strong>production telemetry should flow directly into coding agents and CI/CD systems as structured context.</strong></p>
+<h3 id="from-observe-to-act-observability-as-an-active-operational-system">From observe to act: observability as an active operational system</h3>
+<p>Eventually these systems <strong>don't just observe — they start acting</strong>: raising collection fidelity dynamically, <strong>instrumenting on the fly</strong>, and supporting <strong>remediation during incidents.</strong> This is where the category looks fundamentally different: <strong>observability stops being a passive debugging interface and becomes an active operational system</strong> — not just showing humans what happened, but helping systems <strong>understand, respond, and eventually recover automatically.</strong></p>
+<h3 id="the-hard-governance-questions">The hard governance questions</h3>
+<p>Jimmy is candid that this raises questions the industry <strong>still underestimates</strong>:
+- <strong>How much autonomy</strong> should your observability layer actually have?
+- If an agent <strong>fixes a production incident at 2 a.m., who approved that action?</strong>
+- What <strong>guardrails</strong> govern systems that can act directly in production?
+- If the agent <strong>remediates incorrectly, who owns that outcome?</strong>
+- How do you <strong>validate that telemetry normalized correctly</strong> when <strong>no human explicitly defined the schema?</strong></p>
+<p>These are framed not as edge cases but as <strong>foundational operating questions for the next generation of infrastructure systems</strong> — <em>"because ultimately, the agent's reasoning is only as good as its data"</em> (repeated for emphasis).</p>
+<h3 id="closing-thesis">Closing thesis</h3>
+<p><em>"The companies that get observability right in the agent era will have a structural advantage — not just operationally, competitively."</em> The reasoning: <strong>AI cannot fix what it cannot see, and it cannot build effectively without full context.</strong> Groundcover doesn't claim to have every answer, but says it knows the direction and the questions teams need to start asking now.</p>
+<p>The capstone idea: <strong>"Observability is becoming the operating system for the agentic SDLC — the data layer everything else depends on."</strong> And the repeated tagline that bookends the talk: <strong>"AI can't fix what AI can't see."</strong></p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Groundcover</strong> — The presenter's company; an observability platform positioned for the agent era. Key claim: agents on Groundcover <strong>reason over complete system state, not a curated slice.</strong></li>
+<li><strong>BYOC ("Bring Your Own Cloud," transcribed as "DYOC")</strong> — Groundcover architectural bet: all telemetry/data stays inside the customer's own cloud, for control, governance, and sensitive-data handling.</li>
+<li><strong>Zero instrumentation / zero friction</strong> — Groundcover capability: automatic instrumentation so humans don't have to manually maintain pipelines in fast-moving, AI-generated systems.</li>
+<li><strong>APM (Application Performance Monitoring)</strong> — Cited as the legacy paradigm "built for a world that no longer exists."</li>
+<li><strong>Head-based sampling</strong> — Trace sampling at ingest; criticised as near-useless for non-deterministic agent flows.</li>
+<li><strong>Tail-based sampling</strong> — Trace sampling that buffers spans before deciding; criticised as unworkable at ~50,000 spans/session.</li>
+<li><strong>MCP (Model Context Protocol) — "MCP-style demos"</strong> — Referenced critically: external agents acting as "guests" on partial context, which leads to hallucinated diagnoses.</li>
+<li><strong>Claude (Anthropic)</strong> — Named in the anti-pattern of engineers screenshotting dashboards and pasting them into Claude.</li>
+<li><strong>CI/CD systems &amp; coding agents</strong> — Where production telemetry <em>should</em> flow directly as structured context, instead of via screenshots.</li>
+<li><strong>OpenTelemetry concepts (spans, traces, telemetry)</strong> — The underlying observability primitives whose volume and semantics break under agentic workloads (referenced generically, not by name).</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p>None explicitly announced. This is a <strong>thought-leadership / diagnosis talk</strong> rather than a launch session. Groundcover's existing architectural pillars (BYOC, zero instrumentation, single platform for human- and agent-written code) are described as already aligning with the shift, but <strong>no new product, preview, or GA release is announced.</strong></p>
+<h2 id="demos">💡 Demos</h2>
+<p>No live demos were shown — this was a conceptual/keynote-style session. (Notably, Jimmy was <em>critical</em> of "MCP-style demos" as misleading, arguing they run on partial context and produce hallucinated diagnoses.)</p>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>"200 OK means absolutely nothing now."</strong> (said twice) — In agent systems a success code only means nothing crashed; the outcome can still be completely wrong.</li>
+<li><strong>~50,000 spans per session</strong> — The scale at which tail-based sampling (holding spans in memory) "falls apart pretty quickly"; also the example of what agents <em>can</em> process but humans cannot.</li>
+<li><strong>One workflow can generate thousands of spans + hundreds of tool calls</strong> — Why agent telemetry explodes and the ingest-pricing model breaks.</li>
+<li><strong>"We're feeding agents a summary and expecting them to understand the entire book."</strong> — Reframes the core gap as <strong>data completeness, not model capability.</strong></li>
+<li><strong>"The agent's reasoning is only as good as its data."</strong> (said twice) — The talk's central governing constraint.</li>
+<li><strong>"AI can't fix what AI can't see."</strong> — The closing tagline that bookends the session.</li>
+<li><strong>"We built the whole industry for the wrong consumer."</strong> — On 15 years of observability tooling shaped around human cognition.</li>
+<li><strong>"Right now, teams literally screenshot dashboards and paste them into Claude. That should not exist."</strong> — On broken current dev workflows.</li>
+<li><strong>"Observability is becoming the operating system for the agentic SDLC."</strong> — The forward-looking positioning statement.</li>
+<li><strong>"15 years"</strong> — How long observability tooling has been shaped around human cognition.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Audit our current observability stack against the three failure modes — (1) are we relying on head/tail sampling that would miss non-deterministic agent paths? (2) does telemetry already contain prompts/PII we're shipping to a SaaS vendor? (3) is instrumentation falling behind AI-generated services? Pilot a "start-from-intent" investigation flow (ask "why did this fail / who was impacted" and have an agent gather signals) vs. manual dashboard clicking.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Evaluate <strong>BYOC / in-your-cloud</strong> observability options for sensitive-telemetry workloads; stop the "screenshot dashboard → paste into Claude" anti-pattern by piping structured telemetry into coding agents / CI/CD.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: Is Groundcover genuinely architecturally different here, or is "reason over complete system state" achievable with OpenTelemetry + a data lake + an agent orchestrator? What's the <em>real</em> cost story when you stop sampling and keep everything? How do you define and enforce guardrails/approvals for an agent that can remediate production at 2 a.m.? Who owns a bad auto-remediation?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: How do you validate that auto-normalized telemetry schemas are correct when no human defined them? Does "move the LLM up, push analysis down" map cleanly onto existing query engines (e.g. ClickHouse / Kusto / Prometheus)?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: SRE / platform engineering, AI agent observability &amp; evaluation, anyone building or operating agentic systems in production, security/compliance teams worried about PII in telemetry, and the broader "agentic SDLC" tooling conversation.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Observability for AI agents">Observability for AI agents</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Agentic AI in production">Agentic AI in production</span></li>
+<li><span class="wikilink wikilink--unresolved" title="OpenTelemetry tracing and spans">OpenTelemetry tracing and spans</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Model Context Protocol (MCP)">Model Context Protocol (MCP)</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Agentic SDLC">Agentic SDLC</span></li>
+<li><span class="wikilink wikilink--unresolved" title="SRE and incident remediation">SRE and incident remediation</span></li>
+<li><span class="wikilink wikilink--unresolved" title="PII and telemetry data governance">PII and telemetry data governance</span></li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="ODSP929.html"><span class="pager-dir">← Previous</span><span class="pager-code">ODSP929</span><span class="pager-title">Build modern .NET apps with Uno Platform, AI, and visual tools</span></a>
+    <a class="pager pager-next" href="ODSP937.html"><span class="pager-dir">Next →</span><span class="pager-code">ODSP937</span><span class="pager-title">Build realtime multimodal agents with LiveKit and Azure</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

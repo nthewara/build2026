@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRKSP91 — Turn foundation models into production AI on Microsoft Foundry</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">BRKSP91</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=sOvtPvaog3M" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Turn foundation models into production AI on Microsoft Foundry</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Vivek Chauhan (Fireworks AI), Jeet (Fireworks AI), Nico Groupin (Harvey AI)</span>
+      <span class="meta-item">⏱️ 41m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="foundry">Foundry</span><span class="chip" data-tag="models">Models</span><span class="chip" data-tag="production">Production</span><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="fine-tuning">Fine Tuning</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Vivek Chauhan (Fireworks AI), Jeet (Fireworks AI — Foundry integration), Nico Groupin (Head of Applied Research, Harvey AI)<br>
+<strong>Duration:</strong> ~41 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=sOvtPvaog3M">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>A Fireworks AI partner session arguing that for most enterprise use cases the quality gap between open-weight and frontier closed models has collapsed, so companies can switch to fine-tuned open models to cut cost dramatically while holding the quality bar. Fireworks pitches a single platform spanning world-class <strong>inference</strong> (their own CUDA-kernel-up inference engine) and <strong>training</strong> (a training agent for app builders, a managed training UI for ML engineers, and a raw training API for researchers), all tied together by a continuous-improvement "flywheel" of train → deploy → monitor → retrain with one-click deploy and guaranteed numerical fidelity. The headline announcement: <strong>Fireworks is now generally available in Microsoft Foundry</strong> (announced at Satya's keynote the prior day), exposing Fireworks inference + custom-model deployment through Foundry's model catalog via three modes — serverless/pay-as-you-go, PTU/provisioned throughput, and bring-your-own-weights. Harvey AI's Nico Groupin closes with a real-world case study: using GLM 5.1 worker agents that route to heavier closed "advisor" models to navigate the quality/cost Pareto frontier, achieving up to <strong>2.4× cheaper</strong> while being ~<strong>30% better</strong> on their legal agent benchmark's all-pass metric.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>The open-vs-closed gap has collapsed for most enterprise tasks.</strong> Pointing Claude Opus 4.7 at something like email summarization is overkill; a smaller fine-tuned open-weight model can hit the same quality bar and save a ton of money.</li>
+<li><strong>True differentiation comes from your own data, not the base model.</strong> If you use the same closed model as every competitor, there's no moat — fine-tuning your own data into the model is how you differentiate.</li>
+<li><strong>The real winners run a flywheel, not a one-off fine-tune.</strong> Leading companies continuously train → deploy → monitor → pull traces → retrain on the same platform, spinning the loop faster and faster.</li>
+<li><strong>LLM inference is a brutal combinatorial problem</strong> (~84,000–85,000 permutations per model across SKUs, parallelization, quantization, speculative decoding). Most companies shouldn't solve this in-house; Fireworks absorbs that complexity.</li>
+<li><strong>One platform, three training surfaces by skill level:</strong> a no-code <strong>training agent</strong> (PMs/app builders), a <strong>managed training</strong> clickable UI (ML engineers), and a raw <strong>training API</strong> (advanced ML teams/researchers) — all with one-click deploy.</li>
+<li><strong>One-click deploy is the speed unlock.</strong> No downloading weights, reformatting, re-uploading, or worrying about numerics between training and serving — train, eval, ship from the same place.</li>
+<li><strong>Guaranteed numerical fidelity:</strong> what you trained (and the eval results you saw) matches production serving — critical for MoE/floating-point models where numerics can drift.</li>
+<li><strong>File/inference optimizer gives "custom shapes":</strong> the same model on the same GPUs can be served minimal-shape vs full-precision, optimized for speed vs throughput, tuned to your traffic — plus autoscaling for peaks/troughs.</li>
+<li><strong>Fireworks is now GA in Microsoft Foundry</strong> (announced at Satya's Build 2026 keynote): one endpoint, one contract, one platform. Inference + custom-model deployment are on Foundry; training stays on Fireworks (train there, download, deploy on Foundry).</li>
+<li><strong>Four reasons customers pick Fireworks on Foundry:</strong> performance (CUDA-kernel-up optimization), model advantage (day-zero open-source releases), control/extensibility (custom models in the catalog), and economics (cheaper than closed at comparable quality, and you spend existing Azure credits).</li>
+<li><strong>Three Foundry integration modes:</strong> serverless/pay-as-you-go (shared, per-token, rate-limited), PTU/provisioned throughput (reserve GPUs for production), and bring-your-own-weights (deploy your trained custom models on Azure credits).</li>
+<li><strong>Fireworks models in the Foundry catalog carry the <code>FW</code> prefix</strong> and can be wired directly into Foundry <strong>agents</strong> alongside tools (web search, custom functions).</li>
+<li><strong>Harvey's hybrid "advisor agent" architecture works:</strong> open-weight worker agents (GLM 5.1) calling heavier closed advisor models (Opus 4.7) via inference-time routing beat pure-closed on cost/latency <em>and</em> sometimes on quality — up to <strong>2.4× cheaper, ~30% better</strong> on all-pass.</li>
+<li><strong>"Jagged intelligence" (Karpathy's term) is why post-training matters in a vertical:</strong> models are great at some tasks (e.g. corporate M&amp;A) and fail at others (e.g. litigation/case-law research); post-training smooths these rough edges across all practice areas.</li>
+<li><strong>Security/governance is a first-class reason to use open weights:</strong> in-VPC deployment plus access to the full reasoning trace enables interpretability, auditability, and compliance for high-stakes work — a key driver for regulated domains like legal.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="three-fundamental-truths-about-the-ai-landscape-fireworks-thesis">Three fundamental truths about the AI landscape (Fireworks' thesis)</h3>
+<p>Vivek Chauhan opens by framing the whole session around three beliefs:
+1. <strong>The gap between open-weight and frontier closed models has collapsed</strong> for all practical purposes across most enterprise use cases. Companies can switch to an open-weight model and keep the same quality bar while saving a lot of money. Concrete example: instead of pointing <strong>Claude Opus 4.7</strong> at an email-summarization task, use a smaller open-weight model and reach the same quality for far less cost.
+2. <strong>Differentiation comes only from embedding your own data into the AI.</strong> If you run the same closed-weight model as all your competitors, you have no differentiation. Fine-tuning your own data in is the key to a genuinely differentiated AI stack.
+3. <strong>The leading companies go beyond one-off inference/fine-tuning</strong> — they continuously improve their stack and have found a <strong>flywheel</strong> on Fireworks' platform that gives them a durable, differentiated "mode/moat." The session's goal is to show how you can build that same flywheel.</p>
+<h3 id="about-fireworks-ai-scale-and-customers">About Fireworks AI (scale and customers)</h3>
+<ul>
+<li>Processes <strong>more than 30 trillion tokens per day</strong> — positioned right behind frontier closed-weight labs (Claude/Anthropic, OpenAI).</li>
+<li>Serves <strong>more than 10,000 enterprise customers</strong> globally building production-grade applications on open-weight models.</li>
+<li>Named customers: <strong>Cursor</strong> (used Fireworks' RL rollout capabilities to build <strong>Composer 2 / Composer 2.5</strong> models), <strong>Vercel</strong>, <strong>Jasper</strong>, <strong>Uber</strong>, <strong>DoorDash</strong>, and many more. They lean on Fireworks for better quality (via fine-tuning/training) and better performance (speed, throughput, time-to-first-token) tuned to each application's needs.</li>
+</ul>
+<h3 id="the-inference-engine-why-in-house-is-a-bad-idea">The inference engine (why in-house is a bad idea)</h3>
+<ul>
+<li>LLM inference is described as a <strong>very brutal combinatorial problem</strong>: speculative decoding, quantization modes, different SKUs, different parallelization strategies → <strong>more than ~84,000–85,000 permutations for a single model</strong> you want to serve.</li>
+<li>For most companies it makes no sense to handle this complexity in-house; the space moves too fast. Fireworks keeps up with it all — <strong>CUDA kernels, quantization, speculative decoding, adaptive caching</strong>, and every new optimization trick — and bakes it into the stack so customers can focus on their application.</li>
+<li>They can hit application-specific SLAs on demand: e.g. "time to first token &lt; 500 ms," "end-to-end latency &lt; 2 s," specific throughput targets.</li>
+<li><strong>All of these inference-engine capabilities are now available on Foundry</strong> (demoed live later in the session).</li>
+</ul>
+<h3 id="own-your-ai-stack-meeting-customers-where-they-are">"Own your AI stack" — meeting customers where they are</h3>
+<p>Vivek's "favorite slide": Fireworks wants every company to <strong>own their AI stack</strong>, and to meet teams wherever they are on their AI journey (different companies — and even different teams within one company — are at different stages). To do that, they offer three training surfaces ranging from high-level/no-code to low-level/raw control:</p>
+<ol>
+<li><strong>Training agent</strong> — targeted at <strong>product managers and app builders</strong>. You give it your data and business use case in plain English; it returns a fine-tuned model. (Live/recorded demo shown.)</li>
+<li><strong>Managed training platform</strong> — targeted at <strong>ML engineers</strong>. If you already know your training method and have a dataset, just port the dataset and kick off a job; Fireworks handles all back-end infrastructure orchestration.</li>
+<li><strong>Training API</strong> — targeted at <strong>advanced ML teams and researchers</strong>. Exposes the raw primitives: custom loss functions, reward functions, advanced algorithms, highest context window, full-parameter fine-tuning.</li>
+</ol>
+<p>Crucially: <strong>no matter which surface you use, you get one-click deploy</strong> in the platform — essential for iteration speed. No training-here-serving-there, no downloading/reformatting. One-click deploy → run evals → ship to production.</p>
+<h3 id="the-flywheel-continuous-improvement-loop">The flywheel (continuous improvement loop)</h3>
+<p>Leading companies on the platform run an accelerating loop: <strong>train → deploy → monitor → pull traces → retrain.</strong> Fireworks handles the hard parts that make this possible:
+- <strong>GPU orchestration</strong> — no scavenging for GPUs, no worrying about elasticity, bad nodes, or CSP issues ("that's our headache").
+- The mechanical core of the loop — <strong>moving weights over, hot loading, checkpointing</strong> — is handled for you.
+- <strong>Speed:</strong> what might take many weeks DIY in-house, you could get <strong>~10 iterations</strong> done on Fireworks.
+- <strong>Numerical fidelity guarantee:</strong> when training large models (especially <strong>MoE</strong> models using floating-point precision), numerics can drift, so "what you train on might not be what you serve on." Fireworks guarantees the eval results you got in training match production serving performance.
+- <strong>No vendor sprawl:</strong> training + inference in one platform, one-click deploy.</p>
+<h3 id="demo-1-the-training-agent-no-code-fine-tuning">Demo 1 — The training agent (no-code fine-tuning)</h3>
+<p>Premise (after asking the room "how many of you love writing evals and reformatting data?" — nobody): the agent is for people who don't want to deal with the ML plumbing. You speak in plain English ("this is my dataset, this is my business goal, help me fine-tune a model"), and the agent:
+- <strong>Reformats your data</strong> and <strong>writes evals</strong> for you.
+- Helps with <strong>model selection</strong> (finds a model that may suit your use case).
+- Does <strong>hyperparameter search</strong> for you (instead of manually grinding through permutations).
+- Produces a <strong>plan</strong> outlining what it proposes — including an <strong>upfront cost estimate</strong> for the training iteration.</p>
+<p>Workflow once you approve the plan:
+1. Agent takes a <strong>small cut</strong> of your dataset and runs a <strong>hyperparameter grid search</strong> to narrow the sample space.
+2. It comes back: "I tried ~10 iterations; these two are most promising, here's why + the eval results. Do a full-dataset run?"
+3. On yes, it runs the <strong>full training run on the full dataset</strong>, gives a step-by-step view of what's happening under the hood, and a <strong>comprehensive final report</strong>.</p>
+<p>Everything is also available <strong>headless via a skill file</strong> — drop the skill file into your own coding agent/harness (GitHub Copilot, Claude, Cursor, etc.), add your API keys, and train directly from there. It also suggests follow-on iterations. The agent covers <strong>supervised fine-tuning, preference optimization, and classification-model</strong> tasks out of the box.</p>
+<h3 id="demo-2-managed-training-clickable-workflow">Demo 2 — Managed training (clickable workflow)</h3>
+<p>For users who already have a dataset and know their method/hyperparameters:
+- Choose the workflow: <strong>supervised fine-tuning, reinforcement fine-tuning, or preference optimization.</strong>
+- <strong>Pick the model</strong> — Fireworks is typically among the fastest (often "day zero") providers for open-weight inference, which also makes them one of the fastest to support <strong>fine-tuning</strong> on those open-weight models.
+- <strong>Upload the dataset directly</strong>, or use <strong>secure training</strong> to stream data <strong>BYOB</strong> (bring-your-own-bucket) straight from your own cloud.
+- Expose raw parameters — <strong>epochs, learning rate, batch size</strong> — with smart defaults out of the box, then kick off the job.
+- <strong>Reinforcement fine-tuning</strong> adds one step: upload or connect a <strong>grader</strong> (e.g. via your GitHub repo) so the RFT job can reward the model. Exposes additional knobs (<strong>top-K, top-P</strong>, batch size, learning rate).
+- <strong>Weights &amp; Biases</strong> integration: plug in your API key for detailed telemetry/monitoring.
+- <strong>Preference optimization</strong>: similar setup — upload data, choose configs, run as many times as you want.
+- <strong>Live monitoring:</strong> while a job runs you watch the <strong>loss/reward function in real time</strong>; if it's misbehaving you can <strong>pause</strong> and redo the reward function/eval.
+- <strong>One-click deploy</strong> at the end (no downloading/reformatting/re-uploading, no numerics worries).
+- <strong>Compound training:</strong> chain methods — SFT → DPO on top → RL on top → as many passes as you want (this is the flywheel of continuous iteration).</p>
+<blockquote>
+<p>Note: the transcript renders "DPU" — in context this is almost certainly <strong>DPO (Direct Preference Optimization)</strong> layered on a supervised fine-tuned model.</p>
+</blockquote>
+<h3 id="inference-dedicated-deployment-custom-shapes">Inference &amp; dedicated deployment (custom "shapes")</h3>
+<p>After training, you deploy:
+- <strong>On-demand deployment</strong> of fine-tuned models; supports the <strong>largest array of open-weight models</strong>. You can run inference on a plain base model or on your fine-tuned model.
+- <strong>File/inference optimizer → custom shapes:</strong> the <em>same</em> model on the <em>same</em> number of GPUs can deliver very different performance depending on how the whole GPU stack (CUDA kernels → spec decoding → everything around it) is orchestrated. The UI lets you pick a shape: <strong>minimal-shape vs full-precision</strong>, <strong>optimized for speed vs optimized for throughput</strong>, matched to your application's traffic — then one-click deploy that shape.
+- <strong>Autoscaling:</strong> scales up/down automatically with your traffic peaks and troughs.</p>
+<h3 id="the-training-api-raw-power-for-advanced-ml-teams">The training API (raw power for advanced ML teams)</h3>
+<p>For advanced ML users who want the platform's raw primitives while Fireworks still handles infra:
+- Write your <strong>own custom loss functions</strong>; use the <strong>latest algorithms</strong> (e.g. on-policy techniques — transcript mentions "on policy registration" and "Syspo," likely garbles of current RL post-training methods).
+- <strong>Full-parameter fine-tuning</strong> supported.
+- A publicly available <strong>cookbook (GitHub repo)</strong> with ready-made recipes — pick a recipe, change the knobs, no need to write from scratch.
+- Killer capability: <strong>train the model from within your own harness.</strong> The argument: an AI must learn to do the job <em>from within your environment/harness</em>, knowing which tools it has and how to orchestrate them. (Harness + model co-training is revisited later via Harvey.)
+- Scale claim: you can "<strong>train a 1 trillion parameter model from your laptop</strong>" because Fireworks handles all the infra.</p>
+<h3 id="announcement-fireworks-ga-in-microsoft-foundry">Announcement — Fireworks GA in Microsoft Foundry</h3>
+<p>Announced the prior day at <strong>Satya Nadella's Build 2026 keynote</strong>. Everything shown for <strong>inference deployment</strong> is available on <strong>Foundry</strong>; <strong>training is not</strong> on Foundry — you train on Fireworks, then download and move the model into a <strong>custom model deployment</strong> on Foundry. An announcement video (with a partner, "Lean," from the Microsoft Foundry side) frames it as: take all of Fireworks' greatness <em>and</em> all of Foundry's greatness in a simplified way — <strong>one endpoint, one contract, one journey, one platform.</strong></p>
+<h3 id="why-customers-choose-fireworks-on-foundry-four-reasons-jeet">Why customers choose Fireworks on Foundry (four reasons — Jeet)</h3>
+<p>The second presenter (Jeet) takes over to explain the Foundry fit:
+1. <strong>Performance</strong> — the inference engine optimizes from the <strong>CUDA-kernel level up</strong>, squeezing the most out of the GPU for the customer's specific use case.
+2. <strong>Model advantage</strong> — most models release on Fireworks at <strong>day zero</strong> (examples cited: <strong>DeepSeek V4</strong>, <strong>Kimi 2.6</strong>), so you can plug state-of-the-art open-source models into agents as soon as they ship.
+3. <strong>Control &amp; extensibility</strong> — many <strong>custom models</strong> can now be deployed on Foundry via the Fireworks ↔ Azure Foundry catalog integration.
+4. <strong>Economics</strong> — what customers care about most. Closed-source models get expensive fast at scale; Fireworks offers a cheaper alternative at comparable quality, and Foundry integration lets you <strong>spend existing Azure credits</strong>.</p>
+<h3 id="three-foundry-integration-deployment-modes">Three Foundry integration / deployment modes</h3>
+<ol>
+<li><strong>Serverless (pay-as-you-go):</strong> models already deployed on Foundry — no need to create a deployment; it's a <strong>shared deployment</strong> across users, <strong>per-token billing</strong>, with <strong>rate limits</strong> (shared infra). State-of-the-art OSS models available today in this mode include <strong>GLM 5.1, Kimi 2.6, GPT 120B</strong>, with more added as they release.</li>
+<li><strong>PTU / provisioned throughput:</strong> for a known production workload — <strong>reserve GPUs</strong> and deploy a model for your specific use case. PTU-gated; works very well for production.</li>
+<li><strong>Bring your own weights (BYOW):</strong> for customers who've <strong>trained open-source models</strong> to compete with closed-source on quality. Train/chain on Fireworks → download the weights → upload to Azure → deploy on Azure using your Azure credits. Best when you have trained proprietary models to use in your application.</li>
+</ol>
+<h3 id="customer-proof-points-foundry-fireworks">Customer proof points (Foundry + Fireworks)</h3>
+<ul>
+<li><strong>UiPath</strong> — wanted a faster, more cost-effective model, <em>and</em> an open-source model that beats the quality of a closed-source <strong>Sonnet 4.6</strong>; achieved using Fireworks models on Azure Foundry. (Transcript "Sonic 4.6" → Claude <strong>Sonnet 4.6</strong>.)</li>
+<li><strong>Bolt</strong> (transcript: "Bolt New," i.e. <strong>bolt.new</strong>) — needed something that scales well on <strong>throughput and latency</strong> for production; solved via the Azure ecosystem + Fireworks model.</li>
+<li><strong>Motive</strong> — needed models to run <strong>repeatable tasks at high volume</strong>; deployed on Azure Foundry, optimized with the Fireworks engine, to serve that repeatable high-volume workload.</li>
+</ul>
+<h3 id="demos-35-deploying-on-foundry-serverless-custom-agents">Demos 3–5 — Deploying on Foundry (serverless, custom, agents)</h3>
+<ul>
+<li><strong>Serverless deploy:</strong> In Azure Foundry → <strong>Discover</strong> → <strong>Models</strong> → model catalog. Fireworks-optimized models carry the <strong><code>FW</code> prefix</strong>. Click a model → <strong>Deploy</strong> → optionally set <strong>custom settings</strong> (PTU / rate limits, since serverless is shared) → toggle rate limits → Deploy. You can then <strong>chat with the model</strong> in the UI or call the <strong>API</strong> to plug into agents/apps.</li>
+<li><strong>Custom-model deploy:</strong> Go to the <strong>Build</strong> section → <strong>Models</strong> → <strong>Custom model</strong> section (not Deployments) → <strong>Add</strong> → name it and <strong>choose the base architecture</strong> (if the architecture isn't supported by default, contact Azure/Fireworks to enable it) → use the provided <strong>command-line prompt to upload</strong> your custom model to Azure → then just <strong>click Deploy</strong>. Because it's <em>your</em> deployment, <strong>no rate limits</strong>; you decide how many <strong>PTUs / provisioned throughput</strong> to allocate. Chat via UI or call the API.</li>
+<li><strong>Agents deploy:</strong> In the <strong>Build</strong> page there's a step for <strong>agents</strong> on your Azure account. Name the agent → Deploy (a couple of minutes) → choose the model behind the agent (a Fireworks model already on Foundry <strong>or</strong> a custom model) → integrate <strong>tools</strong> (web search, your own defined tools/functions). The agent works well with those tools alongside the chosen Fireworks model.</li>
+</ul>
+<h3 id="customer-spotlight-harvey-ai-nico-groupin">Customer spotlight — Harvey AI (Nico Groupin)</h3>
+<p>Nico Groupin, <strong>Head of Applied Research at Harvey AI</strong>, joins as special guest. Harvey is <strong>the generative AI platform for legal and professional services</strong>, used by <strong>thousands of law firms</strong> worldwide; mission is to make lawyers' work more efficient, higher quality, and reduce busy work. (Vivek notes Harvey is used by "hundreds of leading legal firms"; Nico says thousands.)</p>
+<p><strong>LAB — the Legal Agent Benchmark</strong> (launched ~2–3 weeks before the talk): a benchmark to measure <strong>Long-Horizon agents on legal tasks</strong>, addressing the central question of <em>quality</em> in a specific vertical as agents proliferate in the application layer. Four components:
+1. <strong>The agent's environment</strong> = a <strong>client matter</strong> — the universe of documents, work, and intermediate work product a lawyer uses on a project. The agent is dropped into this environment.
+2. <strong>The instruction is partner-level</strong>, not a detailed checklist — e.g. "here's a data room, write me an issues list," then circle back with the complete work product. The agent must rely on its <strong>priors</strong> for how legal work is done plus its <strong>tools and harness skills</strong>.
+3. <strong>It must produce real legal work product</strong> — not just a chat answer, but real <strong>Word docs, Excel spreadsheets, PowerPoints</strong> (often 5–10 in a single task scope).
+4. <strong>Graded with expert rubrics</strong> — each task has <strong>~50+ rubric criteria</strong> specifying the material points of good work product.</p>
+<p>Scale of LAB: <strong>24 legal practice areas</strong>, <strong>over 1,200 tasks total</strong>, up to <strong>~75,000 total rubric criteria.</strong> The strict <strong>all-pass</strong> scoring is a high bar for whether the agent truly did the task a human would.</p>
+<p><strong>Why Harvey invests in open models — four considerations (Nico):</strong>
+1. <strong>Domain expertise (named first, surprisingly):</strong> models exhibit <strong>"jagged intelligence"</strong> (term coined by <strong>Andrej Karpathy</strong>) — really good at some things, failing miserably at others, hard to reason about why. In legal, a model might be strong at <strong>transactional work</strong> (corporate M&amp;A, financial due diligence) but weak at <strong>litigation work</strong> (case-law research, writing-intensive tasks). <strong>Post-training smooths these rough edges</strong> and brings the model up to speed across all practice areas.
+2. <strong>Cost and latency:</strong> "you don't need to bring the Ferrari off the racetrack if you don't need to." A <strong>bimodal distribution</strong> of usage is emerging — pay a premium with frontier closed models for really high-stakes, complex work, but route a lot of simpler work to open-weight models that are perfectly well suited. <strong>Routing between these two modes</strong> becomes increasingly important.
+3. <strong>Security and governance:</strong> for the highest-stakes work, customers ask for <strong>secure deployment within their own VPC</strong>, which open-weight models enable. You also get access to the <strong>complete reasoning trace</strong> of the model, enabling much greater <strong>interpretability and auditability</strong> of an agent's behavior — increasingly important for <strong>compliance</strong> over time.
+4. <strong>(Iteration velocity / the managed loop)</strong> — see below; Harvey treats faster iteration as itself a key reason.</p>
+<h3 id="harvey-fireworks-the-advisor-agent-architecture-the-headline-result">Harvey + Fireworks — the advisor-agent architecture (the headline result)</h3>
+<p>The research track Nico is most excited about (published the morning of the talk): <strong>advisor agents.</strong> Harvey built a system where <strong>worker agents driven by open-weight models (GLM 5.1)</strong> call out to heavier <strong>advisor models</strong> — in many cases closed-source frontier models like <strong>Opus 4.7</strong>. This <strong>inference-time routing</strong> lets you navigate the <strong>Pareto frontier of quality vs cost</strong>:
+- Pure closed frontier → top performance but significant cost + latency tradeoffs.
+- Open-weight → much cheaper, much faster, greater security guarantees, but a performance tradeoff.
+- <strong>Hybrid system → maintains quality at lower cost and latency, and in many cases actually improves quality.</strong></p>
+<p><strong>Quantified result (Vivek):</strong> up to <strong>2.4× cheaper</strong> on a task where it's about <strong>30% better on the all-task (all-pass) metric.</strong> Vivek's framing: using a frontier closed model for <em>every</em> task is "like having an aircraft carrier to point at a bunker as well as to point at an ant" — you should exercise judgment on which model each task needs, and open models are genuinely very good.</p>
+<p>Harvey is also pursuing <strong>straightforward post-training (SFT) with Kimi models</strong>, showing nice lift on LAB's all-pass criteria over the base model. LAB is treated not just as a benchmark but as a <strong>foundation for research</strong> into post-training of open-weight models, <strong>harness optimizations</strong> (baking domain specificity into the agent harness), <strong>skills, tool use</strong>, and frontier topics like <strong>memory</strong>.</p>
+<h3 id="the-iteration-cycle-why-foundry-harveys-perspective">The iteration cycle &amp; why Foundry (Harvey's perspective)</h3>
+<ul>
+<li><strong>Managed inference = plug-and-play:</strong> Harvey can start consuming open-source models very quickly with no iteration overhead.</li>
+<li><strong>Managed training infrastructure tightens the loop:</strong> the iteration loop becomes much tighter, faster, more efficient — running many post-training experiments <strong>in parallel</strong> in a low-touch way for the research team. Harvey's mantra: <strong>"all timelines are compressed"</strong> — including research — so velocity is crucial. (Fireworks echoes: "all iteration cycles are compressed.")</li>
+<li><strong>Why Microsoft Foundry specifically:</strong> Harvey has "always been an Azure customer." Legal is the <strong>highest-stakes type of knowledge work</strong>, demanding the highest grade of infrastructure, security, governance, and compliance — which is what Nico associates with Microsoft Foundry. The Fireworks ↔ Foundry partnership is a <strong>"best of both worlds"</strong>: keep the enterprise-grade Azure infrastructure they already use, then <strong>layer on</strong> managed inference for open-weight models, training infrastructure, and seamless deployment — <strong>without handicapping their own infra teams.</strong></li>
+<li><strong>Historical context / advice:</strong> when Nico joined Harvey (~3 years ago) it was 5–6 people in an Airbnb worrying about whether the Wi-Fi worked, before this AI infrastructure existed. His advice to founders building an AI stack for the first time — or enterprises rebuilding to be <strong>agent-native</strong> — is to <strong>"ride the tailwinds"</strong> of this managed infrastructure (Fireworks' work + its Microsoft partnership) so you don't have to figure it all out yourself and can move much faster.</li>
+</ul>
+<h3 id="closing-call-to-action-jeet">Closing call to action (Jeet)</h3>
+<p>If you're starting a new use case or reimagining an existing one and already use Azure, go check out <strong>Fireworks models on Azure Foundry</strong> — multiple deployment modes (serverless, PTU, BYOW) that you can integrate into agents, whether Azure agents or agents you built yourself. The session closes to Q&amp;A for Nico, Vivek, and Jeet.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Fireworks AI</strong> — inference + training platform for open-weight models; ~30T tokens/day, 10,000+ enterprise customers.</li>
+<li><strong>Microsoft Foundry (Azure Foundry)</strong> — Microsoft's enterprise AI platform; hosts the model catalog and agents; now hosts Fireworks (GA).</li>
+<li><strong>Fireworks inference engine</strong> — proprietary inference stack optimizing from the CUDA-kernel level up across ~84k–85k permutations.</li>
+<li><strong>File / inference optimizer</strong> — produces <strong>custom model "shapes"</strong> (minimal vs full-precision, speed- vs throughput-optimized) tuned to your traffic.</li>
+<li><strong>Training agent</strong> — no-code, plain-English fine-tuning agent for PMs/app builders (data reformatting, eval writing, model selection, hyperparameter search, cost-estimated plan, full-run report). Also available <strong>headless via a skill file</strong>.</li>
+<li><strong>Managed training platform</strong> — clickable UI for ML engineers (SFT, RFT, preference optimization).</li>
+<li><strong>Training API</strong> — raw primitives for advanced ML teams (custom loss/reward functions, full-parameter fine-tuning, train-from-within-your-harness).</li>
+<li><strong>Fireworks cookbook</strong> — public GitHub repo of training recipes.</li>
+<li><strong>Compound training</strong> — chain SFT → DPO → RL across multiple passes (the flywheel).</li>
+<li><strong>Secure training (BYOB)</strong> — stream training data directly from your own cloud bucket.</li>
+<li><strong>Weights &amp; Biases</strong> — optional telemetry integration for training runs.</li>
+<li><strong>Foundry integration modes</strong> — serverless/pay-as-you-go, PTU/provisioned throughput, bring-your-own-weights.</li>
+<li><strong>Foundry model catalog</strong> — Fireworks models carry the <strong><code>FW</code> prefix</strong>; deploy via Discover → Models.</li>
+<li><strong>Foundry agents</strong> — wire a Fireworks/custom model into an agent plus tools (web search, custom functions).</li>
+<li><strong>GLM 5.1</strong> — open-weight model; used as Harvey's worker-agent model and available serverless on Foundry.</li>
+<li><strong>Kimi 2.6</strong> — state-of-the-art open-source model; day-zero on Fireworks; available serverless on Foundry. (Also "Kimi models" used in Harvey's SFT work.)</li>
+<li><strong>GPT 120B</strong> — open-weight model available serverless on Foundry.</li>
+<li><strong>DeepSeek V4</strong> — cited as a day-zero open-source release on Fireworks.</li>
+<li><strong>Claude Opus 4.7</strong> — frontier closed model; used as Harvey's heavier "advisor" model and as the "overkill for email summarization" example.</li>
+<li><strong>Claude Sonnet 4.6</strong> — closed model UiPath's open-source model was tuned to beat (transcript: "Sonic 4.6").</li>
+<li><strong>Cursor / Composer 2 &amp; 2.5</strong> — customer that used Fireworks RL rollouts to build its Composer models.</li>
+<li><strong>Harvey AI</strong> — generative AI platform for legal/professional services; thousands of law firms.</li>
+<li><strong>LAB (Legal Agent Benchmark)</strong> — Harvey's benchmark for long-horizon legal agents.</li>
+<li><strong>Vercel, Jasper, Uber, DoorDash, UiPath, bolt.new, Motive</strong> — named Fireworks/Foundry customers.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>General Availability of Fireworks AI in Microsoft Foundry</strong> — announced at Satya Nadella's Build 2026 keynote (the day before this session). One endpoint, one contract, one platform. <strong>Inference deployment + custom-model deployment</strong> are available on Foundry; <strong>training remains on Fireworks</strong> (train on Fireworks → download → deploy on Foundry).</li>
+<li>Fireworks models live in the <strong>Foundry model catalog</strong> with the <code>FW</code> prefix, deployable <strong>serverless (pay-as-you-go), via PTU, or bring-your-own-weights</strong>, and integratable directly into <strong>Foundry agents</strong> with tools.</li>
+<li><strong>Harvey's advisor-agent research</strong> published the morning of the talk (GLM 5.1 workers + closed advisor models; up to 2.4× cheaper / ~30% better on all-pass) — a publication/announcement rather than a Microsoft product GA.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<blockquote>
+<p>All demos were recorded (Vivek noted "actually, recorded demo").
+- <strong>Training agent (no-code fine-tuning):</strong> plain-English goal → agent reformats data, writes evals, selects a model, runs hyperparameter grid search on a data subset, proposes a cost-estimated plan, then (on approval) runs the full-dataset training with a step-by-step view and final report. Proves you can fine-tune without touching ML plumbing or writing evals/data formatting yourself.
+- <strong>Managed training UI:</strong> pick SFT/RFT/preference optimization, select model, upload or BYOB stream the dataset, set epochs/learning rate/batch size (with smart defaults), connect a grader for RFT, optional W&amp;B telemetry, live loss/reward monitoring with pause, then one-click deploy. Proves the clickable end-to-end training-to-deploy loop for ML engineers.
+- <strong>Dedicated inference deployment with custom shapes:</strong> select a custom-tuned model and choose a serving shape (minimal vs full-precision, speed vs throughput) on the same GPUs, with autoscaling, then one-click deploy. Proves the same model/GPUs can be tuned to very different performance profiles per traffic need.
+- <strong>Foundry serverless deploy:</strong> Discover → Models → <code>FW</code>-prefixed model → Deploy → set rate limits → chat in UI / call API. Proves pay-as-you-go Fireworks models are a few clicks away in Foundry.
+- <strong>Foundry custom-model deploy:</strong> Build → Models → Custom model → Add → name + base architecture → CLI upload to Azure → Deploy (no rate limits, choose PTUs). Proves you can bring trained weights into Foundry easily on your own Azure credits.
+- <strong>Foundry agent deploy:</strong> Build → Agents → name → Deploy → choose Fireworks/custom model behind the agent → add tools (web search/custom functions). Proves Fireworks models plug straight into Foundry agents with tooling.</p>
+</blockquote>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>~30 trillion tokens/day</strong> processed by Fireworks — "right behind frontier closed-weight labs."</li>
+<li><strong>10,000+ enterprise customers</strong> on Fireworks.</li>
+<li><strong>~84,000–85,000 permutations</strong> for serving a single model (SKUs × parallelization × quantization × spec decoding).</li>
+<li>SLA examples: <strong>time to first token &lt; 500 ms</strong>, <strong>end-to-end latency &lt; 2 s</strong>.</li>
+<li>DIY in-house might take <strong>many weeks</strong>; Fireworks gets you <strong>~10 iterations</strong> in that time.</li>
+<li>"You can <strong>train a 1 trillion parameter model from your laptop</strong>."</li>
+<li>Harvey <strong>LAB</strong>: <strong>24 practice areas</strong>, <strong>1,200+ tasks</strong>, <strong>~75,000 rubric criteria</strong>, <strong>~50+ criteria per task</strong>, agents produce <strong>5–10</strong> real documents per task.</li>
+<li>Harvey advisor-agent result: <strong>up to 2.4× cheaper</strong> while <strong>~30% better on the all-task (all-pass) metric.</strong></li>
+<li><em>"It's like having an aircraft carrier to point at a bunker as well as to point at an ant. You don't need that."</em> — Vivek, on using frontier closed models for every task.</li>
+<li><em>"You don't need to bring the Ferrari off of the racetrack if you don't need to."</em> — paraphrasing the cost/latency argument.</li>
+<li><strong>"Jagged intelligence"</strong> (Andrej Karpathy) — models great at some tasks, failing at others; the motivation for vertical post-training.</li>
+<li><em>"All timelines are compressed."</em> — Harvey's mantra; Fireworks: <em>"all iteration cycles are compressed."</em></li>
+<li><em>"Ride the tailwinds."</em> — Nico's advice to founders/enterprises building or rebuilding an agent-native AI stack.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Browse the Foundry model catalog for <code>FW</code>-prefixed models and deploy one serverless (GLM 5.1 / Kimi 2.6 / GPT 120B) to compare cost vs a closed model on a real task.</li>
+<li>Prototype the <strong>advisor-agent / inference-time routing</strong> pattern: open-weight worker + closed advisor, and measure the quality/cost Pareto on our own workload.</li>
+<li>Test the Fireworks <strong>training agent skill file</strong> inside a coding harness (Copilot/Claude/Cursor) for a quick SFT iteration.</li>
+<li>Walk the <strong>BYOW</strong> path: train on Fireworks → download weights → upload + deploy as a Foundry custom model on Azure credits.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>Pricing specifics for serverless vs PTU on Foundry, and how Azure credit consumption is metered for Fireworks models.</li>
+<li>What base architectures are supported by default for custom-model upload, and the turnaround to enable an unsupported one.</li>
+<li>How strong is the "numerical fidelity" guarantee for MoE models in practice (any published validation)?</li>
+<li>Which RL post-training methods are actually behind the garbled "on policy registration / Syspo" references?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Any team weighing open-weight fine-tuning vs frontier closed models for cost control.</li>
+<li>Regulated/high-stakes domains (legal, finance, healthcare) needing in-VPC deployment + reasoning-trace auditability.</li>
+<li>Platform/MLOps teams wanting a single train→deploy→monitor flywheel on Azure.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+<li>Microsoft Foundry / Azure AI Foundry notes</li>
+<li>Fine-tuning &amp; post-training (SFT / DPO / RFT) notes</li>
+<li>Open-weight vs frontier closed model strategy</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="BRKSP90.html"><span class="pager-dir">← Previous</span><span class="pager-code">BRKSP90</span><span class="pager-title">Stop routing docstrings to 70B models with on-device AI on Snapdragon</span></a>
+    <a class="pager pager-next" href="BRKSP92.html"><span class="pager-dir">Next →</span><span class="pager-code">BRKSP92</span><span class="pager-title">Scale agentic AI from on-device to cloud orchestration</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

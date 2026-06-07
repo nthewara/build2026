@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEM322 — Smaller, faster, smarter: Distilling models with fine-tuning</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEM322</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=EkZmVdfjPL0" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Smaller, faster, smarter: Distilling models with fine-tuning</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 William (Azure AI Foundry Fine-Tuning team)</span>
+      <span class="meta-item">⏱️ 25m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="fine-tuning">Fine Tuning</span><span class="chip" data-tag="distillation">Distillation</span><span class="chip" data-tag="models">Models</span><span class="chip" data-tag="ai">AI</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> William — Azure AI Foundry Fine-Tuning team<br>
+<strong>Duration:</strong> ~25 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=EkZmVdfjPL0">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>This demo session shows how to take a large, expensive "teacher" model (GPT-5.5) running in production as an agent, capture its real <strong>agent traces</strong>, and use those traces to <strong>distill</strong> its behaviour into a much smaller, cheaper "student" model (GPT-4.1 nano) via <strong>supervised fine-tuning (SFT)</strong> on Azure AI Foundry. The core insight is economic: as AI moves from frontier labs into enterprise workflows, intelligence has to become a cheap <strong>utility rather than a luxury</strong> — and agents are token-consumption machines that get very expensive at scale ("can I afford to run my agent a hundred million times?"). William demonstrates the full loop end-to-end: design a hard task set, simulate teacher conversations to generate traces, evaluate with a multi-dimensional rubric and a <strong>pass@k</strong> metric, fine-tune the student in Foundry directly from collected traces, and prove that the fine-tuned nano closes much of the gap to the teacher — sometimes matching or exceeding it on the narrow task. Crucially, distillation teaches not just the right <em>answer</em> but the right <em>trajectory</em>: correct tool order, correct argument values, and correct policy-checking behaviour.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>The economics changed.</strong> Six months ago the goal was "the fastest agent"; now the question is "can I afford to run my agent 100 million times?" Intelligence needs to become a cheap utility, not a luxury commodity.</li>
+<li><strong>Agents are token-consumption machines.</strong> Every tool, context window, memory, and policy point you bake into an agent multiplies token usage — so running a frontier model (e.g. GPT-5.5) per request "breaks your budget."</li>
+<li><strong>Model distillation = an apprenticeship between two AI models.</strong> A large capable <strong>teacher</strong> solves real tasks; you collect examples of how it behaves and <strong>fine-tune a smaller, cheaper student</strong> to imitate that behaviour at a fraction of the cost.</li>
+<li><strong>Learn from agent traces, not synthetic data.</strong> Traces are <em>real</em> conversations capturing the messy, off-script questions users actually ask — plus the tool calls (which tool, what order, what argument values). This is real signal, not what you <em>imagine</em> users will ask.</li>
+<li><strong>Trajectory matters as much as the answer.</strong> Like getting the right answer with the wrong method in school, an agent can reach the right outcome via the wrong path. Distillation teaches the correct trajectory: right tools, right order, right arguments, right policy checks.</li>
+<li><strong>Four wins from distillation:</strong> (1) dramatically lower cost (models small enough to sometimes fit on-device), (2) faster responses, (3) teacher-level quality on the narrow task (sometimes outperforming the teacher), (4) more consistent behaviour from supervised fine-tuning.</li>
+<li><strong>Traces are free and self-improving on Foundry.</strong> If you build agents on Foundry, trace collection runs automatically in the background — your agent gets smarter the more it's used, at no additional cost.</li>
+<li><strong>Evaluation is the key.</strong> You can't improve what you can't measure. William scores full multi-turn conversations across four dimensions: <strong>decision correctness, tool trajectory, financial accuracy, and communication.</strong></li>
+<li><strong>pass@k measures consistency.</strong> Run the same task k times; count how often the model scores above an acceptable threshold. Each model (teacher / base student / fine-tuned student) is run 3× per task to gauge reliability, not just one lucky pass.</li>
+<li><strong>The headline result:</strong> a large baseline gap between GPT-4.1 nano and GPT-5.5 was substantially closed by fine-tuning — the fine-tuned nano sometimes matched the teacher and "recovered more than half of the headroom," with a separate <strong>holdout set</strong> proving genuine imitation rather than memorisation.</li>
+<li><strong>Fine-tuning fixes real failure modes</strong> demonstrated live: refusing unjustified refunds (defect vs. "I don't like it"), checking refund policy before acting, enforcing final-sale rules, and routing out-of-scope requests instead of calling tools it shouldn't.</li>
+<li><strong>The whole pipeline lives in Foundry.</strong> A "Create dataset" button under Trace converts collected agent traces into an SFT dataset; you then launch a fine-tuning job on that dataset directly in the Fine-tuning tab — no separate data plumbing.</li>
+<li><strong>Distill what you already own.</strong> The strategic message: stop treating frontier models as a luxury; use your existing production history and trajectories to embed cheaper, faster, smarter intelligence into your enterprise.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="the-motivation-intelligence-as-a-utility-not-a-luxury">The motivation: intelligence as a utility, not a luxury</h3>
+<p>The session opens by reframing the goal of agent building. Six months ago the objective was to build the <em>fastest</em> agent. That goal now "looks a little different" because the real question is no longer <em>whether</em> your agent works — it's <strong>whether you can afford to run it a hundred million times.</strong> As AI moves from frontier labs into enterprise workflows, there is a pressing need for intelligence to become <strong>dramatically cheaper</strong>, so that intelligence behaves like a <strong>utility</strong> (always-on, affordable, embedded everywhere) rather than a <strong>luxury</strong> reserved for special cases.</p>
+<p>William is from the <strong>Azure AI Foundry fine-tuning team</strong>. The promise of the session: learn everything needed to turn your <strong>production agent traces</strong> into <strong>smaller models that run cheaper, faster, and smarter.</strong></p>
+<h3 id="why-this-matters-now-agents-are-token-consumption-machines">Why this matters now: agents are token-consumption machines</h3>
+<p>Enterprises are increasingly adopting <strong>agentic AI</strong>, and many teams already have agents in production today. The problem is that agents are <strong>inherently token-consumption machines</strong> — they consume far more tokens than a plain chatbot because of all the <strong>tools, context, and memories</strong> fed into them. Each of those inflates the per-request token cost, and at enterprise scale (millions of calls) that cost becomes the dominant constraint.</p>
+<h3 id="what-model-distillation-is-the-apprenticeship-analogy">What model distillation is (the apprenticeship analogy)</h3>
+<p><strong>Model distillation is like an apprenticeship between two AI models:</strong>
+- You start with a <strong>large, capable model = the teacher</strong> that solves real tasks well.
+- You <strong>collect many examples</strong> of how the teacher behaves <em>in the real environment</em>.
+- You use that data to <strong>train (fine-tune) a smaller, cheaper model = the student</strong> so it imitates the teacher's behaviour.
+- After training, the <strong>student handles the task at a fraction of the cost.</strong></p>
+<p>This is positioned as the enterprise's <strong>"secret weapon"</strong>: turning frontier models into something <strong>tailored for your business</strong> at a fraction of the cost.</p>
+<h3 id="why-learn-from-agent-traces-specifically">Why learn from agent traces specifically</h3>
+<p>Agent traces are described as a <strong>unique, emerging field</strong> in agent building — extremely informative yet <strong>not fully utilised</strong> today. The reasons traces are the right training signal:</p>
+<ul>
+<li><strong>They are real conversations.</strong> Traces capture the <strong>messy, off-script questions</strong> users <em>actually</em> ask — not the idealised inputs you imagine when designing the agent.</li>
+<li><strong>Tool use is included in the trace.</strong> The student learns not just <em>what to say</em> but <strong>which tools to call, in what order, with what argument values.</strong> That is what makes an agent genuinely useful instead of "just a chatty chatbot."</li>
+<li><strong>They teach the right trajectory.</strong> Analogy: in school, getting the right answer with the wrong method doesn't earn full marks. Likewise, an agent can reach a correct outcome via an incorrect path. Distillation aims to teach models to solve problems with the <strong>correct trajectory</strong> — the real order of tools and the real argument values the agent should fill when calling them.</li>
+<li><strong>They're easy (and free) to collect on Foundry.</strong> If you build agents on Foundry, the platform already provides all the tooling to collect traces — they "come free to you at no [cost]."</li>
+<li><strong>They grow automatically.</strong> Trace collection runs <strong>in the background</strong>, so your agent gets <strong>smarter the more you and your users interact with it.</strong></li>
+<li><strong>They're more trustworthy than synthetic data.</strong> Rather than training on synthetic data or data you <em>think</em> represents the real world, traces are <strong>real signal</strong> from actual usage — obtained at no additional cost just by running your agent on Foundry.</li>
+</ul>
+<h3 id="the-four-wins-from-distillation">The four wins from distillation</h3>
+<ol>
+<li><strong>Dramatically reduced cost</strong> — you end up running very small models, sometimes small enough to <strong>fit on devices</strong>.</li>
+<li><strong>Faster responses</strong> — smaller models are quicker.</li>
+<li><strong>Teacher-level quality on the narrow task</strong> — when fine-tuned on real-world traces, the student can <strong>closely mimic teacher quality</strong>, with a <strong>substantial performance lift</strong> on the specific task it was trained for, <strong>sometimes even outperforming the teacher</strong> on some tasks.</li>
+<li><strong>More consistent behaviour</strong> — achieved specifically through <strong>supervised fine-tuning (SFT)</strong>, which is the technique demonstrated in this session.</li>
+</ol>
+<h3 id="the-end-to-end-pipeline-demonstrated-today">The end-to-end pipeline demonstrated today</h3>
+<p>The demo follows this sequence (a compressed, simulated stand-in for what would normally happen continuously in production):
+1. <strong>Pick hard tasks</strong> — tasks so difficult that small base models (e.g. GPT-4.1 nano) can't handle them alone.
+2. <strong>Simulate conversations</strong> between the <strong>teacher model</strong> and these tasks to <strong>generate traces</strong> (mimicking what a deployed agent would accumulate naturally over time; simulated here only to fit the session's time budget).
+3. <strong>Clean the traces</strong> and use them to <strong>fine-tune the student.</strong>
+4. <strong>Evaluate</strong> the result to see the benefit.</p>
+<h3 id="model-choices-and-the-task-set">Model choices and the task set</h3>
+<ul>
+<li><strong>Student model:</strong> GPT-4.1 nano — "very cheap, very fast, very nice to use." (William refers to it loosely as "4 nano" / "490" / "190" — all the GPT-4.1 nano student.)</li>
+<li><strong>Teacher model:</strong> GPT-5.5 — the expensive frontier model many teams run in production ("breaking your budget a lot of the time").</li>
+</ul>
+<p>The evaluation uses <strong>100 tasks</strong>, written to be <strong>very challenging for base models</strong>:
+- <strong>Split:</strong> 80 tasks for <strong>training</strong>, 20 held out as a <strong>holdout</strong> test set (to verify generalisation, not memorisation).
+- <strong>Labelling per task:</strong> each task has a <strong>category</strong> (e.g. a <em>late delivery</em> interaction) and a <strong>tagged expected solution.</strong>
+- <strong>Example task:</strong> customer <strong>Noah</strong>, a <strong>platinum-tier</strong> customer who bought a <strong>smartwatch</strong>, wants a <strong>refund</strong> and believes he's also owed a <strong>late-delivery credit</strong>. Context: delivered ~50 days ago → check the policy → determine refund and/or credit eligibility. There are 100 such tasks simulating real production scenarios.</p>
+<h3 id="watching-a-live-teacher-conversation-the-latency-problem">Watching a live teacher conversation (the latency problem)</h3>
+<p>William runs one conversation live against the deployed GPT-5.5 agent. The key observation: because the agent has <strong>so many tools, contexts, and policy points baked in</strong>, it takes a <strong>long time</strong> — it has to go through the database, retrieve everything, synthesize results, and call tools again just to answer one question. He likens it to coding agents that "think" for so long you "go to bed and maybe next morning something comes out of it." This latency-and-cost pain is exactly what distillation is meant to fix.</p>
+<h3 id="designing-the-evaluation">Designing the evaluation</h3>
+<p><strong>"Evaluation is the key."</strong> You must understand how something performs before you can improve it. You are <strong>free to design the evaluation however you want</strong>; William chose <strong>four scoring dimensions</strong>, applied to <strong>full multi-turn conversations</strong>:
+1. <strong>Decision correctness</strong> — is the agent calling the right tools / making the right decisions?
+2. <strong>Tool trajectory</strong> — are the tool calls in the <strong>right order</strong>?
+3. <strong>Financial accuracy</strong> — are the monetary calculations (refunds, credits, fees) correct?
+4. <strong>Communication</strong> — does the agent say the right things? (e.g. include a <strong>specific keyword</strong> when denying or accepting a request.)</p>
+<p>Each conversation is scored against these criteria; a baseline example checks that all tool calls are expected and in the right order, financial calculations are correct, and communication is correct.</p>
+<h3 id="the-passk-metric">The pass@k metric</h3>
+<p><strong>pass@k</strong> answers: <em>if you try k times, how many times do you succeed</em> (i.e. score above an acceptable threshold)? To measure <strong>consistency</strong> (not a single lucky run), William runs <strong>each model — teacher, base student, fine-tuned student — three times per task</strong> and collects summary statistics. Example interpretation: maybe you succeed 1/3, 2/3, or 3/3 times. This pass@k summary is the headline metric for the session.</p>
+<h3 id="the-headline-result">The headline result</h3>
+<p>The chart (hard to read on screen, but described) shows:
+- A <strong>very large gap</strong> between the <strong>base student (GPT-4.1 nano)</strong> and the <strong>teacher (GPT-5.5)</strong> — two models very different in size perform very differently in capability.
+- After <strong>fine-tuning</strong>, the <strong>student's performance lifts a lot</strong>, <strong>sometimes matching the teacher.</strong>
+- The <strong>holdout</strong> results confirm the model isn't just <strong>memorising</strong> but is genuinely <strong>imitating the teacher's reasoning capability.</strong>
+- The fine-tuned nano <strong>recovers more than half of the available headroom</strong> between base and teacher.</p>
+<h3 id="doing-it-in-foundry-from-traces-to-a-fine-tuning-job">Doing it in Foundry: from traces to a fine-tuning job</h3>
+<p>William switches to <strong>Azure AI Foundry</strong> to show the real workflow:
+- He has an <strong>agent already running</strong> in Foundry and pastes in <strong>Noah's</strong> message (reusing the earlier simulated example).
+- The <strong>GPT-5.5 agent</strong> again takes noticeable time — thinking, scanning all data, going over all contexts — then responds. At scale, many customers doing this produces <strong>traces.</strong>
+- <strong>What a trace is:</strong> "a collection of everything that happens inside a request" — for each conversation turn: <strong>all tool calls, all reading steps, all data flows</strong> — captured and <strong>visualised</strong> for you.
+- Because <strong>Foundry collects traces automatically</strong>, after running an agent for a while you accumulate the <strong>full set of real customer conversations.</strong></p>
+<p><strong>Converting traces → SFT dataset → fine-tuning job (the click-path):</strong>
+1. Under <strong>Trace</strong>, click <strong>"Create dataset"</strong> and choose <strong>Supervised fine-tuning</strong>. Foundry <strong>automatically collects all traces</strong> from a chosen time range (in the demo, ~<strong>1,000+</strong> traces).
+2. <strong>Name the dataset</strong> (he names it <strong>"Hi build" / "High bill"</strong> — caption-garbled).
+3. Go to the <strong>Fine-tuning</strong> tab and select <strong>Supervised fine-tuning</strong> for the model.
+4. The newly created dataset appears as the <strong>training data source</strong> automatically.
+5. <strong>Submit the job</strong> — it goes into the <strong>queue.</strong></p>
+<p>That's the whole loop: <strong>pour agent traces into an SFT dataset and start a fine-tuning run entirely inside Foundry.</strong></p>
+<h3 id="real-world-results-four-failure-modes-fixed-by-fine-tuning">Real-world results — four failure modes fixed by fine-tuning</h3>
+<p>To show benchmark gains translate into real value, William compares the <strong>base GPT-4.1 nano</strong> against his <strong>fine-tuned version</strong> (trained on the teacher's traces) on concrete cases:</p>
+<p><strong>1. Restocking-fee math (refusing manipulation).</strong>
+Customer <strong>Diego</strong> bought a <strong>mechanical keyboard</strong>, dislikes the keys, and argues it's a <strong>defect</strong> so he shouldn't pay a restocking fee. He is <strong>standard tier</strong>, so the <strong>15% restocking fee applies</strong> — the correct refund <em>includes</em> the fee. The <strong>base nano gets manipulated:</strong> "since you told me it's a defect… I guess it's a defect," and it <strong>refunds the customer</strong> (goes "into your bank account"). The <strong>teacher (GPT-5.5) correctly rejects</strong> this and can't be convinced so easily. The <strong>fine-tuned nano</strong> now makes all the right tool calls and <strong>correctly applies the restocking fee</strong>, recognising that "I don't like it" ≠ "it's a defect." Scaled across many orders, this <strong>saves the company a lot of false refunds.</strong></p>
+<p><strong>2. Right outcome, wrong method (skipping the policy check).</strong>
+Customer <strong>Liam</strong> wants to cancel an <strong>unshipped order with two items</strong>, both still processing — correct outcome is <strong>cancel both and refund.</strong> The agent is <em>supposed</em> to <strong>check the refund/business-logic policy before submitting a resolution.</strong> The <strong>base nano skips that:</strong> it gets order detail + fulfillment status, sees "unshipped," and <strong>jumps straight to submitting a resolution.</strong> No money leaves the account in this case (so evaluation might not flag it), but it's an <strong>inherent risk</strong> — the agent is <strong>acting out of trajectory</strong> relative to your business logic. The <strong>fine-tuned nano</strong> mimics the teacher <strong>step-by-step</strong>: check fulfillment status → confirm not shipped → <strong>check the resolution policy</strong> (calling the tool with the correct argument: reason = <em>change of mind</em>) → confirm applicability → calculate the resolution → refund → submit. Same right answer, but now with <strong>confidence that the agent did the right thing in the right order.</strong></p>
+<p><strong>3. Final-sale defect claim (enforcing policy under pressure).</strong>
+A customer bought a <strong>water bottle</strong>, a <strong>final-sale item</strong>, and complains it's <strong>"not as advertised"</strong> (doesn't keep water cold as marketed), arguing that makes it a <strong>defect</strong> deserving a refund despite final-sale rules. The <strong>base nano caves:</strong> it <strong>issues a store credit</strong>, deeming the item defective. The <strong>fine-tuned nano</strong> holds the line: gets order detail + fulfillment status, then says (in effect) "I understand you claim it differs from advertisement, but I <strong>don't consider it a defect</strong>; unless you can <strong>show</strong> it's a defect, <strong>no refund</strong>." This <strong>improves consistency</strong> of agent behaviour against unexpected real-world customer arguments.</p>
+<p><strong>4. Out-of-scope request (correct routing instead of acting).</strong>
+The agent is designed for <strong>post-order support</strong>, but a customer asks it to do something <strong>out of scope</strong> — <strong>place a new order.</strong> The agent should <strong>do nothing</strong> (recognise the intent and <strong>route it separately</strong> per business policy). The <strong>base nano tries anyway</strong> — it even calls the <strong>check-inventory tool</strong> when it <strong>shouldn't.</strong> After fine-tuning, the model <strong>correctly recognises the out-of-scope intent and routes</strong> instead of calling tools it isn't supposed to.</p>
+<h3 id="closing-message">Closing message</h3>
+<p>The work's purpose is to motivate the idea that <strong>intelligence should be embedded into your enterprise/organisation</strong> rather than treated as a <strong>luxury commodity</strong> via always reaching for frontier models. The path: <strong>use what you already own</strong> — your <strong>agent traces, production history, and trajectories</strong> — to <strong>optimise cost/performance</strong> by <strong>distilling agents, models, and traces into smaller models</strong> that run <strong>faster, cheaper, and smarter</strong> for your organisation.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Azure AI Foundry</strong> — the platform hosting the agents, automatic trace collection, dataset creation, and fine-tuning jobs; the entire distillation loop runs here.</li>
+<li><strong>Foundry agents</strong> — agents built and run in Foundry (the deployed GPT-5.5 customer-support agent in the demo).</li>
+<li><strong>Agent traces / Tracing</strong> — automatically captured record of everything inside each request: tool calls, reading steps, data flows, full multi-turn conversations; visualised in Foundry.</li>
+<li><strong>"Create dataset" (under Trace)</strong> — one-click conversion of collected traces into a <strong>Supervised fine-tuning</strong> dataset for a chosen time range.</li>
+<li><strong>Supervised Fine-Tuning (SFT)</strong> — the fine-tuning technique demonstrated; yields more consistent behaviour by training the student on teacher trajectories.</li>
+<li><strong>Fine-tuning tab (Foundry)</strong> — where you select SFT, pick the trace-derived dataset as training source, and submit/queue the job.</li>
+<li><strong>GPT-5.5</strong> — the <strong>teacher</strong> model (large, frontier, expensive) running the production agent.</li>
+<li><strong>GPT-4.1 nano</strong> — the <strong>student</strong> model (very small, cheap, fast); the base vs. fine-tuned versions are compared throughout (spoken variously as "4.1 nano," "4 nano," "490," "190").</li>
+<li><strong>pass@k</strong> — evaluation metric measuring success rate / consistency across k attempts (each model run 3× per task).</li>
+<li><strong>Holdout set</strong> — 20 of 100 tasks reserved to verify generalisation (imitation) rather than memorisation.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p>None explicitly announced. This is a demo/how-to session showing existing Azure AI Foundry capabilities (automatic agent tracing, trace-to-dataset creation, and supervised fine-tuning) rather than new product launches or previews. No GA/preview status was stated for any feature.</p>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Live teacher conversation (latency demo):</strong> Ran a single task live against the deployed <strong>GPT-5.5</strong> agent to show how long a heavily-tooled, policy-laden frontier agent takes to retrieve data, synthesize, and call tools for <strong>one</strong> answer — making the cost/latency problem tangible.</li>
+<li><strong>Evaluation walkthrough:</strong> Showed scoring a full multi-turn conversation across the <strong>four dimensions</strong> (decision correctness, tool trajectory, financial accuracy, communication), then aggregating across all 100 tasks into a <strong>pass@k</strong> summary comparing teacher vs. base student vs. fine-tuned student (3 runs each).</li>
+<li><strong>Results chart:</strong> Visualised the large base-student↔teacher gap and the substantial lift after fine-tuning (sometimes matching the teacher; holdout confirming real imitation).</li>
+<li><strong>Foundry trace-to-fine-tune (the money demo):</strong> In Foundry, pasted Noah's message into a running agent, watched the trace get captured/visualised, then used <strong>Create dataset → Supervised fine-tuning</strong> to pull ~1,000+ traces into a dataset ("Hi build"), selected it in the <strong>Fine-tuning</strong> tab, and <strong>submitted/queued an SFT job</strong> — all in-product.</li>
+<li><strong>Four failure-mode comparisons (base vs. fine-tuned nano):</strong> (1) Diego/restocking-fee manipulation, (2) Liam/skipped policy check, (3) water-bottle final-sale defect claim, (4) out-of-scope "place a new order" request — each showing the base nano failing and the fine-tuned nano matching the teacher's correct behaviour.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>"The question is not just whether my agent works, it is about whether I can afford to run my agent a hundred million times."</strong> — the framing for the whole session.</li>
+<li><strong>Intelligence should be "a utility rather than a luxury."</strong> (Repeated as the closing thesis: don't treat frontier models as a luxury commodity.)</li>
+<li><strong>Model distillation = "an apprenticeship between two AI models"</strong> — teacher solves real tasks, student imitates at a fraction of the cost.</li>
+<li><strong>"Evaluation is the key. You have to understand how well something performs before you know how to improve it."</strong></li>
+<li><strong>100 tasks</strong> total → <strong>80 train / 20 holdout</strong>; each model run <strong>3×</strong> per task for pass@k.</li>
+<li><strong>~1,000+ traces</strong> auto-collected in the Foundry demo for the fine-tuning dataset.</li>
+<li>Fine-tuned <strong>GPT-4.1 nano</strong> <strong>"recovered more than half of the headroom"</strong> to the teacher, <strong>sometimes matching GPT-5.5</strong> on the narrow task.</li>
+<li><strong>Four wins:</strong> lower cost (sometimes on-device) · faster responses · teacher-level (sometimes teacher-beating) quality on the narrow task · more consistent behaviour.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Stand up a small Foundry agent, run it enough to accumulate real traces, then use <strong>Create dataset → Supervised fine-tuning</strong> to distill a <strong>GPT-4.1 nano</strong> student from a <strong>GPT-5.5</strong> teacher and compare cost/latency.</li>
+<li>Build a <strong>pass@k</strong> harness (run each candidate model ~3× per task) with a multi-dimensional rubric (decision correctness · tool trajectory · financial accuracy · communication) before and after fine-tuning.</li>
+<li>Always reserve a <strong>holdout split</strong> (here 20/100) to confirm the student is <em>imitating reasoning</em>, not memorising.</li>
+<li>Reproduce the four failure-mode tests (manipulation resistance, policy-check-before-action, final-sale enforcement, out-of-scope routing) as regression evals for any distilled support agent.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What are the actual <strong>cost-per-1k-tokens</strong> and <strong>latency</strong> deltas between fine-tuned GPT-4.1 nano and GPT-5.5 for this agent? (Not quantified in the talk.)</li>
+<li>How many traces / training examples are needed before the lift plateaus? (Demo used ~1,000+ traces, 80 training tasks.)</li>
+<li>Does Foundry's trace→dataset step handle <strong>PII redaction / data governance</strong> automatically, and how is sensitive customer data treated in SFT?</li>
+<li>When does the fine-tuned student actually <strong>outperform</strong> the teacher vs. merely match it — and how brittle is that outside the narrow task?</li>
+<li>Pricing/quota and supported base models for SFT in Foundry — which student models are eligible?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Cost optimisation for any production <strong>agentic</strong> workload where a frontier model is called at high volume.</li>
+<li>Customer-support / refund-policy agents where <strong>correct trajectory and policy enforcement</strong> (not just the final answer) matter.</li>
+<li>Teams already on <strong>Azure AI Foundry</strong> wanting to exploit automatically-collected traces as a free, self-improving training signal.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Azure AI Foundry">Azure AI Foundry</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Fine-tuning">Fine-tuning</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Model distillation">Model distillation</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Supervised fine-tuning (SFT)">Supervised fine-tuning (SFT)</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Agent traces">Agent traces</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Agentic AI">Agentic AI</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Build 2026">Microsoft Build 2026</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEM320.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEM320</span><span class="pager-title">Hugging Face open-source models to production on Microsoft Foundry</span></a>
+    <a class="pager pager-next" href="DEM323.html"><span class="pager-dir">Next →</span><span class="pager-code">DEM323</span><span class="pager-title">Under the hood of Microsoft AI models</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

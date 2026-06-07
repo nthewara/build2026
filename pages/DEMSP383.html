@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEMSP383 — Move AI workflows from test to production on Microsoft Foundry</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEMSP383</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=KLmRDETMCog" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Move AI workflows from test to production on Microsoft Foundry</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Vignesh (Applied AI, Fireworks AI)</span>
+      <span class="meta-item">⏱️ 15m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ai-foundry">Ai Foundry</span><span class="chip" data-tag="production">Production</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="open-source-models">Open Source Models</span><span class="chip" data-tag="inference">Inference</span><span class="chip" data-tag="evaluations">Evaluations</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Vignesh — Applied AI team, Fireworks AI<br>
+<strong>Duration:</strong> ~15 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=KLmRDETMCog">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>A partner demo from <strong>Fireworks AI</strong> showing how to take <strong>open-source models</strong> from initial testing all the way to <strong>production-grade inference</strong> on <strong>Microsoft Foundry</strong>. Fireworks AI provides high-performance, day-zero inference for open models (Kimi, GLM, MiniMax, etc.) via a first-party Azure integration, with workload-aware optimization, their own <strong>Fire Attention</strong> inference engine, adaptive caching, and quantization. The walkthrough demonstrates the full lifecycle inside Foundry: discovering Fireworks models, choosing deployment types (multi-tenant serverless → single-tenant provisioned throughput / PTUs), testing in the playground, A/B comparing two models side-by-side, saving the winner as an agent, running custom + benchmark <strong>evaluations</strong> against the full agent harness, iterating on versions, and finally publishing as a web app or pulling code snippets into Python workflows. For cases where out-of-the-box quality isn't enough, you can <strong>bring your own weights</strong> after post-training (SFT/RFT) and serve them through the Fireworks serving stack.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Fireworks AI</strong> is a high-performance inference platform for <strong>open-source models</strong>, with a founding team from <strong>PyTorch @ Meta</strong> and <strong>Vortex @ GCP</strong>.</li>
+<li>Scale claims: <strong>~13 trillion tokens/day</strong> and <strong>180,000 requests/second</strong> served.</li>
+<li><strong>Day-zero support</strong> for nearly all major open-source model providers (Kimi → GLM 5.1 and beyond) — they enable new models on launch day.</li>
+<li>Available as a <strong>first-party Azure integration</strong> on Microsoft Foundry; bill via your <strong>MACC (Azure consumption commitment)</strong> or build directly through Azure.</li>
+<li>The <strong>Fireworks serving stack</strong> does workload-aware optimization: adaptive caching, quantization, a proprietary inference engine called <strong>Fire Attention</strong>, and right-sized hardware selection for low latency or high throughput.</li>
+<li>Foundry exposes Fireworks models as <strong>multi-tenant serverless endpoints</strong> (infra already provisioned) — ideal for cheap experimentation and running evals.</li>
+<li><strong>Data Zone Standard</strong> = multi-tenant serverless (shared endpoint, set TPM rate limits per account) for testing, not heavy production load.</li>
+<li><strong>Global / Data Zone Provisioned Throughput</strong> = single-tenant dedicated deployment for production, sized via a <strong>PTU calculator</strong>.</li>
+<li>PTU example: 80,000 input tokens + 500 output tokens at 300–3,000 RPM → calculated <strong>61,500 PTUs</strong> needed (max scale shown ~1,160 in the UI demo).</li>
+<li>The <strong>Playground</strong> lets you chat with a deployed model and <strong>compare two models side-by-side</strong> (same prompt, simultaneous outputs) to weigh latency vs. quality vs. token count.</li>
+<li><strong>Save as Agent</strong> turns a chosen model + system prompt + tools into a reusable agent inside Foundry.</li>
+<li><strong>Evaluations</strong> run against the <strong>entire agent harness</strong> (system prompt + tool calls), not just the raw model — using custom datasets, open-source benchmarks, or synthetic data.</li>
+<li>Eval setup: pick metrics (intent resolution, coherence, fluency, relevance, groundedness), choose a <strong>judge model</strong> (demo used <strong>GPT-4 mini</strong>), use ground-truth data, and run across all rows (demo: 50-row code-review eval dataset).</li>
+<li>Iterate the agent harness across versions, re-run evals until metrics hit your benchmark (demo showed <strong>90% task completion</strong>), then promote to production.</li>
+<li><strong>Publishing options</strong>: Foundry web app preview (front-end) OR a <strong>Call Agent</strong> tab with code snippets + project endpoint/API key to embed in external <strong>Python</strong> workflows.</li>
+<li><strong>Bring Your Own Weights (BYOW)</strong>: post-train with any framework (or Fireworks' native <strong>SFT/RFT</strong>), register the custom model in Foundry, create a deployment, and route inference through the Fireworks stack.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="who-fireworks-ai-is">Who Fireworks AI is</h3>
+<p>Fireworks AI positions itself as <strong>high-performance open-source inference for open-source models</strong>. The team has deep systems pedigree — founders came from the <strong>PyTorch team at Meta</strong> and from <strong>Vortex at GCP</strong>. Their differentiation is serving open models fast and at scale, with <strong>day-zero support</strong> for almost every major open-source model provider as new models drop (examples cited span from <strong>Kimi</strong> through <strong>GLM 5.1</strong>). Operating scale was given as <strong>~13 trillion tokens per day</strong> and <strong>180,000 requests per second</strong>.</p>
+<h3 id="the-fireworks-serving-stack-how-the-speed-happens">The Fireworks serving stack (how the speed happens)</h3>
+<p>The serving stack performs <strong>workload-aware optimization</strong> per model. The flow: once you find an open-source model that meets your evaluation bar, Fireworks "tunes different knobs" to optimize it for your specific workload. Components mentioned:
+- <strong>Adaptive caching</strong> to reduce repeated compute.
+- <strong>Quantization</strong> of the model to shrink/accelerate it.
+- A proprietary inference engine called <strong>Fire Attention</strong> (their own serving stack).
+- <strong>Right-sized hardware selection</strong> — choosing the correct hardware setup to hit either high throughput or ultra-low latency for the target workload.</p>
+<p>The result is abstracted away and handed back to the customer as a <strong>production-ready endpoint</strong> they can use immediately.</p>
+<h3 id="how-fireworks-operates-on-microsoft-foundry">How Fireworks operates on Microsoft Foundry</h3>
+<p>Key properties of the Foundry integration:
+- Access to <strong>state-of-the-art open models on day zero</strong> inside Foundry; new models are enabled as they roll out.
+- <strong>Optimized inference</strong> tuned for specific workloads (as above).
+- <strong>Enterprise scale</strong> — scale up without breaking the workflow.
+- <strong>First-party Azure integration</strong> — bill via <strong>MACC</strong> or build via Azure directly.
+- <strong>Bring your own custom models / weights</strong> after fine-tuning and upload to Foundry for serving.</p>
+<p><strong>Post-training / BYOW workflow:</strong> finish post-training your weights → <strong>register the custom model</strong> in Microsoft Foundry → <strong>create a deployment</strong> → inference requests get <strong>routed through the Fireworks serving stack</strong> → you get optimized inference on your own custom weights.</p>
+<h3 id="common-use-cases">Common use cases</h3>
+<p>Patterns Fireworks sees across customers:
+- <strong>Code completion</strong>
+- <strong>Code review bots</strong>
+- <strong>Customized chatbots</strong>
+- <strong>Transcription and summarization</strong>
+- <strong>A/B testing across open-source models</strong> — start by comparing models, pick the best, build an agent, and serve it via Foundry endpoints.</p>
+<h3 id="walkthrough-step-1-discover-fireworks-models-in-foundry">Walkthrough Step 1 — Discover Fireworks models in Foundry</h3>
+<p>From the Foundry landing page → <strong>Discover</strong> → <strong>Models</strong> page, which lists all providers and the large catalog of available models. Searching <strong>"Fireworks"</strong> surfaces all the <strong>multi-tenant models that are already enabled</strong> — meaning the infrastructure is already provisioned and ready to use. The demo selects a <strong>Kimi K2.6</strong> model to test for a use case, clicking through to <strong>Deploy</strong>.</p>
+<h3 id="walkthrough-step-2-deployment-types">Walkthrough Step 2 — Deployment types</h3>
+<p>Two broad deployment paths were explained:</p>
+<p><strong>Data Zone Standard (multi-tenant serverless):</strong>
+- A shared, serverless endpoint to start testing (e.g., Kimi K2.6).
+- Set <strong>tokens-per-minute (TPM) rate limits</strong> across different accounts to manage consumption per user.
+- One common endpoint shared across multiple users — good for running <strong>evals</strong> and experimentation, <strong>not</strong> for a massive production workload.</p>
+<p><strong>Global / Data Zone Provisioned Throughput (single-tenant, dedicated):</strong>
+- Used once benchmarks/evals look good and you want a dedicated, single-tenant deployment for production.
+- Surfaces a <strong>PTU (Provisioned Throughput Unit) calculator</strong>.
+- <strong>Worked example:</strong> input token size <strong>80,000</strong>, output <strong>500 tokens</strong>, <strong>300 → 3,000 requests per minute</strong> → calculator returns <strong>61,500 PTUs</strong> required. The UI's max scale at demo time was ~<strong>1,160</strong>, so the workload must fit within the PTU calculation before clicking <strong>Deploy</strong>, which provisions a single-tenant deployment.</p>
+<h3 id="walkthrough-step-3-test-in-the-playground">Walkthrough Step 3 — Test in the Playground</h3>
+<p>Before committing to a dedicated deployment, validate model performance for your use case. The demo switches to already-deployed models — a <strong>Kimi 2.5</strong> and a <strong>MiniMax</strong> model — and opens the <strong>Playground</strong> to chat. Example task: a <strong>code review agent</strong> asked to catch <strong>SQL injection issues</strong> and <strong>hard-coded secrets</strong>. Observations: <strong>very low latency</strong> and a high-quality response out of the box.</p>
+<h3 id="walkthrough-step-4-compare-two-models-head-to-head">Walkthrough Step 4 — Compare two models head-to-head</h3>
+<p>The Playground supports <strong>pitting two models against each other</strong>. The demo compares the <strong>MiniMax</strong> model with a <strong>Kimi 2.6</strong> model via the <strong>Compare models</strong> UI: the same input is sent and outputs generate <strong>simultaneously</strong>. Findings in the demo:
+- <strong>MiniMax</strong> had little traffic → answered very quickly.
+- <strong>Kimi</strong> produced a <strong>more detailed, "thinking"-heavy answer</strong> with multiple deployment-to-production options.
+- The choice depends on how you weight <strong>latency vs. quality vs. tokens generated</strong>. You then pick a model and click <strong>Save as Agent</strong> (either the MiniMax or the Kimi model).</p>
+<h3 id="walkthrough-step-5-run-evaluations-against-the-agent-harness">Walkthrough Step 5 — Run evaluations against the agent harness</h3>
+<p>With a saved agent (e.g., the code-review agent), run <strong>evaluations</strong> via the Playground's <strong>metrics configurator</strong>:
+- Use agents already configured in Foundry with <strong>your own custom evaluation datasets</strong>.
+- Demo target: a <strong>50-row</strong> dataset, evaluating <strong>intent resolution, coherence, fluency, relevance</strong>.
+- Critically, evaluate the <strong>entire agent harness</strong> — not just the model — because it may include <strong>multiple tool calls</strong> and a <strong>detailed system prompt</strong>. Pick the agent → <strong>Next</strong>.
+- Choose dataset source: <strong>existing dataset</strong> vs. <strong>synthetic generation</strong> (demo used an uploaded <strong>code-review eval dataset</strong>, 50 rows, with a <strong>ground-truth</strong> column for comparison).
+- Optionally run against <strong>pre-uploaded open-source benchmarks</strong> for basic coding agents.
+- <strong>Automated field mapping</strong> is provided.
+- <strong>Judge model:</strong> demo used <strong>GPT-4 mini</strong> as the LLM judge.
+- A set of <strong>auto-suggested criteria</strong> appears; you can narrow to a subset (e.g., <strong>relevance, groundedness, coherence</strong>) → name it → <strong>Submit</strong>.
+- The full evaluation suite runs against all rows, producing <strong>percentage scores per metric</strong>.</p>
+<h3 id="walkthrough-step-6-read-results-and-iterate">Walkthrough Step 6 — Read results and iterate</h3>
+<p>The demo showed a <strong>pre-existing completed run</strong> for the code-review agent with <strong>task completion at 90%</strong>. If metrics fall short, <strong>tweak the harness</strong>, create <strong>multiple iterations/versions</strong> of the agent, and <strong>re-run</strong> the eval metrics until it hits the benchmark and is ready to push to production.</p>
+<h3 id="walkthrough-step-7-publish-to-production">Walkthrough Step 7 — Publish to production</h3>
+<p>Once satisfied, several publishing paths exist:
+- <strong>Web app preview</strong> — see how the agent looks on the front end if publishing through Foundry; it's the same agent without the playground, and you can test prompts there.
+- <strong>Call Agent tab</strong> — get <strong>code snippets</strong> to use the agent as a workflow in code; use the <strong>project endpoint</strong> with your account's <strong>API key</strong> and incorporate it into <strong>Python workflows outside the Foundry UI</strong>.</p>
+<p>This closes the loop: test → compare models → save as agent → evaluate → iterate → publish (web UI or code snippet → Python).</p>
+<h3 id="walkthrough-step-8-bring-your-own-weights-when-ootb-isnt-enough">Walkthrough Step 8 — Bring Your Own Weights (when OOTB isn't enough)</h3>
+<p>If out-of-the-box open-source quality is insufficient, move to a <strong>post-training</strong> workflow:
+- Take the <strong>base model as-is</strong>.
+- Fine-tune with <strong>any framework</strong> (outside Foundry or on Foundry); the <strong>Fireworks AI native platform</strong> also supports fine-tuning via its <strong>SFT</strong> (supervised fine-tuning) or <strong>RFT</strong> (reinforcement fine-tuning) frameworks.
+- <strong>Upload the tuned weights</strong> and run them through the <strong>same serve workflow</strong> to get optimized inference on the Fireworks tech stack.</p>
+<h3 id="closing">Closing</h3>
+<p>Vignesh framed the whole flow as an <strong>intuitive, easy, end-to-end</strong> way to adopt open-source models on Foundry. The session ended with an MC thanking the presenter and noting another session was starting immediately afterward (attendees asked to stay seated).</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Microsoft Foundry</strong> — host platform for model discovery, deployment, playground, evals, and publishing.</li>
+<li><strong>Fireworks AI</strong> — high-performance open-source inference partner (first-party Azure integration).</li>
+<li><strong>Fire Attention</strong> — Fireworks' proprietary inference engine within their serving stack.</li>
+<li><strong>Fireworks serving stack</strong> — workload-aware optimization, adaptive caching, quantization, hardware right-sizing.</li>
+<li><strong>Open-source models referenced:</strong> Kimi K2.6, Kimi 2.5, MiniMax, GLM 5.1.</li>
+<li><strong>Deployment types:</strong> Data Zone Standard (multi-tenant serverless), Global Provisioned Throughput, Data Zone Provisioned Throughput (single-tenant).</li>
+<li><strong>PTU (Provisioned Throughput Units)</strong> + <strong>PTU calculator</strong>.</li>
+<li><strong>Foundry Playground</strong> — chat, model comparison, metrics configurator.</li>
+<li><strong>Save as Agent</strong> — package model + prompt + tools as a reusable agent.</li>
+<li><strong>Evaluations</strong> — custom datasets, open-source benchmarks, synthetic generation, automated field mapping, LLM-as-judge.</li>
+<li><strong>GPT-4 mini</strong> — used as the eval <strong>judge model</strong>.</li>
+<li><strong>Eval metrics:</strong> intent resolution, coherence, fluency, relevance, groundedness, task completion.</li>
+<li><strong>Publishing:</strong> Web app preview, Call Agent tab (code snippets, project endpoint + API key, Python).</li>
+<li><strong>Fine-tuning:</strong> Fireworks native <strong>SFT</strong> and <strong>RFT</strong> frameworks; Bring Your Own Weights (BYOW).</li>
+<li><strong>MACC</strong> (Microsoft Azure Consumption Commitment) — billing path.</li>
+<li><strong>Founding-team lineage:</strong> PyTorch @ Meta, Vortex @ GCP.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>None explicitly announced as new GA/preview.</strong> This was a <strong>partner demo (DEMSP)</strong> showcasing Fireworks AI's existing capabilities on Microsoft Foundry rather than launching a product. The Foundry integration, multi-tenant serverless endpoints, provisioned-throughput deployments, in-Foundry evaluations, agent publishing, and BYOW are presented as currently available functionality. GA-vs-preview status of individual features was not stated in the session.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<p>A single continuous, end-to-end live demo inside the Microsoft Foundry UI:
+1. <strong>Discover</strong> Fireworks models (search "Fireworks" → multi-tenant models already enabled) and select <strong>Kimi K2.6</strong>.
+2. Walk through <strong>deployment options</strong>: Data Zone Standard (serverless, TPM limits) vs. Provisioned Throughput with the <strong>PTU calculator</strong> (80k input / 500 output / 300–3,000 RPM → <strong>61,500 PTUs</strong>).
+3. <strong>Playground test</strong> of a <strong>code-review agent</strong> on a MiniMax model — catching <strong>SQL injection</strong> + <strong>hard-coded secrets</strong> with low latency.
+4. <strong>Side-by-side comparison</strong> MiniMax vs. Kimi 2.6 on the same prompt (MiniMax faster, Kimi more detailed/"thinking").
+5. <strong>Save as Agent</strong> from the chosen model.
+6. <strong>Run evaluations</strong> via the metrics configurator — 50-row code-review dataset, ground truth, <strong>GPT-4 mini</strong> judge, metrics including relevance/groundedness/coherence, against the <strong>full agent harness</strong>.
+7. <strong>Review a completed eval run</strong> showing <strong>90% task completion</strong>, with guidance to iterate versions until benchmarks pass.
+8. <strong>Publish</strong> — web app preview and the <strong>Call Agent</strong> code snippet for <strong>Python</strong> workflows.
+9. Mentioned <strong>BYOW</strong> post-training path (SFT/RFT) to upload custom weights through the same serve flow.</p>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>~13 trillion tokens/day</strong> served by Fireworks AI.</li>
+<li><strong>180,000 requests/second</strong> served.</li>
+<li><strong>Day-zero</strong> model enablement for major open-source providers.</li>
+<li>PTU worked example: <strong>80,000 input tokens</strong>, <strong>500 output tokens</strong>, <strong>300–3,000 RPM</strong> → <strong>61,500 PTUs</strong> required (UI max scale ~<strong>1,160</strong> at demo time).</li>
+<li>Eval dataset: <strong>50 rows</strong>; demo eval run hit <strong>90% task completion</strong>.</li>
+<li>Founding team from <strong>PyTorch @ Meta</strong> and <strong>Vortex @ GCP</strong>.</li>
+<li>Presentation framed as a <strong>~5-minute</strong> intro deck followed by the live Foundry demo.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Search "Fireworks" in Foundry → Discover → Models and deploy a <strong>Kimi K2.6</strong> or <strong>MiniMax</strong> model on a <strong>Data Zone Standard</strong> serverless endpoint for cheap eval runs.</li>
+<li>Build a small <strong>code-review agent</strong> and use the <strong>Compare models</strong> UI to weigh latency vs. quality (MiniMax vs. Kimi).</li>
+<li>Stand up a <strong>50-row eval dataset</strong> with ground truth and run a full-harness eval using <strong>GPT-4 mini</strong> as judge; check intent resolution / groundedness / coherence.</li>
+<li>Use the <strong>PTU calculator</strong> with realistic token + RPM numbers to size a production single-tenant deployment.</li>
+<li>Try the <strong>Call Agent</strong> code snippet path to embed a Foundry agent into an external <strong>Python</strong> workflow.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What is the actual GA vs. preview status of Fireworks provisioned-throughput deployments and in-Foundry evals?</li>
+<li>How does Fireworks PTU pricing compare to first-party Azure OpenAI PTUs for equivalent throughput?</li>
+<li>Does BYOW (custom weights) work with <strong>Global Provisioned Throughput</strong>, or only specific deployment types?</li>
+<li>What governance/observability (logging, monitoring, drift) ships for production Fireworks endpoints on Foundry?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Teams standardizing on <strong>open-source models</strong> but needing enterprise-grade, low-latency serving on Azure.</li>
+<li>Anyone building an <strong>eval-driven path to production</strong> for agents (test → compare → eval → iterate → publish).</li>
+<li>Cost/capacity planning for <strong>provisioned throughput</strong> vs. serverless on Foundry.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><a class="wikilink wikilink--resolved" href="DEM320.html">DEM320 - Hugging Face open-source models to production on Foundry</a></li>
+<li><a class="wikilink wikilink--resolved" href="BRKSP91.html">BRKSP91 - Turn foundation models into production AI on Foundry</a></li>
+<li><a class="wikilink wikilink--resolved" href="BRK241.html">BRK241 - From prototype to production build and run agents at scale</a></li>
+<li><a class="wikilink wikilink--resolved" href="BRK231.html">BRK231 - Deploy Observe Learn Reinforcement learning for production agents</a></li>
+<li><a class="wikilink wikilink--resolved" href="BRK230.html">BRK230 - Build smarter AI systems in Foundry as models and costs evolve</a></li>
+<li><a class="wikilink wikilink--resolved" href="DEM361.html">DEM361 - Understand and fix Agent Framework apps with observability and evals</a></li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEMSP382.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEMSP382</span><span class="pager-title">Build AI Apps with Oracle AI Database@Azure, MCP, and GitHub Copilot</span></a>
+    <a class="pager pager-next" href="DEMSP385.html"><span class="pager-dir">Next →</span><span class="pager-code">DEMSP385</span><span class="pager-title">Build context-aware agents using GitHub Copilot, Elastic, and Azure AI</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEM312 — Multi-agents in action with 3 AI agents, 3 frameworks, tools &amp; models</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEM312</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=27FNddH0g7o" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Multi-agents in action with 3 AI agents, 3 frameworks, tools &amp; models</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Jan (Azure Container Apps team), Vinnie (Azure Container Apps team)</span>
+      <span class="meta-item">⏱️ 22m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="multi-agent">Multi Agent</span><span class="chip" data-tag="frameworks">Frameworks</span><span class="chip" data-tag="ai">AI</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Jan &amp; Vinnie — both from the Azure Container Apps team<br>
+<strong>Duration:</strong> ~22 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=27FNddH0g7o">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Two engineers from the Azure Container Apps (ACA) team build a live multi-agent "content factory" using <strong>three different agents, three different agent frameworks (LangChain Python, Microsoft Agent Framework in C#, GitHub Copilot SDK), and Foundry models</strong>, all orchestrated together and observable through a single management plane. The core announcement is <strong>Azure Container Apps Sandboxes</strong> (private preview at <code>sandboxes.azure.com</code>) — fast, isolated, stateful, on-demand infrastructure that lets agents securely execute untrusted AI-generated code, snapshot memory + filesystem, resume sub-second, and enforce network egress controls. The demo shows agents dynamically provisioning one sandbox per tool call to run a Mexico-vs-Czechia football match simulator, then highlights security pitfalls (API keys leaking into agent code) and the fix (managed identity + an out-of-band egress gateway that injects secrets the code never sees).</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Agentic infrastructure is the missing layer:</strong> Gartner predicts ~40% of agentic projects will be canceled (cited as "by 2025") — not because LLMs/agents fail, but due to <strong>high risk, lack of governance, and breaking runtimes</strong>.</li>
+<li><strong>Four runtime challenges</strong> for agents today: (1) resources running unattended / no lifecycle, (2) running untrusted AI-generated code next to apps, (3) slow cold starts on tool calls, (4) no state preservation for long-running tasks.</li>
+<li><strong>Azure Container Apps Sandboxes</strong> (private preview) = fast, isolated, stateful infrastructure on demand; executes code securely, resumes instantly, snapshots <strong>disk AND memory</strong>, and can burst to hyperscale.</li>
+<li><strong>Sandboxes are already powering internal Microsoft workloads:</strong> Microsoft Foundry hosted agents, GitHub Sandboxes, and Azure Container Apps Express all use the same technology.</li>
+<li><strong>Mix-and-match frameworks by design:</strong> researcher = LangChain (Python), creator = Microsoft Agent Framework (C#), podcast/narrator = GitHub Copilot SDK — reflecting how real orgs adopt tech bottom-up ("grassroots").</li>
+<li><strong>One management plane:</strong> three diverse models/agents are brought into <strong>Microsoft Foundry</strong> for management, observation, continuous evaluation, and registration (as long as they speak A2A or share a contract).</li>
+<li><strong>Observability via OpenTelemetry (OTel):</strong> every agent <em>and</em> the orchestrator emits detailed OTel telemetry → OTel collector → Application Insights → visible in both Azure Portal and Foundry.</li>
+<li><strong>One tool call ≈ one sandbox:</strong> the simulator agent writes Python, and each query (lineups, news, injury reports) fires a brand-new sandbox dynamically at runtime — not pre-provisioned at deploy time.</li>
+<li><strong>Sandboxes go idle automatically</strong> by snapshotting memory + filesystem, so you <strong>don't pay for idle compute</strong>, and <strong>resume is sub-second</strong> from snapshot.</li>
+<li><strong>Egress policy</strong> lets you control outbound traffic per sandbox: default-deny + allowlist, or allow + denylist specific destinations (demoed blocking certain sports URLs).</li>
+<li><strong>Don't hand secrets to agent code:</strong> putting an API key in an environment variable means the AI-written code can read your secret — a real risk demoed live.</li>
+<li><strong>The secure fix:</strong> use <strong>managed identity</strong> (sandboxes run inside Azure) for Azure services; for non-Azure services, use the <strong>egress "transform" policy</strong> where an out-of-band egress gateway injects the secret as a header on outbound calls — the sandbox code never sees the key.</li>
+<li><strong>GitHub Copilot SDK supports "bring your own model"</strong> — here it's used as the agent harness while calling a Foundry model instead of the default Copilot LLM.</li>
+<li><strong>GitHub repo provided:</strong> <code>aka.ms/aca-build2026-demo312</code> (full code for both demos available).</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="who-what">Who &amp; What</h3>
+<p>Jan and Vinnie, both from the <strong>Azure Container Apps team</strong>, present a session on "multi-agents in action." Their goal: demonstrate <strong>three different agents, three different agent frameworks</strong>, how to call tools, and how to run infrastructure at scale — all stitched into a working "agentic content factory" whose code is published to a GitHub repo for the audience to run immediately.</p>
+<h3 id="the-problem-modern-agentic-infrastructure-why-it-matters">The Problem: Modern Agentic Infrastructure &amp; Why It Matters</h3>
+<p>They open with a provocative stat: <strong>Gartner predicts ~40% of agentic projects will be canceled</strong> (stated in the talk as "by 2025"). The cause isn't model/agent capability — it's <strong>high risk, lack of governance, and runtimes that break</strong>.</p>
+<p>They enumerate the concrete <strong>challenges of today's runtime</strong>:
+1. <strong>Unattended resources / no lifecycle</strong> — you spin up an Azure resource and forget it; you deploy something 10 times and end up with 10 stray resources. There's no built-in lifecycle for agentic compute. ("It's happening to me all the time.")
+2. <strong>Running untrusted code</strong> — i.e., AI-generated code running next to your applications. Audience confirms nobody does this today. The takeaway: you must <strong>separate those boundaries</strong>.
+3. <strong>Cold start</strong> — when an agent makes a tool call (run a script, swarm to other agents), it shouldn't take a minute per agent just to wait on infrastructure to come up.
+4. <strong>Long-running tasks &amp; state</strong> — agentic infra isn't just for short "run code then disappear" tasks. Long-running work needs <strong>state preservation</strong> via <strong>snapshots</strong> and the ability to <strong>restore to a previous point</strong>.
+5. <strong>Hand-stitched tooling</strong> — because the space evolves so fast, tooling is often manually glued together.</p>
+<h3 id="the-announcement-azure-container-apps-sandboxes">The Announcement: Azure Container Apps Sandboxes</h3>
+<p><strong>Azure Container Apps Sandboxes</strong> — a <strong>private preview</strong> of <strong>fast, isolated, and stateful infrastructure on demand</strong>. Available now at <strong><code>sandboxes.azure.com</code></strong> (sign in and create a sandbox today).</p>
+<p>Core properties:
+- <strong>Executes your code securely</strong> (isolated from your application).
+- <strong>Resumes instantly</strong> from snapshot.
+- <strong>Snapshots not just disk, but also memory.</strong>
+- <strong>Burst to hyperscale.</strong></p>
+<p><strong>Already in production internally:</strong>
+- <strong>Microsoft Foundry</strong> hosts its <strong>hosted agents</strong> on ACA Sandboxes.
+- <strong>GitHub Sandboxes</strong> use the same technology.
+- <strong>Azure Container Apps Express</strong> — an agent-first technology introduced recently that provisions in a couple of seconds and <strong>scales from zero to one in ~a second</strong>.</p>
+<h3 id="the-demo-architecture-the-content-factory-three-agents-three-frameworks">The Demo Architecture: The "Content Factory" (Three Agents, Three Frameworks)</h3>
+<p>The promised three agents:
+1. <strong>Researcher agent</strong> — researches a specific topic. Built with <strong>LangChain (Python)</strong>.
+2. <strong>Creator agent</strong> — takes the researcher's output and <strong>creates content</strong>: a blog, an article, social posts. Built with <strong>Microsoft Agent Framework</strong>, coded in <strong>C#</strong>.
+3. <strong>Podcast/Narrator agent</strong> — creates an <strong>engaging podcast</strong> from the content. Built with the <strong>GitHub Copilot SDK</strong>.</p>
+<p>Why three different frameworks? Because that's how projects really happen in orgs — <strong>from the grassroots</strong>, with people using different technologies.</p>
+<p><strong>Note on GitHub Copilot SDK:</strong> the speakers recommend trying it as the <strong>harness layer</strong> — "very easy to get started." Importantly, they use <strong>bring-your-own AI model</strong>: they are <strong>not</strong> using the LLM behind GitHub Copilot, but <strong>one of the Foundry models</strong> instead.</p>
+<p><strong>Higher-level topology:</strong>
+- On the left, an <strong>orchestrator</strong> manages the workflow between the three agents — this is the component the user interacts with.
+- The three agents connect to <strong>Microsoft Foundry</strong> because they use Foundry models.
+- Goal #2 of the demo: show how to bring <strong>three diverse models into one management plane</strong> — manage and observe them from <strong>Foundry + Application Insights</strong>.</p>
+<p><strong>How observability works:</strong> <strong>OTel (OpenTelemetry)</strong> is the key. All three agents <strong>and</strong> the orchestrator emit <strong>detailed OTel telemetry</strong>, so you always know what's going on. <strong>All components run on Container Apps.</strong></p>
+<p><strong>Repo / QR code:</strong> <code>aka.ms/aca-build2026-demo312</code> (shown throughout the session).</p>
+<h3 id="demo-twist-football-not-soccer-match-simulator">Demo Twist: Football (not "Soccer") Match Simulator</h3>
+<p>Rather than a boring "what is Container Apps?" demo, the presenters — football fans, Vinnie "made in Mexico," Jan "made in Czechia" — build a <strong>competitive game simulator: a Mexico vs. Czechia football match simulator</strong> (corrected from "soccer" to "proper football" after an audience heckle).</p>
+<p><strong>The simulator UI</strong> has <strong>four built-in prompts</strong> plus custom prompt support:
+- A default prompt (already started).
+- "What if this player plays and this other doesn't?"
+- "What if it turns out to be a defensive battle?"
+- "What if this Czechia player is in the best form of his life?"
+- Or write your own.</p>
+<h3 id="how-it-works-behind-the-scenes-dynamic-sandbox-per-call">How It Works Behind the Scenes (Dynamic Sandbox-per-Call)</h3>
+<ul>
+<li>There are three agents; the <strong>researcher/simulator agent</strong> decides to fire a number of <strong>web searches</strong> to gather info.</li>
+<li>For this demo, the agent <strong>writes Python code</strong> to fetch information: <strong>lineups, latest news, injury reports</strong>, etc.</li>
+<li><strong>That code runs in sandboxes.</strong> Each query <strong>fires up a new sandbox</strong>, sends the Python code, runs it, retrieves the result — then <strong>fires another sandbox to run the simulation</strong>.</li>
+<li>The <strong>simulation</strong> takes all gathered info, passes it to an <strong>LLM</strong> (another LLM call), and that produces how the match went.</li>
+</ul>
+<p><strong>Critical point (recap):</strong> these sandboxes were <strong>NOT provisioned during deployment</strong>. It runs on Azure (you can <code>azd up</code> it), but the <strong>simulator agent dynamically creates these resources / infrastructure at runtime</strong> and keeps them up <strong>as long as needed</strong>.</p>
+<p>The first live run returns a (boring/"wrong") <strong>2–2</strong> result; pre-cooked resources are used in the interest of time. They note simulation results "should be reviewed by an expert."</p>
+<h3 id="sandbox-lifecycle-idle-snapshots-sub-second-resume">Sandbox Lifecycle, Idle Snapshots &amp; Sub-Second Resume</h3>
+<ul>
+<li>In the sandbox UI, each <strong>blue line item = one sandbox</strong> that fired with a <strong>specific purpose</strong> → <strong>one [goal] ≈ one sandbox ≈ one piece of infrastructure</strong> running code from the main agent.</li>
+<li>Example shown: a very simple sandbox that <strong>fetches the roster for Czechia</strong>.</li>
+<li>Sandboxes <strong>have no name</strong> because they're <strong>managed by code / by the agent</strong> — you search by purpose/identifier.</li>
+<li>A shown sandbox is already <strong>idle</strong>, meaning it <strong>automatically took a snapshot and is sleeping</strong> → <strong>you're not paying for compute</strong> while idle.</li>
+<li><strong>Lifecycle policy:</strong> you decide how long sandboxes stick around, and — more importantly — you can <strong>resume</strong> them. When idle, there's a <strong>persistent snapshot</strong> (per your snapshot policy; in this case <strong>memory + filesystem</strong>). <strong>Resume is sub-second</strong> ("definitely sub-second").</li>
+</ul>
+<h3 id="security-feature-1-egress-policy-network-control">Security Feature 1: Egress Policy (Network Control)</h3>
+<ul>
+<li>One of the sandboxes ran web research. A key feature is the <strong>egress policy</strong> — controlling outbound network traffic <strong>per sandbox</strong>.</li>
+<li>Demoed: <strong>blocking certain URLs</strong> (e.g., <code>skysports.com</code> — "nothing against" it, just for the demo) and a <strong>deny</strong> list of three sites.</li>
+<li>You can configure egress either way:</li>
+<li><strong>Deny-all + whitelist</strong> specific destinations, OR</li>
+<li><strong>Allow + denylist</strong> specific destinations.</li>
+<li>"All the features you'd expect from a sort of egress policy."</li>
+</ul>
+<h3 id="security-problem-dont-give-secrets-to-agent-code">Security Problem: Don't Give Secrets to Agent Code</h3>
+<ul>
+<li>When a sandbox <strong>runs the simulation</strong>, it runs an <strong>agent inside the sandbox</strong>, which must <strong>call the LLM</strong>.</li>
+<li><strong>Naïve approach:</strong> put the API key in an <strong>environment variable</strong>. Demoed as a trap: the code logs the request, and inspecting the log shows the <strong>API key was visible to the AI-written code</strong>. "This is not very good." / "Why would you give your secrets to the LLM?"</li>
+</ul>
+<h3 id="security-fix-managed-identity-egress-transform">Security Fix: Managed Identity + Egress "Transform"</h3>
+<p>Two complementary fixes:
+1. <strong>Managed identity</strong> — because all sandboxes <strong>run within Azure</strong>, you can use <strong>managed identity</strong> to securely access Azure services (<strong>Cosmos, Foundry, Azure OpenAI</strong>) <strong>without</strong> handing an API key to the agent code.
+2. <strong>Egress "transform" policy</strong> (for non-Azure services that still need a secret/API key):
+   - A second simulation used a <strong>"secure egress"</strong> checkbox.
+   - The <strong>same code</strong> ran, but <strong>the API key was NOT present / not available</strong> to the agent-written code — yet the simulation <strong>still succeeded</strong>.
+   - <strong>Why it worked:</strong> the <strong>transform</strong> egress policy. A <strong>secret is defined for the sandbox</strong>, and the egress policy is configured to <strong>inject that API key as a header on outgoing calls to a particular endpoint</strong>.
+   - <strong>Architecture:</strong> the <strong>egress gateway lives OUTSIDE the sandbox infrastructure</strong> — it's a <em>different</em> piece of the platform than the part that runs your code. The egress component has the <strong>final say</strong> on outbound calls. Before the request leaves, the <strong>egress gateway intercepts and modifies the call</strong> (injecting the secret). The sandbox code <strong>literally has no access</strong> to the secret.</p>
+<h3 id="content-output-blog-narration">Content Output: Blog + Narration</h3>
+<ul>
+<li>After the simulation, the other agents run:</li>
+<li>The <strong>blog agent</strong> wrote a <strong>blog post about the match</strong>.</li>
+<li>The <strong>narration agent</strong> produced an <strong>AI-generated audio narration</strong>. Because <strong>Mexico won</strong> this run, they play the <strong>full narration</strong> (excited play-by-play featuring Jorge Sánchez, a cross, Orbelín Pineda, and a goal by Santiago Giménez; "the Aztec drums are thundering... but Czechia is not here to roll over").</li>
+<li>Point: this showcases what's achievable with <strong>Foundry TTS models</strong> — it's <strong>all AI-generated</strong> — "just how big you can dream" to augment your applications.</li>
+</ul>
+<h3 id="observability-deep-dive-foundry-app-insights">Observability Deep Dive (Foundry + App Insights)</h3>
+<ul>
+<li>Not shown how it's configured live, but: because they use <strong>OpenTelemetry to instrument all agent calls</strong>, they use the <strong>built-in OTel collector</strong>.</li>
+<li><strong>Pipeline:</strong> different container apps <strong>stream telemetry → OTel collector → Application Insights → visible in Azure Portal AND in Foundry.</strong></li>
+<li>In <strong>AI Foundry</strong>, you can <strong>register all these agents</strong> regardless of technology — as long as they <strong>talk A2A</strong> or share <strong>some contract</strong> between them. Then you can <strong>manage them, run continuous evaluations, and observe insights.</strong></li>
+</ul>
+<h3 id="recap-where-to-learn-more">Recap &amp; Where to Learn More</h3>
+<p>What was shown: the <strong>workflow across three different agents</strong>, <strong>secure code execution in ACA Sandboxes</strong>, <strong>Azure OpenAI API keys stored securely outside the running sandbox</strong>, <strong>idle/snapshotted sandboxes brought back fast</strong>, and <strong>end-to-end observability + management in Foundry</strong>.</p>
+<p>Takeaways emphasized:
+- <strong>Sandboxes run code safely</strong> — not next to your application, but in <strong>physically different infrastructure</strong>.
+- <strong>API keys live outside the sandbox</strong> (the sandbox code has no access).
+- <strong>Idle sandboxes snapshot</strong> and come back to life quickly.</p>
+<p><strong>Calls to action / pointers:</strong>
+- Meet the ACA team at <strong>booth #44</strong> (other pavilion).
+- <strong>All ACA announcements:</strong> <code>aka.ms/aca/build</code>.
+- <strong>Breakout session at 2:45</strong> — more demos (their colleague <strong>Simon</strong> talks to an agent) plus a <strong>customer use case</strong>.
+- <strong>Get started today:</strong> go to <strong><code>sandboxes.azure.com</code></strong>, create a sandbox (e.g., with <strong>Copilot</strong>), and start writing <strong>right from your browser immediately</strong>.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Azure Container Apps (ACA)</strong> — the platform all components run on.</li>
+<li><strong>Azure Container Apps Sandboxes</strong> <em>(private preview)</em> — fast, isolated, stateful, on-demand infra at <code>sandboxes.azure.com</code>.</li>
+<li><strong>Azure Container Apps Express</strong> — agent-first tech; provision in seconds, scale 0→1 in ~1 second.</li>
+<li><strong>Microsoft Foundry / AI Foundry</strong> — model hosting, management plane, agent registration, continuous evaluation, observability; also <strong>Foundry models</strong> and <strong>Foundry TTS models</strong>.</li>
+<li><strong>Microsoft Agent Framework</strong> — used (in <strong>C#</strong>) for the creator agent.</li>
+<li><strong>LangChain (Python)</strong> — used for the researcher agent.</li>
+<li><strong>GitHub Copilot SDK</strong> — used as the harness for the narrator agent; supports <strong>bring-your-own-model</strong>.</li>
+<li><strong>GitHub Sandboxes</strong> — internal consumer of the same sandbox technology.</li>
+<li><strong>OpenTelemetry (OTel)</strong> + <strong>built-in OTel collector</strong> — telemetry instrumentation.</li>
+<li><strong>Azure Application Insights</strong> — telemetry sink, visible in Azure Portal + Foundry.</li>
+<li><strong>Managed Identity</strong> — secure, keyless access to Azure services (Cosmos, Foundry, Azure OpenAI).</li>
+<li><strong>Azure OpenAI</strong> — LLM endpoint called from sandboxes.</li>
+<li><strong>Azure Cosmos DB</strong> — example service accessible via managed identity.</li>
+<li><strong>A2A (agent-to-agent)</strong> — interoperability contract enabling cross-framework agent registration in Foundry.</li>
+<li><strong>Egress policy</strong> (allow/deny lists) and <strong>egress "transform"</strong> (header/secret injection via egress gateway).</li>
+<li><strong><code>azd</code> (<code>azd up</code>)</strong> — used to deploy the demo to Azure.</li>
+<li><strong>Snapshots</strong> — memory + filesystem; enable idle suspend and sub-second resume.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Azure Container Apps Sandboxes — Private Preview.</strong> Fast, isolated, and stateful infrastructure on demand. Securely executes code, resumes instantly, snapshots <strong>disk + memory</strong>, and bursts to hyperscale. Available at <strong><code>sandboxes.azure.com</code></strong> today. Already used internally by <strong>Microsoft Foundry hosted agents</strong>, <strong>GitHub Sandboxes</strong>, and <strong>Azure Container Apps Express</strong>.</li>
+<li><strong>Egress controls for sandboxes:</strong> per-sandbox <strong>egress policy</strong> (deny-all+allowlist or allow+denylist) and an <strong>egress "transform"</strong> capability that injects secrets as headers via an out-of-band egress gateway, keeping API keys out of agent-written code.</li>
+<li><strong>Demo source code released:</strong> <code>aka.ms/aca-build2026-demo312</code>.</li>
+<li><strong>Aggregated ACA Build announcements:</strong> <code>aka.ms/aca/build</code>.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>The Agentic Content Factory (orchestrated 3-agent pipeline):</strong> researcher (LangChain/Python) → content creator (Microsoft Agent Framework/C#) → podcast narrator (GitHub Copilot SDK), coordinated by an orchestrator, all wired to Foundry models and emitting OTel telemetry.</li>
+<li><strong>Mexico vs. Czechia football match simulator</strong> (the headline live demo):</li>
+<li>UI with 4 built-in prompts + custom prompts.</li>
+<li>Simulator agent <strong>writes Python</strong>, fires <strong>one sandbox per web query</strong> (lineups, news, injury reports), then a <strong>separate sandbox runs the simulation</strong> via an LLM call.</li>
+<li>Sandboxes are <strong>created dynamically at runtime</strong> (not at deploy), kept alive only as needed.</li>
+<li>First run returned <strong>2–2</strong>; a pre-cooked run produced the "proper" simulation.</li>
+<li><strong>Sandbox lifecycle demo:</strong> show idle sandboxes (auto-snapshotted, not billed) and <strong>sub-second resume</strong> from a memory+filesystem snapshot.</li>
+<li><strong>Egress policy demo:</strong> blocking specific URLs (e.g., <code>skysports.com</code>) per sandbox with deny lists.</li>
+<li><strong>Secret-leak demo + fix:</strong> show API key visible in agent code via env var (bad), then show <strong>secure egress / transform</strong> making the key invisible to code while the call still succeeds.</li>
+<li><strong>AI-generated narration playback:</strong> full play-by-play audio of the match (Santiago Giménez goal for Mexico) generated by <strong>Foundry TTS models</strong>.</li>
+<li><strong>(Referenced, not configured live):</strong> observability pipeline streaming OTel → collector → App Insights → Azure Portal + Foundry, with agent registration/management in Foundry.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>"Gartner is predicting that 40% of agentic projects will be canceled by 2025... not because the agents or the LLM cannot keep up [but] because of high risk, lack of governance, and that the runtime is breaking."</strong></li>
+<li><strong>Scale-from-zero:</strong> ACA Express provisions in "a couple seconds" and scales <strong>"from zero to one [in] around a second."</strong></li>
+<li><strong>Resume speed:</strong> snapshot resume is <strong>"definitely sub-second."</strong></li>
+<li><strong>Match result:</strong> first (incorrect) run <strong>2–2</strong>; "proper" pre-cooked simulation → <strong>Mexico won</strong>.</li>
+<li><strong>"One [goal] equals to one sandbox... equals to one infrastructure that runs the code from the main agent."</strong></li>
+<li><strong>"Why would you give your secrets to the LLM?"</strong> — on the API-key-in-env-var anti-pattern.</li>
+<li><strong>"The egress gateway lives outside of the sandbox infrastructure"</strong> — the code "literally has no access" to the secret.</li>
+<li><strong>Narration:</strong> <em>"The stage is set. Mexico against Czechia. Two prideful nations clash... Santiago Giménez. Mexico rises. The crowd is enraptured. The Aztec drums are thundering. But Czechia is not here to roll over."</em></li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Sign in at <code>sandboxes.azure.com</code> and spin up a Copilot-enabled sandbox from the browser.</li>
+<li>Clone and run the demo: <code>aka.ms/aca-build2026-demo312</code> (<code>azd up</code>).</li>
+<li>Build a sandbox that calls an LLM <strong>without</strong> an API key in code — first via <strong>managed identity</strong> (Azure OpenAI), then via <strong>egress transform</strong> (non-Azure endpoint).</li>
+<li>Try <strong>GitHub Copilot SDK</strong> as an agent harness with <strong>bring-your-own Foundry model</strong>.</li>
+<li>Wire up OTel → collector → App Insights and register cross-framework agents in <strong>Foundry</strong> via A2A.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>Pricing/billing model for idle (snapshotted) vs. active sandboxes — exactly what's metered?</li>
+<li>What are the snapshot size/retention limits, and how granular is the lifecycle/snapshot policy?</li>
+<li>GA timeline and region availability for ACA Sandboxes beyond private preview.</li>
+<li>Egress "transform" — which auth schemes/header formats are supported beyond simple header injection?</li>
+<li>How does cold-start latency compare for the <em>first</em> sandbox of a call chain vs. a resumed one?</li>
+<li>What isolation guarantees (kernel/VM-level?) back the "physically different infrastructure" claim?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Any project running <strong>AI-generated / untrusted code</strong> that needs strong isolation + lifecycle controls.</li>
+<li><strong>Multi-agent orchestration</strong> efforts mixing frameworks (LangChain, Agent Framework, Copilot SDK) under one Foundry management plane.</li>
+<li><strong>Cost governance</strong> for agentic workloads (idle snapshot → no compute billing).</li>
+<li><strong>Secrets management / zero-secret-in-code</strong> patterns (managed identity + egress transform).</li>
+<li><strong>Observability</strong> standardization on OpenTelemetry → App Insights → Foundry.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Build 2026">Microsoft Build 2026</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Azure Container Apps">Azure Container Apps</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Foundry">Microsoft Foundry</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Multi-agent systems">Multi-agent systems</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Agent Framework">Microsoft Agent Framework</span></li>
+<li><span class="wikilink wikilink--unresolved" title="LangChain">LangChain</span></li>
+<li><span class="wikilink wikilink--unresolved" title="GitHub Copilot SDK">GitHub Copilot SDK</span></li>
+<li><span class="wikilink wikilink--unresolved" title="OpenTelemetry">OpenTelemetry</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Managed Identity">Managed Identity</span></li>
+<li>Demo repo: <code>aka.ms/aca-build2026-demo312</code></li>
+<li>ACA Build announcements: <code>aka.ms/aca/build</code></li>
+<li>Sandboxes: <code>sandboxes.azure.com</code></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEM311.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEM311</span><span class="pager-title">Scale cloud-native workloads with Azure Linux</span></a>
+    <a class="pager pager-next" href="DEM314.html"><span class="pager-dir">Next →</span><span class="pager-code">DEM314</span><span class="pager-title">Majorana 2: The Topological Leap Toward Quantum Computing at Scale</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

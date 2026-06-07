@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OD841 — Ship fast, stay secure: from code to runtime</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">OD841</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=FcymSA7jZL8" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Ship fast, stay secure: from code to runtime</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 James Brotsos</span>
+      <span class="meta-item">⏱️ 18m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="security">Security</span><span class="chip" data-tag="devsecops">Devsecops</span><span class="chip" data-tag="runtime">Runtime</span><span class="chip" data-tag="defender">Defender</span><span class="chip" data-tag="github-advanced-security">Github Advanced Security</span><span class="chip" data-tag="ai-security">Ai Security</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> James Brotsos (Product Manager, securing code and applications — Microsoft)<br>
+<strong>Duration:</strong> ~18 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=FcymSA7jZL8">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Microsoft is collapsing the long-standing trade-off between shipping fast and staying secure by embedding AI-powered security directly where developers already work — the terminal, the IDE, and the pull request. The centerpiece is a <strong>multi-model agentic scanning harness</strong> (code name <strong>M-</strong>) delivered through the <strong>Defender CLI</strong>, which orchestrates 100+ specialized AI agents across an ensemble of frontier and distilled models through a five-stage pipeline to find vulnerabilities that traditional pattern-matching scanners miss. Critically, it doesn't just flag issues — it explains them, suggests fixes (via Copilot), and in most cases opens the pull request. <strong>Microsoft Defender for Cloud</strong> and <strong>GitHub Advanced Security</strong> then work together to trace a single vulnerability from a line of code all the way to runtime risk in the cloud (and back), correlating exploitability, internet exposure, and sensitive-data paths to prioritize what actually matters. The session walks the full lifecycle — code → build → ship → run — including AI model supply-chain security (catching malicious pickle-serialized PyTorch models). The Defender CLI is <strong>available today</strong>.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>"Ship fast vs. stay secure" is a false trade-off.</strong> The whole thesis: you no longer have to pick one. Security gets embedded into existing developer surfaces (terminal, PR, IDE) rather than bolted on as extra process, tools, or dashboards.</li>
+<li><strong>AppSec is a team sport, but the workflow is broken.</strong> Today security teams typically drop findings on developers' desks ~2 weeks after code ships, or developers ignore scan results because they lack context to act. The intent is good; the collaboration is broken.</li>
+<li><strong>The product is the system, not the model.</strong> The Defender CLI is powered by a multi-model agentic harness (code name <strong>M-</strong>) — "The model is one input. The system around it is the product."</li>
+<li><strong>100+ specialized agents, 5-stage pipeline.</strong> M- orchestrates over a hundred AI agents across frontier + distilled models through: (1) prepare attack surface, (2) scan candidate code paths, (3) validate findings (agents debate reachability/exploitability), (4) deduplicate, (5) prove the vulnerability by constructing triggering inputs.</li>
+<li><strong>Semantic reasoning beats string matching.</strong> M- doesn't look for known-bad strings; it reasons about what the code actually does "the way an attacker would," catching vulns traditional static analysis gives a clean bill of health.</li>
+<li><strong>Scan → Find → Fix, all in the terminal (true shift-left).</strong> The developer loop runs locally before code even touches the repo. Copilot generates fixes; no context switching, no ticket filing, no copy-pasting.</li>
+<li><strong>Code-to-runtime correlation in both directions.</strong> Defender for Cloud + GitHub Advanced Security let a code vulnerability be traced to runtime cloud risk — and a cloud risk mapped back to the exact line of code and developer who can fix it.</li>
+<li><strong>Risk is contextual, not absolute.</strong> The same XPath injection scores very differently if the code runs in an internet-exposed container with a path to sensitive data versus an internal dev tool. Internet exposure + path to value + known vuln = the highest priority risk when combined.</li>
+<li><strong>Single pane of glass for security managers.</strong> The <strong>AI Code Security Initiative</strong> rolls up every finding (CLI, pipeline, agentless code scanning) into a curated, prioritized view — score, recommendations, repos with findings, trends — instead of an alert list to hunt through.</li>
+<li><strong>Attack paths answer "what puts me at risk right now?"</strong> Defender maps vulnerabilities to the live cloud environment, modeling whether an attacker can reach the asset and what they'd gain, across code → build → ship → run phases.</li>
+<li><strong>One fix can close multiple CVEs, auto-assigned to Copilot.</strong> From an attack path, a GitHub issue can be created directly, assigned to Copilot; fixing one package can resolve additional transitive CVEs (demo: bumping a package fixed the critical + 2-3 more).</li>
+<li><strong>AI models are an unguarded supply chain.</strong> Models flow in daily from Hugging Face, internal training pipelines, and shared registries — mostly uninspected. Malicious pickle serializations can embed arbitrary-code payloads inside seemingly normal PyTorch models. Defender discovers all models across workspaces/registries, flags malicious/vulnerable content, and the same CLI can scan model artifacts in the pipeline before deployment.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="the-core-problem-a-broken-collaboration-workflow">The core problem: a broken collaboration workflow</h3>
+<p>James Brotsos frames application security as a "team sport" with developers on one side and security managers on the other, theoretically collaborating in the middle. In reality, that collaboration breaks down: security teams drop findings on developers' desks roughly <strong>two weeks after the code shipped</strong>, or a developer ignores a scan result because they lacked enough context to act on it. The intent is good but the workflow is broken. The proposed fix is <strong>not</strong> more process, more tools, or more dashboards — it's embedding security directly into the surfaces developers already use: the terminal, the pull request, and the IDE.</p>
+<h3 id="the-two-worlds-and-the-intersection">The two worlds and the intersection</h3>
+<ul>
+<li><strong>Developer's world (left):</strong> code, dependencies, infrastructure as code, pull requests, security alerts, issue tracking.</li>
+<li><strong>Security team's world (right):</strong> security posture, running workloads, attack paths, exploitability, business criticality, recommendations.</li>
+<li><strong>The intersection (the bet):</strong> <strong>Microsoft Defender for Cloud</strong> and <strong>GitHub Advanced Security</strong> working together so a vulnerability found in code can be traced all the way to runtime risk in the cloud — and in reverse, a cloud risk can be mapped back to the exact line of code and the developer who can fix it.</li>
+</ul>
+<p>With AI agents in the loop, Microsoft isn't just connecting these dots — it's <strong>explaining</strong> the findings, <strong>suggesting</strong> the fix, and in most cases <strong>opening the pull request</strong>.</p>
+<h3 id="the-engine-the-m-multi-model-agentic-scanning-harness">The engine: the M- multi-model agentic scanning harness</h3>
+<p>The Defender CLI is powered by a harness with the code name <strong>M-</strong>. What makes it different from prior scanners:
+- It does <strong>not</strong> rely on a single model doing pattern matching.
+- It <strong>orchestrates over a hundred specialized AI agents</strong> across an ensemble of <strong>frontier and distilled models</strong>.
+- It runs them through a <strong>five-stage pipeline</strong>:
+  1. <strong>Prepare the attack surface.</strong>
+  2. <strong>Scan candidate code paths.</strong>
+  3. <strong>Validate findings</strong> — agents actually <em>debate</em> whether a bug is reachable and exploitable.
+  4. <strong>Deduplicate</strong> findings.
+  5. <strong>Prove the vulnerability</strong> by constructing triggering inputs.
+- Guiding philosophy: <em>"The model is one input. The system around it is the product."</em></p>
+<p>Because it reasons about semantic/logic flow rather than known-bad strings, M- catches vulnerabilities that traditional pattern-matching static analysis would clear. It reasons about what the code actually does "the way an attacker would."</p>
+<h3 id="the-developer-loop-scan-find-fix-in-the-terminal">The developer loop — Scan, Find, Fix (in the terminal)</h3>
+<p>Demonstrated in a repository called <strong>benchmark-python</strong>, an open-source project with real vulnerabilities buried in code that traditional scanners would pass clean.
+1. <strong>Scan:</strong> Run the Defender CLI (powered by M-) directly in the terminal. The scan catches vulnerabilities traditional pattern matching completely misses — all locally, with no waiting on a pipeline. This is shift-left happening <em>before the code even touches the repository</em>.
+2. <strong>Fix:</strong> Issue the <code>fix</code> command against the standardized output file (a <strong>SARIF</strong> result file). Copilot analyzes the vulnerability, understands the code context, and makes the actual change — no context switching, no ticket, no copy-pasting. The AI understands what's broken and rewrites the code.
+3. <strong>Review:</strong> Switch to VS Code to review changes rather than blindly accepting them. Copilot reads through the files, applies its logic, edits the files, and writes the fixed files. The developer sees the vulnerable code on the left and the fixed code side-by-side on the right — not a black box. Each change can be reviewed, understood, and accepted/rejected like a normal code review. Then re-run tests and commit.</p>
+<p>This is "developer-first security": the scanner found it, AI suggested a fix, and review happens in the same editor used every day — no context switching, no separate security tool, no ticket sitting in the backlog for two sprints.</p>
+<h3 id="carrying-findings-into-the-pull-request">Carrying findings into the pull request</h3>
+<p>The same finding the CLI caught locally (and the pipeline enforced) surfaces directly in the PR. Crucially, it's not just a red flag saying "XPath injection found." Defender explains exactly what's wrong: <em>the header value is injected directly into the XPath query, letting an attacker alter the predicate and disclose data they shouldn't see.</em> Directly below the finding, Copilot suggests the fix: <strong>parameterize the XPath query and pass the input as a bound variable</strong> — and it even tells you to verify the fix works.</p>
+<p>The developer security loop in action: <strong>the CLI catches it, the pipeline gates it, and the PR annotates it</strong> with enough context to fix in minutes, not days.</p>
+<h3 id="switching-hats-the-security-manager-view-ai-code-security-initiative">Switching hats: the security manager view (AI Code Security Initiative)</h3>
+<p>Now the question becomes: <em>Across all my repos, all my pipelines, all my teams, where is my application's security posture?</em> The <strong>AI Code Security Initiative</strong> is the team's single pane of glass for everything shown on the developer side. Every finding from every scan — the CLI, the pipeline, and agentless code scanning — rolls up here:
+- Overall <strong>score</strong>, number of <strong>recommendations</strong>, which <strong>repositories</strong> have findings, and how they're <strong>trending</strong>.
+- Not a list of alerts to hunt for — a <strong>curated, prioritized</strong> view of application security risk.</p>
+<p>The most powerful part: these aren't isolated code findings. Defender <strong>correlates them with the cloud environment</strong>. The XPath injection found in the CLI, if running in an <strong>internet-exposed container with a path to sensitive data</strong>, surfaces with a <strong>completely different risk score</strong> than the same finding in an internal dev tool. Each recommendation traces back to the source, the repository, and the line of code — the security team sees the risk; the developer sees where to fix it. Same data, different lens.</p>
+<h3 id="attack-paths-which-findings-actually-put-me-at-risk-right-now">Attack paths — "which findings actually put me at risk right now?"</h3>
+<p>A list of findings isn't enough; the real question is which findings actually create risk <em>right now</em>. That's what the <strong>attack path</strong> answers. Defender maps vulnerabilities to the live cloud environment and asks: <em>Can an attacker actually reach this? What can they get if they exploit it?</em>
+- Filter on <strong>risk factors</strong> such as <strong>internet exposure</strong> and <strong>path to sensitive data</strong> to prioritize the riskiest applications running in real time.
+- Any one factor alone (internet exposure, a path to something valuable, a known vulnerability) might be low priority — but <strong>combined, that's your biggest risk.</strong></p>
+<p>In an example attack path hosted in <strong>Azure</strong> (viewed in the Azure portal), the path shows internet exposure and high-severity vulnerabilities. The recommendation view lists all known vulnerabilities for the container, including a package "in the news relatively recently."</p>
+<h3 id="code-to-runtime-phases-the-killer-view">Code-to-runtime phases (the killer view)</h3>
+<p>A single view shows the full lifecycle for a running container:
+- <strong>Code</strong> — the repository where the source lives.
+- <strong>Build</strong> — the pipeline that built it.
+- <strong>Ship</strong> — the registry that contains the container.
+- <strong>Runtime</strong> — the actual cluster running the container.</p>
+<p>From here you can see the exact source that built it and the source vulnerabilities identified, and prioritize <strong>even higher</strong> because you know that container is internet-exposed and accessing sensitive data (e.g., code injections become critical-asset priorities).</p>
+<h3 id="closing-the-loop-github-issue-copilot-fix">Closing the loop: GitHub issue → Copilot fix</h3>
+<p>One of the biggest pain points for security teams is tracing back to <strong>exactly where/who</strong> needs to fix a vulnerability — issues land on a tracking board, get lost in the backlog, and finding the right developer takes a long time. With the <strong>GitHub Advanced Security integration</strong>, you can <strong>create a GitHub issue directly from the attack path view</strong> and it does more than create an issue — it <strong>assigns it to Copilot</strong>. The demo shows that fixing one package would also resolve <strong>three additional CVEs</strong> (the one critical plus two more). Copilot identifies the exact place and code to fix immediately. In this case it was simply updating a package from <code>0.1</code> to <code>1.13</code>, but the fix could be buried in base images or other packages with a more <strong>transitive</strong> property. This is where security teams "meet developers exactly where they work."</p>
+<h3 id="a-blind-spot-ai-model-supply-chain-security">A blind spot: AI model supply-chain security</h3>
+<p>Pivoting to the cloud inventory, Brotsos raises something most security teams "aren't even thinking about yet": <strong>AI models flowing into your environment every single day</strong> — from <strong>Hugging Face</strong>, internal training pipelines, and shared registries — mostly <strong>uninspected</strong>.</p>
+<p>This isn't hypothetical. <strong>Early this year, attackers on Hugging Face were weaponizing model artifacts using pickle serializations</strong> to embed malicious payloads inside what looks like a normal PyTorch model. You download it, load it, and the moment <strong>pickle deserializes</strong> the file, it <strong>executes arbitrary code</strong>. Even though the industry is pushing toward safer formats like <strong>TensorFlow</strong> and <strong>safetensors</strong>, a massive amount of <strong>PyTorch</strong> remains in production.</p>
+<p><strong>What Defender provides — discoverability first:</strong> customers are generally surprised they don't know how many models are running across their workspaces and registries (there's no central location by default — models live across multiple <strong>Azure ML workspaces</strong> and registries). Defender finds all of them and tells you exactly what you have. Models flagged with a <strong>yellow bar</strong> mean Defender found something; recommendations are populated specifically on models containing <strong>malicious or vulnerable content</strong>. Drilling into a model's asset page → threats and vulnerabilities shows the scanner found that a specific <strong>pickle file contains a malicious serialization payload</strong> — the exact attack described, now sitting in production, potentially connected to a live endpoint.</p>
+<p><strong>Remediation (treat models like immutable artifacts):</strong> disable or unpublish the affected model version in the registry/workspace, archive it, disconnect it from the endpoint, and deploy a clean version. Same principle as a container image — <strong>replace, don't patch.</strong></p>
+<h3 id="catching-it-before-deployment">Catching it before deployment</h3>
+<p>Better still: catch it before it's ever deployed. The <strong>same CLI scanner can scan model artifacts too.</strong> In a separate repo containing ML training scripts, model artifacts, and a deployment pipeline, the pipeline scan (using the Defender CLI) catches <strong>low-severity vulnerabilities</strong> — and because it's a model artifact, even a low-severity finding "should be considered very risky." The pipeline catches it <strong>before it finishes</strong>, gating the bad model from reaching production.</p>
+<h3 id="bringing-it-all-together-the-complete-lifecycle">Bringing it all together — the complete lifecycle</h3>
+<p>The session demonstrated a complete security lifecycle from the first line of code to a running cloud workload:
+- A developer <strong>scanned locally with the CLI</strong>, got <strong>AI-powered fixes</strong>, and reviewed them in <strong>VS Code</strong>.
+- The <strong>same engine ran in a GitHub Actions pipeline</strong> as a <strong>gate</strong>.
+- The <strong>PR was annotated</strong> with findings and <strong>Copilot-suggested fixes</strong>.
+- The <strong>security team saw everything roll up to an Initiative view</strong>, discovered an <strong>attack path</strong> connecting code vulnerabilities to real runtime risk, and traced a running container all the way back to the <strong>commit</strong> that introduced the problem.
+- A <strong>GitHub issue was created, Copilot wrote the fix, and the loop was closed.</strong>
+- Then it went further into <strong>AI model security</strong>, catching a <strong>malicious pickle file in the pipeline</strong> and imagining AI security posture across an entire model inventory.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Microsoft Defender for Cloud</strong> — core cloud security posture platform; correlates code findings with runtime cloud risk, attack paths, and model inventory.</li>
+<li><strong>Defender CLI</strong> — terminal-native scanner powered by the M- harness; runs locally (shift-left) and in CI pipelines; can scan code <strong>and</strong> AI model artifacts. <strong>Available today.</strong></li>
+<li><strong>M-</strong> (code name) — the multi-model agentic scanning harness behind the CLI; 100+ specialized AI agents, ensemble of frontier + distilled models, five-stage pipeline.</li>
+<li><strong>GitHub Advanced Security</strong> — integration that surfaces findings in PRs, enables issue creation from attack paths, and assigns fixes to Copilot.</li>
+<li><strong>GitHub Copilot</strong> — generates and applies code fixes; gets auto-assigned GitHub issues; writes fixes that can close multiple CVEs.</li>
+<li><strong>GitHub Actions</strong> — CI pipeline where the same scanning engine runs as a gate.</li>
+<li><strong>GitHub Issues</strong> — created directly from the security/attack-path view; auto-assigned to Copilot.</li>
+<li><strong>VS Code</strong> — IDE used for side-by-side review/accept/reject of Copilot fixes.</li>
+<li><strong>AI Code Security Initiative</strong> — security manager's single pane of glass aggregating findings (CLI, pipeline, agentless code scanning) with score, recommendations, repos, and trends.</li>
+<li><strong>Agentless code scanning</strong> — one of the finding sources rolling up to the Initiative view.</li>
+<li><strong>Attack path analysis</strong> — maps vulnerabilities to live cloud environment; filters on internet exposure, sensitive-data path, severity.</li>
+<li><strong>Azure portal / Azure ML workspaces / registries</strong> — environment where attack paths and AI models are inspected; models discovered across multiple workspaces/registries.</li>
+<li><strong>SARIF</strong> — standardized scan output format consumed by the <code>fix</code> command.</li>
+<li><strong>Hugging Face</strong> — external source of (potentially weaponized) model artifacts.</li>
+<li><strong>PyTorch / pickle serialization</strong> — vulnerable model format; pickle deserialization can execute arbitrary code.</li>
+<li><strong>TensorFlow / safetensors</strong> — safer model serialization formats the industry is moving toward.</li>
+<li><strong>Demo repos:</strong> <code>benchmark-python</code> (code vulns), plus a separate ML repo (training scripts + model artifacts + deployment pipeline).</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Defender CLI is available today</strong> — the terminal-native, agentic multi-model scanner (powered by M-) for code and AI model artifacts is generally available now.</li>
+<li><strong>Multi-model agentic scanning harness (code name M-)</strong> revealed — 100+ specialized AI agents across frontier + distilled models, running a five-stage validate-and-prove pipeline, positioned as a step-change beyond single-model pattern-matching scanners.</li>
+<li><strong>AI Code Security Initiative</strong> — unified security-posture rollup across CLI, pipeline, and agentless code scanning, with code-to-cloud correlation.</li>
+<li><strong>AI model security in Defender</strong> — discovery of models across Azure ML workspaces/registries plus scanning for malicious/vulnerable content (e.g., malicious pickle serialization), in production <em>and</em> in-pipeline before deployment.</li>
+<li><strong>GitHub Advanced Security ↔ Defender for Cloud integration</strong> enabling code-to-runtime tracing in both directions, PR annotations, and issue-creation-with-Copilot-assignment from attack paths.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ol>
+<li><strong>Local CLI scan (<code>benchmark-python</code>):</strong> Ran the Defender CLI in the terminal; caught vulnerabilities traditional pattern matching misses by reasoning about semantic logic flow — entirely local, pre-repository (shift-left).</li>
+<li><strong>Terminal <code>fix</code> command:</strong> Issued <code>fix</code> against the SARIF result file; Copilot analyzed the vuln, understood context, and rewrote the code in place — no ticket, no copy-paste, no context switch.</li>
+<li><strong>VS Code side-by-side review:</strong> Reviewed Copilot's changes (vulnerable code left, fixed code right); read files, applied logic, edited and wrote fixed files; reviewer can accept/reject each change, re-run tests, and commit.</li>
+<li><strong>Pull request annotation (XPath injection):</strong> Showed the finding in the PR with a plain-language explanation (header value injected into XPath query → predicate tampering / data disclosure) plus Copilot's suggested fix (parameterize the query / bound variable) and a verify-the-fix prompt.</li>
+<li><strong>AI Code Security Initiative view:</strong> Security-manager rollup of all findings with overall score, recommendations, repos with findings, and trends; demonstrated code-to-cloud risk-score differences (internet-exposed container w/ sensitive data vs. internal dev tool).</li>
+<li><strong>Attack path in Azure portal:</strong> Filtered on risk factors (internet exposure, sensitive-data path, high severity); explored a container's known vulnerabilities (incl. a recently-in-the-news package).</li>
+<li><strong>Code → Build → Ship → Run lineage view:</strong> Traced a running container back through registry, pipeline, and source repository/commit; prioritized code injections as critical-asset risks.</li>
+<li><strong>GitHub issue + Copilot auto-fix:</strong> Created/viewed a GitHub issue from the attack path, auto-assigned to Copilot; fixing one package (bump <code>0.1</code> → <code>1.13</code>) would also resolve 2-3 additional CVEs.</li>
+<li><strong>AI model inventory + malicious pickle detection:</strong> Discovered models across Azure ML workspaces/registries; yellow-bar flags; drilled into asset page → threats/vulnerabilities to see a pickle file flagged with a malicious serialization payload; reviewed remediation (unpublish/archive/replace).</li>
+<li><strong>In-pipeline model artifact scan:</strong> A separate ML repo's pipeline ran the Defender CLI and caught low-severity (but high-risk) model vulnerabilities <em>before the pipeline finished</em> — gating a bad model before deployment.</li>
+</ol>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>"The model is one input. The system around it is the product."</strong> — core design philosophy of the M- harness.</li>
+<li><strong>100+ specialized AI agents</strong> orchestrated across an ensemble of frontier and distilled models.</li>
+<li><strong>5-stage pipeline:</strong> prepare attack surface → scan candidate code paths → validate (agents debate reachability/exploitability) → deduplicate → prove (construct triggering inputs).</li>
+<li><strong>~2 weeks</strong> — typical lag between code shipping and security findings landing on a developer's desk (the broken-workflow status quo).</li>
+<li><strong>1 fix → 3 additional CVEs</strong> — fixing a single package in the demo resolved the critical finding plus three more CVEs (a package bump from <code>0.1</code> to <code>1.13</code>).</li>
+<li><em>"Minutes, not days"</em> — time-to-fix once the CLI catches it, the pipeline gates it, and the PR annotates it with context.</li>
+<li><em>"Replace, don't patch."</em> — remediation principle for both malicious model artifacts and container images (immutable artifacts).</li>
+<li><strong>"Early this year, attackers on Hugging Face were weaponizing model artifacts using pickle serializations"</strong> — real-world threat motivating AI model security; loading the model triggers arbitrary code execution on pickle deserialization.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Install and run the <strong>Defender CLI</strong> (available today) against a sample repo (e.g., the <code>benchmark-python</code> style project) to see what it catches vs. our current static analysis.</li>
+<li>Test the terminal <code>fix</code> command + Copilot flow end-to-end (scan → SARIF → fix → review in VS Code → commit).</li>
+<li>Wire the same engine into a <strong>GitHub Actions</strong> pipeline as a gate and confirm PR annotations with Copilot-suggested fixes show up.</li>
+<li>Point the CLI at <strong>model artifacts</strong> (a PyTorch/pickle model) to verify malicious-serialization detection before deployment.</li>
+<li>Explore the <strong>AI Code Security Initiative</strong> rollup and an <strong>attack path</strong> in the Azure portal to see code→build→ship→run lineage.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What is <strong>M-</strong> officially called (is the code name being replaced at GA), and what models actually make up the frontier + distilled ensemble?</li>
+<li>Licensing/cost: is the Defender CLI free, bundled with Defender for Cloud, or gated behind GitHub Advanced Security?</li>
+<li>How does it handle <strong>transitive</strong> vulnerabilities buried in base images — does it auto-trace and fix those too?</li>
+<li>What are the false-positive/false-negative rates of the agent "debate" validation stage vs. traditional SAST?</li>
+<li>Which CI systems beyond GitHub Actions are supported (Azure DevOps, GitLab, Jenkins)?</li>
+<li>For AI model scanning — does it cover formats beyond pickle/PyTorch (ONNX, GGUF, safetensors edge cases)?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>DevSecOps / shift-left security strategy and tooling consolidation.</li>
+<li>Azure / Defender for Cloud posture management and attack-path prioritization.</li>
+<li>GitHub Advanced Security + Copilot adoption for automated remediation.</li>
+<li>AI/ML supply-chain security and model governance (Azure ML workspaces/registries).</li>
+<li>Any team shipping containerized, internet-exposed workloads handling sensitive data.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="OD840.html"><span class="pager-dir">← Previous</span><span class="pager-code">OD840</span><span class="pager-title">Enable agents for enterprises using Agent 365 SDK</span></a>
+    <a class="pager pager-next" href="OD854.html"><span class="pager-dir">Next →</span><span class="pager-code">OD854</span><span class="pager-title">Building WinUI Apps with C# First Patterns and AI Assisted Workflows</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

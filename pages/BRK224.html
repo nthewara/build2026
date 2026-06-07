@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRK224 — PepsiCo&#x27;s blueprint for agentic AI</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">BRK224</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=jlzlk_vh4r8" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">PepsiCo&#x27;s blueprint for agentic AI</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Bob Ward (Microsoft), Rishab Saha (Microsoft), Kunal Patel (PepsiCo)</span>
+      <span class="meta-item">⏱️ 42m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="enterprise">Enterprise</span><span class="chip" data-tag="data">Data</span><span class="chip" data-tag="case-study">Case Study</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong><br>
+• <strong>Bob Ward</strong> — Principal Architect, Azure Data team, Microsoft (opening / data foundations)<br>
+• <strong>Rishab Saha</strong> — Chief Architect, Microsoft Office of the CTO<br>
+• <strong>Kunal Patel</strong> — Senior Manager, AI Solutions &amp; Platforms team, PepsiCo<br>
+<strong>Duration:</strong> ~42 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=jlzlk_vh4r8">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>PepsiCo and Microsoft walk through how they built <strong>CAM 360</strong>, a production multi-agent system that transforms a Key Account Manager's (KAM) meeting-prep workflow "from chaos to clarity." The core thesis: <strong>you cannot build reliable agents on bad data</strong> — everything rests on PepsiCo's pre-existing <strong>Enterprise Data Foundation (EDF)</strong>, evolving from "data for dashboards" to "data for agents." The solution uses six specialised agents (orchestrator + five specialists) built on Azure Databricks, Microsoft Fabric, Foundry IQ, Cosmos DB, LangGraph/LangSmith, and Databricks Genie (text-to-SQL). Two agents are deep-dived: a <strong>Data Analyst agent</strong> (Genie-powered NL→SQL with Unity Catalog governance and confidence-path routing) and a <strong>Tracking agent</strong> (a "compounding intelligence" learning loop that turns tribal knowledge into an institutional fact ledger). The payoff: a KAM named "Priya" goes from hours across 6–10 systems to a single question — <em>"Help me get prepared"</em> — and gets buyer signals, risks, talking points, and a draft strategy in minutes. The closing message: agents aren't to replace people, but to give time back so they can be human.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Data foundation is non-negotiable</strong> — "Just like we cannot build a skyscraper on sand, it's very difficult to build agents if your data is inconsistent, not governed, or not meaningful." The hard, slow part was the foundation; once built, later agents came an order of magnitude faster.</li>
+<li><strong>Evolve "data for dashboards" → "data for agents."</strong> Today's pipelines feed dashboards where humans interpret insights and apply manual rules; the target is a <strong>connected knowledge graph / common knowledge layer</strong> agents can reason and act on (insights → automation).</li>
+<li><strong>AI-ready data must solve 5 things simultaneously:</strong> real-time, unified, meaningful, contextual, and trusted — individually hard, and "way harder" at PepsiCo scale.</li>
+<li><strong>EDF is a metadata-first foundation</strong> built on common-sense principles: DevOps + governance, standardized industry data models (harmonized across functions/markets), reusable modules, and central observability.</li>
+<li><strong>CAM 360 is a multi-agent system of six:</strong> an <strong>Orchestrator</strong> ("smart project manager") plus <strong>Data Analyst</strong> (the "nerd"), <strong>Persona Intact</strong>, <strong>Tracking</strong>, <strong>Best Practices</strong> (run-book enforcer), and <strong>Debrief</strong> (live conversational agent that fills knowledge gaps by asking the user questions).</li>
+<li><strong>Data Analyst agent = hybrid pipeline:</strong> Authentication → Query (Genie) → Enrich/Persist. Auth converts <strong>JWT → OIDC</strong> via a Databricks federation policy; Genie does text-to-SQL; enrich layer stores knowledge + session memory.</li>
+<li><strong>Databricks Genie accuracy comes from configuration</strong>, not luck — curated tables, full column/definition metadata, serverless warehouse for speed, formatting assistant, system instructions, one-shot examples, and a <strong>golden dataset</strong> of real user questions.</li>
+<li><strong>Confidence-path routing:</strong> high-confidence queries map to <strong>pre-validated static SQL</strong> (instant); low-confidence queries generate SQL on the fly. The golden dataset / high-confidence paths were mined from <strong>dev-cycle usage logs</strong>.</li>
+<li><strong>Unity Catalog enforces row/table-level access</strong> so agents never expose data the user isn't entitled to (e.g. user sees 2–3 of 10 configured tables).</li>
+<li><strong>Tracking agent delivers "compounding intelligence."</strong> Three components: <strong>Learning module</strong> (configurable categories like pricing/escalation), <strong>Enterprise Knowledge layer</strong> (extracts tribal knowledge → shared memory), and a <strong>Fact Builder agent</strong> (turns signals + knowledge into factual statements with confidence scores).</li>
+<li><strong>Foundry IQ powers agentic RAG / agentic retrieval</strong> — knowledge sources (indexes, federated remote MCP servers, remote SharePoint, etc.) plus tunable "knobs": retrieval instructions, planning model (chat completions), and reasoning effort. Solves a very hard problem with minimal implementation effort.</li>
+<li><strong>Agents share a Core Agent Runtime abstraction</strong> built on the <strong>Responses API</strong> with tool-calling abstracted away — the Fact Builder and Tracking agents reuse the same runtime, just with different tools (e.g. <code>search facts</code>, <code>list retailers</code>).</li>
+<li><strong>Observability is first-class</strong> — OpenTelemetry (OTLP) standards monitor everything the agents do; LangSmith provides node-by-node trace visibility.</li>
+<li><strong>Hard-won lessons:</strong> <em>Don't boil the ocean</em> (start with one workflow / one person / one data source — "if you think you're starting small, start smaller"); they <strong>underestimated data quality</strong> because agents "confidently hallucinate," especially when answers are partly right; <strong>involve domain experts from day one</strong>.</li>
+<li><strong>The blueprint generalizes beyond Pepsi:</strong> Secure infrastructure → unify &amp; govern data → AI platform (models/agents) → user-experience layer. Agents, data, and UX vary by industry/role, but the building blocks stay consistent.</li>
+<li><strong>Purpose framing:</strong> the goal is <em>not</em> to replace people — it's to give time back so KAMs can "think, strategize, and actually be human."</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="1-opening-bob-ward-on-the-data-journey-the-foundation-pitch">1. Opening — Bob Ward on the data journey (the "foundation" pitch)</h3>
+<p>Bob Ward (Principal Architect, Azure Data team) frames the session around customer success rather than product announcements. His thesis, backed by Gartner research: <strong>without the right data infrastructure — secure, quality, governed data — AI projects are "doomed to fail."</strong> Many have started and failed for exactly this reason.</p>
+<p><strong>The starting line (the "before" diagram):</strong> a tangle of arrows and silos — data sprawl, many copies of data, manual file transfers, floating pipelines. Consequences:
+- <strong>Inefficiency</strong> — no one actually knows where the data is.
+- <strong>Limited interoperability</strong> — costly manual transfers and copies.
+- <strong>Exposure / security risk</strong> — ungoverned, scattered data is hard to secure; the biggest pain.
+- <strong>Vendor sprawl</strong> — data sprawl drags in multiple vendors with different subscriptions, versions, and policies to track.</p>
+<p><strong>The finish line ("Nirvana"):</strong> multiple organizations/teams working on different tasks but off a <strong>centralized, unified data platform</strong> — typically a <strong>lakehouse / lake-based</strong> approach. Many data sources may still exist, but they're well-integrated into the lake, yielding strong governance, security, and tighter AI-model integration. The two products called out for this: <strong>Microsoft Fabric</strong> and <strong>Azure Databricks</strong>.</p>
+<p><strong>The journey checklist</strong> (how to reach the finish line):
+1. <strong>Unify your data</strong> — hard and slow historically, but easier with Fabric/Databricks.
+2. <strong>Make data AI-ready</strong> — curated, secure, high quality. Unification alone isn't enough; un-ready data still blocks success.
+3. <strong>Bring in AI models</strong> — use popular existing models or fine-tune; you need a platform that offers <strong>choice of models per business need</strong>.
+4. <strong>Build the right solution</strong> — simple chat agents vs. complex agents, fit to the business (foreshadowing PepsiCo's choices).</p>
+<p><strong>Developer tooling map</strong> Bob lays out:
+- <strong>Low-code:</strong> Copilot Studio.
+- <strong>Rich dev experience:</strong> Visual Studio + VS Code + GitHub Copilot.
+- <strong>Model hosting:</strong> <strong>Foundry</strong> — described from personal experience as superior for getting quality models with choice (small or large), vs. trying to deploy models on-prem.
+- <strong>App hosting:</strong> Kubernetes, Azure Container Services, Static Web Apps.
+- <strong>Databases:</strong> rich Azure database choice (below).
+- <strong>Unifying layer:</strong> Databricks + Fabric, providing resiliency, governance, security.
+- <strong>Edge:</strong> <strong>Foundry Local</strong> for edge-scenario AI models.</p>
+<p><strong>Azure database lineup (several used by PepsiCo):</strong> Azure SQL (incl. <strong>Hyperscale</strong>, based on SQL Server), Azure Database for PostgreSQL, <strong>Cosmos DB</strong> (NoSQL), the newly announced <strong>Horizon DB</strong> (PostgreSQL-compatible, cloud-scaled), and MySQL. Common traits: <strong>scale</strong> (Azure backbone), <strong>transactions</strong> (relational, plus Cosmos as transactional NoSQL → supports OLTP for AI systems), and <strong>integrated vector support</strong> for rich search tightly tied to Foundry, plus easy <strong>mirroring into Fabric</strong> for the lake approach.</p>
+<p><strong>This week's database announcements (per Bob):</strong> Cosmos DB <strong>semantic re-ranking</strong> (popular with the Cosmos community; PepsiCo uses Cosmos); Azure SQL / Hyperscale <strong>deep GitHub Copilot integration in VS Code</strong>; and the <strong>public preview of Horizon DB</strong> (announced "yesterday") for Postgres compatibility at cloud scale.</p>
+<p>Bob hands off to <strong>Rishab Saha (Microsoft)</strong> and <strong>Kunal Patel (PepsiCo)</strong>.</p>
+<h3 id="2-the-pepsico-problem-scale-creates-complexity-complexity-creates-pain">2. The PepsiCo problem — scale creates complexity, complexity creates pain</h3>
+<p>Rishab reframes from "product story" to "<strong>people story</strong>" — specifically the <strong>Key Account Manager (KAM)</strong> and how the team took their Monday morning "from chaos to clarity."</p>
+<p><strong>PepsiCo's scale:</strong> 300,000+ employees, products enjoyed in 200+ countries, <strong>23+ billion-dollar brands</strong>. (Kunal's joke: the only "unlimited" thing at PepsiCo is <em>complexity and scale</em>.) This scale creates complexity, and complexity creates pain for the people closest to PepsiCo's largest customers.</p>
+<p><strong>Who is a KAM?</strong> A senior sales professional managing PepsiCo's largest retail customers ("the who's who of retailers") — relationships driving <strong>multi-million-dollar revenue</strong>.</p>
+<p><strong>The "before" pain (Monday morning, meeting in 48 hours):</strong>
+- <strong>Fragmented information</strong> — multiple reports, multiple dashboards, context buried in emails.
+- Constant uncertainty: <em>Do I have current data? The latest context?</em>
+- The KAM's true competency is <strong>strategizing the customer conversation</strong>, but they burn hours on data-gathering hurdles before they can even start.</p>
+<h3 id="3-the-vision-one-workflow-one-source-of-truth-a-system-that-learns">3. The vision — one workflow, one source of truth, a system that learns</h3>
+<p>Kunal describes the target state:
+- Account plans and <strong>account health in one singular workflow</strong>.
+- A <strong>single trusted data source</strong> — no hopping across silos, compiling, and validating with different people.
+- A <strong>learning system that compounds over time</strong> — it doesn't need to be constantly fed; it learns on its own.</p>
+<h3 id="4-foundation-first-the-enterprise-data-foundation-edf">4. Foundation first — the Enterprise Data Foundation (EDF)</h3>
+<p>Rishab: in relationship businesses, learnings become <strong>tribal knowledge</strong> trapped in one person managing huge relationships and information. But before solving that, <strong>the foundation comes first</strong> ("can't build a skyscraper on sand").</p>
+<p><strong>EDF design principles (common-sense, per Rishab):</strong>
+- <strong>DevOps + governance</strong> in place.
+- <strong>Standardized industry data models</strong> so data is <strong>harmonized</strong> across business functions and markets.
+- <strong>Reusable modules</strong> so every team isn't solving the same thing differently.
+- <strong>Central observability</strong> — how the system learns, evolves, and adapts.</p>
+<p>PepsiCo had already invested heavily and had the <strong>EDF well baked in</strong>.</p>
+<h3 id="5-from-data-for-dashboards-data-for-agents">5. From "data for dashboards" → "data for agents"</h3>
+<p>Kunal explains the evolution:
+- <strong>Today:</strong> pipelines serve dashboards; <strong>humans interpret insights</strong>; <strong>actions taken via manual rules</strong>.
+- <strong>Target:</strong> a <strong>connected knowledge graph</strong> forming a <strong>common knowledge layer</strong> that sits on top of multiple fragmented data sources; agents can <strong>reason on it, decide, and take action</strong> → <strong>insights to automation</strong>.
+- EDF is the <strong>metadata-first foundation</strong>. On top: <strong>data as knowledge</strong> (disconnected entities brought together), <strong>data as intelligence</strong> (agents reason through / drill deeper), then the <strong>agent layer</strong>. The concept: make <strong>AI-ready data</strong> to generate more business value.</p>
+<p><strong>The 5 requirements for AI-ready data</strong> (all must hold simultaneously):
+1. <strong>Real-time</strong> — agents are very latency-sensitive.
+2. <strong>Unified</strong> — complex workflows touch many parts of the business.
+3. <strong>Meaningful</strong> — business context, meanings, and processes captured.
+4. <strong>Contextual</strong> — agents work best with the right context at the right time.
+5. <strong>Trusted</strong> — everything above is meaningless without trust.</p>
+<p>Enabled by Azure Databricks, Microsoft Fabric, and enterprise databases (SQL, Cosmos DB) — but still requiring <strong>intentional architectural decisions</strong>. Rishab's recurring point as chief architect: <strong>the operating model must also evolve</strong>.</p>
+<h3 id="6-production-ready-components">6. Production-ready components</h3>
+<p>Rishab notes the full component slide (to be shared post-build). Key framing: individually the products aren't the headline — the highlight is that <strong>every component was used in a production-ready way</strong>, since this is a <strong>multi-agent system</strong> spanning different teams, developers, and components.</p>
+<h3 id="7-meet-priya-the-cam-360-agent">7. Meet Priya — the CAM 360 agent</h3>
+<p>A concrete persona: <strong>Priya</strong>, a KAM with a meeting in <strong>48 hours</strong> with one of her largest retail customers. Before: 6/7/10 systems, reports, emails, buried docs — hours of prep. After: she opens <strong>CAM 360</strong> and asks <em>"Help me get prepared."</em></p>
+<p><strong>Priya's "six superstars" (the agent team):</strong>
+1. <strong>Orchestrator</strong> — the "really smart project manager"; orchestrates everything across the board.
+2. <strong>Data Analyst agent</strong> (the "nerd") — crunches data, goes through the numbers.
+3. <strong>Persona Intact agent</strong> — ensures account personas are captured well and that strategies built on top are followed.
+4. <strong>Tracking agent</strong> — manages the account lifecycle and keeps things on track.
+5. <strong>Best Practices agent</strong> — enforces PepsiCo's success run-book at scale.
+6. <strong>Debrief agent</strong> (Kunal's favorite) — a <strong>live conversational agent</strong>; when the knowledge layer has gaps, it generates a question, asks Priya, captures her answer into the knowledge layer → better account understanding next time.</p>
+<p>So effectively <strong>every KAM gets a team of six working with them all the time.</strong></p>
+<h3 id="8-deep-dive-data-analyst-agent-nl-sql-via-genie">8. Deep dive — Data Analyst agent (NL → SQL via Genie)</h3>
+<p>A <strong>hybrid system</strong> with layers: <strong>Authentication → Query (Genie) → Enrich/Persist</strong>.
+- <strong>Authentication:</strong> enforces user access — if a user lacks access to specific data, the agent doesn't traverse or read it. Converts tokens <strong>JWT → OIDC</strong> using a <strong>federation policy configured in the Databricks/Genie database</strong>, tracked per session.
+- <strong>Genie ("the heart"):</strong> performs <strong>text-to-SQL</strong> generation, executes, and returns responses. Conversation IDs and Genie request IDs are tracked through the session; the response provides a <strong>summarized output and the SQL</strong>.
+- <strong>Enrich &amp; Persist:</strong> stores the knowledge layer and session memories, making synthesis easy.</p>
+<p><strong>LangGraph / LangSmith demo (see Demos):</strong> a graph with the orchestrator (project manager) at the center. A query comes in → authentication &amp; token conversion (JWT→OIDC) → Genie call (conversation tracking) → response (summary + SQL) → orchestrator <strong>synthesizes</strong>, checking against a <strong>golden dataset</strong> before answering. VS Code shows the <strong>node-by-node graph</strong> and each step.</p>
+<p><strong>Databricks Genie configuration (why SQL is accurate):</strong>
+- All needed <strong>tables created and configured</strong> in Genie.
+- A <strong>serverless ("no-server") warehouse</strong> for speed.
+- Full <strong>table definitions and column details</strong> captured so Genie understands the data and generates more accurate SQL (vs. trial-and-error).
+- A <strong>formatting assistant</strong> ensures correct output formatting.
+- <strong>Unity Catalog</strong> governs access — even with 10 tables configured, a user may only access 2–3; agents must not answer from restricted data.
+- <strong>System instructions</strong> and <strong>one-shot examples</strong> configured for the agent.
+- <strong>Confidence paths:</strong> <strong>high-confidence</strong> queries → pre-configured <strong>static SQL</strong> (instant); <strong>low-confidence</strong> queries → SQL generated on the fly. High-confidence paths were mined from a <strong>golden dataset</strong> built from <strong>dev-cycle usage logs</strong> (capturing how users actually query and what common questions they ask).</p>
+<p><strong>Three takeaways Rishab calls out from the walkthrough:</strong>
+1. Priya started with just an <strong>intent</strong> — she didn't need to know where the data/knowledge lived.
+2. That intent translated into an accurate SQL query <strong>because of the EDF</strong> groundwork.
+3. The system doesn't just summarize — it gives Priya the <strong>variables she needs</strong> to make her customer conversation meaningful.</p>
+<h3 id="9-deep-dive-tracking-agent-compounding-intelligence">9. Deep dive — Tracking agent ("compounding intelligence")</h3>
+<p>Story moves forward: Priya had a great meeting (Thursday). In the old cycle, Thursday evening she'd scribble notes in her car, send an email, or promise to update the account plan "later" — context easily lost, and even when captured it <strong>never became institutional memory</strong>. The Tracking agent extends prep work into a <strong>learning system</strong>.</p>
+<p><strong>Three components:</strong>
+1. <strong>Learning module</strong> — lets you create <strong>configurable categories</strong> the system continuously learns about (e.g. <strong>pricing</strong>, <strong>escalation</strong>, any parameter). A <strong>signal</strong> example tracks pricing info with <strong>hints</strong> and an <strong>extraction prompt</strong> for downstream agents, plus optional <strong>metadata fields</strong> (for knowledge sources/bases) stored in <strong>Cosmos DB</strong>.
+2. <strong>Enterprise Knowledge layer</strong> — extracts the <strong>tribal knowledge</strong> from Priya's memory and makes it available to the whole account team and successors. Powered by <strong>Foundry IQ</strong> (agentic RAG / agentic retrieval): <strong>knowledge sources</strong> = indexes or federated sources (remote <strong>MCP servers</strong>, remote <strong>SharePoint</strong>, etc.) constantly ingested and reasoned over. The <strong>knowledge base</strong> exposes tunable <strong>knobs</strong>: <strong>retrieval instructions</strong>, <strong>planning mechanism</strong> (configure a <strong>chat-completions model</strong> to plan), and <strong>reasoning effort</strong>. Rishab stresses this is simple to implement but would be very hard to hand-build at scale (cross-references <strong>Pablo's earlier session</strong> on Foundry IQ).
+3. <strong>Fact Builder agent</strong> — converts <strong>signals + knowledge sources/bases</strong> into <strong>facts / factual statements</strong>. Built on a <strong>Core Agent Runtime</strong> (an abstracted agent reusable by multiple agents), uses the <strong>Responses API</strong> with <strong>tool-calling abstracted away</strong>, plus a configured <strong>system prompt</strong>. Output example (pricing): an email found in a knowledge source is summarized, yielding an <strong>extraction summary</strong> (e.g. <em>"this customer had requested a blanket 7% increase"</em>), a <strong>confidence score</strong>, <strong>stakeholders</strong>, <strong>confidence reason</strong>, and additional extracted data.</p>
+<p><strong>The Tracking agent itself</strong> is the <strong>conversational interface</strong> that only talks to the <strong>fact ledger</strong> — the only thing a CAM interacts with. The learning, enterprise-knowledge, and compounding-intelligence work all run <strong>behind the scenes on a schedule</strong>. Built on the <strong>same Core Agent Runtime</strong> as the Fact Builder, with extra tools like <strong><code>search facts</code></strong> and <strong><code>list retailers</code></strong>; it reads from <strong>Cosmos DB</strong> and returns the right facts based on question intent. <strong>Observability</strong> via <strong>OpenTelemetry (OTLP)</strong> monitors everything.</p>
+<p><strong>User experience:</strong> ask an intent (e.g. <em>"What was the last offer for ABC?"</em> — ABC being a dummy company) → in minutes Priya gets the answer pulled from learning configs, the enterprise knowledge layer, and generated facts.</p>
+<p><strong>Compounding intelligence summary:</strong> every past meeting (once stuck in memory) now makes the system smarter; every debrief improves planning for the next account cycle; every future CAM benefits from prior context — no reinventing the wheel.</p>
+<h3 id="10-lessons-learned-the-honest-part">10. Lessons learned (the honest part)</h3>
+<ul>
+<li><strong>Don't boil the ocean</strong> — keep scope small. "If you think you're starting small, start smaller." Start with <strong>one workflow, one person, one data source</strong>, then build on top.</li>
+<li><strong>Don't underestimate data quality</strong> — even with strong foundations they underestimated it. Agents are good at <strong>confidently hallucinating</strong>, especially when answers are <strong>partly right and partly wrong</strong>, which non-domain-expert engineers struggle to catch. <strong>Involve domain experts from day one.</strong></li>
+<li><strong>The EDF was the best part</strong> — the data foundation played a pivotal role; agents not only worked but <strong>compounded value</strong> (e.g. debrief agents made subsequent sessions better). The first couple of agents were hard; the <strong>next 3–5 were an order of magnitude faster</strong> once foundations existed — "like climbing a hill."</li>
+</ul>
+<h3 id="11-the-generalizable-blueprint">11. The generalizable blueprint</h3>
+<p>Beyond PepsiCo, <strong>enterprise AI at scale</strong> looks like:
+1. <strong>Secure infrastructure</strong> (start here).
+2. <strong>Unify &amp; govern your data</strong> on top.
+3. <strong>AI platform</strong> ready — where models/agents reside, operate, and run.
+4. <strong>User-experience layer</strong> — where agents interact with humans.</p>
+<p>Agents change by industry, data evolves by company, UX changes by role — but the <strong>building blocks stay consistent</strong>.</p>
+<p><strong>Resources mentioned:</strong> free Azure resources for non-customers; <strong>Azure Accelerate</strong> (trusted experts — a program PepsiCo and Microsoft partnered on); <strong>Cloud Accelerate Factory</strong>; a post-session <strong>survey</strong>. All slides/resources available after the session.</p>
+<h3 id="12-closing-give-time-back-to-people">12. Closing — give time back to people</h3>
+<p>Return to the opening image: a single CAM, Monday morning, meeting in 48 hours. <strong>Before:</strong> hours hunting for the right information across dashboards, reports, emails, and teammates. <strong>Now:</strong> open <strong>CAM 360</strong>, ask <em>"Help me get prepared,"</em> and within <strong>minutes</strong> (not hours/days/weeks) get <strong>buyer signals, data, risks, talking points, even a draft strategy</strong> — with time left to think and strategize. The purpose: <strong>not to replace people</strong> but to <strong>give time back</strong> so they can "think, strategize, and actually be human."</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>CAM 360</strong> — PepsiCo's multi-agent meeting-prep system for Key Account Managers (the central solution).</li>
+<li><strong>Microsoft Fabric</strong> — unified analytics/lakehouse platform for unifying &amp; governing data.</li>
+<li><strong>Azure Databricks</strong> — lakehouse data platform; hosts Genie, Unity Catalog, serverless warehouses.</li>
+<li><strong>Databricks Genie</strong> — natural-language-to-SQL engine; "the heart" of the Data Analyst agent.</li>
+<li><strong>Unity Catalog</strong> — Databricks governance enforcing table/row-level access control for agents.</li>
+<li><strong>Azure AI Foundry</strong> — model hosting platform offering broad model choice (small &amp; large).</li>
+<li><strong>Foundry IQ</strong> — agentic RAG / agentic retrieval service (knowledge sources + tunable retrieval/planning/reasoning knobs).</li>
+<li><strong>Foundry Local</strong> — edge-scenario AI model hosting.</li>
+<li><strong>Azure Cosmos DB</strong> — NoSQL database; stores signals, metadata, facts, and session/knowledge data; got semantic re-ranking this week.</li>
+<li><strong>Azure SQL Database / Hyperscale</strong> — relational DB (SQL Server-based); deep GitHub Copilot/VS Code integration announced.</li>
+<li><strong>Azure Database for PostgreSQL</strong> — managed Postgres option.</li>
+<li><strong>Horizon DB</strong> — new PostgreSQL-compatible, cloud-scaled database (public preview).</li>
+<li><strong>Azure Database for MySQL</strong> — managed MySQL option.</li>
+<li><strong>Responses API</strong> — standardized agent API underpinning the Core Agent Runtime (tool-calling abstracted).</li>
+<li><strong>Core Agent Runtime</strong> — PepsiCo's reusable agent abstraction shared across Fact Builder &amp; Tracking agents.</li>
+<li><strong>LangGraph</strong> — graph-based agent orchestration framework used for the agent flows.</li>
+<li><strong>LangSmith</strong> — observability/tracing UI for inspecting the LangGraph flow node-by-node.</li>
+<li><strong>OpenTelemetry (OTLP)</strong> — open-standard protocol used for agent observability/monitoring.</li>
+<li><strong>MCP servers (remote)</strong> — federated knowledge sources for Foundry IQ.</li>
+<li><strong>Remote SharePoint</strong> — another federated knowledge source for Foundry IQ.</li>
+<li><strong>Copilot Studio</strong> — low-code agent-building tool (developer tooling option).</li>
+<li><strong>Visual Studio / VS Code / GitHub Copilot</strong> — rich pro-developer toolchain.</li>
+<li><strong>Azure Kubernetes / Container Services / Static Web Apps</strong> — application hosting options.</li>
+<li><strong>Enterprise Data Foundation (EDF)</strong> — PepsiCo's metadata-first, governed, harmonized data foundation (the bedrock of the whole solution).</li>
+<li><strong>Azure Accelerate</strong> — Microsoft program giving access to trusted experts (PepsiCo partnered on it).</li>
+<li><strong>Cloud Accelerate Factory</strong> — Microsoft enablement program/resource.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p>This is a customer case-study session; product news came mainly from Bob Ward's opening:
+- <strong>Horizon DB — Public Preview</strong> <em>(announced this week / "yesterday")</em>: PostgreSQL-compatible, cloud-scaled Azure database for Postgres developers.
+- <strong>Cosmos DB — Semantic Re-ranking</strong> <em>(announced this week)</em>: popular new retrieval capability with the Cosmos community.
+- <strong>Azure SQL / Hyperscale — deep GitHub Copilot integration in VS Code</strong> <em>(announced this week)</em>: improved developer experience for Azure SQL.
+- <strong>Foundry IQ</strong> <em>(referenced as current; deep-dived in "Pablo's" session)</em>: agentic RAG/retrieval with knowledge sources + tunable knobs — central to the Tracking agent.
+- No CAM 360-specific product GA/preview was announced — the solution itself is a customer-built reference architecture, with the slides/components to be shared post-session.</p>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>LangGraph flow in LangSmith (Data Analyst agent):</strong> Showed a live graph with the <strong>orchestrator/project-manager node</strong> at the center. A demo query ("top accounts...") flows through <strong>authentication &amp; JWT→OIDC token conversion</strong>, a <strong>Genie call</strong> (with conversation/Genie ID tracking), then <strong>synthesis</strong> validated against a <strong>golden dataset</strong> before output. <strong>Point proved:</strong> the end-to-end agentic NL→SQL pipeline with auth, tracing, and grounding actually works and is fully observable.</li>
+<li><strong>VS Code node-by-node graph view:</strong> Drilled into the individual <strong>nodes/steps</strong> of the graph (token conversion, Genie call, response handling, orchestrator synthesis). <strong>Point proved:</strong> the system is transparent, debuggable, and built from inspectable, modular steps rather than a black box.</li>
+<li><strong>Databricks Genie configuration:</strong> Showed the configured <strong>tables, column definitions, serverless warehouse, formatting assistant, system instructions, one-shot examples, Unity Catalog access control, and high/low-confidence SQL paths</strong> (static SQL for high-confidence; on-the-fly for low). <strong>Point proved:</strong> Genie's NL→SQL accuracy is engineered through rich metadata + a golden dataset — not luck — and respects per-user data governance.</li>
+<li><strong>Tracking agent — signal configuration &amp; fact output:</strong> Showed a <strong>pricing signal</strong> (hints + extraction prompt + Cosmos DB metadata fields) and the <strong>Fact Builder output</strong> — e.g. an extracted fact that <em>"this customer had requested a blanket 7% increase,"</em> with <strong>confidence score, summary, stakeholders, confidence reason</strong>. <strong>Point proved:</strong> tribal knowledge buried in emails/memory can be auto-converted into a queryable, trustworthy <strong>fact ledger</strong> (compounding intelligence).</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>300,000+</strong> PepsiCo employees; products in <strong>200+</strong> countries; <strong>23+</strong> billion-dollar brands.</li>
+<li>Customer prep window in the running example: <strong>48 hours</strong>; old process took <strong>hours</strong> across <strong>6–10</strong> systems → new process takes <strong>minutes</strong>.</li>
+<li>Extracted-fact example: a customer <strong>"requested a blanket 7% increase."</strong></li>
+<li><em>"The only unlimited thing we get is complexity and its scale."</em> — Kunal Patel (on working at PepsiCo).</li>
+<li><em>"Just like we cannot build a skyscraper on sand, it's very difficult to build agents if your data is inconsistent... not governed properly, or... just not meaningful enough."</em> — Rishab Saha.</li>
+<li><em>"Agents are very good with confidently hallucinating"</em> — especially when part of the answer is right and part is wrong (why domain experts are essential).</li>
+<li><em>"If you think you're starting small, start smaller."</em> — on scoping agentic projects.</li>
+<li><em>"It's not really to replace people... it's really to give time back to people so they can... think, strategize, and actually be human."</em> — closing message.</li>
+<li>Without the right data infrastructure, per Gartner, AI projects are <em>"kind of doomed to fail."</em> — Bob Ward.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Prototype a <strong>Genie + LangGraph</strong> NL→SQL agent with <strong>Unity Catalog</strong> governance and a <strong>high/low-confidence SQL path</strong> split driven by a golden dataset from usage logs.</li>
+<li>Stand up a <strong>Foundry IQ</strong> knowledge base with federated <strong>MCP / SharePoint</strong> sources and experiment with the retrieval/planning/reasoning "knobs."</li>
+<li>Build a minimal <strong>Core Agent Runtime</strong> on the <strong>Responses API</strong> and reuse it across two agents (a "fact builder" + a "conversational" agent) backed by <strong>Cosmos DB</strong>.</li>
+<li>Wire <strong>OpenTelemetry (OTLP)</strong> tracing + <strong>LangSmith</strong> into an agent flow from day one.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What exactly is in PepsiCo's "golden dataset," and how do they keep high-confidence static SQL paths fresh as schemas/usage change?</li>
+<li>How is the <strong>connected knowledge graph / common knowledge layer</strong> physically implemented (graph DB vs. metadata over the lakehouse)?</li>
+<li>How do they evaluate/guard against the "confident hallucination" failure mode in production (eval harness, human-in-the-loop)?</li>
+<li>What's the boundary between <strong>Persona Intact</strong> and <strong>Best Practices</strong> agents in practice?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Any enterprise pursuing <strong>agentic AI on top of a governed data foundation</strong> (the blueprint generalizes beyond CPG/retail).</li>
+<li>Internal <strong>NL-to-SQL / data-analyst agent</strong> efforts and <strong>agentic RAG</strong> initiatives.</li>
+<li>Architecture conversations about <strong>"data for dashboards" → "data for agents"</strong> and AI-ready data (real-time/unified/meaningful/contextual/trusted).</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Build2026">Build2026</span> — Microsoft Build 2026 session index</li>
+<li>Foundry IQ deep-dive session ("Pablo's session" referenced in-talk) — find &amp; link</li>
+<li>Notes on <strong>Azure Databricks</strong>, <strong>Microsoft Fabric</strong>, <strong>Cosmos DB</strong>, <strong>Foundry</strong>, <strong>Responses API</strong>, <strong>LangGraph/LangSmith</strong></li>
+<li>Concept: <strong>Enterprise Data Foundation (EDF)</strong> / AI-ready data</li>
+<li>Concept: <strong>Compounding intelligence</strong> / agentic memory &amp; fact ledgers</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="BRK223.html"><span class="pager-dir">← Previous</span><span class="pager-code">BRK223</span><span class="pager-title">From rows to reasoning: Designing databases for AI apps and agents</span></a>
+    <a class="pager pager-next" href="BRK225.html"><span class="pager-dir">Next →</span><span class="pager-code">BRK225</span><span class="pager-title">Data, apps, and agents: the future of app dev with Rayfin</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

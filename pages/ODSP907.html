@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ODSP907 — Monitor GenAI applications beyond golden signals</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">ODSP907</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=NtLuXXNKbJw" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Monitor GenAI applications beyond golden signals</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Datadog (LLM Observability team)</span>
+      <span class="meta-item">⏱️ 13m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="observability">Observability</span><span class="chip" data-tag="genai">Genai</span><span class="chip" data-tag="monitoring">Monitoring</span><span class="chip" data-tag="ai">AI</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Datadog (LLM Observability team — partner/sponsor session)<br>
+<strong>Duration:</strong> ~13 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=NtLuXXNKbJw">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>A focused Datadog partner talk arguing that the classic "golden signals" (latency, errors, traffic, saturation — LETS) are still the bedrock of monitoring but leave you <strong>blind to what matters most in GenAI apps</strong>. GenAI is fundamentally different because of non-deterministic behavior, a variable/unpredictable cost structure, new attack vectors, and subjective quality. The session walks each golden signal and shows how to extend it for GenAI (e.g. multi-stage latency, model-level error categories, per-feature/per-model traffic, GPU + rate-limit saturation), then adds <strong>three new monitoring dimensions</strong> — <strong>cost</strong>, <strong>safety/security</strong>, and <strong>quality</strong>. It closes by mapping all of this onto Datadog <strong>LLM Observability</strong>, which captures the standard signals plus token/cost tracking, prompt/response eval, PII masking, and prompt-injection detection in one place. The recurring thesis: <em>a perfect "200 OK" means nothing if your model is hallucinating, leaking PII, or burning your budget one token at a time.</em></p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Golden signals (LETS) aren't going away</strong> — latency, errors, traffic, saturation remain the foundation; GenAI just demands you instrument them more granularly.</li>
+<li><strong>GenAI differs on four axes:</strong> non-deterministic behavior, variable cost structure, new attack vectors, and subjective quality — so traditional approaches fall short.</li>
+<li><strong>Latency must be tracked per pipeline stage</strong>, not just end-to-end: RAG retrieval time, the LLM call itself, external API calls, and total request time (still watch median + P95/P99).</li>
+<li><strong>Errors need a new category beyond HTTP 4xx/5xx:</strong> LLM model errors such as context-length exceeded, safety-filter triggered, and model overloaded — segment by endpoint, model, and user segment.</li>
+<li><strong>Traffic should be segmented by feature, user type, and model</strong>, not just measured as raw RPS — this drives capacity, per-model rate-limit management, and cost control.</li>
+<li><strong>Saturation bottlenecks have shifted to GPU utilization and API rate limits / model-serving capacity</strong> — the discipline is old, the bottlenecks are new.</li>
+<li><strong>Cost is dynamic and unpredictable</strong> and can spiral silently via three mechanisms: <strong>token creep</strong>, <strong>model drift</strong>, and <strong>uncached calls</strong>.</li>
+<li><strong>Cost control = tag everything:</strong> feature-level, user-level, model-level, and endpoint-level tagging give the attribution needed for chargeback, abuse detection, and optimization.</li>
+<li><strong>Safety/security threats are tiered:</strong> critical = PII leakage + data exfiltration; high = prompt injection + jailbreaking; medium = denial-of-wallet + model extraction.</li>
+<li><strong>Security metrics that "don't look like errors":</strong> prompt injection rate, PII detection rate, content moderation score, and jailbreak attempts.</li>
+<li><strong>Quality is the dimension that ultimately matters</strong> but is subjective, context-dependent, and hard to quantify — there's no ground truth, context matters, hallucinations are a major challenge, and satisfaction is a spectrum not a binary.</li>
+<li><strong>Track six quality metrics:</strong> hallucination rate, relevance score, user satisfaction, answer completeness, retrieval (RAG) quality, and response coherence.</li>
+<li><strong>Complete GenAI observability = LETS + cost + safety + quality</strong> — together they cover health, financial spend, security posture, and output quality.</li>
+<li><strong>Datadog LLM Observability</strong> is positioned as the single tool that unifies all four dimensions (auto-captured metrics, cost tracking, eval tooling, PII masking, prompt-injection detection).</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="why-genai-breaks-traditional-monitoring-the-four-shifts">Why GenAI breaks traditional monitoring — the four shifts</h3>
+<p>The talk opens by asking what makes GenAI applications <em>fundamentally different</em> from the software we've monitored for decades, and answers with four key shifts:
+1. <strong>Non-deterministic behavior</strong> — the same input can produce different outputs, so assertions and binary pass/fail checks no longer hold.
+2. <strong>Variable cost structure</strong> — spend is tied to token consumption and model choice, making it dynamic and hard to predict rather than a fixed infra line item.
+3. <strong>New attack vectors</strong> — prompts become an attack surface (injection, jailbreaking, exfiltration) that classic web security wasn't designed for.
+4. <strong>Subjective quality</strong> — "good" output is contextual and judged on a spectrum, not a deterministic correct/incorrect result.</p>
+<p>These four shifts frame the rest of the talk: keep the golden signals, but layer new dimensions on top.</p>
+<h3 id="the-golden-signals-lets-still-the-bedrock">The golden signals (LETS) — still the bedrock</h3>
+<p>The session uses <strong>LETS</strong> = <strong>L</strong>atency, <strong>E</strong>rrors, <strong>T</strong>raffic, <strong>S</strong>aturation as "the fundamental building block of all monitoring." The core message for each is that the <em>signal</em> stays the same but GenAI requires <strong>more granular instrumentation and segmentation</strong>.</p>
+<h4 id="1-latency-how-long-does-each-request-take">1. Latency — "how long does each request take?"</h4>
+<ul>
+<li>Traditional practice: watch <strong>median latency</strong> (the average user experience, e.g. ~850 ms) plus <strong>P95 / P99</strong> to catch slow requests, outliers, and bottlenecks.</li>
+<li>For GenAI, total click-to-response time is not enough — you must <strong>instrument latency at multiple stages within the GenAI pipeline</strong>:</li>
+<li><strong>RAG retrieval time</strong> — how long it takes to find relevant documents.</li>
+<li><strong>LLM call time</strong> — the model invocation itself.</li>
+<li><strong>External API call time.</strong></li>
+<li><strong>Total request time.</strong></li>
+<li>Understanding the <strong>latency breakdown</strong> is critical for optimization and for pinpointing exactly where users experience delays.</li>
+</ul>
+<h4 id="2-errors-whats-the-error-rate-and-what-types">2. Errors — "what's the error rate and what types?"</h4>
+<ul>
+<li>Traditional monitoring covers HTTP status codes (e.g. 400 client errors, 500 server errors).</li>
+<li>GenAI adds a <strong>new category: LLM model errors</strong> returned directly from the model provider, including:</li>
+<li><strong>Context length exceeded.</strong></li>
+<li><strong>Model safety filter triggered.</strong></li>
+<li><strong>Model overloaded.</strong></li>
+<li>Best practice: <strong>track error rates by endpoint, by model, and by user segment</strong> to spot patterns quickly and stop small issues from becoming major outages.</li>
+</ul>
+<h4 id="3-traffic-how-much-demand-is-the-system-handling">3. Traffic — "how much demand is the system handling?"</h4>
+<ul>
+<li>Typically tracked as <strong>requests per second (RPS)</strong> over time to understand usage patterns and ensure capacity.</li>
+<li>For GenAI, the raw count of API calls isn't enough — <strong>segment traffic</strong> by:</li>
+<li><strong>Feature</strong> — e.g. internal chatbot vs external-facing summarization tool.</li>
+<li><strong>User type</strong> — e.g. premium vs new users driving the most traffic.</li>
+<li><strong>Model</strong> — which specific model (large vs small, expensive vs cheap) handles the majority of volume.</li>
+<li>Benefit: segmentation lets you optimize capacity, manage <strong>model-specific rate limits</strong> effectively, and control costs.</li>
+</ul>
+<h4 id="4-saturation-how-constrained-are-your-resources">4. Saturation — "how constrained are your resources?"</h4>
+<ul>
+<li>Generally measured via utilization of critical infrastructure.</li>
+<li>For GenAI the <strong>bottlenecks have shifted</strong> to two new areas:</li>
+<li><strong>GPU utilization.</strong></li>
+<li><strong>API rate limits</strong> (and model-serving capacity).</li>
+<li>The discipline is nothing new, but these are <strong>new critical bottlenecks</strong> to watch so the system can handle increased traffic.</li>
+</ul>
+<h3 id="new-dimension-1-cost-monitoring">New Dimension 1 — Cost monitoring</h3>
+<p>Traditional LETS metrics "completely miss the financial implications" of GenAI. Because spend is dynamic and unpredictable, <strong>without visibility your costs can and often will spiral out of control.</strong></p>
+<h4 id="the-three-ways-cost-escalates-without-warning">The three ways cost escalates without warning</h4>
+<ul>
+<li><strong>Token creep</strong> — engineers or product managers quietly increase the context window to improve quality. Since cost is directly tied to token count, spend can jump <strong>overnight</strong> without any financial review.</li>
+<li><strong>Model drift</strong> — a team swaps a faster/cheaper model for a slower/more expensive one under the premise of "better quality." Even with identical usage volume, this escalates spend.</li>
+<li><strong>Uncached calls</strong> — the same query repeatedly hits the API when there's no effective caching layer, so you pay for the <strong>exact same expensive model completion over and over</strong> (redundant spend).</li>
+</ul>
+<p>Without granular visibility into these three, costs escalate rapidly.</p>
+<h4 id="cost-attribution-strategy-tag-everything">Cost attribution strategy — "tag everything"</h4>
+<p>A robust cost-attribution strategy comes down to <strong>mandatory tagging</strong> at four levels:
+- <strong>Feature-level tagging</strong> (e.g. <code>summarization</code>, <code>text-to-speech</code>) → tells you which feature costs the most.
+- <strong>User-level tagging</strong> (e.g. <code>user_id</code>, organization) → essential for <strong>chargeback</strong>, accurate billing, and spotting <strong>abusive usage</strong> before it drains the budget.
+- <strong>Model-level tagging</strong> (e.g. <code>model</code>, <code>provider</code>) → immediate visibility into high-leverage optimization areas; lets you <strong>benchmark the true expense</strong> of one model vs another.
+- <strong>Endpoint-level tagging</strong> (region, environment, provider) → aids infra planning; shows how regional distribution or staging-vs-prod impacts total spend.</p>
+<p>Making tagging mandatory gives the visibility to understand where money goes and how to control it.</p>
+<h3 id="new-dimension-2-safety-security">New Dimension 2 — Safety &amp; security</h3>
+<p>The GenAI threat landscape is categorized by risk level:
+- <strong>Critical risk:</strong> <strong>PII leakage</strong> and <strong>data exfiltration</strong>.
+- <strong>High risk:</strong> <strong>prompt injection</strong> (described as probably the most common attack) and the related <strong>jailbreaking</strong>.
+- <strong>Medium risk:</strong> <strong>denial-of-wallet</strong> (an attack against your budget) and <strong>model extraction</strong> (sustained, systematic probing with queries to reverse-engineer the model).</p>
+<p>The key insight: you must <strong>monitor for security breaches that don't look like errors.</strong> Four key security metrics:
+- <strong>Prompt injection rate.</strong>
+- <strong>PII detection rate.</strong>
+- <strong>Content moderation score.</strong>
+- <strong>Jailbreak attempts.</strong></p>
+<h3 id="new-dimension-3-quality-monitoring">New Dimension 3 — Quality monitoring</h3>
+<p>Described as "arguably the most crucial" new dimension: LETS tells you the service is <em>up</em>, cost + safety tell you it's <em>budget-compliant and secure</em>, but for a GenAI app <strong>the only thing that truly matters is whether the output is good.</strong></p>
+<h4 id="why-quality-is-hard-to-measure">Why quality is hard to measure</h4>
+<p>Quality in GenAI is inherently subjective, context-dependent, and hard to quantify with traditional metrics, for four reasons:
+- <strong>No ground truth</strong> — there's often no single correct answer to compare against.
+- <strong>Context matters</strong> — the same response can be good or bad depending on the situation.
+- <strong>Hallucinations are a major challenge.</strong>
+- <strong>Subjective satisfaction</strong> — we've moved from a binary "works/doesn't work" world to a <strong>spectrum</strong>, where users judge responses on how helpful, accurate, and complete they are.</p>
+<h4 id="the-six-quality-metrics-to-implement">The six quality metrics to implement</h4>
+<p>To move beyond "it works" status codes and truly measure output:
+- <strong>Hallucination rate.</strong>
+- <strong>Relevance score.</strong>
+- <strong>User satisfaction.</strong>
+- <strong>Answer completeness.</strong>
+- <strong>Retrieval (RAG) quality</strong> — you must measure how good the retrieval feeding generation is.
+- <strong>Response coherence.</strong></p>
+<p>Together these give a <strong>complete, multi-dimensional view</strong> of quality needed to optimize the app.</p>
+<h3 id="bringing-it-all-together-the-complete-monitoring-stack">Bringing it all together — the complete monitoring stack</h3>
+<p>Comprehensive GenAI observability means going <strong>"beyond beyond" the traditional golden signals</strong> — a complete stack that combines:
+- <strong>LETS metrics</strong> → tell you <em>if</em> the system is running.
+- <strong>Three new dimensions</strong> → tell you <em>how</em> it's running:
+  - <strong>Cost</strong> — how much are we spending?
+  - <strong>Safety / security</strong> — is it secure?
+  - <strong>Quality</strong> — is the output good?</p>
+<p>Uniting LETS with cost, safety, and quality yields visibility into the application's <strong>health, financial spend, security posture, and output quality</strong> simultaneously.</p>
+<h3 id="vendor-positioning-datadog-llm-observability">Vendor positioning — Datadog LLM Observability</h3>
+<p>The talk closes with Datadog's own product, <strong>Datadog LLM Observability</strong>, positioned as covering all of the above in one central application:
+- <strong>Standard metrics</strong> — automatically captures and visualizes latency, errors, <strong>tokens per second</strong>, and <strong>API rate-limit usage</strong> directly from your LLM calls.
+- <strong>Quality &amp; cost</strong> — tracks and analyzes costs across different models, and evaluates prompt/response quality via <strong>integrated eval tools</strong> plus <strong>tracing of tool usage</strong>.
+- <strong>Safety &amp; security</strong> — monitors security risks, including <strong>identifying and masking PII</strong> in prompts/responses and <strong>detecting prompt injections</strong> or unsafe content.</p>
+<h3 id="closing-thesis">Closing thesis</h3>
+<p>The recap: golden signals (latency, errors, traffic, saturation) are the <strong>bedrock of monitoring and aren't going anywhere</strong> — but for GenAI apps, <strong>LETS alone leaves you blind to the things that matter most.</strong> The memorable closing line frames the whole talk: <em>"A perfect 200 OK means nothing if your model is hallucinating, leaking PII, or burning through your budget one token at a time."</em></p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Datadog LLM Observability</strong> — Datadog's product for monitoring GenAI/LLM apps; auto-captures golden-signal metrics (latency, errors, tokens/sec, rate-limit usage) and adds cost tracking, prompt/response quality evals, tool-usage tracing, PII masking, and prompt-injection/unsafe-content detection in one platform.</li>
+<li><strong>Golden signals / LETS</strong> — the monitoring framework of Latency, Errors, Traffic, Saturation used as the foundation throughout.</li>
+<li><strong>RAG (Retrieval-Augmented Generation)</strong> — referenced as a GenAI pipeline stage to instrument for latency and as a quality input ("retrieval quality" must be measured).</li>
+<li><strong>LLM model-provider error types</strong> — context-length-exceeded, safety-filter-triggered, model-overloaded; the new error category beyond HTTP status codes.</li>
+<li><strong>GPU utilization &amp; API rate limits</strong> — the new saturation bottlenecks for GenAI workloads.</li>
+<li><strong>Eval tooling / tracing</strong> — Datadog's integrated capabilities for scoring prompt/response quality and tracing tool calls.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p>None explicitly announced. The session is an educational/partner overview of GenAI monitoring practices plus a positioning of Datadog LLM Observability; no new releases, previews, or GA milestones were stated.</p>
+<h2 id="demos">💡 Demos</h2>
+<p>No live demos were shown. The session was a conceptual/slide-driven walkthrough (golden signals → cost/safety/quality dimensions → Datadog product overview) rather than a hands-on demonstration.</p>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>"A perfect 200 OK means nothing if your model is hallucinating, leaking PII, or burning through your budget one token at a time."</strong> — closing thesis of the talk.</li>
+<li><strong>"LETS alone leaves you blind to the things that matter most."</strong> — on why golden signals are necessary but insufficient for GenAI.</li>
+<li>Example latency figure cited for median user experience: <strong>~850 ms</strong> (illustrative).</li>
+<li><strong>6 quality metrics</strong>, <strong>4 security metrics</strong>, <strong>4 cost-tagging levels</strong>, <strong>3 cost-escalation mechanisms</strong>, <strong>3 new dimensions</strong>, <strong>4 golden-signal categories</strong> — the talk's quantified structure.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Evaluate <strong>Datadog LLM Observability</strong> against Azure-native options (Azure AI Foundry observability / tracing, Application Insights, Azure Monitor) for a GenAI app; prototype <strong>per-stage latency instrumentation</strong> (RAG retrieval vs LLM call vs total) and add <strong>feature/user/model/endpoint cost tags</strong> end-to-end.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: How do these six quality metrics (hallucination, relevance, satisfaction, completeness, retrieval quality, coherence) get computed in practice — LLM-as-judge, embeddings, human feedback? What's the overhead/cost of running quality evals continuously vs sampled? How does Datadog's PII masking and prompt-injection detection compare to Azure AI Content Safety / Prompt Shields?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: GenAI/agent platform observability strategy; FinOps for AI (token-cost governance, denial-of-wallet); AI security posture (PII leakage, prompt injection, jailbreaking); RAG pipeline reliability and eval frameworks.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><a class="wikilink wikilink--resolved" href="ODSP933.html">ODSP933 - Agentic infrastructure needs agentic observability</a> (sibling Build 2026 observability session — extends these ideas to agentic systems)</li>
+<li><span class="wikilink wikilink--unresolved" title="Golden signals (LETS) — Latency, Errors, Traffic, Saturation">Golden signals (LETS) — Latency, Errors, Traffic, Saturation</span> (the foundational monitoring framework this talk builds on)</li>
+<li><span class="wikilink wikilink--unresolved" title="GenAI observability — cost, safety, quality dimensions">GenAI observability — cost, safety, quality dimensions</span> (the three new dimensions introduced beyond LETS)</li>
+<li><span class="wikilink wikilink--unresolved" title="Datadog LLM Observability">Datadog LLM Observability</span> (the vendor product positioned at the end of the session)</li>
+<li><span class="wikilink wikilink--unresolved" title="RAG retrieval quality &amp; evaluation metrics">RAG retrieval quality &amp; evaluation metrics</span> (quality dimension: hallucination rate, relevance, coherence, retrieval quality)</li>
+<li><span class="wikilink wikilink--unresolved" title="AI security — PII leakage, prompt injection, jailbreaking, denial-of-wallet">AI security — PII leakage, prompt injection, jailbreaking, denial-of-wallet</span> (the GenAI threat landscape covered in the safety dimension)</li>
+<li><span class="wikilink wikilink--unresolved" title="FinOps for GenAI — token creep, model drift, uncached calls">FinOps for GenAI — token creep, model drift, uncached calls</span> (cost-control practices and tagging strategy from this session)</li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="ODSP906.html"><span class="pager-dir">← Previous</span><span class="pager-code">ODSP906</span><span class="pager-title">Apply orchestration patterns for production AI agents</span></a>
+    <a class="pager pager-next" href="ODSP908.html"><span class="pager-dir">Next →</span><span class="pager-code">ODSP908</span><span class="pager-title">Streamline your end-to-end developer workflow with AI</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

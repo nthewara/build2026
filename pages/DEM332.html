@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEM332 — From zero to teammate in 25 minutes: Build a Teams agent live</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEM332</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=vaerCmx8754" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">From zero to teammate in 25 minutes: Build a Teams agent live</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Umang (Senior PM, Teams Platform); Amir (Senior Software Engineer, Teams SDK)</span>
+      <span class="meta-item">⏱️ 20m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="teams">Teams</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="m365">M365</span><span class="chip" data-tag="copilot">Copilot</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Umang — Senior Product Manager, Teams Platform; Amir — Senior Software Engineer, Teams SDK<br>
+<strong>Duration:</strong> ~20 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=vaerCmx8754">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>A fast, demo-driven walkthrough of how Microsoft has collapsed the painful multi-step journey of getting an AI agent into Microsoft Teams down to minutes. The team introduces the new <strong>Teams SDK</strong> (a consolidation of last year's Teams AI Library plus tooling), a brand-new <strong>Teams CLI</strong> built "agent-first" for both humans and coding agents, and a <strong>Teams dev agent skill</strong> that lets Copilot scaffold and integrate an agent end-to-end. They take an existing standalone web app ("project management helper") and, live on stage with Copilot in YOLO mode, register it, integrate the Teams packages, and install it into Teams (1:1 and group chat) — then show how <strong>Agent 365 (A365)</strong> turns that agent into a true <em>teammate</em> with its own identity, email, and presence across the M365 ecosystem (Teams, Outlook, Word, Excel, PowerPoint).</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li>The headline promise: go <strong>from zero to a working Teams "teammate" in under 25 minutes</strong>, live and from scratch.</li>
+<li><strong>Teams SDK</strong> is this year's evolution — a <em>consolidation</em> of all the libraries and tools developers were juggling into one streamlined developer experience (last year shipped the Teams AI Library in TypeScript and C#).</li>
+<li>The traditional path to a Teams agent is long and high-friction: register app → get credentials → set an endpoint → upload a manifest → configure environment → start the bot — spanning multiple concepts and surfaces. The whole session is about killing that friction.</li>
+<li>Three guiding pillars: <strong>(1) any agent, any stack</strong> onto Teams (Foundry, Vercel, CrewAI, Replit — they're unopinionated about where your agent lives); <strong>(2) frictionless scaffolding</strong> to cut developer cognitive overhead; <strong>(3) make the agent a true teammate</strong> with its own identity, closing the agentic loop.</li>
+<li>The new <strong>Teams CLI</strong> is designed for <em>both humans and agents</em> — interactive arrow-key menus for humans, and machine-friendly behaviour for coding agents.</li>
+<li>A single command — <strong><code>teams app create</code></strong> — provisions an <strong>Entra application</strong>, a <strong>bot</strong>, <strong>secrets</strong>, glues them together, and returns an <strong>installation link</strong> at the end.</li>
+<li>For agents, the CLI uses <strong>progressive disclosure</strong>: subcommands are revealed step-by-step (<code>teams -h</code> → <code>teams app -h</code> → <code>teams app update</code>) so the agent only loads the context it needs for its current goal, not every subcommand at once.</li>
+<li>The CLI has a <strong><code>--json</code> mode</strong>: same data as the pretty human output but as structured JSON, so agents can pipe it into more complex scripts without parsing prose.</li>
+<li>A <strong>Teams dev agent skill</strong> equips Copilot with two abilities: it can <strong>drive the Teams CLI</strong> and it can <strong>read the Teams docs</strong> — so a one-line prompt ("Integrate this application into Microsoft Teams… give me the installation link") does the whole integration.</li>
+<li>Once installed, the <strong>exact same feature set from the web app works inside Teams</strong> — 1:1 chat and group chat — with no rewrite.</li>
+<li>New <strong>group UX capabilities</strong> for agents are coming: <strong>emoji reactions</strong>, <strong>targeted/private messages &amp; slash commands</strong>, <strong>quoted replies</strong>, <strong>suggested actions</strong>, <strong>markdown support</strong>, and <strong>source citations</strong> (deep-dive in a dedicated group-chat session the next day).</li>
+<li><strong>Agent 365 (A365)</strong> is "M365 for agents" — it gives an agent an <strong>agentic identity</strong> so it can live across Teams, Outlook, Word, PowerPoint, Excel, etc., carrying project context everywhere.</li>
+<li>A single built agent becomes a <strong>blueprint</strong>: you can spin up many scoped personas (e.g. a PM for the "mobile redesign" project vs. the "back-end architecture" project), each with its <strong>own alias and email</strong>, each knowing only its own project's context.</li>
+<li>A teammate agent can <strong>send email from its own address</strong>, be <strong>@mentioned in group chats and meetings</strong>, and be referenced in <strong>Word comments</strong> — and its contact card identifies it as an <strong>AI agent</strong>.</li>
+<li>IT benefits too: A365 gives <strong>visibility, observability, permissions, and control</strong> over what each agent is doing and the impact it has.</li>
+<li>Teams reach is the draw for partners: <strong>320 million daily active users</strong>; named partners building on the Teams SDK include <strong>Cursor, Linear, Perplexity, Datadog, and Atlassian</strong>.</li>
+<li>Try it: <strong>aka.ms/teams-sdk</strong> (SDK + new CLI + skills).</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-the-agenda-and-the-25-minutes-challenge">Framing: the agenda and the "25 minutes" challenge</h3>
+<p>Umang (Senior PM on the Teams platform) opens by asking how many in the room have built an agent on Teams. The framing is that anyone who <em>has</em> knows how many steps and concepts it takes; anyone who <em>hasn't</em> is "in for a feast." The stated goal: build an agent <strong>from zero to teammate in under 25 minutes</strong>, live. Amir (Senior Software Engineer on the Teams SDK) is the live-demo driver. The agenda:
+1. Recap of the Teams SDK (where they left things at last year's Build).
+2. Introduce a <strong>brand-new CLI</strong> and a set of <strong>skills</strong> with a working agent.
+3. Build that agent using the skills + CLI together.
+4. Take the agent into a <strong>group chat</strong>.
+5. Transform the agent into a <strong>teammate</strong> with its own identity.</p>
+<h3 id="recap-from-teams-ai-library-to-the-teams-sdk">Recap — from Teams AI Library to the Teams SDK</h3>
+<p>Last year at Build they shipped the <strong>Teams AI Library</strong> in <strong>TypeScript and C#</strong>. This year they're shipping the <strong>Teams SDK</strong> — explicitly described as a <strong>consolidation of all the libraries and tools</strong> developers were using into <strong>one streamlined developer experience</strong>.</p>
+<p>Last year also delivered <strong>one-on-one agentic features</strong>: streaming in a chat, feedback loop, follow-up, citations, and starter prompts. This year the focus expands to <strong>group UX features</strong> to make an agent "shine within a group" (with a dedicated follow-up session the next day).</p>
+<p>They're also <strong>integrating with other SDKs across the Microsoft ecosystem</strong>. Over the past year they partnered with <strong>Cursor, Linear, Perplexity, Datadog, and Atlassian</strong>, all building on the Teams SDK to tap the <strong>320 million daily active users</strong> on Teams.</p>
+<h3 id="the-friction-problem">The friction problem</h3>
+<p>Working with those partners revealed that the path to a <em>successful</em> agent on Teams is long. The traditional sequence:
+- Register your app
+- Get it credentials
+- Set an endpoint
+- Upload a manifest
+- Configure the environment
+- Start the bot</p>
+<p>That journey spans multiple scenarios, multiple concepts, and multiple surfaces. The team's goal: <strong>get your agent into Teams as quickly as possible.</strong></p>
+<h3 id="the-three-pillars">The three pillars</h3>
+<ol>
+<li><strong>Any agent, any stack onto Teams.</strong> Whether the agent lives in <strong>Foundry, Vercel, CrewAI, or Replit</strong>, Microsoft is "unopinionated" about where the agent runs — they just want to make bringing it to Teams easy.</li>
+<li><strong>Frictionless scaffolding.</strong> Developers burn a lot of cognitive overhead getting an agent onto Teams; the SDK/CLI/skill combo is meant to minimise that and make success seamless.</li>
+<li><strong>Make the agent a true teammate</strong> — with its own identity — which "closes the agentic loop."</li>
+</ol>
+<h3 id="the-starting-point-a-standalone-web-app">The starting point — a standalone web app</h3>
+<p>Amir takes over and shares his screen. He has an agent he's been building "on the side": a <strong>project management helper</strong>, a plain <strong>web application</strong>. The left pane lists his projects; the main view runs the agent and answers questions like:
+- "Summarize the status of all my projects" → returns statuses for all projects.
+- "How is the conference demo project going?" → returns the status of one specific project.</p>
+<p>This works, but only as a web app — the goal is to bring it into Teams.</p>
+<h3 id="step-1-register-the-agent-with-teams-app-create">Step 1 — Register the agent with <code>teams app create</code></h3>
+<p>Amir switches to the terminal and uses the <strong>Teams CLI</strong>:
+- Command: <strong><code>teams app create</code></strong>
+- Prompts encountered: a <strong>name</strong> (he enters "project management agent"), a <strong>messaging endpoint URL</strong> (skipped for now), <strong>where to store credentials</strong> (he chooses the <strong><code>.env</code> file</strong>), and <strong>optional customizations</strong> (skipped). Then <strong>create</strong>.
+- What the command does under the hood (as Umang previewed): creates an <strong>Entra application</strong>, creates a <strong>bot</strong>, creates <strong>secrets</strong>, and <strong>glues all those pieces together</strong>.
+- Output at the end: an <strong>installation link</strong> (usable to install the app into Teams), plus the created app, the <strong>bot ID</strong>, etc.</p>
+<p>That's the first half of the journey (provisioning). The second half is the <strong>actual integration</strong> into the existing app.</p>
+<h3 id="step-2-integrate-via-copilot-the-teams-dev-agent-skill">Step 2 — Integrate via Copilot + the Teams dev agent skill</h3>
+<p>Traditionally, integration means: download the Teams SDK packages, read the docs, understand how the packages work, then wire them into your existing app. Instead, Amir uses <strong>Copilot in YOLO mode</strong> ("Hopefully demo gods agree with me"). This Copilot session has been <strong>scaffolded with the Teams dev agent skill</strong>.</p>
+<p>His prompt is deliberately simple: <strong>"Integrate this application into Microsoft Teams. Once you're done, give me the installation link."</strong></p>
+<p>Copilot immediately picks up the <strong>Teams dev agent skill</strong>. The skill can do <strong>two things</strong>:
+1. <strong>Talk to the Teams CLI.</strong>
+2. <strong>Read the Teams docs.</strong></p>
+<p>While Copilot works in the background, Amir gives a tour of the CLI.</p>
+<h3 id="the-teams-cli-built-ground-up-for-humans-and-agents">The Teams CLI — built ground-up for humans <em>and</em> agents</h3>
+<p><strong>For humans — interactivity.</strong> Traditional CLIs force you to construct long commands, supply arguments, and sometimes call other commands just to fetch IDs/arguments. The new CLI is <strong>interactable</strong>: type <code>teams app</code>, then use <strong>arrow keys</strong> to select. Demo flow:
+- <code>teams app</code> → choose <strong>create app</strong> / select the existing <strong>Project Management Helper</strong> app.
+- Available actions surfaced: <strong>get app details, update app, download the package</strong> (to share with colleagues), <strong>manage secrets, manage permissions</strong> — "most of the things you'd need to manage your app."
+- He picks <strong>update app → update basic information → change the description</strong> to "Use this to manage your projects" (jokes about a typo) — modifying the app interactively with no long command string.</p>
+<p><strong>For agents — progressive disclosure.</strong> When designing for agents they used <strong>progressive disclosure</strong>:
+- <code>teams -h</code> (help) shows only the <strong>top-level commands</strong>: e.g. <strong><code>teams app</code></strong> (manage your application), <strong><code>teams project</code></strong> (create/configure new projects).
+- Instead of dumping <em>all</em> subcommands at once, the CLI reveals commands <strong>progressively based on the agent's goal</strong>. Example: to update a field, the agent reasons "this is part of managing," runs <strong><code>teams app -h</code></strong>, sees it needs update, runs <strong><code>teams app update</code></strong>, and only <em>then</em> is given the <strong>full list of flags</strong> for that command.
+- <strong>Why it matters:</strong> the agent only fills its context with what it actually needs for the current goal — not "useless things it might not end up using." This keeps the agent's context window lean.</p>
+<p><strong>JSON mode.</strong> The other agent-friendly feature:
+- <code>teams app list</code> → get the ID of the app just created.
+- <code>teams app get &lt;id&gt;</code> → a <strong>nice-looking, grokkable, legible</strong> human output (details + installation link).
+- Add <strong><code>--json</code></strong> → the <strong>same output as structured JSON</strong>.
+- <strong>Why it's powerful:</strong> agents don't need pretty output; JSON lets them use these commands inside <strong>more complex scripts</strong> and pull values out <strong>without parsing prose</strong>.</p>
+<p>Amir notes there's much more to the CLI and encourages trying it.</p>
+<h3 id="step-3-back-to-the-running-agent-installed-in-teams">Step 3 — Back to the running agent: installed in Teams</h3>
+<p>Returning to the Copilot session: it "did a lot of stuff," has an <strong>endpoint running</strong>, <strong>edited the app</strong>, and finally produced an <strong>installation link</strong>. Amir:
+- Copies the installation link.
+- Opens <strong>Teams on the web</strong> → is presented with a clean <strong>installation modal</strong> → clicks <strong>Add</strong>.
+- Runs the same query as the web app: <strong>"Summarize the status of all my projects."</strong> The agent responds — <strong>the exact same feature from the web application is now live in Teams.</strong></p>
+<h3 id="step-4-same-agent-in-a-group-chat">Step 4 — Same agent in a group chat</h3>
+<p>Using the same installation link again, Amir introduces the agent into a <strong>group chat</strong> ("project discussions" group chat). He messages the agent: <strong>"What's the status of my conference demo project?"</strong> — and the agent responds, now available in the group. He hands back to Umang.</p>
+<h3 id="sneak-peek-new-group-chat-capabilities-for-agents">Sneak peek — new group-chat capabilities for agents</h3>
+<p>Umang stresses the significance of a CLI that is <strong>agent-first</strong> in a world of coding agents. He previews the group-chat features (full deep-dive in tomorrow's session):
+- <strong>Emoji reactions</strong> — the agent can respond with emojis.
+- <strong>Targeted messages &amp; slash commands</strong> — the agent can <strong>privately message you</strong> in a group chat, and you can <strong>privately message the agent</strong> (e.g. to "ask all the embarrassing questions").
+- <strong>Quoted replies</strong> — the agent can <strong>quote a past message</strong>; important for <strong>long-running tasks</strong> in group chats that have a "fire hose" of messages.
+- Plus <strong>suggested actions, markdown support, source citations</strong>, and other capabilities carried over/extended from last year's Build.</p>
+<h3 id="from-agent-to-teammate-agent-365-a365">From agent to teammate — Agent 365 (A365)</h3>
+<p>Umang reframes "teammate": his project management agent becomes a teammate when it can be, say, the <strong>project manager for a mobile redesign project</strong> that <strong>lives across his M365 ecosystem</strong>. Concretely, a true teammate means you can:
+- <strong>Send an email</strong> to that project manager.
+- <strong>@mention / tag</strong> it in a group chat.
+- Add a <strong>Word comment</strong> and <strong>@mention</strong> it there.</p>
+<p>So it's embodied <strong>everywhere you work — in Teams and beyond.</strong></p>
+<p>The enabling layer: just as there's <strong>M365 for humans</strong>, there's <strong>A365 / Agent 365 for agents</strong>. A365 lets you take your agent and:
+- Make it a <strong>teammate</strong> with an <strong>agentic identity</strong>.
+- Have it <strong>live across the tools and apps</strong> where you work.</p>
+<p>In return, <strong>IT gets more visibility, observability, permissions, and control</strong> to understand the agent's impact.</p>
+<h3 id="blueprints-one-agent-many-scoped-personas">Blueprints — one agent, many scoped personas</h3>
+<p>The agent you build becomes a <strong>blueprint</strong> to spin up many project managers / personas, each <strong>specific to one project</strong> (e.g. mobile redesign vs. back-end architecture). Each persona <strong>carries context</strong> across <strong>Word, Outlook, PowerPoint, Excel, and Teams</strong>.</p>
+<h3 id="teammate-demo-pre-recorded-video-for-time">Teammate demo (pre-recorded video, for time)</h3>
+<p>Amir notes this segment is a <strong>video</strong> (in the interest of time). It uses the <em>same</em> project management agent built earlier with Copilot:
+- In Teams, the agent is used as a <strong>blueprint to create more project managers</strong> — here, a PM for the <strong>mobile redesign</strong> project.
+- The new PM gets its <strong>own identity</strong>: its <strong>own alias</strong> and <strong>own email</strong>.
+- Because it has an identity, you can <strong>message it directly (1:1)</strong>. Amir asks <strong>"What's the current status of the project?"</strong> <em>without specifying which project</em> — and because this PM is responsible for exactly one project, it knows that's the only thing in its context and responds with the <strong>mobile redesign</strong> status.
+- The agent can be <strong>included in relevant contexts</strong> — <strong>meetings</strong> discussing the project, and <strong>group chats</strong>. Just like adding a user, you add the agent to a group chat; messaged there, it knows it's ready to help with the mobile redesign project.
+- Because these agents have access to the <strong>wide range of M365 tools</strong> <em>and</em> their own identity, they can <strong>send emails from their own accounts</strong>. Amir asks it to send an email summary of the project; in <strong>Outlook</strong>, the email <strong>arrives from the mobile redesign project manager</strong>. Hovering the agent's <strong>contact card</strong> shows it's identified as an <strong>AI agent</strong> — powered by the <strong>same Copilot/agent built moments earlier</strong>.</p>
+<h3 id="closing">Closing</h3>
+<p>Umang reiterates the punchline: <strong>from within Teams, you asked an agentic teammate to send an email from its own address to you — without ever leaving Teams.</strong> "Your work starts to really get done in Teams." Reminders: a <strong>dedicated group-chat session tomorrow</strong>, and a call to <strong>try the SDK and new CLI</strong> at <strong>aka.ms/teams-sdk</strong>.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Microsoft Teams SDK</strong> — this year's consolidation of the Teams libraries/tools into one streamlined developer experience; the foundation for building Teams agents.</li>
+<li><strong>Teams AI Library</strong> — last year's release (TypeScript and C#) that the Teams SDK now consolidates/supersedes.</li>
+<li><strong>Teams CLI</strong> — the new command-line tool built ground-up for both humans (interactive arrow-key menus) and agents (progressive disclosure + JSON mode). Key commands: <code>teams app create</code>, <code>teams app list</code>, <code>teams app get &lt;id&gt;</code>, <code>teams app update</code>, <code>teams project</code>, <code>teams -h</code>.</li>
+<li><strong><code>--json</code> mode</strong> — CLI flag returning structured JSON instead of human-formatted output, for scripting/agent consumption.</li>
+<li><strong>Progressive disclosure (CLI design)</strong> — reveals subcommands step-by-step so agents only load context relevant to the current goal.</li>
+<li><strong>Teams dev agent skill</strong> — a skill that scaffolds Copilot to (1) drive the Teams CLI and (2) read the Teams docs, enabling one-prompt integration.</li>
+<li><strong>GitHub Copilot (YOLO mode)</strong> — used live to integrate the web app into Teams from a single natural-language prompt.</li>
+<li><strong>Microsoft Entra</strong> — identity platform; <code>teams app create</code> provisions an <strong>Entra application</strong> for the agent.</li>
+<li><strong>Bot (Teams)</strong> — the messaging endpoint/bot resource created and wired up by the CLI.</li>
+<li><strong><code>.env</code> file / secrets</strong> — where the CLI stores the agent's credentials/secrets.</li>
+<li><strong>Agent 365 (A365)</strong> — "M365 for agents"; provides agentic identity and presence across the M365 ecosystem, plus IT visibility/observability/permissions/control.</li>
+<li><strong>Microsoft 365 (M365) apps</strong> — Outlook, Word, PowerPoint, Excel, Teams — the surfaces a teammate agent lives across.</li>
+<li><strong>Group chat agent capabilities</strong> — emoji reactions, targeted/private messages, slash commands, quoted replies, suggested actions, markdown support, source citations.</li>
+<li><strong>One-on-one agentic features (recap)</strong> — streaming in chat, feedback loop, follow-up, citations, starter prompts.</li>
+<li><strong>Partner/host platforms (agent stacks)</strong> — Foundry, Vercel, CrewAI, Replit (named as valid places an agent can live before being brought to Teams).</li>
+<li><strong>Ecosystem partners on Teams SDK</strong> — Cursor, Linear, Perplexity, Datadog, Atlassian.</li>
+<li><strong>aka.ms/teams-sdk</strong> — landing page for the SDK, new CLI, and skills.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Teams SDK</strong> — new this year; consolidates the prior Teams AI Library and assorted tools into a single streamlined developer experience. (Status not explicitly stated as GA vs preview in the talk; presented as available to try via aka.ms/teams-sdk.)</li>
+<li><strong>New Teams CLI</strong> — brand-new, agent-first command-line tool with interactive mode, progressive disclosure, and <code>--json</code> mode. Presented as available to try (status GA/preview not explicitly stated).</li>
+<li><strong>Teams dev agent skill</strong> — new skill enabling Copilot to drive the Teams CLI and read Teams docs for one-prompt integration. (Status not explicitly stated.)</li>
+<li><strong>New group-chat agent capabilities (coming)</strong> — emoji reactions, targeted/private messages &amp; slash commands, quoted replies, suggested actions, markdown support, source citations. Explicitly previewed as upcoming, with a dedicated deep-dive session the following day; treat as <strong>announced/forthcoming</strong> rather than confirmed-GA.</li>
+<li><strong>Agent 365 (A365)</strong> — positioned as the mechanism to give agents an agentic identity and turn them into teammates across M365, with IT controls. (Referenced as the enabling product; specific availability status not detailed in this session.)</li>
+<li><em>Note:</em> The session did not give explicit GA dates or preview tiers for these items; statuses above reflect exactly what was (and wasn't) stated.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Live: <code>teams app create</code></strong> — registered the agent, provisioning an Entra app, a bot, and secrets, and returning an installation link + bot ID. Proved one command replaces the multi-step register→credentials→endpoint→manifest dance.</li>
+<li><strong>Live: Copilot (YOLO) + Teams dev agent skill integration</strong> — a single prompt ("Integrate this application into Microsoft Teams… give me the installation link") drove Copilot to use the skill, run the CLI, stand up an endpoint, edit the app, and return an install link. Proved the "frictionless scaffolding" pillar — no manual package wiring.</li>
+<li><strong>Live: CLI tour</strong> — interactive arrow-key navigation (<code>teams app</code> → update description), progressive disclosure (<code>teams -h</code> → <code>teams app -h</code> → <code>teams app update</code>), and <code>teams app get &lt;id&gt; --json</code>. Proved the CLI is genuinely dual-purpose for humans and agents.</li>
+<li><strong>Live: agent running in Teams (1:1)</strong> — installed via the generated link, then "Summarize the status of all my projects" returned the same result as the original web app. Proved feature parity with zero rewrite.</li>
+<li><strong>Live: agent in a group chat</strong> — same install link added the agent to a "project discussions" group chat; it answered "What's the status of my conference demo project?". Proved group availability.</li>
+<li><strong>Video (for time): agent → teammate via A365</strong> — used the built agent as a <strong>blueprint</strong> to create a mobile-redesign PM with its own alias/email; answered an ambiguous "what's the current status of the project?" correctly from its scoped context; was added to a group chat/meeting; and <strong>sent an email from its own address</strong> that arrived in Outlook with an <strong>AI-agent contact card</strong>. Proved the full teammate experience and that the email-sending teammate is powered by the same Copilot-built agent.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>320 million daily active users</strong> on Teams — the reach partners build for.</li>
+<li><strong>"From zero to a teammate in under 25 minutes"</strong> — the session's framing challenge ("you can start your timers").</li>
+<li><strong>Named partners on the Teams SDK:</strong> Cursor, Linear, Perplexity, Datadog, Atlassian.</li>
+<li><strong>Two things the Teams dev agent skill can do:</strong> talk to the Teams CLI, and read the Teams docs.</li>
+<li><strong>"A CLI that is built for coding agents is what we're bringing to you."</strong> — Umang, on the agent-first design.</li>
+<li><strong>"What you just saw is within Teams, you were able to ask an agentic teammate to send an email using its own email address to you… without you having to leave Teams."</strong> — Umang, the closing punchline.</li>
+<li>Traditional Teams-agent journey enumerated as <strong>6 steps</strong>: register app → credentials → endpoint → manifest → configure environment → start bot.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Install the new Teams CLI and run <code>teams app create</code> end-to-end on a throwaway app; inspect what gets provisioned in <strong>Entra</strong> + the <strong>bot</strong> + <code>.env</code> secrets.</li>
+<li>Wire up the <strong>Teams dev agent skill</strong> in Copilot and reproduce the one-prompt "Integrate this application into Microsoft Teams" flow on an existing web app.</li>
+<li>Compare <code>teams app get &lt;id&gt;</code> human output vs <code>--json</code> and script something that pulls the installation link/bot ID out of JSON.</li>
+<li>Explore <strong>progressive disclosure</strong> (<code>teams -h</code> → <code>teams app -h</code> → <code>teams app update</code>) and note how it keeps an agent's context lean.</li>
+<li>Bring an agent hosted elsewhere (Foundry / Vercel / CrewAI / Replit) into Teams to test the "any stack" pillar.</li>
+<li>Try the group-chat features once available: emoji reactions, slash commands, private/targeted messages, quoted replies.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What's the <strong>GA vs preview</strong> status (and licensing) of the Teams SDK, the new CLI, the dev agent skill, and <strong>Agent 365</strong>? Not stated in-session.</li>
+<li>How does <strong>A365 agent identity</strong> map to Entra — is each teammate a distinct service/agent identity, and how are its email + permissions governed by IT?</li>
+<li>What are the cost implications of spinning up many scoped "blueprint" personas (one per project)?</li>
+<li>How is per-agent <strong>observability/permissions/control</strong> surfaced to IT admins?</li>
+<li>Does the integration require a specific app framework, or is it truly stack-agnostic at the code level?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Building internal Microsoft Teams agents/bots and migrating existing web-app assistants into Teams.</li>
+<li>Agent identity / governance discussions (Agent 365, Entra agent identities).</li>
+<li>Designing <strong>agent-first CLIs</strong> (progressive disclosure + JSON mode) for our own tooling.</li>
+<li>Copilot-driven scaffolding / "skills" patterns for developer workflows.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Teams SDK">Microsoft Teams SDK</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Teams AI Library">Teams AI Library</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Agent 365">Agent 365</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Entra">Microsoft Entra</span></li>
+<li><span class="wikilink wikilink--unresolved" title="GitHub Copilot">GitHub Copilot</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft 365 Agents SDK">Microsoft 365 Agents SDK</span></li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEM331.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEM331</span><span class="pager-title">Turn APIs, tools, and data into real agent velocity</span></a>
+    <a class="pager pager-next" href="DEM333.html"><span class="pager-dir">Next →</span><span class="pager-code">DEM333</span><span class="pager-title">How Foundry integrates with open-source frameworks and tools</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

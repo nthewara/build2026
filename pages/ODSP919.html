@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ODSP919 — Move from data to intelligence with Oracle MCP and Microsoft IQ</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">ODSP919</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=F2dmwt8fPfM" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Move from data to intelligence with Oracle MCP and Microsoft IQ</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Jeff Smith (Oracle), Ram Kakani (Oracle Database@Azure, Microsoft)</span>
+      <span class="meta-item">⏱️ 20m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="oracle">Oracle</span><span class="chip" data-tag="mcp">MCP</span><span class="chip" data-tag="microsoft-iq">Microsoft Iq</span><span class="chip" data-tag="data">Data</span><span class="chip" data-tag="ai">AI</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Jeff Smith (Product Manager, Oracle — covers MCP servers for the Oracle Database) and Ram Kakani (Product Manager, Oracle Database@Azure team within Microsoft)<br>
+<strong>Duration:</strong> ~20 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=F2dmwt8fPfM">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>This Oracle + Microsoft partner session shows how to turn enterprise data sitting in Oracle databases into intelligence that AI agents can reason over — without ETL or migrating the data out of Oracle. The pattern connects an <strong>Oracle-hosted, managed MCP server</strong> (Model Context Protocol) to Microsoft's <strong>IQ intelligence layer</strong> (Foundry IQ for reasoning/grounding, Fabric IQ for historical analytics, Work IQ for Outlook/Teams/Excel context) so a single agent — built in Azure AI Foundry, Copilot Studio, or GitHub Copilot — can query live Oracle data securely. Identity flows end-to-end via Microsoft Entra ID (OAuth 2 / OBO tokens) so the database sees the <em>actual</em> user and Oracle's native security rules still apply, all governed by Entra Agent ID and Agent 365. The live demo builds an "Accounts Payable analyst" agent for a fictitious company (Zava) that finds unpaid invoices, reasons over vendor contracts/compliance policies to spot PO mismatches and duplicates, recommends which to release, and then drafts a reply email in Outlook — all from natural language, with a human approving each query.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Data stays in Oracle; intelligence comes from Microsoft.</strong> The whole architecture lets Oracle data remain safe in Oracle while Microsoft's AI/IQ stack reasons over it — "Oracle data stays safe in Oracle. That's enterprise ready."</li>
+<li><strong>MCP is the bridge.</strong> Oracle offers <strong>managed, hosted MCP servers</strong> native to both Oracle Cloud Infrastructure (OCI) and <strong>Oracle Database@Azure</strong>. The MCP server itself is <strong>no additional cost</strong> — you only pay for the database and the AI tooling you use.</li>
+<li><strong>Four-layer mental model:</strong> (1) <strong>AI / dev surface</strong> (Azure AI Foundry, Copilot Studio, GitHub Copilot — pro-code or low-code, same runtime); (2) <strong>Intelligence layer</strong> = Microsoft IQ (Foundry IQ, Fabric IQ, Work IQ); (3) <strong>Oracle data tier</strong> via two patterns — Oracle MCP server for live reads, Fabric mirroring for historical/cross-source analytics; (4) <strong>Governance plane</strong> (Entra Agent ID + Agent 365).</li>
+<li><strong>"Same agent code, both ways."</strong> Whether reading live via the Oracle MCP server or analyzing historical/cross-source data via Fabric mirroring, the agent code is the same.</li>
+<li><strong>Two access patterns for Oracle data:</strong> <strong>Oracle MCP server = live reads</strong> straight from the database; <strong>Fabric mirroring = historical or cross-source analytics</strong> when you have more than one data source.</li>
+<li><strong>Identity propagates all the way into the database.</strong> Using Microsoft Entra ID + OAuth 2 + an OBO (on-behalf-of) token, the Oracle database sees the real user (e.g. "Ram") — not a shared service account — so Oracle's fine-grained, fancy security rules (row/table visibility via proxy users tied to the identity domain) still apply.</li>
+<li><strong>Governance is not bolted on.</strong> Entra Agent ID gives every agent a first-class identity with least-privilege scoping; Agent 365 provides tenant-wide agent inventory and governance.</li>
+<li><strong>Natural language → SQL</strong> is the headline MCP tool pattern: the LLM translates a question ("how many widgets did we sell last week?") into a SQL query the database runs through an MCP tool.</li>
+<li><strong>Zero ETL.</strong> The demo solves a real AP problem ("invoice volume up 30% on flat headcount, cycle times past 45 days") with the <em>same</em> agent and <em>same</em> Oracle data and <strong>zero ETL</strong> — built in weeks, not quarters.</li>
+<li><strong>Human-in-the-loop is mandatory.</strong> Every query must be approved by a human validating it's hitting the right tables, returning the right data, and has the right authZ/authN. Memorable framing: <strong>"You're the actual pilot, not the co-pilot."</strong></li>
+<li><strong>Only ~4 pieces of dev stack</strong> are needed: Foundry Agent Service (hosts agents + native MCP client), the MCP server endpoint, the dev surface (GitHub Copilot / Copilot Studio), all governed by Entra Agent ID + Agent 365.</li>
+<li><strong>Setup is config-driven, self-serve.</strong> You define the MCP server characteristics (which tools, how auth works), point it at the identity domain, add users to an MCP server group, register the agent as an MCP client (enabling the OAuth 2 flow), and you're done — Oracle runs it for you.</li>
+<li><strong>Work IQ closes the loop into productivity apps</strong> — after the data reasoning, the agent drafts an Outlook email on the same thread, handling "the human stuff."</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-from-data-to-intelligence">Framing: from data to intelligence</h3>
+<p>Jeff Smith (Oracle PM) opens the partner session by setting the thesis: data stored in <strong>Oracle databases</strong> pairs very well with <strong>Microsoft's AI platform</strong>, and the goal is to make Oracle data "useful in serving your business." Ram Kakani (Oracle PM on the Oracle Database@Azure team <em>inside</em> Microsoft) co-presents; he specifically covers <strong>MCP servers for the Oracle database</strong>. The session is squarely about making enterprise Oracle data <strong>AI-ready</strong> so you can build "business-aware enterprise agents."</p>
+<h3 id="the-architecture-four-stacked-planes">The architecture: four stacked planes</h3>
+<p>Ram walks through how it "all comes together" as four layers (he calls them "plates"):</p>
+<ol>
+<li><strong>AI / Dev surface (top).</strong> Azure AI Foundry, Copilot Studio, GitHub Copilot. Pro-code <strong>or</strong> low-code — <strong>same runtime</strong> underneath. This is where developers build and host agents.</li>
+<li><strong>Intelligence layer (Microsoft IQ).</strong> Turn on what your scenario needs:
+   - <strong>Foundry IQ</strong> — reasoning and grounding.
+   - <strong>Fabric IQ</strong> — historical analytics.
+   - <strong>Work IQ</strong> — delivers results into <strong>Outlook, Teams, Excel</strong> and brings your <strong>work context</strong> into the agent.</li>
+<li><strong>Oracle data tier ("Oracle Atlas").</strong> Two patterns to reach Oracle data, with the <strong>same agent code</strong> for either:
+   - <strong>Oracle MCP server → live reads</strong> directly against the database.
+   - <strong>Fabric mirroring → historical or cross-source analytics</strong>, used when you have more than one source of data.</li>
+<li><strong>Governance plane (bottom).</strong> Explicitly <strong>"not bolted on."</strong>
+   - <strong>Entra Agent ID</strong> ("on-try agent ID" in the captions — i.e. Microsoft <strong>Entra</strong> Agent ID) gives every agent a <strong>first-class identity with least-privilege scoping</strong>.
+   - <strong>Agent 365</strong> provides <strong>tenant-wide inventory and governance</strong> of agents.
+   - Net effect: <strong>Oracle data stays safe in Oracle → "enterprise ready."</strong></li>
+</ol>
+<h3 id="the-dev-stack-only-four-cross-pieces">The dev stack — only four cross pieces</h3>
+<p>Ram stresses how little code this takes — "four pieces of dev stack, if you will":
+- <strong>Foundry Agent Service</strong> — hosts the agents <em>and</em> provides the <strong>native MCP client</strong>, which can point to <strong>any MCP server</strong> (here, the Oracle MCP server).
+- <strong>MCP client → Oracle MCP server</strong> connection (native MCP support).
+- <strong>GitHub Copilot or Copilot Studio</strong> — your choice of <strong>pro-code vs low-code</strong> dev surface.
+- All of it <strong>governed by Microsoft Entra Agent ID + Agent 365</strong>.</p>
+<p>"Just a few pieces of code that'll take your life with an agent" — i.e. a small amount of wiring gets you a working agent over Oracle data.</p>
+<h3 id="what-mcp-is-and-oracles-managed-mcp-servers">What MCP is, and Oracle's managed MCP servers</h3>
+<p>Jeff takes over for the MCP deep-dive:
+- <strong>MCP = Model Context Protocol</strong>, which "came onto the scene in late 2024 and caught on like wildfire all throughout 2025."
+- Oracle has shipped <strong>MCP servers for Oracle AI Database since July</strong> (2025), and now offers them <strong>for the cloud</strong> — both in <strong>Oracle Cloud Infrastructure (OCI)</strong> and for <strong>Oracle databases running at Azure</strong> (Oracle Database@Azure).
+- These are <strong>managed, hosted MCP servers, native into Oracle's cloud environments</strong>. As a customer/partner you simply <strong>define the characteristics</strong> of the MCP server: <strong>which tools</strong> to expose and <strong>how authentication works</strong> — and Oracle <strong>runs it for you at no additional cost</strong>.
+- <strong>Cost model:</strong> the <strong>MCP server itself is no cost</strong>; you only pay for <strong>using your database</strong> and <strong>using the AI tooling</strong>.</p>
+<h3 id="step-by-step-wiring-oracle-data-to-the-azure-iq-pieces">Step-by-step: wiring Oracle data to the Azure IQ pieces</h3>
+<p>Jeff describes the setup flow to connect the Azure/IQ side to the actual data in the database:</p>
+<ol>
+<li><strong>Database connection first.</strong> As with any database, you supply a <strong>set of credentials</strong>, and <em>those credentials shape the view of the data the AI will see.</em> You can use a <strong>proxy user tied to your identity domain</strong> to determine what data is visible — down to <strong>which tables you can see, or whether the tables are visible at all.</strong></li>
+<li><strong>Create the MCP server</strong> and point it at the <strong>identity domain</strong>, where your <strong>Azure Entra ID users</strong> are defined.</li>
+<li><strong>Grant users access</strong> by adding them to an <strong>MCP server group</strong> (e.g. "add Ram to the group"), which gives them privileges to connect to and talk to the MCP server <strong>using their existing Entra ID login</strong>.</li>
+<li><strong>Define the MCP tools.</strong> Tools are "sort of the APIs" that let MCP clients/agents request things on their behalf. The <strong>best-known pattern is natural language → SQL</strong>: a user asks "show me how many widgets we sold last week," the <strong>LLM translates that to a SQL query</strong> the database understands, and it's <strong>submitted to run through the MCP tool</strong>.</li>
+<li><strong>Register the agent as an MCP client</strong>, which enables the <strong>OAuth 2 workflow</strong>. The <strong>first time only</strong>, the user logs in, Entra ID credentials are verified, and the user is asked for <strong>permission to grant the agent to act on their behalf</strong> — producing an <strong>OBO (on-behalf-of) token</strong>. The agent then grabs an <strong>access token via OAuth 2</strong> and "you never see the login stuff ever again."</li>
+</ol>
+<h3 id="why-end-to-end-identity-matters-security">Why end-to-end identity matters (security)</h3>
+<p>A core selling point: <strong>the user's identity is propagated all the way into the database.</strong> When Ram uses an agent that talks to Oracle via AI, <strong>the Oracle database sees Ram as Ram</strong> — his actual <strong>Azure Entra ID user</strong>, not a generic service account. Because of that, Oracle can enforce <strong>all of its very fancy native security rules</strong> (table/row visibility, etc.) per real user. As long as the user's identity has the <strong>required group membership</strong> to interact with the Oracle MCP server and database, they're good to ask questions. This is the crux of "Oracle data stays safe in Oracle."</p>
+<h3 id="the-demo-problem-statement-the-why">The demo problem statement (the "why")</h3>
+<p>Ram frames a concrete business pain to justify the whole pattern:
+- An <strong>Apex/AP team</strong> asks a developer for help.
+- <strong>Invoice volume is up 30% on flat headcount.</strong>
+- <strong>Cycle times have crept past 45 days.</strong>
+- Data sits in an <strong>Oracle database</strong>, and <strong>dashboards only tell them <em>what</em> happened</strong> — they don't <em>act</em>.
+- They need <strong>an agent that moves the work</strong>, and the <strong>budget is weeks, not quarters.</strong>
+- Solution promise: <strong>same agent, same Oracle data, zero ETL</strong> — built in <strong>Foundry</strong>, wired with <strong>Foundry IQ + Work IQ</strong>, talking to the Oracle database through the <strong>Oracle MCP server</strong>.</p>
+<h3 id="demo-walkthrough-building-running-the-ap-agent">Demo walkthrough — building &amp; running the AP agent</h3>
+<p>Ram drives the live build:</p>
+<p><strong>1. Oracle Database@Azure in the Azure portal.</strong> He shows the <strong>native Oracle database services</strong> offered through the Azure portal: <strong>Autonomous AI Database, Exadata Database (incl. Exadata Database on Exadata scale infrastructure), Base Database Service, and GoldenGate.</strong> For the demo, the <strong>supply-chain data is hosted in an Exadata database</strong> in a <strong>VM cluster in UK South</strong>, provisioned in the customer's <strong>VNet and subnet</strong>.</p>
+<p><strong>2. Foundry portal → build an agent.</strong> You can create an agent from scratch (name it, continue self-serve), but for time he opens a pre-built <strong>"Accounts Payable analyst" agent</strong> responsible for AP insights. Its <strong>remote MCP server is already pre-provisioned and connected into the tools.</strong></p>
+<p><strong>3. How tools get connected.</strong> Go to <strong>create tools → connect a tool → catalog → Oracle → Oracle's remote MCP server → create.</strong> You provide:
+- the <strong>remote MCP server endpoint</strong>,
+- <strong>parameters for region and offset</strong>,
+- <strong>authentication</strong> — which (as Jeff said) can be <strong>key-based or OAuth-based</strong>,
+- then hit <strong>Connect</strong>.
+The shown MCP server connection is provisioned in <strong>UK South</strong>, has a <strong>connection ID</strong>, and is <strong>currently used in two agents</strong>.</p>
+<p><strong>4. Add the IQ tools.</strong> Same connect-a-tool flow for <strong>Work IQ</strong> (he uses the <strong>Work IQ email MCP server</strong>) and <strong>Fabric IQ</strong> (for historical trends).</p>
+<p><strong>5. The fully-wired agent (fictitious company "Zava").</strong> It is connected to:
+- the <strong>remote MCP server</strong> for the Oracle database,
+- <strong>Work IQ email</strong> (configured),
+- <strong>Fabric IQ</strong> for historical trends,
+- a <strong>knowledge base</strong> ("Zava knowledge IQ") built from two sources: <strong>compliance reports stored in Microsoft OneLake</strong> and <strong>vendor policies / contractual documents stored in Azure Blob Storage</strong> — these power the knowledge base and thus the agent's reasoning.</p>
+<p><strong>6. Prompt 1 — find the invoices (live read via MCP).</strong> "Show the last 90 days of invoices that are unpaid and over $50,000, including the reasons and age." The user gives <strong>consent / authenticates</strong>, the agent <strong>connects to the MCP server</strong> and <strong>executes pre-populated queries</strong> to fetch the data. Jeff's punchline: as a developer he "used to write 50 lines of boilerplate code in the OCI SDK" just to set up connections — "but look at this, the magic of MCP." Result: a few suppliers have unpaid invoices over $50K — <strong>Acme Car Parts</strong> and others have one each, <strong>Winner X has three.</strong></p>
+<p><strong>7. Prompt 2 — reason over policies (Foundry IQ + knowledge base).</strong> "Look at how these unpaid invoices are — do they have PO mismatches or duplicates, and which can be released vs held?" This is <strong>Foundry IQ in action</strong>: the agent looks at <strong>vendor agreements and compliance policies</strong> to analyze the delays and duplicates. Ram stresses <strong>human-in-the-loop</strong>: you approve each query, validating it's hitting the right tables, getting the right data, and has the right authZ/authN. Result: the agent <strong>reasons over all invoices against the supplied knowledge-base documents</strong> and recommends — the <strong>best candidate likely safe to release is Acme Group, but only after resolving a duplicate.</strong> The user can then <strong>cancel the duplicate payment</strong> and let the AP head release the order/invoice for Acme.</p>
+<p><strong>8. Prompt 3 — put Work IQ to work (draft the email).</strong> "Look at all my ongoing discussions and emails about Acme Group for these specific invoices. Summarize what was agreed, then draft a reply to <strong>James Chen</strong> with the latest on the same thread about the cancellation." The agent <strong>searches</strong> (user approves the search parameters/filters to find the right conversation), <strong>retrieves the message</strong>, and <strong>creates a draft reply</strong> — noting Acme Group ordered the subject in error, to cancel the duplicate and release it. This <strong>generates a draft in Outlook</strong> (connected via Work IQ) that the user can <strong>review and hit send</strong> after validating. Jeff: "That's the real magic — it wrote the email for us and dealt with the human stuff I'm not good at."</p>
+<h3 id="recurring-theme-accountability-over-autonomy">Recurring theme — accountability over autonomy</h3>
+<p>Throughout the demo both speakers hammer the <strong>human-in-the-loop</strong> discipline because the agent touches <strong>mission-critical enterprise data in Oracle</strong>. Jeff's quotable line: <strong>"Just because this stuff is fast and looks good doesn't mean you can take your eyes off or your hands off. You're the actual pilot, not the co-pilot."</strong> Ram reinforces: be conscious of <strong>what the agent is accessing, why, and the outcome.</strong></p>
+<h3 id="close-call-to-action">Close &amp; call to action</h3>
+<p>Jeff notes this was his first time speaking at Build. They leave resources: a <strong>LinkedIn community</strong> for "Oracle Database@Azure" practitioners, links for <strong>pricing/technical details</strong>, and <strong>QR codes</strong>. They invite viewers to <strong>set up a call</strong> where Oracle engineers will show how to get <strong>traditional on-premises Oracle databases running as Oracle Database@Azure</strong> and help <strong>set up the MCP servers</strong> so agents work as demonstrated.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Model Context Protocol (MCP)</strong> — open protocol (emerged late 2024) that lets agents/LLM clients call tools; the bridge between agents and Oracle data here.</li>
+<li><strong>Oracle MCP Server (managed/hosted)</strong> — Oracle-run MCP servers, native to OCI and Oracle Database@Azure; expose tools (e.g. NL→SQL) over the database; no additional cost. Available for Oracle AI Database since July (2025).</li>
+<li><strong>Oracle Database@Azure</strong> — Oracle database services offered natively through the Azure portal, in the customer's VNet/subnet.</li>
+<li><strong>Oracle Autonomous AI Database</strong> — one of the Oracle DB services available via Azure portal.</li>
+<li><strong>Oracle Exadata Database Service</strong> (incl. on Exadata scale infrastructure) — hosts the demo's supply-chain data (VM cluster, UK South).</li>
+<li><strong>Oracle Base Database Service</strong> — another Oracle DB service listed in the portal.</li>
+<li><strong>Oracle GoldenGate</strong> — data replication service listed among the Oracle@Azure services.</li>
+<li><strong>OCI (Oracle Cloud Infrastructure)</strong> — Oracle's cloud; also hosts MCP servers; the OCI SDK is the "50 lines of boilerplate" MCP replaces.</li>
+<li><strong>Azure AI Foundry / Foundry portal</strong> — the dev surface used to build and host the agent.</li>
+<li><strong>Foundry Agent Service</strong> — hosts agents and provides the native MCP client that points to any MCP server.</li>
+<li><strong>Foundry IQ</strong> — Microsoft IQ component for reasoning and grounding (used to reason over vendor agreements/compliance policies).</li>
+<li><strong>Fabric IQ</strong> — Microsoft IQ component for historical analytics / trends.</li>
+<li><strong>Work IQ</strong> — Microsoft IQ component delivering into Outlook/Teams/Excel and bringing work context; exposes a Work IQ <strong>email MCP server</strong> used to draft the Outlook reply.</li>
+<li><strong>Microsoft Fabric mirroring</strong> — pattern for historical/cross-source analytics over Oracle data (alternative to live MCP reads).</li>
+<li><strong>Microsoft OneLake</strong> — stores the compliance reports used as a knowledge source.</li>
+<li><strong>Azure Blob Storage</strong> — stores vendor policies / contractual documents used as a knowledge source.</li>
+<li><strong>Copilot Studio</strong> — low-code dev surface option for building the agent.</li>
+<li><strong>GitHub Copilot</strong> — pro-code dev surface option.</li>
+<li><strong>Microsoft Entra ID (Entra Intra ID in captions)</strong> — identity provider; users/groups defined in the identity domain; powers OAuth 2 / OBO sign-in.</li>
+<li><strong>Microsoft Entra Agent ID</strong> — gives every agent a first-class identity with least-privilege scoping (governance plane).</li>
+<li><strong>Agent 365</strong> — tenant-wide agent inventory and governance.</li>
+<li><strong>OAuth 2 / OBO (on-behalf-of) token</strong> — auth flow that lets the agent act as the user; identity propagates into the Oracle database.</li>
+<li><strong>Natural language → SQL</strong> — the flagship MCP tool pattern (LLM translates questions into SQL run via an MCP tool).</li>
+<li><strong>Proxy user (Oracle, tied to identity domain)</strong> — credential mechanism shaping which tables/rows the AI can see.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Managed, hosted Oracle MCP servers for Oracle Database@Azure and OCI</strong> are available <strong>at no additional cost</strong> (you pay only for database + AI tooling usage). MCP servers for <strong>Oracle AI Database have existed since July</strong> (2025) and are <strong>now offered for the cloud</strong> in both OCI and Oracle@Azure environments. (No explicit GA/preview label was stated for the Azure-hosted variant in the talk.)</li>
+<li>The session showcases <strong>end-to-end integration of Oracle MCP with Microsoft's IQ stack</strong> (Foundry IQ, Fabric IQ, Work IQ) and <strong>Entra-based governance (Agent ID, Agent 365)</strong> as the recommended architecture — presented as available/working today via the live demo, though specific preview/GA status of individual IQ components was not called out.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Accounts Payable analyst agent ("Zava" company), built in Azure AI Foundry</strong>, demonstrating the full "data → intelligence" loop with zero ETL:</li>
+<li><strong>Prompt 1 (live read via Oracle MCP server):</strong> Surface last-90-day unpaid invoices over $50K with reasons + age → proved the agent connects to the Oracle Exadata DB through the MCP server and runs queries (replacing ~50 lines of OCI SDK boilerplate). Output flagged Acme Car Parts, Winner X (3 invoices), etc.</li>
+<li><strong>Prompt 2 (reasoning via Foundry IQ + knowledge base):</strong> Detect PO mismatches/duplicates and recommend release vs hold by reasoning over vendor agreements + compliance policies (sourced from OneLake + Azure Blob) → recommended Acme Group as safe to release <em>after</em> resolving a duplicate; proved grounded, policy-aware reasoning with human approval per query.</li>
+<li><strong>Prompt 3 (action via Work IQ email):</strong> Summarize prior email discussion with Acme and draft a reply to James Chen on the same thread about the cancellation → created an Outlook draft ready to review/send; proved the agent can act in productivity apps, closing the loop from insight to action.</li>
+<li><strong>Azure portal tour:</strong> showed the native Oracle Database@Azure services and the Exadata VM cluster (UK South) hosting the supply-chain data.</li>
+<li><strong>Tool-connection walkthrough:</strong> connecting Oracle's remote MCP server (endpoint + region/offset params + key/OAuth auth) from the Foundry tool catalog, plus connecting the Work IQ email and Fabric IQ tools — proving how few clicks it takes to wire data + intelligence + productivity into one agent.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>"You're the actual pilot, not the co-pilot."</strong> — Jeff Smith, on keeping a human accountable even when the agent is fast and impressive (Ram: "Good one, I like that").</li>
+<li><strong>"Just because this stuff is fast and it looks good doesn't mean you can take your eyes off or your hands off."</strong> — Jeff Smith on human-in-the-loop discipline.</li>
+<li><strong>"The magic of MCP"</strong> replaces <strong>~50 lines of OCI SDK boilerplate code</strong> that a developer used to write just to set up connections and fetch the data.</li>
+<li><strong>Invoice volume up 30%</strong> on <strong>flat headcount</strong>; <strong>cycle times past 45 days</strong> — the business pain motivating the AP agent.</li>
+<li>Budget framing: <strong>"weeks, not quarters"</strong> to deliver the agent.</li>
+<li><strong>Zero ETL</strong> — "same agent, same Oracle data, zero ETL."</li>
+<li>Demo query scope: <strong>unpaid invoices, last 90 days, over $50,000</strong>, with reasons + age.</li>
+<li><strong>MCP server is no cost</strong> — you pay only for the database and the AI tooling.</li>
+<li>MCP <strong>"came onto the scene in late 2024 and caught on like wildfire all throughout 2025."</strong></li>
+<li>Oracle has had <strong>MCP servers for Oracle AI Database since July</strong> (2025).</li>
+<li><strong>"Oracle data stays safe in Oracle. That's enterprise ready."</strong></li>
+<li>Demo MCP server connection was <strong>provisioned in UK South</strong> and <strong>used by two agents</strong>.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Stand up an <strong>Oracle MCP server on Oracle Database@Azure</strong> (Exadata or Autonomous AI DB) and connect it as a tool in <strong>Azure AI Foundry</strong>; confirm the "no additional cost" claim against actual billing.</li>
+<li>Verify the <strong>NL→SQL</strong> tool quality and how queries are "pre-populated" / approved (human-in-the-loop UX).</li>
+<li>Test <strong>end-to-end Entra identity propagation</strong> into the Oracle DB (does the DB really see the Entra user via OBO?) and pair it with Oracle row/table security via a proxy user.</li>
+<li>Compare the <strong>live-read (Oracle MCP)</strong> path vs <strong>Fabric mirroring</strong> path for analytics, using the <em>same</em> agent code.</li>
+<li>Wire <strong>Work IQ email</strong> + <strong>Foundry IQ knowledge base</strong> (OneLake + Azure Blob sources) and reproduce the AP "find → reason → draft email" loop.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What is the <strong>GA vs preview status</strong> of the Azure-hosted Oracle MCP server and of Foundry IQ / Fabric IQ / Work IQ as used here?</li>
+<li>Beyond <strong>NL→SQL</strong>, what other <strong>MCP tools</strong> does Oracle expose (writes? procedures? vector search on Oracle AI DB)?</li>
+<li>How does <strong>Agent 365</strong> governance surface these Oracle-backed agents, and what least-privilege scoping does <strong>Entra Agent ID</strong> apply?</li>
+<li>Auth options: when to choose <strong>key-based vs OAuth/OBO</strong> for the MCP connection?</li>
+<li>What regions beyond <strong>UK South</strong> support Oracle Database@Azure + managed MCP servers (e.g. australiaeast)?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Any enterprise with <strong>mission-critical data locked in Oracle</strong> wanting agentic AI without migrating/ETL-ing data out.</li>
+<li>Accounts Payable / finance-ops automation, vendor-contract compliance reasoning.</li>
+<li>Azure AI Foundry agent builders needing <strong>secure, identity-aware</strong> access to external databases via MCP.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><a class="wikilink wikilink--resolved" href="BRK223.html">BRK223 - From rows to reasoning</a> — designing databases so AI/agents can reason over enterprise data (the relational-data-to-intelligence counterpart).</li>
+<li><a class="wikilink wikilink--resolved" href="OD820.html">OD820 - Designing Reliable Multi-Agent Apps with Azure Cosmos DB</a> — agent memory + reliable data access patterns that complement Oracle-backed agent workflows.</li>
+<li><a class="wikilink wikilink--resolved" href="OD811.html">OD811 - Powering the next AI frontier with a unified data platform</a> — the Microsoft IQ / Fabric IQ intelligence layer this Oracle MCP integration plugs into.</li>
+<li><a class="wikilink wikilink--resolved" href="DEM333.html">DEM333 - How Foundry integrates with open-source frameworks and tools</a> — MCP/A2A open-standard plumbing for connecting tools and data into Foundry agents.</li>
+<li><a class="wikilink wikilink--resolved" href="OD832.html">OD832 - From workflows to agentic automation with Azure Logic Apps</a> — Knowledge-as-a-Service / managed RAG over enterprise data, an adjacent zero-ETL pattern.</li>
+<li><a class="wikilink wikilink--resolved" href="ODSP909.html">ODSP909 - Take AI agents from prototype to production with OpenTelemetry</a> — observing/governing the agents that consume these MCP data tools in production.</li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="ODSP918.html"><span class="pager-dir">← Previous</span><span class="pager-code">ODSP918</span><span class="pager-title">Build persistent and scalable AI agent memory with TiDB</span></a>
+    <a class="pager pager-next" href="ODSP922.html"><span class="pager-dir">Next →</span><span class="pager-code">ODSP922</span><span class="pager-title">Develop a conversational search experience without rebuilding your app</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

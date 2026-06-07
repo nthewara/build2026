@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEMSP380 — Build automated agents using optimized AI Foundry models on Snapdragon</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEMSP380</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=vc4tADfTnYY" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Build automated agents using optimized AI Foundry models on Snapdragon</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 LLMware (Darren, demo lead) + Qualcomm/ISV presenter</span>
+      <span class="meta-item">⏱️ 25m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="snapdragon">Snapdragon</span><span class="chip" data-tag="qualcomm">Qualcomm</span><span class="chip" data-tag="on-device-ai">On Device Ai</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="npu">Npu</span><span class="chip" data-tag="ai-foundry">Ai Foundry</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> LLMware presenter "Darren" (demo lead, drives the live build/SDK walkthrough) + a Qualcomm/ISV co-presenter (frames the enterprise problem and the Snapdragon NPU advantage)<br>
+<strong>Duration:</strong> ~25 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=vc4tADfTnYY">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>A partner demo (LLMware + Qualcomm) showing how to build <strong>fully automated, multi-step AI agents that run entirely on-device</strong> on Snapdragon Copilot+ PCs — no cloud, no token charges, no prompting required. The agents are built in <strong>LLMware Model HQ</strong>, a no-code drag-and-drop designer, using <strong>small language models pulled from Microsoft Foundry Local</strong> and executed on the <strong>Snapdragon X2 NPU</strong> (via Windows ML API / ONNX Runtime with Qualcomm execution providers). The headline use case is an automated <strong>Jira triage workflow</strong>: pull issues from Jira → filter for the most critical/open ones → summarize each row with AI → emit a clean spreadsheet → email it out, all schedulable to run every morning. The session also shows how a no-code agent can be exposed as a <strong>local Windows service / API + SDK</strong> so it can be called programmatically, shared as a zip file like a PowerPoint, and pushed to a server for scaling — closing the prototype-to-production gap for local AI.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>On-device, schedule-driven agents</strong> are the thesis: instead of a human prompting a cloud chat model, you build a repetitive/complex/multi-step enterprise workflow once and let it run automatically on a schedule, locally.</li>
+<li>Four explicit learning goals: (1) build a multi-step AI workflow powered by small language models, (2) make it automated on a Snapdragon PC, (3) get optimized NPU performance by running the model locally, (4) implement a <strong>scheduled run</strong> of the agents.</li>
+<li>The stack is <strong>LLMware Model HQ</strong> (no-code app, sits in the middle) → <strong>Microsoft Foundry Local</strong> (model source) → <strong>Windows ML API / ONNX Runtime</strong> → <strong>Qualcomm execution providers</strong> → <strong>Snapdragon X2 NPU</strong>.</li>
+<li><strong>No-code build, drag-and-drop palette</strong>: every step (Jira pull, filters, summarization, email) is a component dropped onto a canvas; usable by completely non-technical SMEs, yet extensible by sophisticated developers.</li>
+<li>The demo integrates <strong>three external components</strong>: a configured <strong>Jira API</strong>, <strong>Windows/Foundry Local</strong> model inference, and an <strong>email client</strong> (the workflow ends by emailing the result).</li>
+<li><strong>NPU = the "secret sauce"</strong> of running AI locally — avoids cloud round-trips, token charges, and privacy risk, because the accelerator is already inside the laptop everyone is carrying.</li>
+<li><strong>Snapdragon X2 has 80 TOPS</strong> of NPU compute, unlocking bigger/more models running faster; the chosen model was specifically optimized for Snapdragon X2.</li>
+<li>Outputs land in <strong>business-ready formats</strong> — CSV, Excel workbooks, PowerPoint — not raw model text, so the AI drives real productivity and the artifacts can be consumed/shared directly (email, Teams, Slack).</li>
+<li>The same no-code agent can be <strong>flipped into a back-end Windows service</strong> exposed over API (localhost by default, or an external port to turn a laptop into a mini server) — nothing has to leave the machine.</li>
+<li>An <strong>SDK</strong> wraps the agent: instantiate a <code>client</code> (carries credentials), then <code>call_agent</code> by name (runs <strong>asynchronously</strong>, returns an <strong>execution ID / receipt</strong>) and later <code>get_agent_outputs</code> to retrieve a zip of result files.</li>
+<li><strong>Hybrid cloud-burst is supported</strong>: ~200 models in the catalog including cloud models; do text/extraction/summarization locally, then "punch out" to a cloud model (e.g. Gemini) for one hard reasoning/multimodal step — best of both worlds.</li>
+<li><strong>Sharing is trivial and credential-safe</strong>: the whole agent distills to hundreds of lines of JSON config + custom data assets, wraps into a zip, and is shared like a PowerPoint/Excel file (over email or SharePoint). <strong>No credentials are ever shared.</strong></li>
+<li>This is a <strong>shipping commercial product</strong>, not just a demo — they cited <strong>15+ other industry scenarios</strong> available at the Qualcomm booth, where attendees can build their first agent "in just a minute."</li>
+<li>The end-to-end Jira agent in the pre-recorded video was <strong>built in ~15 minutes</strong> in (near) real time, then compressed for showing.</li>
+<li>Closing message from the partners: <strong>look into local AI</strong> — cost, privacy, and the capabilities of next-gen AI PCs let you do almost anything a cloud model does, locally, without token charges or privacy concerns.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="the-problem-cloud-chat-apps-vs-real-enterprise-workflows">The problem: cloud chat apps vs. real enterprise workflows</h3>
+<p>Today most enterprise workflows are built as <strong>chat applications against a cloud-hosted model</strong> — you send a prompt, it fetches an answer, you read the result. That pattern breaks down when the workflow is:
+- <strong>Repetitive</strong> (the same job runs over and over),
+- <strong>Complex / multi-step</strong> (many stages, not a single Q&amp;A),
+- <strong>Schedule-driven</strong> (it should fire on a cadence, e.g. every morning), and/or
+- <strong>Security/privacy-sensitive</strong> (an enterprise requirement that may <em>necessitate running the model locally</em>).</p>
+<p>The provocative framing: <strong>what if, without ever typing a prompt, you could run automated workflows that are schedule-driven and run entirely on the device?</strong> That is exactly what the session demonstrates with LLMware Model HQ + Snapdragon PCs + Foundry-optimized models via the Windows ML API.</p>
+<h3 id="the-four-things-to-walk-away-with">The four things to walk away with</h3>
+<ol>
+<li><strong>Build a multi-step AI workflow powered by small language models (SLMs).</strong> LLMware can build these automated workflows for many enterprise scenarios across industries; today's worked example is a <strong>Jira</strong> workflow.</li>
+<li><strong>Make the workflow automated on a Snapdragon PC.</strong></li>
+<li><strong>Get optimized performance on the NPU</strong> by running the model locally on the NPU.</li>
+<li><strong>Implement a scheduled run</strong> of the automated agents.</li>
+</ol>
+<h3 id="why-jira-and-the-data-in-silos-problem">Why Jira (and the "data in silos" problem)</h3>
+<p>Jira was chosen as a representative enterprise system, with the acknowledgement that <em>many</em> enterprise software systems would need to be hooked in for real agentic workflows. In any large enterprise there are <strong>multiple Jira databases</strong> — product managers store user stories, feature requests, bug reports — so relevant data sits in <strong>many silos</strong>. The agent's job: <strong>glean the relevant data across those sources and form a knowledge base</strong>, then run the needed prompts/requests <strong>locally on the PC</strong>. The demo uses a <strong>CSV file of structured data with thousands of rows</strong> and shows how to gather the relevant information and extract just the important summary you actually need.</p>
+<h3 id="the-architecture-the-single-demo-slide">The architecture (the single demo slide)</h3>
+<p>At the center sits <strong>LLMware Model HQ</strong> — the application and the <strong>no-code drag-and-drop design interface</strong>. It integrates:
+- <strong>Microsoft Foundry Local</strong> (and other model repositories) for the models — via no-code integration in the software.
+- On the back end, either the <strong>Windows ML API</strong> or the <strong>ONNX Runtime APIs</strong>.
+- Underneath those, the <strong>Qualcomm execution providers</strong>, which deliver the best performance by <strong>running the model locally on the NPU</strong>.</p>
+<p>So the conceptual flow is: <strong>Model HQ (no-code) → Foundry Local model → Windows ML / ONNX Runtime → Qualcomm execution providers → Snapdragon NPU.</strong></p>
+<h3 id="the-pre-recorded-overview-what-the-workflow-does-end-to-end">The pre-recorded overview (what the workflow does end-to-end)</h3>
+<p>A ~2-minute silent video (audio failed live due to the noisy room, so they re-narrated it) walked the build, which integrates <strong>three components</strong>: the <strong>Jira API</strong>, <strong>Windows/Foundry Local</strong> inference, and an <strong>email client</strong>. The steps:
+1. <strong>Select an NPU model from Foundry Local</strong> optimized for performance on the <strong>Snapdragon X2</strong> (so it runs very fast).
+2. <strong>Compose the process entirely with no code</strong> — drag-and-drop components define every step.
+3. <strong>Pull information from the Jira API.</strong>
+4. <strong>Run basic filters</strong> to find the most <strong>important open and critical issues</strong> with certain characteristics.
+5. <strong>Run a summarization</strong> over all that activity.
+6. <strong>Produce the output</strong>: instead of hundreds of Jira rows, you get just the rows you wanted, each with an <strong>AI summary distilling that individual issue</strong>.
+7. <strong>Email the result</strong> to yourself/your team.</p>
+<p>The payoff: put it on a <strong>scheduling API</strong> and run it every day, so when you/your team arrive in the morning your inbox already holds — <strong>safely, securely, and without any token charges</strong> — a distillation of the most critical Jira issues plus a summarization in a <strong>common spreadsheet</strong> everyone can work from. The whole thing in the video was created <strong>in ~15 minutes</strong> end-to-end, then compressed.</p>
+<h3 id="the-live-demo-building-running-locally">The live demo — building &amp; running locally</h3>
+<ul>
+<li><strong>Model HQ is just a Windows application running entirely locally</strong> on the device. The <strong>only network dependency is the Jira pull</strong> (everything else is on-device). They noted a <strong>fully air-gapped version</strong> exists they could pivot to if Wi-Fi/Jira failed ("the demo gods").</li>
+<li>The process canvas mirrors the video: <strong>drag-and-drop elements onto a palette</strong>, like a typical data-transformation / process-automator tool — very intuitive, usable by <strong>completely non-technical people</strong>, yet powerful enough to automate complex workflows.</li>
+<li>They ran it live; the <strong>Jira API pull (the slowest part) succeeded</strong>, and the inferences completed <strong>very fast</strong>, with the <strong>NPU visibly active in Task Manager</strong>. The speed of running through all those inferences was explicitly attributed to the NPU.</li>
+<li><strong>NPU as the "secret sauce" of local AI</strong>: the accelerators are increasingly built into the kit every attendee is carrying; you don't have to send everything to the cloud, so you avoid <strong>token charges</strong> and <strong>privacy risk</strong> while getting a "really powerful accelerator" inside the laptop.</li>
+</ul>
+<h3 id="outputs-in-consumable-formats">Outputs in consumable formats</h3>
+<p>Outputs come out in the formats you'd actually want to consume: <strong>CSV files, Excel workbooks, PowerPoints.</strong> The AI thus drives <strong>real productivity</strong> by producing custom outputs already in a usable form — which can then be <strong>emailed to someone, shared over Teams, or shared over Slack.</strong></p>
+<h3 id="from-no-code-prototype-programmatic-production">From no-code prototype → programmatic / production</h3>
+<p>The core developer message: people get stuck in <strong>prototype/demo mode</strong> ("that's cool, I'll show my boss") but then struggle to <strong>move it into production</strong>, share it, integrate it into an operational or custom application. LLMware's answer:
+- In addition to being a UI app, <strong>all functionality can be exposed as a back-end Windows service</strong> — by <strong>flipping a switch</strong>, every feature becomes available over <strong>API</strong>.
+- It runs on <strong>localhost</strong> by default (nothing leaves the machine), but you can <strong>expose it over an external port</strong> — effectively turning a laptop into a <strong>mini server</strong>.
+- Once exposed, the <strong>no-code agent can be accessed and extended programmatically</strong>.</p>
+<h3 id="the-sdk-pattern">The SDK pattern</h3>
+<p>They switched to code to "do some real work," reassuring the developer audience. The SDK mirrors familiar high-level model SDKs (e.g. the OpenAI SDK pattern): <strong>instantiate a <code>client</code> object</strong> that carries your credentials, then invoke methods on it. Two APIs were used:
+- <strong><code>call_agent</code></strong> — the just-built agent is exposed over an endpoint and <strong>called by name</strong>. In this demo there were <strong>no inputs</strong> (everything comes from the API), but in other cases you can <strong>pass inputs into the API call</strong>.
+- Running the agent <strong>launches it asynchronously on the device</strong> and returns a <strong>receipt / execution ID</strong>. You <strong>come back after about a minute with that execution ID</strong> and call <strong><code>get_agent_outputs</code></strong> to retrieve all the agent's outputs — delivered as a <strong>zip folder</strong> containing the same files produced in the interactive run.</p>
+<p>Because it runs <strong>asynchronously in the background as a Windows service</strong>, you <strong>don't need the app open</strong>; it can run quietly in the background, <strong>on a schedule</strong> (every morning/night), as long as the Windows service is running — <strong>even if someone closes the laptop</strong>.</p>
+<h3 id="scaling-to-a-server">Scaling to a server</h3>
+<p>Beyond point-to-point sharing among local colleagues, there is a <strong>server component</strong>: once an agent is built and working, it <strong>can be exposed as an endpoint on that server</strong>, letting you go from local development → point-to-point sharing → <strong>pushing it up to a server for a much more scalable deployment</strong>.</p>
+<h3 id="sharing-an-agent-credential-safe">Sharing an agent (credential-safe)</h3>
+<p>Sharing is "as easy as that": the entire agent — every component shown, including the <strong>custom Jira integration service</strong> and <strong>custom data assets</strong> — distills down to <strong>hundreds of lines of JSON configuration</strong> plus those data assets, wrapped into a <strong>zip file</strong>. <strong>No credentials are ever shared or passed.</strong> That zip is as easy to share as a PowerPoint or Excel spreadsheet — email it, post it to a <strong>SharePoint</strong> site, "Hey, I built this agent, go check it out." Collaboration becomes trivial, all <strong>no-code</strong> and all <strong>powered by the Snapdragon X2 NPU</strong>.</p>
+<h3 id="qa-key-points">Q&amp;A — key points</h3>
+<ul>
+<li><strong>"Small models are great, but what about tasks needing larger models?"</strong> Supported. They have <strong>~200 models</strong> in the catalog <strong>including cloud-based models</strong>. For a step needing complex reasoning/analytics (e.g. "I need Gemini for this"), you <strong>add a node</strong> that calls out to that model — e.g. a complex multimodal/visual transformation. Pattern: do the other ~10 steps (extraction, summarization, text) <strong>locally</strong>, then for the <strong>one critical step punch out to a cloud model</strong> and bring the result back — <strong>best of both worlds</strong>.</li>
+<li><strong>"Does this only matter on Snapdragon, or any CPU? What's the advantage of a Snapdragon processor?"</strong> The ISV answer plus Qualcomm confirmation: <strong>it's fast — really, really fast.</strong> The NPU is fully integrated on the device; the <strong>latest X2 Snapdragon has 80 TOPS</strong>, i.e. lots of capability to run <strong>more and bigger models faster</strong>. Ultimately a processor's value for models comes down to the <strong>speed and the size of model</strong> it unlocks, and this is a <strong>state-of-the-art platform</strong> for using the biggest/best models in the fastest way.</li>
+<li><strong>Booth pitch:</strong> more use cases at the <strong>Qualcomm booth</strong> — they could only cover one use case in-session and have <strong>15+ other scenarios</strong> to show across different industries. Attendees can <strong>build their first agent in ~a minute</strong>, regardless of technical depth.</li>
+</ul>
+<h3 id="closing-message">Closing message</h3>
+<p>"<strong>Look into local AI.</strong>" Amid all the Build messaging over the next two days, the partners' core point: <strong>cost, privacy, and the capabilities of next-generation AI PCs</strong> unlock a lot. As an IC/hardware vendor, Qualcomm is committed to pushing innovation from the hardware level so you can do <strong>almost anything you'd do with a cloud model — locally — without worrying about token charges or privacy concerns.</strong></p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>LLMware Model HQ</strong> — the central Windows application: a <strong>no-code, drag-and-drop</strong> agent/workflow designer that runs entirely locally and orchestrates the whole pipeline.</li>
+<li><strong>Microsoft Foundry / Foundry Local</strong> — the model source; provides models (incl. NPU-optimized ones) integrated into Model HQ with no-code wiring.</li>
+<li><strong>Windows ML API</strong> — back-end inference API used to run the model on Windows.</li>
+<li><strong>ONNX Runtime APIs</strong> — alternative back-end runtime for executing models.</li>
+<li><strong>Qualcomm execution providers</strong> — the layer underneath Windows ML / ONNX Runtime that targets the NPU for best local performance.</li>
+<li><strong>Snapdragon X2 (NPU)</strong> — the on-device accelerator the models are optimized for; <strong>80 TOPS</strong> of compute.</li>
+<li><strong>Small Language Models (SLMs)</strong> — power the multi-step automated workflows locally.</li>
+<li><strong>Jira API</strong> — enterprise data source integrated as a workflow node (pull issues/user stories/bugs).</li>
+<li><strong>Email client integration</strong> — final node that emails the produced report.</li>
+<li><strong>LLMware SDK</strong> — Python-style SDK: <code>client</code> object (holds credentials), <code>call_agent</code> (by name, async), <code>get_agent_outputs</code> (returns a zip of results).</li>
+<li><strong>Back-end Windows service / API mode</strong> — flip a switch to expose all functionality over API (localhost or external port).</li>
+<li><strong>Server component</strong> — exposes a built agent as a scalable server endpoint.</li>
+<li><strong>Scheduling API</strong> — runs the agent on a cadence (e.g. daily) unattended.</li>
+<li><strong>Model catalog (~200 models)</strong> — includes cloud models (e.g. <strong>Gemini</strong> cited) for hybrid cloud-burst steps.</li>
+<li><strong>Output formats</strong> — CSV, Excel workbooks, PowerPoint.</li>
+<li><strong>Sharing/collaboration targets</strong> — email, <strong>Microsoft Teams</strong>, <strong>Slack</strong>, <strong>SharePoint</strong>.</li>
+<li><strong>Air-gapped version</strong> — a fully offline variant of the demo as a fallback.</li>
+<li><strong>Task Manager</strong> — used to visibly show the NPU under load during inference.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p>None explicitly announced. This was a <strong>partner demo (DEMSP)</strong> of an existing, <strong>shipping commercial product</strong> (LLMware Model HQ) integrated with Microsoft Foundry Local on Snapdragon X2 Copilot+ PCs — capabilities were demonstrated rather than newly launched. No GA/preview milestones, dates, or new SKUs were stated. (The newest hardware referenced — <strong>Snapdragon X2 with 80 TOPS</strong> — was cited as the platform, not announced here.)</p>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Pre-recorded ~2-min overview (silent, re-narrated live).</strong> Walked the no-code build of the Jira agent: select NPU model from Foundry Local (Snapdragon X2-optimized) → drag-and-drop the process (Jira pull → filters → summarization) → run → clean per-row AI-summarized output → email it. Point proved: a complete, scheduleable on-device enterprise agent can be <strong>built in ~15 minutes</strong> with no code and deliver a tidy spreadsheet to your inbox with no token charges.</li>
+<li><strong>Live build &amp; run in Model HQ.</strong> Showed the actual drag-and-drop canvas, ran the agent live, <strong>successfully pulled from the Jira API in real time</strong>, and completed all inferences <strong>very fast</strong> with the <strong>NPU visibly working in Task Manager</strong>. Point proved: the on-device NPU pipeline is genuinely fast and real, not a canned recording.</li>
+<li><strong>Outputs demo.</strong> Showed results emitted as <strong>CSV/Excel/PowerPoint</strong>, ready to email or share over Teams/Slack. Point proved: AI output is delivered in immediately consumable business artifacts.</li>
+<li><strong>Programmatic/SDK demo.</strong> Flipped the app into a <strong>back-end Windows service</strong>, then used the <strong>SDK</strong> (<code>client</code> → <code>call_agent</code> → <code>get_agent_outputs</code>) to invoke the same agent <strong>asynchronously</strong> via API on localhost, get an <strong>execution ID</strong>, and retrieve a <strong>zip of outputs</strong>. Point proved: a no-code agent crosses cleanly into production/programmatic use and scheduled background execution.</li>
+<li><strong>Sharing demo.</strong> Showed the agent <strong>distilled to JSON config + data assets, zipped, and shared like a PowerPoint</strong> — <strong>no credentials passed</strong>. Point proved: frictionless, secure collaboration on agents.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>80 TOPS</strong> — NPU compute of the latest <strong>Snapdragon X2</strong>.</li>
+<li><strong>~200 models</strong> in the LLMware model catalog (including cloud models).</li>
+<li><strong>15+ other industry scenarios</strong> available to try at the Qualcomm booth.</li>
+<li><strong>~15 minutes</strong> to build the full Jira agent end-to-end (in the video).</li>
+<li><strong>~20–25 minute</strong> session framing for "we just created this over the course of a session — how do we share it?"</li>
+<li><strong>"This really is the secret sauce of running AI locally"</strong> — on the Snapdragon NPU.</li>
+<li><strong>"You don't have to send everything up to the cloud. You don't have to incur token charges, privacy risk, because you have now inside your laptop this really powerful accelerator."</strong></li>
+<li><strong>"Look into local AI… Cost, privacy, and the kinds of capabilities that you're finding now in next-generation AI PCs unlock a lot."</strong> — closing message.</li>
+<li><strong>"Unlike some demos, this actually is a commercial product."</strong></li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Spin up <strong>Foundry Local</strong> on a Snapdragon Copilot+ PC and pull an <strong>NPU-optimized SLM</strong>; confirm it offloads to the NPU (watch Task Manager) via Windows ML / ONNX Runtime + Qualcomm EP.</li>
+<li>Prototype a <strong>no-code multi-step agent</strong> (data pull → filter → summarize → export to Excel → email) and put it on a <strong>schedule</strong> to land in the inbox each morning.</li>
+<li>Test the <strong>hybrid "cloud-burst" node</strong> pattern: keep extraction/summarization local, route one hard step to a cloud model, measure latency/cost tradeoff.</li>
+<li>Exercise the <strong>SDK</strong> flow end-to-end: <code>client</code> → <code>call_agent</code> (async) → poll <strong>execution ID</strong> → <code>get_agent_outputs</code> zip; then expose over a port to test the "laptop as mini server" claim.</li>
+<li>Package an agent as a <strong>zip</strong> and verify <strong>no credentials</strong> travel; share via SharePoint and have a colleague run it locally.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>Which <strong>specific Foundry Local SLMs</strong> are Snapdragon X2-optimized, and what accuracy/latency do they hit on the NPU vs CPU/GPU?</li>
+<li>What are the <strong>licensing/pricing</strong> terms for LLMware Model HQ + the server component at production scale?</li>
+<li>How is <strong>secrets/credential management</strong> handled for connectors (Jira, email) when an agent runs as a Windows service or on a shared server?</li>
+<li>How robust are the <strong>no-code connectors</strong> beyond Jira (ServiceNow, GitHub, SharePoint, databases) for real enterprise silos?</li>
+<li>What's the upper bound on workflow size/throughput on-device before you <em>must</em> burst to cloud or a server?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>On-device / edge AI strategy for <strong>privacy- and cost-sensitive</strong> enterprise automation (no token charges, data stays local).</li>
+<li><strong>Copilot+ PC / Snapdragon</strong> developer enablement and NPU-optimized model deployment via <strong>Foundry Local + Windows ML</strong>.</li>
+<li>Automating internal <strong>Jira / issue-triage / reporting</strong> pipelines into a daily inbox digest.</li>
+<li>Closing the <strong>prototype → production</strong> gap for AI workflows built by non-technical SMEs but operationalized by developers.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><a class="wikilink wikilink--resolved" href="DEM345.html">DEM345 - From prompt to app build AI powered apps on Windows</a> — sibling Windows/on-device app-building demo at the same event.</li>
+<li><span class="wikilink wikilink--unresolved" title="Foundry Local">Foundry Local</span> — the model-hosting/runtime layer this session pulls NPU-optimized models from.</li>
+<li><span class="wikilink wikilink--unresolved" title="Windows ML">Windows ML</span> — the on-device inference API underpinning the Qualcomm execution-provider path.</li>
+<li><span class="wikilink wikilink--unresolved" title="Snapdragon X2 NPU">Snapdragon X2 NPU</span> — the 80 TOPS accelerator the models are optimized for and run on.</li>
+<li><span class="wikilink wikilink--unresolved" title="On-device AI">On-device AI</span> — the broader theme (cost, privacy, local inference) this session champions.</li>
+<li><span class="wikilink wikilink--unresolved" title="Small Language Models">Small Language Models</span> — the SLMs powering the multi-step local agent workflow.</li>
+<li><span class="wikilink wikilink--unresolved" title="AI Agents">AI Agents</span> — automated, scheduled, multi-step agent pattern demonstrated here.</li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEM376.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEM376</span><span class="pager-title">The story of the Global AI Community that spans every continent</span></a>
+    <a class="pager pager-next" href="DEMSP381.html"><span class="pager-dir">Next →</span><span class="pager-code">DEMSP381</span><span class="pager-title">Scale agentic AI cost-efficiently on Azure with Arm Cobalt VMs</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

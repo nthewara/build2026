@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRKSP94 — Orchestrate specialist agents with NVIDIA Nemotron models on Foundry</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">BRKSP94</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=ELusMKrFJso" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Orchestrate specialist agents with NVIDIA Nemotron models on Foundry</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Joey (NVIDIA — Nemotron product), Stephen McCullough (NVIDIA — AI Solutions Architect)</span>
+      <span class="meta-item">⏱️ 38m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="nvidia">Nvidia</span><span class="chip" data-tag="nemotron">Nemotron</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="foundry">Foundry</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Joey (NVIDIA — Nemotron product/strategy) &amp; Stephen McCullough (NVIDIA — AI Solutions Architect, works daily with Microsoft on HW/SW integration)<br>
+<strong>Duration:</strong> ~38 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=ELusMKrFJso">YouTube</a></p>
+  </div>
+</div>
+
+<div class="callout callout-note">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">📝</span><span class="callout-title-text">Naming note</span></div>
+  <div class="callout-body">
+<p>The official Build catalog title uses "special agents," but the talk is really about <strong>specialist / specialized agents</strong> — agents that hold a specific skill or body of knowledge. Caption garbles in the source have been corrected to the verified spellings: <strong>Nemotron</strong> (not "Neotron/Neimotron/Nematron/Matron/Emotron"), <strong>Entra ID</strong> (not "intra ID"), <strong>Nous Research</strong> (not "Noose Research"), and presenter <strong>Stephen McCullough</strong> (captioned "Steven McCulla").</p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>NVIDIA (Joey + Stephen McCullough) walk through the journey from the ChatGPT moment → open reasoning models (DeepSeek) → today's agents, then introduce the <strong>NVIDIA Nemotron</strong> open model family and its newest, most capable member: <strong>Nemotron 3 Ultra</strong> (550B total / 55B active), a frontier open reasoning + orchestration model announced at Build, available on Foundry managed compute "this month" (Ultra specifically called out as available <strong>Tuesday</strong>). The core thesis: enterprises will run a <strong>system of models</strong> (different sizes, modalities, locations) powering <strong>specialized agents</strong> in a reason→act loop, with an emphasis on <strong>efficiency</strong> (moving the accuracy-vs-compute and accuracy-vs-cost frontier to the upper-left). Nemotron is fully open (weights, datasets, RL environments/skills via NeMo Gym, research) and is post-trained for agentic use. The second half is a live <strong>Microsoft Foundry hosted agents</strong> demo where a <strong>Hermes agent (Nous Research) on Nemotron 3 Super</strong> reads an email, makes code changes, opens a GitHub PR, learns a reusable <strong>skill</strong>, and gets governed end-to-end via <strong>Microsoft Entra ID</strong> and a single <strong>Foundry managed toolbox</strong> of MCP tools — then surfaced in <strong>Microsoft Teams</strong> with memory persisting across sessions.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Three-era framing:</strong> ChatGPT moment (~3.5–4 yrs ago) → DeepSeek open reasoning models (~1.5 yrs ago, breakthrough for <em>open</em> reasoning) → <strong>agents</strong> (start of this year) where software does multi-step work, shifting focus from Q&amp;A exchanges to <strong>tasks and outcomes</strong>.</li>
+<li><strong>Agent mental model:</strong> prompt/request → agent loop of <em>context/knowledge → observe → plan → reason → act</em>, looping until the job is done; surrounded by <strong>tools &amp; skills</strong>, <strong>security &amp; governance</strong>, <strong>memory</strong> (short- and long-term), and <strong>orchestration</strong> across a <em>fleet</em> of agents.</li>
+<li><strong>Agents = harness + LLMs.</strong> LLMs power the reason/act core; skills can run on CPU or GPU (via the <strong>CUDA / CUDA-X</strong> stack); memory and governance can live local or across the network.</li>
+<li><strong>Three NVIDIA pillars for long-running agentic systems:</strong> (1) <strong>systems of models</strong> (more than one model — varied sizes/languages/modalities/locations), (2) <strong>specialized agents</strong> (Toy Jensen "different outfits" metaphor — post-trained skills + access), (3) <strong>efficiency</strong> (push pre-train/post-train/inference left on the compute axis: more intelligence, less compute).</li>
+<li><strong>Nemotron is a <em>family</em></strong> of checkpoints + data + tools, with pillars: <strong>reasoning</strong>, <strong>vision</strong>, <strong>information retrieval</strong> (embedding + reranking), <strong>content moderation/safety</strong>, and <strong>speech</strong> (STT + TTS) — all open models, open datasets, open training techniques, open customization software.</li>
+<li><strong>Three reasoning model sizes (by GPU footprint):</strong> <strong>Nano</strong> (Dec) — small data-center GPU, MoE <strong>30B / 3B active</strong>; <strong>Super</strong> (March) — ~1–2× H100 80GB; <strong>Ultra</strong> — largest open model, ~2× <strong>B200</strong>, best capabilities. Ultra <strong>available Tuesday</strong>.</li>
+<li><strong>Nemotron 3 Ultra (announced Sunday at Build):</strong> <strong>550B total / 55B active</strong>, <em>frontier reasoning + orchestration</em>, strong <strong>task-completion times</strong>, fast prefill + fast multi-turn agentic loops, <strong>lower cost / more work in less time</strong>, tuned to run well across agentic harnesses, and <strong>1M-token context</strong>.</li>
+<li><strong>Headline efficiency claim:</strong> at frontier-level accuracy, Ultra delivers <strong>~5× faster inference speed</strong> vs the March (Nemotron 3 Super) release, per third-party <strong>Artificial Analysis</strong> — with expectation to push further over the coming weeks.</li>
+<li><strong>Training breakthrough:</strong> <strong>multi-teacher on-policy distillation</strong> — multiple specialized Ultra "teacher" models distilled down into Nemotron 3 Ultra (vs prior SFT → RL progression).</li>
+<li><strong>Precision breakthrough:</strong> <strong>NVFP4</strong> format optimized for <strong>Blackwell</strong> — reduces memory footprint <em>and</em> accelerates compute; <strong>one checkpoint</strong> now runs <strong>NVFP4 on Blackwell</strong> and <strong>falls back to run well on Hopper</strong>, eliminating per-architecture checkpoint sprawl (previously bf16/FP8 on Hopper, bf16 on Ampere, NVFP4 on Blackwell).</li>
+<li><strong>Architecture features (Ultra, shared with Super):</strong> <strong>hybrid (Mamba-Transformer MoE)</strong> architecture (compute-efficient in the DC, memory-efficient for long context), <strong>latent MoE</strong> (reach more experts with less compute), <strong>multi-token prediction</strong> (predict multiple tokens per inference query → higher throughput), <strong>1M context length</strong>.</li>
+<li><strong>Open harness ecosystem:</strong> Nemotron tuned to run across open harnesses incl. <strong>OpenCode</strong>, <strong>Hermes agent</strong>, <strong>OpenClaw</strong>, and <strong>pi</strong>.</li>
+<li><strong>Foundry hosted agents (Stephen's half):</strong> <strong>bring-your-own container/harness/env</strong>, deploy into Foundry; agent gets an <strong>agent identity</strong> recognized across the environment (Entra ID); <strong>isolated per-session</strong> execution (security); <strong>lifecycle, versioning, auditing, compliance</strong> built in.</li>
+<li><strong>Single control plane:</strong> the <strong>Foundry managed toolbox</strong> connects many services/MCP servers (Outlook, GitHub, Teams, MongoDB, Cosmos DB, + bring-your-own MCP) through one endpoint with granular allow/deny per function — plus <strong>observability/traces</strong> of every tool &amp; step the agent took.</li>
+<li><strong>Govern agents like colleagues:</strong> grant/revoke/audit agent access via <strong>Entra ID</strong> (e.g., add the agent as a <em>Reader</em> on a storage account in IAM); <strong>OAuth pass-through</strong> lets the agent inherit the user's identity (PR commits show as the user); publish the agent to <strong>Microsoft 365 / Teams</strong> with <strong>skills + memory persisting across sessions and services</strong>.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="speakers-structure">Speakers &amp; structure</h3>
+<p>Two NVIDIA presenters. <strong>Joey</strong> opens with the journey, the Nemotron family, and the Nemotron 3 Ultra announcement (plus the Hermes "Collective Wisdom" demo video). He then hands off — "<em>with that I'll hand over to my colleague… Thank you Joey</em>" — to <strong>Stephen McCullough</strong>, an <strong>AI Solutions Architect at NVIDIA</strong> who works with Microsoft daily integrating NVIDIA hardware + software, who delivers the live <strong>Foundry hosted agents</strong> demo and the recap.</p>
+<p>Agenda Joey set: (1) history of the journey of the last few years and where we are today; (2) new work from NVIDIA and the Nemotron open model family; (3) the ecosystem and how NVIDIA is contributing.</p>
+<h3 id="the-journey-three-eras-of-capability">The journey: three eras of capability</h3>
+<ul>
+<li><strong>ChatGPT moment (~3.5–4 years ago):</strong> the LLMs the field had worked on for years suddenly proved far more capable — an amazing interface where you could ask complex questions and get complex answers.</li>
+<li><strong>DeepSeek open reasoning (~1.5 years ago):</strong> DeepSeek published <strong>open models that could reason</strong> — a breakthrough because, before this, reasoning wasn't common in the <em>open</em> community. This unlocked many more open models tackling math, coding, and scientific Q&amp;A.</li>
+<li><strong>Agents (start of this year):</strong> software where you interact with models <em>in the background</em> to get more work done, focusing on <strong>tasks and outcomes</strong> rather than simple question-answer exchanges — unlocking many more use cases. This is where the session spends most of its time.</li>
+</ul>
+<h3 id="how-nvidia-thinks-about-an-agent-the-loop">How NVIDIA thinks about an agent (the loop)</h3>
+<p>Starting from a <strong>prompt</strong> (a request, a job to do), the agent sits in a loop:
+- <strong>Context / background / knowledge</strong> — what it needs to do, what it has access to, what its skills are.
+- <strong>Observe</strong> — look at what's available and what it can do.
+- <strong>Plan</strong> — create a plan for making progress.
+- <strong>Reason</strong> — reason through that plan; identify tasks.
+- <strong>Act</strong> — do the actual work; loop until the job is done.</p>
+<p>Surrounding the loop:
+- <strong>Tools &amp; skills</strong> (top-right) — configurable; an enterprise/company may provide some.
+- <strong>Security &amp; governance</strong> — just as employees have scoped access today, agents need scoped access too.
+- <strong>Memory</strong> (bottom) — short-term and long-term; tracks work done, work pending, and potentially broader knowledge of what <em>other</em> agents are doing.
+- <strong>Orchestration</strong> (far left, under prompt) — one agent runs its loop, but can work with and <strong>orchestrate workloads across a fleet of other agents</strong>.</p>
+<h3 id="agents-harness-llms-where-compute-runs">Agents = harness + LLMs (where compute runs)</h3>
+<p>NVIDIA overlays where LLMs run on that diagram: LLMs power most of the <strong>context/reason/act</strong> core. <strong>Skills</strong> can run on CPU <strong>or</strong> GPU (via the <strong>CUDA</strong> software stack alongside the LLMs). <strong>Security &amp; governance</strong> can mean access to network protocols or content across a company. <strong>Memory</strong> can live across the network, locally, on CPU or GPU, and there's also some memory <strong>inside the LLM</strong> itself.</p>
+<h3 id="three-pillars-for-long-running-agentic-systems">Three pillars for long-running agentic systems</h3>
+<ol>
+<li><strong>Systems of models.</strong> To be most successful, enterprises will likely need <strong>more than one model</strong> — different languages, modalities, sizes, and run locations, all working together.</li>
+<li><strong>Specialized agents.</strong> Like people specialize, agents gain a specific skill/knowledge set. NVIDIA illustrates with <strong>"Toy Jensen"</strong> (their CEO as a toy) wearing different outfits = different skill sets; agents are <strong>post-trained</strong> and given knowledge/capabilities/system access to take on tasks.</li>
+<li><strong>Efficiency.</strong> Across <strong>pre-training, post-training, and inference (runtime / test-time thinking)</strong>, plotted against <strong>compute</strong> on the x-axis, NVIDIA constantly tries to <strong>move the curve left</strong> — improve intelligence while reducing the compute (and time) needed.</li>
+</ol>
+<h3 id="the-nemotron-family-what-it-actually-is">The Nemotron family (what it actually is)</h3>
+<p>NVIDIA frames Nemotron as a <strong>family of models = checkpoints + data + tools</strong>, not a single model. Pillars across the family:
+- <strong>Reasoning</strong> (the focus of this talk).
+- <strong>Vision</strong> capabilities.
+- <strong>Information retrieval</strong> — embedding and reranking.
+- <strong>Safety</strong> — content moderation.
+- <strong>Speech</strong> — speech-to-text and text-to-speech.</p>
+<p>Everything is <strong>open</strong>: open models, open datasets, the training techniques used to create them, and software to <strong>customize</strong> them. Across the bottom of the family slide are the published content families (pre-training data, post-training data, RL environments/skills under <strong>NeMo Gym</strong>, and research).</p>
+<h3 id="the-three-reasoning-sizes-footprint-capability-speed">The three reasoning sizes (footprint, capability, speed)</h3>
+<ul>
+<li><strong>Nano</strong> — smallest; targets a <strong>very small data-center GPU</strong>; small MoE, <strong>30B total / 3B active</strong>; released <strong>December</strong>.</li>
+<li><strong>Super</strong> — published <strong>March</strong>; think <strong>~1–2× H100 80GB</strong> data-center GPUs.</li>
+<li><strong>Ultra</strong> — the <strong>largest open model</strong> NVIDIA has; think <strong>~2× B200</strong>; takes a few GPUs but delivers the best capabilities; <strong>available Tuesday</strong>.</li>
+</ul>
+<p>All sizes ship with <strong>open datasets</strong> (pre-training + post-training data), <strong>RL environments and skills under NeMo Gym</strong>, and <strong>published research</strong>.</p>
+<h3 id="announcement-nemotron-3-ultra-made-sunday">Announcement: Nemotron 3 Ultra (made Sunday)</h3>
+<ul>
+<li><strong>Largest + most capable</strong> Nemotron to date: <strong>frontier reasoning and orchestration</strong>.</li>
+<li><strong>550 billion total / 55 billion active</strong> parameters.</li>
+<li>Highlights: <strong>great task-completion times</strong> (heavy focus on output generation), <strong>fast prefill</strong> + <strong>fast multi-turn</strong> agentic runs, <strong>lower costs</strong> (more work in less time), tuned for <strong>agentic harnesses in the ecosystem</strong> (demo video to follow), and <strong>everything open</strong> so people can inspect it, gain confidence, and build a business on it.</li>
+</ul>
+<h3 id="nemotron-3-ultra-the-breakthroughs">Nemotron 3 Ultra — the breakthroughs</h3>
+<ol>
+<li><strong>Multi-teacher on-policy distillation (training).</strong> Evolution from <strong>SFT</strong> → (late last year) heavy <strong>RL</strong> → now <strong>multi-teacher on-policy distillation</strong>: multiple large <strong>teacher</strong> models — various Ultra models trained on <strong>specific tasks</strong> — are distilled down into Nemotron 3 Ultra, so Ultra learns well across all teachers and inherits their capabilities/skills.</li>
+<li><strong>NVFP4 precision (Blackwell).</strong> <strong>NVFP4</strong> is optimized to run on <strong>Blackwell</strong>, reducing memory footprint <em>and</em> accelerating compute. Crucially, instead of separate checkpoints per format/architecture (historically: bf16 / FP8 on Hopper, bf16 on Ampere, NVFP4 on Blackwell), Ultra fits <strong>one checkpoint</strong> (e.g., a single Hugging Face download) that runs in <strong>NVFP4 on Blackwell</strong> and <strong>falls back to run well on Hopper</strong> — fewer options, easier selection.</li>
+<li><strong>Open harnesses in the ecosystem.</strong> Time spent ensuring Nemotron runs well across <strong>OpenCode</strong>, <strong>Hermes agent</strong>, <strong>OpenClaw</strong>, and <strong>pi</strong>.</li>
+<li><strong>Architecture &amp; features (also in Nemotron 3 Super):</strong>
+   - <strong>Hybrid architecture</strong> — compute-efficient in the data center, memory-efficient for long context.
+   - <strong>Latent (MoE) architecture</strong> — reach more experts with less compute.
+   - <strong>Multi-token prediction</strong> — one inference query predicts <strong>multiple</strong> tokens instead of one → higher throughput.
+   - <strong>1M-token context length</strong> — up to 1,000,000 input tokens the model can use and keep in memory while running agentic tasks.</li>
+</ol>
+<h3 id="benchmarks-how-ultra-was-evaluated">Benchmarks &amp; how Ultra was evaluated</h3>
+<p>NVIDIA compared Nemotron 3 Ultra against strong open models — <strong>GLM (5.x)</strong>, <strong>Kimi K2 (≈K2.6)</strong>, and <strong>Qwen 3.5</strong> (caption spellings "GLM51 / Kim K26 / Quen 35") — and praised the open community's progress. This release leaned <strong>more on agentic tasks</strong> than past releases:
+- <strong>Agentic tool use / productivity</strong> — a <strong>τ-bench-style</strong> ("Pinchbench" in captions) eval: can the agent call the <strong>right tools</strong>, get the work done, and do it <strong>efficiently</strong>?
+- <strong>Long-horizon planning</strong> — using <strong>ServiceNow's "Enterprise Ops Gym"</strong>: complex tasks like a <strong>password reset</strong> that may touch many systems, record information, send responses, fail, and require iteration.
+- <strong>Coding</strong> — increasingly common and popular.
+- <strong>Instruction following</strong> — strictly adhering to given directions.
+- <strong>Knowledge work</strong> — common-industry tasks (e.g., <strong>manufacturing, healthcare</strong>) plus professional work (e.g., <strong>PhD-level</strong> and <strong>MBA-level</strong> tasks).
+- <strong>1M context length</strong> capability.</p>
+<p><strong>Third-party validation (Artificial Analysis):</strong> y-axis = an <strong>accuracy index</strong> (combination of the above tasks); x-axis = <strong>output token speed</strong> (how fast it thinks/answers). Goal = <strong>upper-right</strong> (frontier accuracy <em>and</em> high throughput). Reference point: Nemotron 3 (March release). Result: at that <strong>frontier-level accuracy</strong>, Ultra achieves <strong>~5× faster inference speed</strong> — with expectation to push further in the coming weeks.</p>
+<p><strong>Cost-efficient frontier (new chart, first shown at the CEO's GTC keynote days earlier):</strong> y-axis = <strong>accuracy</strong> = ability to <strong>complete a coding task correctly</strong>; x-axis = <strong>cost to complete the task</strong>. A query goes in; the model does real work (calls tools, modifies/edits files, runs a compiler) and returns the answer; NVIDIA measures the <strong>tokens + time</strong>, prices it using the <strong>lowest</strong> of <strong>CoreWeave</strong> and <strong>Deep Infra</strong> prices, and plots a <strong>Pareto curve</strong>. Different cost footprints (smaller vs larger budget) let you trade off accuracy/capability. Nemotron 3 Ultra moves toward the <strong>upper-left</strong> (more accuracy per dollar), and NVIDIA expects all models to trend that way over time.</p>
+<h3 id="demo-1-video-hermes-collective-wisdom-skills-that-compound-across-a-company">Demo 1 (video): Hermes "Collective Wisdom" — skills that compound across a company</h3>
+<p><strong>Scenario:</strong> a small company doing a <strong>product launch</strong>; <strong>four senior leads</strong> across four functions, each with a <strong>two-week window</strong> to get launch content ready. Each box = a workflow a person owns.
+- Each senior lead works alongside <strong>Hermes agent on Nemotron 3 Ultra</strong>, bringing <strong>reasoning, writing, and judgment</strong> to every task.
+- When a person <strong>corrects</strong> Hermes, the correction is <strong>saved as a reusable skill</strong> the team can apply.
+- The <strong>Hermes curator</strong> runs on <strong>Nemotron 3 Super</strong>, continuously processing skills — <strong>merging, de-duping, rewriting, testing, and promoting only what's ready to share</strong>.
+- Anything shared goes through <strong>enterprise review and approval</strong>; <strong>the method is shared, the launch data stays private</strong>.
+- Approved skills join <strong>Hermes "Collective Wisdom"</strong> — the company's growing library of proven methods.
+- <strong>Months later</strong> the team moves faster — not from their own work alone, but from each other's; <strong>every method captured by one lifts the rest</strong>.
+- Tagline: "<em>the power of Hermes from </em><em>Nous Research</em><em> on NVIDIA Nemotron 3 Ultra</em>."</p>
+<p><strong>Joey's takeaway from the demo:</strong> individuals create skills (ways for agents to get work done); agents then <strong>generalize</strong> those skills across the company; more people adopt them; skills come to represent <strong>subject-matter experts</strong>. Forward-looking idea: future job candidates might ask <strong>"what agents/skills are available at this company?"</strong> because better agents/skills make work easier. We're "just at the beginning of this journey."</p>
+<h3 id="foundry-hosted-agents-stephen-mccullough">Foundry hosted agents (Stephen McCullough)</h3>
+<p>The bridge from "intelligence + agentic environment" to the <strong>real world</strong> is <strong>Microsoft Foundry hosted agents</strong>. Key features:
+- <strong>Bring your own container / harness / environment</strong> and deploy it into Foundry hosted agents.
+- <strong>Agent identity</strong> — give it access to resources just like a regular colleague; the identity is <strong>recognized across your environment</strong>.
+- <strong>Isolated sessions</strong> — any code it writes or documents it produces can be <strong>isolated to a single session</strong>, improving security and confining work to a specific user/environment.
+- <strong>Lifecycle &amp; compliance</strong> — meet <strong>auditing</strong> and <strong>versioning</strong> requirements so deployed agents can be used to their fullest.</p>
+<p><strong>Reference deployment shown:</strong> <strong>Hermes agent</strong> running in Foundry hosted agents; <strong>Nemotron Super + Nemotron Nano</strong> running in <strong>Foundry managed compute endpoints</strong>; <strong>Entra ID</strong> granting the agent access to external data (GitHub, Teams, email). Pitch: tell your agent <em>"check my email and take care of this,"</em> or <em>"look at what my boss said in Teams yesterday and handle it."</em></p>
+<h3 id="demo-2-live-email-pr-learned-skill-fully-governed">Demo 2 (live): email → PR → learned skill, fully governed</h3>
+<ol>
+<li><strong>Session start / self-check.</strong> Stephen starts a new session in <strong>Foundry Agent Service</strong>; asks the agent what it is. It reports running <strong>Nemotron 3 Super</strong> with the <strong>Hermes agent harness</strong>.</li>
+<li><strong>Real task delegated.</strong> Colleague <strong>Alex</strong> emailed about a feature request in <strong>"LLM Perfbench"</strong> (an internal LLM testing repo): add <strong>chat-completions endpoint</strong> support to the benchmarking tool. Stephen <strong>delegates</strong> the whole thing — <em>without pasting the email into the prompt/context</em>. Because the hosted Hermes agent is connected to <strong>Outlook + GitHub</strong> via Foundry, it <strong>finds the email, makes the code changes, and opens a PR by itself</strong>. The interaction is framed like talking to a colleague ("my manager sent me an email, go find it and do its thing").</li>
+<li><strong>One toolbox, many services.</strong> The workflow uses <strong>Outlook (email)</strong>, <strong>GitHub</strong>, and a <strong>coding sandbox</strong> for code testing. Rather than wiring each service/auth flow/MCP endpoint/permission model separately, Stephen connects them all through a <strong>single Foundry managed toolbox</strong>. The <strong>Foundry catalog</strong> has built-ins — <strong>MongoDB, Teams, Cosmos DB</strong>, many MCP servers — and you can <strong>bring your own MCP tool/agent</strong>. Admins <strong>granularly allow/deny</strong> functions (e.g., <em>read</em> from Teams but <strong>no</strong> sending messages/emails to the manager). This <strong>single management plane</strong> matters more as workloads and tool use grow.</li>
+<li><strong>Result + observability.</strong> The agent <strong>successfully creates the PR</strong>. Foundry shows <strong>exactly what happened</strong> — which <strong>tools and MCP servers</strong> were used, every step, and the path from original email → final PR. This <strong>observability/audit trail</strong> is critical for enterprise agents (debugging, workflow improvement, and proving how the agent acted <strong>on behalf of a user</strong>).</li>
+<li><strong>Review + teach a skill.</strong> The PR's code checks <strong>pass</strong>, but Stephen wants changes: <strong>add Alex (the requester) as a reviewer</strong> and <strong>include docstrings</strong> in functions — <em>and</em> wants the agent to <strong>remember this for the future</strong> whenever it works with this repo. This demonstrates Hermes' <strong>self-learning skill mechanism</strong>: instead of one-off requests, the agent turns feedback into <strong>reusable behavior</strong> (for <strong>LLM Perfbench</strong>: Alex is always the reviewer; docstrings always included). The agent <strong>edits the PR</strong> and <strong>creates the skill</strong>; the trace shows it called Hermes' internal <strong><code>skill manage</code></strong> function (create/delete/update skills).</li>
+<li><strong>Verify + identity.</strong> The updated PR shows <strong>Alex added as reviewer</strong> and a <strong>commit adding docstrings</strong>. Via <strong>OAuth pass-through</strong>, the agent <strong>inherits Stephen's identity</strong> — its <strong>commits show as coming from Stephen</strong>.</li>
+</ol>
+<h3 id="governance-via-microsoft-entra-id">Governance via Microsoft Entra ID</h3>
+<p>Foundry doesn't just give agents tools — it <strong>governs</strong> them through <strong>Microsoft Entra ID</strong>, managing an agent's access <strong>the same way you'd manage access for a person</strong>. From the Foundry UI you can find the agent's Entra ID and grant it access to, e.g., <strong>blob storage</strong>: go to the storage account → <strong>IAM</strong> → add the agent (by the <strong>agent ID hash</strong> Foundry generated) <strong>as a Reader</strong>, exactly as you would add a colleague like Alex. Useful when you want the agent to <strong>read data</strong> or <strong>maintain a database</strong> for you, with <strong>granular</strong> control over what it can and cannot do.</p>
+<p>The key point: the agent now has an <strong>identity that can be retrieved, managed, and governed across the company</strong> — granted access, restricted access, <strong>audited</strong>, and governed with the <strong>same controls enterprises already rely on</strong>. This extends <strong>far beyond Azure resources</strong>: as agents become closer collaborators, NVIDIA + Microsoft are implementing agents <strong>across the Microsoft 365 ecosystem</strong>, with <strong>built-in identity, authentication, and access management</strong> at the core — increasingly essential as agents grow more complex and intelligent.</p>
+<h3 id="publishing-to-microsoft-365-teams-cross-session-memory">Publishing to Microsoft 365 / Teams + cross-session memory</h3>
+<p>Foundry also makes it easy to <strong>integrate agents into the tools themselves</strong>. Once the agent is configured and working well, Stephen <strong>publishes</strong> it and makes it available to <strong>Microsoft 365 apps</strong>, including <strong>Microsoft Teams</strong>. In Teams he opens the <strong>hosted Hermes agent</strong> and chats with it directly in the Teams UI, asking whether it <strong>still has the skill for the LLM Perfbench repo</strong> — the skill it created only <strong>~5–10 minutes earlier in a completely different session</strong>. The agent <strong>remembers the specific guidance</strong>, proving it is <strong>not confined to a single chat interaction</strong>: the hosted agent <strong>retains skills across interactions, sessions, and services</strong>, so over time it becomes <strong>more aligned to how you, your team, and your company collaborate</strong> — managing long-running agentic tasks <strong>from the same place you already collaborate with colleagues</strong> (your "co-pilot / partner").</p>
+<h3 id="recap-why-this-combination-matters">Recap — why this combination matters</h3>
+<p>Stephen recaps that <strong>Foundry hosted agents</strong> solve key problems that typically slow agentic development. With hosted Hermes, the demo showed the agent <strong>take a real task from an email</strong>, <strong>find that email</strong>, <strong>leverage Foundry's built-in tooling</strong>, <strong>create its own PR</strong>, <strong>expose its tools via observability</strong>, and <strong>learn a specific skill it remembers across sessions and services</strong>. The value isn't just that the model can reason or write code — it's that <strong>Foundry provides the infrastructure, tooling, and observability</strong> to <strong>customize the agent and turn the model into a useful enterprise asset</strong>.</p>
+<p>The three-part value stack for enterprises:
+- <strong>Nemotron</strong> → highest <strong>token efficiency</strong>, <strong>frontier intelligence</strong>, <strong>open</strong> models + training data + research, <strong>post-trained for agentic use</strong>.
+- <strong>Hermes (agent wrapper, Nous Research)</strong> → wraps Nemotron to add <strong>multi-model orchestration</strong> and <strong>continuous learning/improvement</strong>, making the agent more of an organizational <strong>asset</strong> over time.
+- <strong>Foundry</strong> → the <strong>infrastructure</strong> to run/support/distribute it across the company: <strong>agent identities via Entra ID</strong> (treat the agent like a colleague — grant/revoke access; integrate into Teams), the <strong>toolbox</strong> (single control plane for all tools + MCP servers), and <strong>secure session management</strong> (no data leaving the session; every user/agent gets a <strong>fresh, fully-controlled session</strong>).</p>
+<h3 id="resources-call-to-action">Resources &amp; call to action</h3>
+<p>Live demo running at the NVIDIA <strong>booth in the 308 space</strong> — come talk to the experts. Check out NVIDIA <strong>models</strong> and <strong>NeMo skills</strong>; tons of <strong>free</strong> online resources — not just open-source models but <strong>all the research and information</strong> about them. A <strong>QR code / survey</strong> was shared at the end. (Applause.)</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>NVIDIA Nemotron</strong> — open model family (checkpoints + data + tools); pillars: reasoning, vision, information retrieval (embedding + reranking), safety/content moderation, speech (STT/TTS).</li>
+<li><strong>Nemotron 3 Nano</strong> — MoE <strong>30B / 3B active</strong>; small data-center GPU; released <strong>December</strong>.</li>
+<li><strong>Nemotron 3 Super</strong> — released <strong>March</strong>; ~1–2× H100 80GB; hybrid MoE; powers the live demo + Hermes curator.</li>
+<li><strong>Nemotron 3 Ultra</strong> — <strong>550B / 55B active</strong>; frontier reasoning + orchestration; ~2× B200; <strong>announced Sunday</strong>, <strong>available Tuesday</strong>.</li>
+<li><strong>Nemotron 3.5 ASR</strong> — speech recognition (per NVIDIA Build materials accompanying this launch).</li>
+<li><strong>Nemotron 3.5 Content Safety</strong> — content safety model (per accompanying materials).</li>
+<li><strong>NVFP4</strong> — 4-bit precision format optimized for <strong>Blackwell</strong>; reduces memory + accelerates compute; single fallback-capable checkpoint.</li>
+<li><strong>NVIDIA Blackwell / B200</strong>, <strong>Hopper / H100</strong>, <strong>Ampere</strong> — GPU architectures referenced for footprint + precision.</li>
+<li><strong>CUDA / CUDA-X</strong> — software stack; skills/libraries usable as agent domain skills.</li>
+<li><strong>NeMo</strong> — model customization/fine-tuning + lifecycle; <strong>NeMo Gym</strong> for RL environments + skills; <strong>NeMo skills</strong> resources.</li>
+<li><strong>Hermes agent (Nous Research)</strong> — agentic harness/wrapper providing multi-model orchestration + self-learning skills; internal <strong><code>skill manage</code></strong> function; <strong>Hermes curator</strong> + <strong>Collective Wisdom</strong> skill library.</li>
+<li><strong>Open agentic harnesses</strong> — <strong>OpenCode</strong>, <strong>Hermes agent</strong>, <strong>OpenClaw</strong>, <strong>pi</strong>.</li>
+<li><strong>Microsoft Foundry</strong> — unified platform/control plane for models + agents + governance.</li>
+<li><strong>Foundry hosted agents</strong> — BYO container/harness; agent identity; isolated sessions; lifecycle/versioning/auditing/compliance.</li>
+<li><strong>Foundry managed compute endpoints</strong> — where Nemotron Super/Nano run in the reference deployment.</li>
+<li><strong>Foundry managed toolbox</strong> — single control plane for tools + MCP servers (Outlook, GitHub, Teams, MongoDB, Cosmos DB, BYO MCP) with granular per-function permissions.</li>
+<li><strong>Foundry Agent Service</strong> + <strong>Foundry catalog</strong> — session management + built-in service/MCP catalog.</li>
+<li><strong>Microsoft Entra ID</strong> — agent identity, authentication, access management, audit/governance (e.g., IAM Reader on storage).</li>
+<li><strong>OAuth pass-through</strong> — agent inherits the user's identity (PR commits attributed to the user).</li>
+<li><strong>Microsoft 365 / Microsoft Teams</strong> — publish + interact with the agent; cross-session memory.</li>
+<li><strong>Evals/benchmarks referenced</strong> — τ-bench-style agentic tool-use eval; <strong>ServiceNow Enterprise Ops Gym</strong> (long-horizon planning); coding; instruction following; knowledge work (PhD/MBA level); <strong>Artificial Analysis</strong> (3rd-party throughput/accuracy index).</li>
+<li><strong>Pricing sources referenced</strong> — <strong>CoreWeave</strong>, <strong>Deep Infra</strong> (lowest-price selection for cost-efficient-frontier chart).</li>
+<li><strong>Comparison models</strong> — GLM (5.x), Kimi K2(.6), Qwen 3.5 (named as strong open models).</li>
+<li><strong>Hugging Face</strong> — distribution of open Nemotron checkpoints/datasets.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>NVIDIA Nemotron 3 Ultra</strong> — largest + most capable Nemotron to date; <strong>550B / 55B active</strong>; frontier <strong>reasoning + orchestration</strong>; <strong>1M-token context</strong>. <strong>Announced Sunday</strong> (also debuted in the CEO's GTC keynote days earlier); <strong>available Tuesday</strong> on <strong>Foundry managed compute</strong> ("this month").</li>
+<li><strong>Multi-teacher on-policy distillation</strong> — new training approach distilling multiple task-specialized teacher models into Ultra.</li>
+<li><strong>Single unified checkpoint</strong> — one Ultra checkpoint runs <strong>NVFP4 on Blackwell</strong> and <strong>falls back to Hopper</strong>, replacing per-architecture checkpoint sprawl.</li>
+<li><strong>~5× faster inference</strong> at frontier accuracy vs the March (Nemotron 3 Super) release (per Artificial Analysis), with more gains expected in the coming weeks.</li>
+<li><strong>Cost-efficient-frontier chart</strong> — new framing (accuracy-per-cost on coding tasks) first shown at the GTC keynote, now extended to Ultra.</li>
+<li><strong>Companion model releases</strong> (per NVIDIA's Build launch alongside this session): <strong>Nemotron 3.5 ASR</strong> (speech recognition) and <strong>Nemotron 3.5 Content Safety</strong>.</li>
+<li><strong>Ecosystem/partner work</strong> — Nemotron tuned across open harnesses (OpenCode, Hermes, OpenClaw, pi); deep <strong>Microsoft Foundry hosted agents</strong> integration (toolbox, Entra ID identity, M365/Teams publishing) demonstrated live.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<p><strong>Demo 1 — Hermes "Collective Wisdom" (video).</strong> A small company's product launch with <strong>four senior leads</strong> (two-week window). Each works with <strong>Hermes agent on Nemotron 3 Ultra</strong>; corrections become <strong>reusable skills</strong>; the <strong>Hermes curator on Nemotron 3 Super</strong> merges/de-dupes/rewrites/tests/promotes skills; approved methods (data stays private) join <strong>Collective Wisdom</strong>; months later the whole team is faster because <strong>every captured method lifts everyone</strong>. "<em>Hermes from Nous Research on NVIDIA Nemotron 3 Ultra.</em>"</p>
+<p><strong>Demo 2 — Foundry hosted agent: email → PR → learned skill (live).</strong>
+1. New <strong>Foundry Agent Service</strong> session; agent self-reports <strong>Nemotron 3 Super + Hermes harness</strong>.
+2. Delegated a real task from <strong>Alex's email</strong> (add chat-completions support to <strong>LLM Perfbench</strong>) <strong>without pasting the email</strong> — agent uses <strong>Outlook + GitHub</strong> (via Foundry) to find the email, make changes, and <strong>open a PR</strong> autonomously.
+3. All services wired through <strong>one Foundry managed toolbox</strong> (Outlook, GitHub, coding sandbox; catalog incl. MongoDB/Teams/Cosmos DB + BYO MCP) with <strong>granular allow/deny</strong> (e.g., read Teams, no sending).
+4. PR created; <strong>full observability/trace</strong> of tools, MCP servers, and steps (email → PR).
+5. Feedback taught as a <strong>reusable skill</strong> (Alex = reviewer; docstrings required for LLM Perfbench) via Hermes' <strong><code>skill manage</code></strong> function.
+6. PR verified (Alex added, docstrings committed); <strong>OAuth pass-through</strong> makes commits show as <strong>Stephen</strong>.
+7. Agent <strong>published to Microsoft 365 / Teams</strong>; in Teams it <strong>remembers the skill</strong> created minutes earlier in a <strong>different session</strong> → memory persists <strong>across sessions + services</strong>.</p>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>Nemotron 3 Ultra: 550B total / 55B active</strong> parameters.</li>
+<li><strong>Nemotron 3 Nano: 30B total / 3B active</strong> (MoE).</li>
+<li><strong>1,000,000-token context length</strong> (Ultra and Super).</li>
+<li><strong>~5× faster inference speed</strong> at frontier-level accuracy vs the March Nemotron 3 Super release (Artificial Analysis).</li>
+<li><strong>Footprints:</strong> Nano → very small DC GPU; Super → ~1–2× H100 80GB; Ultra → ~2× B200.</li>
+<li><strong>Timeline:</strong> Nano = December; Super = March; Ultra announced <strong>Sunday</strong>, available <strong>Tuesday</strong>.</li>
+<li><strong>Pricing inputs:</strong> lowest of <strong>CoreWeave</strong> + <strong>Deep Infra</strong> for the cost-efficient-frontier (accuracy-per-dollar coding) chart.</li>
+<li><strong>Booth:</strong> NVIDIA in the <strong>308 space</strong>, live Foundry + Hermes + Nemotron demo.</li>
+<li>Joey: "<em>the better the agents and the better the skills, the easier it will be to get your work done… we're just at the beginning of this journey.</em>"</li>
+<li>Joey (forward-looking): future candidates may ask "<em>what type of agents or skills are available at that company?</em>" when weighing job offers.</li>
+<li>Stephen: the value "<em>it's not just that your model can reason or that your model can write code. It's that Foundry gives you this infrastructure and this tooling and observability… to customize your agent and turn that model into a useful enterprise</em>" asset.</li>
+<li>Stephen (governance): you can grant/revoke/audit agent access "<em>using the same kind of controls that enterprises already rely on.</em>"</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Deploy a <strong>Foundry hosted agent</strong> (BYO container/harness) and wire <strong>Outlook + GitHub</strong> via a single <strong>managed toolbox</strong>; reproduce the email → PR flow.</li>
+<li>Stand up <strong>Nemotron 3 Super (or Nano)</strong> on <strong>Foundry managed compute</strong> and benchmark prefill + multi-turn latency for an agentic loop.</li>
+<li>Try <strong>Nemotron 3 Ultra</strong> when live (Foundry managed compute) for long-horizon/orchestration tasks; test the <strong>1M context</strong>.</li>
+<li>Experiment with <strong>Hermes' skill-learning</strong> (<code>skill manage</code>) — teach a repo-specific skill (reviewer + docstrings) and verify persistence across sessions/Teams.</li>
+<li>Grant an agent an <strong>Entra ID</strong> identity + <strong>IAM Reader</strong> on a storage account; validate <strong>OAuth pass-through</strong> attribution on GitHub commits.</li>
+<li>Pull a single <strong>NVFP4 Ultra checkpoint</strong> from Hugging Face and confirm <strong>Blackwell run + Hopper fallback</strong>.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>Exact GA/region availability + pricing for <strong>Nemotron 3 Ultra</strong> on Foundry managed compute (and quota/VM SKU requirements)?</li>
+<li>Which <strong>MCP servers</strong> are GA in the <strong>Foundry toolbox</strong> today vs preview? Admin UX for per-function allow/deny at scale?</li>
+<li>How does <strong>Hermes curator</strong> dedupe/merge/test skills technically, and what does enterprise <strong>review/approval</strong> for shared skills look like in practice?</li>
+<li>τ-bench-style + <strong>Enterprise Ops Gym</strong> scores — exact numbers vs GLM/Kimi/Qwen? (slides referenced, not all read aloud).</li>
+<li>Governance depth: audit log schema, session-isolation guarantees, data-residency for the cross-session memory store.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Anyone building <strong>multi-agent / specialist-agent</strong> systems on Azure/Foundry.</li>
+<li>Enterprises wanting <strong>open</strong> frontier reasoning models with <strong>agentic governance</strong> (Entra ID, observability, isolated sessions).</li>
+<li>Teams evaluating <strong>cost-vs-accuracy</strong> trade-offs across a <strong>system of models</strong> (frontier + Nemotron + local).</li>
+<li>Platform/IT admins standardizing <strong>agent identity + tool access</strong> via a single control plane.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Build2026/">Build2026/</span> — other Microsoft Build 2026 session notes</li>
+<li>NVIDIA Nemotron developer page · Hugging Face (open weights/datasets) · NeMo / NeMo Gym</li>
+<li>Nous Research — Hermes agent</li>
+<li>Microsoft Foundry — hosted agents, managed compute, toolbox, Agent Service</li>
+<li>Microsoft Entra ID — agent identities &amp; governance</li>
+<li>Related Build sessions: "Post-Training and Deploying Open Source Reasoning Models in Foundry," "Turn foundation models into production AI on Microsoft Foundry"</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="BRKSP92.html"><span class="pager-dir">← Previous</span><span class="pager-code">BRKSP92</span><span class="pager-title">Scale agentic AI from on-device to cloud orchestration</span></a>
+    <a class="pager pager-next" href="DEM300.html"><span class="pager-dir">Next →</span><span class="pager-code">DEM300</span><span class="pager-title">Supercharged profiling: Finding performance bugs with agents</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

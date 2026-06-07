@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OD840 — Enable agents for enterprises using Agent 365 SDK</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">OD840</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=_OtDAmR3vIk" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Enable agents for enterprises using Agent 365 SDK</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Jeremiah Fallis (PMM, Microsoft Security for AI), Sunil Garg (PM, Agent 365 SDK &amp; CLI)</span>
+      <span class="meta-item">⏱️ 24m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="agent-365">Agent 365</span><span class="chip" data-tag="enterprise">Enterprise</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="m365">M365</span><span class="chip" data-tag="security">Security</span><span class="chip" data-tag="entra">Entra</span><span class="chip" data-tag="purview">Purview</span><span class="chip" data-tag="defender">Defender</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Jeremiah Fallis (Product Marketing Manager, Microsoft Security for AI team) · Sunil Garg (Product Manager, Agent 365 team — runs the Agent 365 SDK &amp; CLI, deployed PM driving ecosystem/partner adoption)<br>
+<strong>Duration:</strong> ~24 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=_OtDAmR3vIk">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>This session makes the case that an enterprise-ready agent is not a feature inside an app — it's an <strong>actor with its own identity</strong> that must be discoverable, scoped to least privilege, observable, governed, and auditable from day one. Sunil Garg lays out the four things keeping CISOs/CIOs up at night (agent sprawl, data oversharing, indirect prompt injection, regulatory uncertainty) and frames the bar for a production agent as "could it pass a Fortune 500 onboarding review?" The answer Microsoft offers is <strong>Agent 365</strong> — the control plane for agents (GA on May 1st) — and its <strong>SDK</strong>, which lets developers layer <strong>observability, governance, and security</strong> onto <em>any</em> framework (OpenAI SDK, LangChain, Claude, LlamaIndex, Microsoft Agent Framework, or custom code) incrementally, not as a rewrite. Once integrated, the agent automatically lights up across <strong>Entra</strong> (agent ID, conditional access, lifecycle/access governance), <strong>Purview</strong> (sensitivity labels, DLP, insider risk, compliance), and <strong>Defender</strong> (threat hunting, anomaly detection, block/respond), so security teams manage agents with the exact tools they already use for humans. A live GenSpark demo shows the agent inventoried in the M365 admin center, a Purview sensitivity label and DLP rule blocking the agent, and a Defender high-severity alert firing on a prompt-injection attack.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>"An agent is not an app — it's an actor with its own brain."</strong> The biggest mindset shift: give every agent a scoped identity, least-privilege access, and an audit trail <em>from day one</em>. Bolt governance on later and you've already lost it.</li>
+<li><strong>Four enterprise fears, by the numbers:</strong> agent sprawl &amp; resource access; data oversharing (<strong>80%</strong> say data leaking through AI is their top concern); the new threat surface (<strong>88%</strong> worry about indirect prompt injection); and regulatory uncertainty (<strong>&gt;half</strong> of leaders admit they don't fully understand how AI will be regulated). The real risk is the <strong>compounding</strong> of all four.</li>
+<li><strong>Adoption momentum is real:</strong> <strong>82%</strong> of leaders plan to deploy agents in the next 12–18 months — that same momentum is exactly what's creating the security anxiety on the other side of the table.</li>
+<li><strong>Treat agents like new hires.</strong> When an employee joins, IT provisions a managed identity, scopes access to role, a manager sets expectations, and everything is auditable. Agents need the identical machinery — and enterprise buying questions map almost 1:1 to onboarding-a-new-hire questions.</li>
+<li><strong>Think in data <em>flows</em>, not individual permissions.</strong> Two perfectly reasonable permissions (read a CRM + send an email) can combine into an <strong>exfiltration path</strong>. Design with the full flow in mind.</li>
+<li><strong>Assume your agent will be manipulated.</strong> The moment it reads an email, parses a document, or browses a page, untrusted content enters its reasoning loop — build hooks/guardrails for detection and <strong>design for graceful failure</strong>.</li>
+<li><strong>The bar isn't "does it work" — it's "could it pass a Fortune 500 onboarding review?"</strong> Identity, behavior, data handling, auditability. Build to that bar and you're building agents enterprises will <em>trust</em> — and trust is what takes a demo to production.</li>
+<li><strong>Agent 365 is the control plane for agents</strong> (observe, govern, secure every agent in the environment). It went <strong>GA on May 1st</strong>, along with the SDK.</li>
+<li><strong>Microsoft AI platforms are wired in out of the box.</strong> Build in Agent Builder, Copilot Studio, or Foundry — no-code/low-code/pro-code — and the agent shows up in Agent 365 automatically with identity, observability, governance, and security.</li>
+<li><strong>The SDK is "not all or nothing."</strong> Bring OpenAI SDK, LangChain, Claude, LlamaIndex, Microsoft Agent Framework, or fully custom code and <strong>layer on capabilities incrementally</strong> — you pick where to start (observability → governance → security) and how far to go. It's a layer, not a rewrite.</li>
+<li><strong>Observability = full OpenTelemetry tracing</strong> (every input, output, tool call, model invocation). Two paths: the recommended <strong>Microsoft OpenTelemetry distro</strong> (auto-instrumentation for OpenAI, LangChain, Agent Framework + hooks for everything else) or <strong>direct ingestion to an OTel endpoint</strong> (reuse an existing pipeline / unsupported stacks like Java). <strong>AI-guided setup</strong> wires registration + telemetry for coding agents so you reach your first trace without reading docs.</li>
+<li><strong>Governance routes M365 data through governed MCPs.</strong> Mail, Calendar, OneDrive, SharePoint, Teams become reachable via admin-controlled, auditable, revocable permissions — no bespoke connectors or consent flows to build. You can also <strong>bring your own MCPs</strong> and register them for the same controlled access.</li>
+<li><strong>Security = Entra Agent ID via the SDK.</strong> Enable it and identity protection, conditional access, and ID governance light up for admins — your agent gets a <strong>real, verifiable, first-class identity</strong> managed with the same Entra controls used for users.</li>
+<li><strong>Three pillars, no new tools to learn:</strong> <strong>Entra</strong> (identity, lifecycle, conditional access, access governance), <strong>Purview</strong> (sensitivity labels, DLP, insider risk, compliance), <strong>Defender</strong> (advanced hunting, misconfig/vuln investigation, detect/block/respond to tool misuse). Security teams work where they already work.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-why-security-stalls-agent-adoption">Framing: why security stalls agent adoption</h3>
+<p>Jeremiah opens by naming the tension: developers everywhere are building agents to drive real business and technology transformation, but <strong>security and risk concerns can stall adoption fast</strong>. The session's purpose is to help developers (and security leaders) understand why <strong>observability, governance, and security</strong> matter for agents, what the Agent 365 SDK does, and what you get from integrating with it. Sunil notes this is the question he gets more than any other right now — and that the excitement around agents is <em>completely justified</em> (82% of leaders plan to deploy in 12–18 months to keep up with workforce demand). The catch: that same momentum is what's generating anxiety on the enterprise side.</p>
+<h3 id="the-four-things-keeping-enterprises-up-at-night">The four things keeping enterprises up at night</h3>
+<p>When Sunil talks to CISOs and CIOs, four concerns consistently surface:</p>
+<ol>
+<li><strong>Agent sprawl &amp; resource access.</strong> Every team is spinning up agents, and each one needs identity, permissions, and access to data and tools. The pivotal mental-model shift for a developer: <em>an agent is not an app, it's an actor with its own brain.</em> Give it a <strong>scoped identity, least-privilege access, and an audit trail from day one</strong> — because if you bolt on governance later, you've already lost it.</li>
+<li><strong>Data oversharing.</strong> <strong>80%</strong> of leaders say their top concern is sensitive data leaking through AI. Crucially, this usually <strong>isn't a model problem — it's a grounding problem.</strong> The agent has access to a SharePoint site, a CRM, or an email thread the user technically <em>can</em> reach but probably shouldn't be surfacing in this context. Developers must design with <strong>data boundaries</strong>: respect sensitivity labels, honor the permissions of the invoking user, and never let the agent become a shortcut around controls that already exist in the enterprise.</li>
+<li><strong>The new threat surface.</strong> <strong>88%</strong> of organizations worry about <strong>indirect prompt injection</strong> — and they should. The moment an agent reads an email, parses a document, or browses a web page, <strong>untrusted content enters its reasoning loop</strong>. The developer's job is to build the right hooks and guardrails so enterprise security teams can detect and respond — <em>that's where tools like Defender plug in.</em> <strong>Assume your agent will be manipulated and design for graceful failure when it is.</strong></li>
+<li><strong>Regulatory uncertainty.</strong> More than half of leaders admit they don't fully understand how AI will be regulated — EU sector-specific rules in finance and healthcare, evolving guidance in the US. Sunil's advice: <strong>don't wait for the rules to settle. Build observability and traceability now.</strong> If you can answer <em>"what did this agent do, on whose behalf, with what data, and why?"</em> you're ready for whatever framework lands.</li>
+</ol>
+<p><strong>The real risk is the compounding effect</strong>, not any single item: an agent with too much access, reasoning over untrusted data, making decisions no one can audit, in a regulatory environment that's still being written. The good news — every one of these problems has an answer, and <strong>most of those answers are things developers control.</strong> As Jeremiah summarizes Sunil's point: the developers who win aren't shipping the flashiest agents; they're building agents <strong>CISOs will actually approve.</strong></p>
+<h3 id="the-core-frame-agent-as-an-actor-treat-agents-like-new-employees">The core frame: "agent as an actor" → treat agents like new employees</h3>
+<p>This is the frame shift Sunil says "unlocks everything else." Stop thinking of agents as <em>features inside an application</em> and start thinking of them as <strong>members of the workforce.</strong> When a new employee joins, an entire machinery kicks in: IT provisions a managed identity, access is scoped to role, the manager sets expectations, and everything they do is auditable. Nobody calls that bureaucratic overhead — <em>that's just how organizations operate at scale.</em> Agents need the same treatment.</p>
+<p>The questions enterprise customers ask map almost <strong>one-to-one</strong> to the questions they'd ask about any new hire:
+- <strong>Can IT discover and manage them?</strong> Today, mostly <em>no</em>. <strong>Register your agents with an identity from day one</strong> — because if IT can't see it, IT can't protect it.
+- <strong>Who are they sharing sensitive information with?</strong> Think in <strong>flows of data, not just permissions on individual actions.</strong> An agent can have two perfectly reasonable permissions on their own — <em>read from a CRM</em> and <em>send an email</em> — and the combination still creates an <strong>exfiltration path</strong>. Design with the full flow in mind.
+- <strong>Are they behaving properly?</strong> Build in the <strong>telemetry, behavioral signals, and hooks</strong> that let security teams monitor and course-correct. <em>You can't fix what you can't see.</em>
+- <strong>Are they well governed and audited?</strong> Every action must be <strong>attributable</strong>: which agent, on whose behalf, with what data, to what outcome.</p>
+<p>Sunil's bar for an enterprise-ready agent: <em>not whether it works — whether it could pass an </em><em>onboarding review at a Fortune 500.</em><strong> Identity, behavior, data handling, auditability. Build to that bar and you're not just building agents people will <em>use</em>, you're building agents enterprises will </strong>trust<strong> — and </strong>trust is what takes a demo to production.**</p>
+<h3 id="the-developer-pain-point-microsoft-is-solving">The developer pain point Microsoft is solving</h3>
+<p>Jeremiah pushes back: passing a Fortune 500 onboarding review is a <em>high</em> bar, and for a developer just trying to ship, all of this can feel overwhelming. Sunil agrees it's been a big pain point — developers may need a variety of open-source and developing tools, sometimes having to justify, identify, and pass these controls themselves, and figure out how customers will eventually use and benefit from those bespoke implementations. The bottom line: <strong>it's hard to maintain various controls from different vendors and make them all enterprise-proof.</strong> Microsoft's intent is to solve this <em>for</em> developers — enable security and governance controls easily in the agents they build, <strong>no matter where they build it, how they build it, and where they run it.</strong></p>
+<h3 id="agent-365-the-control-plane-for-agents">Agent 365 — the control plane for agents</h3>
+<p><strong>Agent 365 is the control plane for agents</strong>, built so enterprise customers can <strong>observe, govern, and secure every agent</strong> in their environment. It became <strong>generally available on May 1st</strong>, along with the <strong>SDK</strong>. The SDK is "what makes everything real for developers" — and the rest of the session focuses on exactly that: <strong>how a developer uses the SDK to make their agent fully observable, manageable, and governable by Agent 365.</strong></p>
+<p>There are effectively <strong>three on-ramps</strong> into Agent 365, by build surface:</p>
+<h4 id="1-built-on-microsoft-ai-platforms-zero-extra-work">1) Built on Microsoft AI platforms → zero extra work</h4>
+<p>For makers/developers working in <strong>Agent Builder, Copilot Studio, or Foundry</strong>, getting Agent 365 controls requires <strong>"nothing extra."</strong> Agent 365 is <strong>natively integrated out of the box</strong> with these platforms. No-code, low-code, or pro-code — when you build on Microsoft AI platforms, the agent <strong>shows up in Agent 365 automatically</strong>, with <strong>identity, observability, governance, and security all wired in.</strong></p>
+<h4 id="2-built-on-leading-third-party-platforms-register-via-connected-platform-integration">2) Built on leading third-party platforms → register via connected-platform integration</h4>
+<p>For agents built on a <em>different</em> platform entirely, Agent 365 <strong>already connects directly to leading third-party platforms</strong> like <strong>Vertex AI</strong> and <strong>AWS Bedrock</strong> (with more on the way). Those agents can be <strong>registered in the Agent 365 registry through connected platform integration.</strong> Registration is the <strong>first step to solving agent sprawl</strong> — once your agent is in the registry, <strong>customer admins can discover it.</strong></p>
+<h4 id="3-built-with-your-own-sdk-framework-custom-code-the-agent-365-sdk">3) Built with your own SDK / framework / custom code → the Agent 365 SDK</h4>
+<p>This is the largest group — developers using <strong>OpenAI's SDK, LangChain, Claude, LlamaIndex, the Microsoft Agent Framework, or fully custom code</strong> — and they need the same things (observability, governance, security), not <em>just</em> registration. That's exactly where the <strong>Agent 365 SDK</strong> comes in.</p>
+<h3 id="how-the-agent-365-sdk-works-incremental-not-all-or-nothing">How the Agent 365 SDK works — incremental, "not all or nothing"</h3>
+<p>The first principle: the SDK is <strong>not all-or-nothing.</strong> Whatever you're building with, you can <strong>layer Agent 365 capabilities onto what you're already running, incrementally.</strong> You pick <strong>where to start and how far to go</strong> across the three capability tiers — <strong>observability, governance, security.</strong> It's a layer, not a rewrite.</p>
+<h4 id="observability">Observability</h4>
+<p>The SDK adds <strong>full OpenTelemetry-based tracing</strong> — capturing <strong>every input, every output, every tool call, every model invocation.</strong> Two paths:
+- <strong>Microsoft OpenTelemetry distro (recommended).</strong> Ships with <strong>auto-instrumentation for OpenAI, LangChain, and the Agent Framework</strong>, plus <strong>hooks for everything else.</strong>
+- <strong>Direct ingestion to an OTel endpoint.</strong> If you already run an OpenTelemetry pipeline, or you're on a stack the SDK doesn't support yet (<strong>Java</strong> was the example), you can <strong>plug straight in and reuse what you've built.</strong></p>
+<p>A convenience layer: <strong>AI-guided setup for coding agents</strong> that <strong>wires up registration and telemetry for you</strong>, so developers aren't reading docs to get to their first trace.</p>
+<p>The security payoff: with observability enabled, <strong>enterprise security teams can use it for threat hunting in the Microsoft Defender portal.</strong> The unified observability the SDK provides enables <strong>both IT and security teams to secure and govern agents with complete visibility.</strong></p>
+<h4 id="governance">Governance</h4>
+<p>The SDK lets a customer's <strong>IT and security teams govern tool access</strong>, including access to <strong>Microsoft 365 data through MCPs.</strong> So <strong>mail, calendar, OneDrive, SharePoint, and Teams</strong> are all reachable through <strong>governed, admin-controlled, auditable, revocable permissions.</strong> Developers <strong>don't have to build bespoke connectors or handle consent flows</strong> — the SDK provides the <strong>tool surface</strong>, and <strong>admins decide what the agent is allowed to touch.</strong> Developers can also <strong>bring their own MCPs and register them with Agent 365</strong> to get the same controlled access across all their MCPs.</p>
+<h4 id="security">Security</h4>
+<p>This is where <strong>Entra Agent ID</strong> comes in (the transcript's "intra-agent ID" — i.e. <strong>Microsoft Entra Agent ID</strong>). Developers <strong>enable Entra Agent ID through the SDK</strong>, and once enabled, a whole set of capabilities <strong>light up for the customer's admins</strong>: <strong>identity protection, conditional access, and ID governance.</strong> The agent gets a <strong>real, verifiable identity</strong>, and admins manage it with the <strong>same Entra controls they already use for users.</strong></p>
+<p>The shortest summary Sunil gives: <strong>bring whatever framework or model you want — the Agent 365 SDK gives you observability, governance, and security as incremental capabilities, not a rewrite.</strong></p>
+<h3 id="where-entra-and-purview-fit-after-sdk-integration">Where Entra and Purview fit after SDK integration</h3>
+<p>Jeremiah asks how Entra and Purview slot in once the SDK is integrated. Sunil reframes:
+- <strong>Entra:</strong> <em>nothing extra to wire up.</em> Entra Agent ID is <strong>part of the SDK</strong>, so once integrated, <strong>identity &amp; access management, governance, and threat hunting in Defender all just light up</strong> for the customer — <strong>no additional plumbing.</strong>
+- <strong>Purview (data security &amp; compliance):</strong> controls like <strong>sensitivity labels, DLP, and data lifecycle policies</strong> work across the <strong>M365 surface area</strong> (e.g. <strong>Teams</strong>) wherever the agent interacts with users. For <em>other</em> scenarios, <strong>Microsoft provides Purview APIs</strong> that developers can use to <strong>wire data controls into the agents they build.</strong> Either way, <strong>enterprise customers configure and enforce their own Purview policies at runtime.</strong> Microsoft is "looking into making this even easier" from a developer perspective.</p>
+<p>So it's the <strong>same agent, two extension paths: one built-in (Entra) and one with a runtime hook (Purview).</strong></p>
+<h3 id="what-customers-actually-get-the-three-pillars">What customers actually get — the three pillars</h3>
+<p>Once an agent is integrated, here's what security teams get, all built on the <strong>security tool set enterprise customers already use every day</strong>:</p>
+<ol>
+<li><strong>Microsoft Entra</strong> — the agent gets assigned an <strong>agent ID</strong>, and from there the agent identity can be <strong>secured and governed like any other identity in the org</strong>: <strong>lifecycle management, conditional access, access governance</strong> — all the controls Entra admins already run.</li>
+<li><strong>Microsoft Purview</strong> — <strong>data security and compliance.</strong> Customers manage the <strong>agent's data security posture</strong>, configure <strong>information protection and DLP</strong>, layer in <strong>insider risk management</strong>, and build <strong>compliance controls</strong> so the agent meets the regulatory requirements they're held to.</li>
+<li><strong>Microsoft Defender</strong> — security teams <strong>investigate misconfigurations or vulnerabilities</strong> in agents and do <strong>advanced hunting right in the Defender portal</strong>. If the agents integrate with tools like <strong>Microsoft 365 apps</strong>, Defender can also <strong>detect, block, and respond to threats</strong> such as <strong>tool misuse</strong>.</li>
+</ol>
+<p>The unifying pattern across all three: <strong>security teams don't have to learn new tools — they work where they already work.</strong></p>
+<h3 id="the-wrap">The wrap</h3>
+<p>Jeremiah's closing picture: enterprise customers need controls to <strong>manage agent sprawl, prevent data leakage, protect agents against threats, and meet compliance requirements</strong> — that's the bar customers hold developers to. <strong>Agent 365 is what makes agents meet that bar</strong>, whether you build on Microsoft AI platforms or integrate an agent built anywhere else via the Agent 365 SDK. Sunil's final point for developers: <strong>you don't have to choose between shipping fast and being enterprise-ready.</strong> Build on the framework you already use, and <strong>the moment you integrate, your agents inherit the identity, governance, and security capabilities enterprise customers expect</strong> — <em>and that's what unlocks adoption.</em> The session ends pointing viewers to <strong>three resources</strong> to start building with the Agent 365 SDK (save the links).</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Agent 365</strong> — Microsoft's <strong>control plane for agents</strong>; lets enterprises observe, govern, and secure every agent in their environment. <strong>GA May 1st.</strong></li>
+<li><strong>Agent 365 SDK</strong> — lets developers layer <strong>observability, governance, and security</strong> onto any agent framework incrementally; the focus of the session. Also a <strong>CLI</strong> exists (Sunil runs both).</li>
+<li><strong>Agent 365 registry</strong> — where agents (including third-party-platform agents) are <strong>registered</strong> so admins can discover them; <strong>registration is the first step against agent sprawl.</strong></li>
+<li><strong>Connected platform integration</strong> — mechanism by which third-party-platform agents get registered into Agent 365.</li>
+<li><strong>Microsoft Entra / Entra Agent ID</strong> ("intra-agent ID" in captions) — gives the agent a <strong>real, first-class verifiable identity</strong>; enables <strong>identity protection, conditional access, ID/access governance, lifecycle management</strong> with the same controls used for human users. Built into the SDK.</li>
+<li><strong>Microsoft Purview</strong> — <strong>data security &amp; compliance</strong>: <strong>sensitivity labels, DLP, data lifecycle policies, insider risk management, information protection, compliance controls.</strong> Also exposes <strong>Purview APIs</strong> for wiring data controls into custom agents.</li>
+<li><strong>Microsoft Defender</strong> — <strong>threat hunting / advanced hunting</strong> in the <strong>Defender portal</strong>; investigate misconfigs/vulnerabilities; <strong>detect, block, and respond</strong> to threats like <strong>tool misuse</strong> and <strong>prompt injection.</strong></li>
+<li><strong>Microsoft 365 admin center</strong> — where a registered agent appears as <strong>inventoried, visible, manageable</strong> enterprise asset (shown in demo).</li>
+<li><strong>OpenTelemetry (OTel)</strong> — the tracing standard the SDK builds on (every input/output/tool call/model invocation).</li>
+<li><strong>Microsoft OpenTelemetry distro</strong> — recommended observability path; <strong>auto-instrumentation</strong> for OpenAI, LangChain, Agent Framework + hooks for everything else.</li>
+<li><strong>OTel endpoint (direct ingestion)</strong> — alternative observability path to reuse an existing pipeline or support unsupported stacks (e.g. <strong>Java</strong>).</li>
+<li><strong>MCP (Model Context Protocol) servers</strong> — the governed tool surface for <strong>mail, calendar, OneDrive, SharePoint, Teams</strong>; developers can also <strong>bring &amp; register their own MCPs</strong> for the same governed, auditable, revocable access.</li>
+<li><strong>Microsoft 365 data sources via MCP</strong> — Mail, Calendar, OneDrive, SharePoint, Teams.</li>
+<li><strong>AI-guided setup</strong> — wires up <strong>registration + telemetry</strong> for coding agents automatically.</li>
+<li><strong>Blueprint</strong> — the registration construct that, combined with Entra Agent ID, makes a GenSpark agent show up and become manageable in the M365 admin center (from demo).</li>
+<li><strong>Microsoft AI platforms (native integration):</strong> <strong>Agent Builder, Copilot Studio, Foundry</strong> — Agent 365 is wired in out of the box (no-code/low-code/pro-code).</li>
+<li><strong>Third-party platforms (connected):</strong> <strong>Google Vertex AI</strong>, <strong>AWS Bedrock</strong> (more on the way).</li>
+<li><strong>Agent frameworks / SDKs supported via Agent 365 SDK:</strong> <strong>OpenAI SDK, LangChain, Claude, LlamaIndex, Microsoft Agent Framework</strong>, and <strong>fully custom code.</strong></li>
+<li><strong>GenSpark agent</strong> — the third-party agent used in the live demo, already integrated with the Agent 365 SDK.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Agent 365 + Agent 365 SDK general availability — May 1st.</strong> Sunil states Agent 365 was made <strong>generally available on May 1st, along with the SDK.</strong> This is the headline GA called out in the session.</li>
+<li><strong>Connected-platform integration for Vertex AI &amp; AWS Bedrock — available, more on the way.</strong> Agent 365 <em>already</em> connects directly to these leading third-party platforms, with additional platforms described as coming.</li>
+<li><strong>AI-guided setup for coding agents</strong> — auto-wires registration + telemetry so developers reach their first trace without reading docs. Presented as a current SDK capability.</li>
+<li><strong>Roadmap / "coming" notes (not dated):</strong> more third-party platform connectors on the way; broader OTel stack support (e.g. <strong>Java</strong> noted as not yet supported by the SDK distro — direct OTel ingestion is the workaround today); and Microsoft is <strong>"looking into"</strong> making Purview data-control wiring <strong>easier from a developer perspective.</strong></li>
+<li>No private/public-preview SKUs were explicitly named beyond the May 1st GA of Agent 365 and the SDK.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<p><strong>Live demo — GenSpark agent already integrated with Agent 365 SDK</strong> (presented by Sunil). The demo walks the three pillars end-to-end on a real third-party agent:</p>
+<ul>
+<li><strong>Identity / discoverability (Entra + blueprint):</strong> Because GenSpark integrates with the SDK, the agent has an <strong>Entra Agent ID and a blueprint</strong>, so it <strong>shows up in the Microsoft 365 admin center</strong> — <em>visible, inventoried, and manageable like any other enterprise asset.</em> The instant the agent is <strong>registered through a blueprint</strong>, it gets a <strong>first-class Entra Agent ID in the tenant</strong>, automatically subject to the <strong>same governance the org runs for human users.</strong> Sunil shows the <strong>audit logs</strong> of what the agent has done and the <strong>sign-in logs</strong> to each endpoint the agent made or attempted — <em>"just like how we audit human users, now we can audit agents."</em><br>
+<strong>Point proved:</strong> an agent built on a non-Microsoft platform becomes a governed, audited tenant identity with zero bespoke identity work.</li>
+<li><strong>Data governance (Purview):</strong> Every interaction — every message read, every file pulled from SharePoint, every email drafted — <strong>automatically flows through the tenant's Purview policies.</strong> Two controls are demonstrated:</li>
+<li>A <strong>sensitivity label</strong> configured so <strong>"highly confidential"–labeled documents can only be shared with human users</strong> — this <strong>prevented the agent from reading the document even though the document was created by that agent.</strong></li>
+<li>A <strong>DLP rule</strong> to prevent users from <strong>sharing sensitive data with AI agents</strong> — <strong>Purview blocked the message</strong>, enforcing it <strong>at the platform layer.</strong><br>
+<strong>Point proved:</strong> the same controls protecting humans now protect (and constrain) the agent, automatically.</li>
+<li><strong>Threat protection (Defender):</strong> Defender <strong>continuously monitors the agent's behavior</strong> the same way it monitors any tenant user — watching for <strong>anomalous tool calls, unusual data-access patterns, and signs of compromise.</strong> A <strong>high-severity alert</strong> is raised when <strong>the user attempts a prompt-injection attack</strong>; the rule kicks in and <strong>the tool is blocked.</strong> This works for <strong>all tools/MCPs available on Agent 365 <em>and</em> your own registered MCPs.</strong><br>
+<strong>Point proved:</strong> when something goes wrong, the security team <strong>doesn't need a custom playbook for AI agents — they use the one they already have.</strong></li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>82%</strong> of leaders plan to deploy agents in the next <strong>12–18 months</strong> to keep up with workforce demand.</li>
+<li><strong>80%</strong> of leaders say their <strong>top concern is sensitive data leaking through AI.</strong></li>
+<li><strong>88%</strong> of organizations are worried about <strong>indirect prompt injection.</strong></li>
+<li><strong>More than half</strong> of leaders admit they <strong>don't fully understand how AI will be regulated.</strong></li>
+<li>🗣️ <em>"An agent is not an app. It's an actor with its own brain. Give it a scoped identity, least-privilege access, and an audit trail from day one. If you bolt on governance later, you have already lost it."</em> — Sunil Garg</li>
+<li>🗣️ <em>"The bar for an enterprise-ready agent isn't whether it works. It's whether it could pass an onboarding review at a Fortune 500."</em> — Sunil Garg</li>
+<li>🗣️ <em>"You can't fix what you can't see."</em> — Sunil Garg (on telemetry/behavioral signals)</li>
+<li>🗣️ <em>"Trust is what takes a demo to production."</em> — Sunil Garg</li>
+<li>🗣️ <em>"The developers who win here aren't the ones shipping the flashiest agents. They are the ones building agents that CISOs will actually approve."</em> — Sunil Garg</li>
+<li>🗣️ <em>"Assume your agent will be manipulated and design for graceful failure when it is."</em> — Sunil Garg (on prompt injection)</li>
+<li>🗣️ <em>"Same agent, two extension paths: one built-in [Entra] and one with a runtime hook [Purview]."</em> — Sunil Garg</li>
+<li>🗣️ Key data-flow insight: two reasonable permissions — <em>read from a CRM</em> + <em>send an email</em> — <em>"still creates an exfiltration path. Design with the full flow in mind, not just the individual action."</em></li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Stand up a minimal custom/LangChain agent and integrate the <strong>Agent 365 SDK</strong> incrementally — start with <strong>observability only</strong> (Microsoft OTel distro), confirm traces, then layer governance, then Entra Agent ID.</li>
+<li>Reproduce the demo's three guardrails in a test tenant: a <strong>sensitivity label</strong> that excludes agents, a <strong>DLP rule</strong> blocking sensitive data to AI agents, and verify a <strong>Defender</strong> alert fires on a prompt-injection attempt.</li>
+<li>Try <strong>registering a custom MCP</strong> with Agent 365 and confirm admin-controlled, revocable access to M365 data (mail/SharePoint).</li>
+<li>Test the <strong>direct OTel ingestion</strong> path for an unsupported stack (e.g. a Java service) vs. the Microsoft distro auto-instrumentation.</li>
+<li>Explore the <strong>AI-guided setup for coding agents</strong> to see how far it auto-wires registration + telemetry.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What exactly is a <strong>"blueprint"</strong> in Agent 365 vs. plain registration, and how does it relate to Entra Agent ID provisioning?</li>
+<li>Which agent frameworks does the <strong>Microsoft OTel distro auto-instrument today</strong> beyond OpenAI/LangChain/Agent Framework, and what's the roadmap for LlamaIndex/Claude?</li>
+<li>What's the <strong>licensing/SKU</strong> model for Agent 365 + the SDK now that it's GA (per-agent? per-tenant? bundled with M365 E5 / Entra Suite / Purview)?</li>
+<li>How are <strong>Purview APIs</strong> structured for non-M365 ("other scenario") agents, and what's the effort to wire them vs. the built-in Teams surface?</li>
+<li>For <strong>third-party-platform agents</strong> (Vertex/Bedrock) registered via connected integration — do they get full Entra Agent ID + Purview/Defender, or only registry/discovery until the SDK is also integrated?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Any team shipping production agents into a regulated enterprise (finance/health) that must pass a security/onboarding review.</li>
+<li>Platform/security teams standardizing <strong>agent identity, governance, and threat hunting</strong> on existing Entra/Purview/Defender investments.</li>
+<li>Developers on <strong>non-Microsoft stacks</strong> (OpenAI SDK, LangChain, Claude, LlamaIndex, custom) who need enterprise-readiness without rebuilding a security stack.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Build 2026">Microsoft Build 2026</span></li>
+<li>Topics: <span class="wikilink wikilink--unresolved" title="Agent 365">Agent 365</span> · <span class="wikilink wikilink--unresolved" title="Microsoft Entra Agent ID">Microsoft Entra Agent ID</span> · <span class="wikilink wikilink--unresolved" title="Microsoft Purview">Microsoft Purview</span> · <span class="wikilink wikilink--unresolved" title="Microsoft Defender">Microsoft Defender</span> · <span class="wikilink wikilink--unresolved" title="Model Context Protocol (MCP)">Model Context Protocol (MCP)</span> · <span class="wikilink wikilink--unresolved" title="OpenTelemetry">OpenTelemetry</span> · <span class="wikilink wikilink--unresolved" title="Indirect Prompt Injection">Indirect Prompt Injection</span></li>
+<li></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="OD839.html"><span class="pager-dir">← Previous</span><span class="pager-code">OD839</span><span class="pager-title">AI solutions built to power industrial innovation and sovereign control</span></a>
+    <a class="pager pager-next" href="OD841.html"><span class="pager-dir">Next →</span><span class="pager-code">OD841</span><span class="pager-title">Ship fast, stay secure: from code to runtime</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

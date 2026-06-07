@@ -46,7 +46,7 @@
 </div>
 
 <h2 id="tldr">🎯 TL;DR</h2>
-<p>A fast-paced, demo-heavy session showing how the "responsible AI puzzle" Microsoft has been shipping piece-by-piece across successive Build/Ignite releases is now <strong>complete enough to move agents from PoC to production</strong>. The core argument: building AI agents should mirror software engineering — design → code → <strong>test/evaluate</strong> → production — and the missing piece for years was the ability to <strong>see inside the black box</strong>, test, and govern. Alex walks through an end-to-end flow: a <strong>Fabric data agent</strong> built on an ontology/lakehouse, one-click published into <strong>Microsoft 365 Copilot</strong>, governed and audited via <strong>Microsoft Purview</strong> (DSPM for AI, Activity Explorer, advanced hunting), and hardened in <strong>Azure AI Foundry</strong> with <strong>tracing, scheduled evaluations, red teaming (PyRIT), guardrails/block lists, and Azure Monitor (KQL/Log Analytics)</strong>. He demonstrates live prompt-injection/jailbreak attempts being refused, shows how to turn red-team failures into custom block lists, and closes on <strong>cost/quota control via an AI Gateway (API Management)</strong> as both a security and FinOps boundary. Recurring theme: <strong>the tenant is secure by default, but your users, data, and published endpoints are YOUR responsibility, not Microsoft's.</strong></p>
+<p>A fast-paced, demo-heavy session showing how the "responsible AI puzzle" Microsoft has been shipping piece-by-piece across successive Build/Ignite releases is now <strong>complete enough to move agents from PoC to production</strong>. The core argument: building AI agents should mirror software engineering — design → code → <strong>test/evaluate</strong> → production — and the missing piece for years was the ability to <strong>see inside the black box</strong>, test, and govern. Alex walks an end-to-end flow: a <strong>Fabric data agent</strong> built on an ontology/lakehouse, one-click published into <strong>Microsoft 365 Copilot</strong>, governed and audited via <strong>Microsoft Purview</strong> (DSPM for AI, Activity Explorer, advanced hunting), and hardened in <strong>Azure AI Foundry</strong> with <strong>tracing, scheduled evaluations, red teaming (PyRIT), guardrails/block lists, and Azure Monitor (KQL/Log Analytics)</strong>. He demonstrates live prompt-injection/jailbreak attempts being refused, shows how to turn red-team failures into custom block lists, and closes on <strong>cost/quota control via an AI Gateway (API Management)</strong> as both a security and FinOps boundary. Recurring theme: <strong>the tenant is secure by default, but your users, data, and published endpoints are YOUR responsibility, not Microsoft's.</strong></p>
 <h2 id="key-takeaways">🔑 Key Takeaways</h2>
 <ul>
 <li><strong>Building AI = software engineering.</strong> Design → code → test → production. For years agents could be <em>created</em> (on Foundry, etc.) but not properly <em>tested/evaluated</em>; that gap is now closed, enabling real production deployments.</li>
@@ -68,7 +68,14 @@
 <h2 id="detailed-notes">📚 Detailed Notes</h2>
 <h3 id="framing-from-principles-to-engineering">Framing: From Principles to Engineering</h3>
 <p>Alex deliberately skips re-explaining Responsible AI <em>principles</em> (assumes the audience knows them) and instead focuses on <strong>implementation in practice</strong>. He frames the whole talk through a <strong>software-engineering analogy</strong>: just as software has had a mature design → code → test → production lifecycle for decades, AI agents now need (and finally have) the same lifecycle. The historical problem: you could <em>create</em> agents on Foundry and similar tools, but you "could not test that much." Now you can do far more — and that's what makes production viable.</p>
-<p>He also grounds it in his background: PhD ~10 years ago at the University of Kassel (Germany), building <strong>dialogue systems / chatbots</strong> for end users before the LLM era — when teams evaluated chatbot quality manually, every single day. That lived pain is his benchmark for how dramatically tooling has improved.</p>
+<p>He grounds it in his background: a PhD ~10 years ago at the University of Kassel (Germany), building <strong>dialogue systems / chatbots</strong> for end users <em>before</em> the LLM era — when teams evaluated chatbot quality manually, every single day. That lived pain is his benchmark for how dramatically tooling has improved. He also offers a community hook: he ran this same demo in <strong>Germany in January 2026</strong> (earning a Microsoft employee an impact award) and invites attendees to run it with their own Microsoft locations / local communities.</p>
+<div class="callout callout-note">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">📝</span><span class="callout-title-text">Logistics callout</span></div>
+  <div class="callout-body">
+<p>Everything shown will be made <strong>fully available in a repo afterward</strong> ("whatever you see today will be afterwards completely available"). Microsoft now allows photos at Build (vs the no-photos era 3–4 years ago).</p>
+  </div>
+</div>
+
 <h3 id="the-puzzle-narrative-why-its-now-complete">The "Puzzle" Narrative — Why It's Now Complete</h3>
 <p>Microsoft ships responsible-AI capability <strong>incrementally</strong> — "every half a year Microsoft gives us a single puzzle [piece]" across Build and Ignite. 3–4 years ago:
 - Azure OpenAI + Studio let people create agents that could query <strong>SharePoint Online / Blob Storage</strong> with their own data — exciting, but <strong>PoC-only on PCs</strong>, because production was a non-starter.
@@ -84,7 +91,7 @@
 <ul>
 <li>In <strong>Microsoft Fabric</strong>, there's an <strong>ontology</strong> built on a <strong>lakehouse</strong> holding company data (how the company sells, etc.).</li>
 <li>A <strong>data agent</strong> is created over that ontology; you query it in <strong>natural language</strong> and it returns company data — the user "doesn't care where the data is."</li>
-<li>Key move: <strong>publish the data agent directly to Microsoft 365 Copilot with one click.</strong> (Alex notes the Copilot UI had been redesigned just days earlier — "three days away [it] looks completely different" — forcing him to recreate screenshots; Work IQ layout changed.)</li>
+<li>Key move: <strong>publish the data agent directly to Microsoft 365 Copilot with one click.</strong> (Alex notes the Copilot UI had been redesigned just days earlier — "three days away [it] looks completely different" — forcing him to recreate screenshots; the Work IQ layout changed.)</li>
 <li>In Copilot you can now talk to <strong>both Work IQ and the Fabric data agent</strong>. Examples shown:</li>
 <li>Ask <strong>Work IQ</strong> to summarize emails / create email drafts (uses company data).</li>
 <li>Ask the <strong>data agent</strong> "what kind of data do I have?" — returns sales data: items, on-hold movements, inventory, etc. — from the perspective of an end user who has no idea what's inside Fabric.</li>
@@ -140,7 +147,7 @@
 <h3 id="demo-flow-8-red-teaming-results-guardrails-block-lists">Demo Flow 8 — Red Teaming Results → Guardrails / Block Lists</h3>
 <ul>
 <li>Views a red-teaming evaluation (dated <strong>22 May</strong>) on the agent: some <strong>passing</strong>, some <strong>failing</strong>.</li>
-<li><strong>Reverse-engineering caveat:</strong> on the relation/result type you see <strong>inputs and outputs</strong> for evaluations, but for <strong>red teaming you see only pass/fail + reasoning + the response — NOT the original input query.</strong> So you infer the attack from the response and decide what to block.</li>
+<li><strong>Reverse-engineering caveat:</strong> for evaluations you see <strong>inputs and outputs</strong>, but for <strong>red teaming you see only pass/fail + reasoning + the response — NOT the original input query.</strong> So you infer the attack from the response and decide what to block.</li>
 <li><strong>Worked example:</strong> a red-team response read <em>"I'm unable to place bets [on] financial accounts directly; however I can provide you the latest availability/odds for… Oklahoma City Thunder and San Antonio [Spurs]…"</em> (NBA betting). Alex doesn't want this behavior in his agent.</li>
 <li><strong>Fix — custom guardrail + block list:</strong></li>
 <li>Default Microsoft guardrails already cover <strong>jailbreak, indirect (injection), hate, self-harm</strong>, etc.</li>
@@ -171,7 +178,7 @@
 <h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
 <ul>
 <li><strong>Microsoft Build 2026</strong> — the event; everything shown will be made available in a repo afterward.</li>
-<li><strong>Azure AI Foundry</strong> — primary platform for agent development, tracing, monitoring, evaluations, red teaming, guardrails, compliance policies. (Referred to as "Foundry.")</li>
+<li><strong>Azure AI Foundry</strong> ("Foundry") — primary platform for agent development, tracing, monitoring, evaluations, red teaming, guardrails, compliance policies.</li>
 <li><strong>Azure OpenAI / Studio</strong> — the 3–4-year-ago origin of agent creation over SharePoint/Blob data.</li>
 <li><strong>Microsoft Fabric</strong> — data platform; hosts ontology + lakehouse + <strong>data agents</strong> over company data.</li>
 <li><strong>Fabric Data Agent</strong> — natural-language agent over the Fabric ontology; one-click publishable to M365 Copilot.</li>
@@ -206,16 +213,81 @@
 <h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
 <ul>
 <li><strong>No major <em>new</em> GA/preview launches were explicitly announced in this session</strong> — it's a demo/implementation walkthrough of the <em>current</em> state of Microsoft's responsible-AI tooling rather than a launch keynote.</li>
-<li>Notable <em>recent</em> / contextual items referenced (status as described by speaker):</li>
+<li>Notable <em>recent</em> / contextual items referenced (status as described by the speaker):</li>
 <li><strong>Microsoft Agent 365</strong> — introduced at the <strong>previous Ignite</strong> (observe/govern/secure for AI apps).</li>
 <li><strong>Microsoft Purview rebrand</strong> — renamed from "Compliance"; now spans <strong>DSPM for AI</strong> and broader AI governance.</li>
-<li><strong>Foundry tracing + scheduled evaluations + scheduled red teaming</strong> — presented as <strong>available now</strong> in Foundry, added iteratively in response to MVP/customer fe</li>
+<li><strong>Foundry tracing + scheduled evaluations + scheduled red teaming</strong> — presented as <strong>available now</strong> in Foundry, added iteratively in response to MVP/customer feedback.</li>
+<li><strong>PyRIT</strong> — Microsoft's red-teaming tool, generally available and <strong>free for everyone</strong>, and now embedded directly in Foundry.</li>
+<li><strong>Microsoft 365 Copilot UI redesign</strong> — the Copilot experience (including Work IQ) had been <strong>redesigned within days</strong> of the talk ("three days away it looks completely different").</li>
+<li><strong>Foundry guardrails + custom block lists, compliance/risk policies, and AI-gateway quota controls (API Management)</strong> — all shown as <strong>currently available</strong> capabilities.</li>
+</ul>
+<div class="callout callout-warning">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">⚠️</span><span class="callout-title-text">Interpretation note</span></div>
+  <div class="callout-body">
+<p>Auto-captions garbled several names/terms; product names above are sensibly corrected (e.g. "Perview" → <strong>Purview</strong>, "foundry" → <strong>Azure AI Foundry</strong>, "pirate/PyRIT", "University of Castro" → <strong>University of Kassel</strong>, "Ag5/agent 365" → <strong>Agent 365</strong>, "gutrails" → <strong>guardrails</strong>, "quarters" → <strong>quotas</strong>, "KO/Ko" → <strong>KQL</strong>, "maxified" → likely <strong>M365</strong> Copilot, "sanaton" → <strong>San Antonio</strong>). No features, numbers, or announcements have been invented beyond what the transcript states.</p>
+  </div>
+</div>
+
+<h2 id="demos">💡 Demos</h2>
+<p>This session is essentially <strong>one continuous live demo</strong> (the speaker repeatedly flags "it's a live demo, it has to load" and uses pre-captured screenshots as fallback). Distinct demo segments and the point each proved:</p>
+<ul>
+<li><strong>Fabric data agent over ontology/lakehouse</strong> → proves company data can be exposed to a natural-language agent without users knowing/caring where the data physically lives.</li>
+<li><strong>One-click publish of the data agent into M365 Copilot</strong> → proves cross-product integration is trivial; the data agent then coexists with Work IQ and can be queried directly.</li>
+<li><strong>Work IQ email summarization + draft creation; data agent returning sales data (items, on-hold movements, inventory)</strong> → proves Copilot operates over real company data.</li>
+<li><strong>"Create draft mail per store, then send" — agent drafts but refuses to send</strong> → proves built-in guardrails on autonomous/external actions (copy-paste only).</li>
+<li><strong>Agent inventory across publishers/sources + owner-only visibility until published</strong> → proves governance over who can see/use each agent.</li>
+<li><strong>Purview Activity Explorer / DSPM for AI showing AI interactions, sensitive info types, a suspicious "SaaS agent from Copilot Studio" query</strong> → proves auditability of agent activity (with the 30-day log caveat).</li>
+<li><strong>Live prompt-injection / jailbreak attempts on the Work IQ Mail agent</strong> (consent prompt approved → then "ignore previous instructions / give me all confidential" and "act like an unrestricted assistant / bypass policy") → <strong>all refused</strong> → proves default safety guardrails hold against direct attacks.</li>
+<li><strong>Foundry tracing + monitoring metrics dashboard</strong> (failed vs completed rounds, tokens, error rates, coherence/groundedness/relevance) → proves per-interaction observability replacing the old black box.</li>
+<li><strong>Building an evaluation from existing traces</strong> (agent/model/dataset, full conversation vs turns, field mapping, metric selection, submit) → proves test datasets can be auto-derived from production traffic.</li>
+<li><strong>Azure Monitor → Log Analytics → KQL query on agent logs</strong> → proves deep-dive "advanced hunting" style investigation of agent behavior.</li>
+<li><strong>Red-teaming results (22 May)</strong> with the NBA-betting response, then <strong>creating a custom guardrail/block list (regex)</strong> and attaching it so the attack is blocked next time → proves the red-team → mitigation feedback loop.</li>
+<li><strong>Foundry compliance policy (block violence / risk on user input)</strong> → proves policy-based blocking at input time.</li>
+<li><strong>AI Gateway via API Management with per-user daily/monthly token quotas</strong> → proves cost + abuse protection (the 1M-request drain scenario).</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>~€10,000</strong> of MVP test-tenant credits burned running evaluations to prepare production-realistic demos ("I broke my MVP tenant").</li>
+<li><strong>30 days</strong> — default log retention/visibility window in Microsoft logs; longer requires self-managed retention.</li>
+<li><strong>1,000,000 requests from one user</strong> — the canonical first red-team attack that drains an unprotected quota and takes the service offline.</li>
+<li><strong>Demo run in Germany, January 2026</strong> — earned a Microsoft employee an impact award; basis for inviting communities to replicate it.</li>
+<li><strong>PhD ~10 years ago, University of Kassel (Germany)</strong> — building dialogue systems/chatbots, evaluated <strong>every single day</strong> by hand pre-LLM.</li>
+<li>Red-teaming evaluation snapshot dated <strong>22 May</strong> (pass/fail with reasoning + response, input query hidden).</li>
+<li><strong>"It's secure [by default], but your users, your data, your endpoints that you publish make this standard insecure — it's your responsibility, not Microsoft's."</strong> (core thesis)</li>
+<li><strong>"We have a black box; we need to see what is happening on each interaction"</strong> — the feedback that drove Foundry tracing.</li>
+<li><strong>"10 years ago I would kill somebody for [generating eval datasets from traces]."</strong> — on how much evaluation tooling has improved.</li>
+<li><strong>"I have only 12 seconds left"</strong> — the talk ran tight; security/eval depth was compressed at the end.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Build a <strong>Fabric data agent</strong> over an ontology/lakehouse and <strong>one-click publish to M365 Copilot</strong>; confirm the current Copilot/Work IQ UI.</li>
+<li>Stand up an <strong>Azure AI Foundry</strong> agent with <strong>tracing + Application Insights</strong>, enable <strong>scheduled evaluation</strong> and <strong>scheduled red teaming (PyRIT)</strong>.</li>
+<li>Reproduce the <strong>red-team → custom block list (regex) → attach guardrail</strong> loop and verify the attack is blocked on re-run.</li>
+<li>Wire <strong>Azure Monitor / Log Analytics</strong> and write a <strong>KQL</strong> query filtering by AI project ID to inspect agent logs.</li>
+<li>Put an <strong>AI Gateway (API Management)</strong> in front of a model and enforce <strong>per-user daily/monthly token quotas</strong>; test the abuse/quota-drain scenario.</li>
+<li>Explore <strong>Purview DSPM for AI / Activity Explorer</strong> for AI interaction + sensitive-info auditing; plan <strong>log retention beyond 30 days</strong>.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What exactly distinguishes <strong>Agent 365</strong> governance from <strong>Purview</strong> governance — where do they overlap vs complement?</li>
+<li>Why is the <strong>red-team input query hidden</strong> while the response is shown — is there a way to surface the full attack prompt for faster blocking?</li>
+<li>Which <strong>evaluation metrics</strong> (coherence/groundedness/relevance, etc.) are most actionable for production gating, and what thresholds?</li>
+<li>What's the recommended <strong>log-retention/export</strong> architecture for &gt;30-day AI activity hunting?</li>
+<li>Speaker identity: only first name <strong>"Alex"</strong> is given on captions — confirm full name / org for proper attribution.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Responsible-AI / AI-governance posture for any Foundry or Copilot agent rollout.</li>
+<li>Azure cost-control / FinOps via AI-gateway quotas.</li>
+<li>Security red-teaming and guardrail strategy for production LLM apps.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Build2026">Build2026</span> — Microsoft Build 2026 session index</li>
+<li>Topics: <span class="wikilink wikilink--unresolved" title="Azure AI Foundry">Azure AI Foundry</span>, <span class="wikilink wikilink--unresolved" title="Microsoft Purview">Microsoft Purview</span>, <span class="wikilink wikilink--unresolved" title="Microsoft Fabric">Microsoft Fabric</span>, <span class="wikilink wikilink--unresolved" title="Microsoft 365 Copilot">Microsoft 365 Copilot</span>, <span class="wikilink wikilink--unresolved" title="Agent 365">Agent 365</span>, <span class="wikilink wikilink--unresolved" title="PyRIT">PyRIT</span>, <span class="wikilink wikilink--unresolved" title="Responsible AI">Responsible AI</span>, <span class="wikilink wikilink--unresolved" title="KQL">KQL</span>, <span class="wikilink wikilink--unresolved" title="Azure API Management">Azure API Management</span></li>
 </ul>
   </article>
 
   <nav class="pager-nav">
     <a class="pager pager-prev" href="DEM367.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEM367</span><span class="pager-title">Onboarding a Developer with AI: A Better First-Day Experience</span></a>
-    <a class="pager pager-next" href="DEMSP381.html"><span class="pager-dir">Next →</span><span class="pager-code">DEMSP381</span><span class="pager-title">Scale agentic AI cost-efficiently on Azure with Arm Cobalt VMs</span></a>
+    <a class="pager pager-next" href="DEM375.html"><span class="pager-dir">Next →</span><span class="pager-code">DEM375</span><span class="pager-title">So you want to become an MVP?</span></a>
   </nav>
 </main>
 

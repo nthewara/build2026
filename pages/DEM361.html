@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEM361 — Understand and fix Agent Framework apps with observability and evals</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEM361</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=wFB7wmWvL6U" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Understand and fix Agent Framework apps with observability and evals</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Jim Bennett (Microsoft MVP, Foundry &amp; Dev Tools)</span>
+      <span class="meta-item">⏱️ 18m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="observability">Observability</span><span class="chip" data-tag="evals">Evals</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speaker:</strong> Jim Bennett — Microsoft MVP for Foundry and Dev Tools<br>
+<strong>Duration:</strong> ~18 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=wFB7wmWvL6U">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>AI agents are black boxes — you build them with an LLM, instructions, and tools, then "hope it works" without seeing what happens under the hood. This demo-heavy session shows how to crack open that black box using <strong>observability</strong> (OpenTelemetry + <strong>OpenInference</strong>, visualised in the open-source <strong>Phoenix</strong> backend) and then verify correctness using <strong>evals</strong> (LLM-as-a-judge testing). Jim Bennett builds a procurement-approval agent in ~11 lines of Microsoft Agent Framework code, traces every LLM call and tool invocation, then writes an eval prompt that scores whether each decision is <em>grounded in the tool evidence</em> — exposing that the agent only worked ~50% of the time. By feeding the inputs + evals into a continuous testing loop (and even handing it all to a coding agent like GitHub Copilot CLI), he iterates toward ~90% effectiveness, demonstrating the foundations of a "self-improving software" loop.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li>An agent = <strong>LLM + instructions + tools</strong>. With Microsoft Agent Framework, you interact via essentially one line (<code>agent.run(inputs)</code>) — but that convenience hides all the decision-making (which tools to call, in what order, looping back to the LLM) inside a black box.</li>
+<li><strong>OpenTelemetry</strong> is the open standard for app observability (request timings, 200s/400s/500s). The same principle can be applied to AI apps.</li>
+<li><strong>OpenInference</strong> (by Arize) is an open-standard <em>extension</em> to OpenTelemetry implementing the semantic conventions for AI/GenAI. It's been around a few years and works <em>today</em>, unlike the still-in-committee OTel GenAI standard.</li>
+<li>OpenInference is the standard underpinning Microsoft's new <strong>assert framework / Agent Control specification</strong> (referenced from Sarah Bird's session the prior day).</li>
+<li>Adding tracing is low-effort: a couple of lines to start a trace, send it to OpenInference, then export to a backend.</li>
+<li><strong>Phoenix</strong> (free, open-source, by Arize) renders OpenInference data as a span tree: the agent run → LLM calls (system prompt, user prompt, requests, tool calls, token counts in/out) → individual tool executions and their responses — granular visibility across the whole flow.</li>
+<li>Because it's standard OpenTelemetry, you get standard tricks: e.g. drop in a <strong>span processor to strip PII / customer data</strong> on the way out. Works in dev (1–2 rows) and in production (millions of rows).</li>
+<li>LLM output is <strong>non-deterministic</strong>, so classic "given input X, expect output Y" unit testing doesn't apply. Enter <strong>evals</strong> = "testing for AI."</li>
+<li><strong>AI-as-judge beats humans for evaluation at scale</strong> — not because AI is smarter, but because humans get bored, biased, and make mistakes (the parole-before-lunch bias). AI is "just as good as a human but doesn't get bored."</li>
+<li>A classic failure: a tool returns blank (e.g. no policy), and a "helpful" agent approves everything anyway. Evals catch this by checking whether the recommendation is <strong>supported by the tool evidence alone</strong>.</li>
+<li>An eval turns non-deterministic agent output into a <strong>deterministic score</strong> (supported/unsupported, 0/1) by feeding the request + tool evidence + agent decision + reasoning into a judge prompt with a scoring rubric.</li>
+<li>Once you have <strong>inputs + evals</strong>, you can build automated, TDD-style testing: collect inputs into a dataset, run them through the agent, score with the evaluator, then tweak until the numbers go green.</li>
+<li><strong>Model selection is the killer use case</strong>: same agent, no code changes, just swapping the model (GPT-4.1 → "GPT-5.4"/GPT-5-class) jumped effectiveness from ~50% to ~90%.</li>
+<li><strong>Coding agents close the loop</strong>: GitHub Copilot CLI (or Claude) with skills can access this data, spin the app up in a sandbox, run inputs + evals, then iterate on prompts, model choice, and tool descriptions — converging on ~90% over ~4–6 cycles. This is the foundation of <strong>self-improving software</strong>.</li>
+<li>Reality check: <strong>agents will never be 100%</strong> (neither are humans) — aim for ~90%.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-do-you-actually-know-what-your-agent-is-doing">Framing: Do you actually know what your agent is doing?</h3>
+<p>Jim opens by polling the room: who's heard of AI (everyone), who's <em>building</em> agents (a few), who knows what their agent is doing under the hood (few), and who knows if their agent is actually <em>working</em> (few). The whole session targets these last two questions. The thesis: <strong>you probably don't know what your agent is doing under the hood, and you don't know if it's working.</strong> Rather than slides, the talk is almost entirely live tooling.</p>
+<h3 id="the-agent-itself-11-lines-of-code">The agent itself (≈11 lines of code)</h3>
+<p>"All the cool kids tell me agents are lit" — and an agent is literally just <strong>LLMs + instructions + tools</strong>. Jim's demo agent is ~11 lines:
+- <strong>Model</strong>: an OpenAI model running on <strong>Microsoft Foundry</strong> (Foundry = a place to run your models and do related work).
+- <strong>Instructions</strong>: he's built a <strong>procurement system evaluator</strong> — a deliberately "boring line-of-business" app. Instead of humans approving/denying purchase requests, the agent runs the approve/deny cycle: read the purchase request, gather relevant policy / vendor / budget info, then decide.
+- <strong>Tools</strong>: a series of tools — e.g. a <strong>check-policy</strong> tool, a <strong>vendor lookup</strong> tool, a <strong>budget</strong> lookup, etc.</p>
+<p>This is just scaffolding. <strong>Microsoft Agent Framework does the rest.</strong> The entire interaction is one line: <em>"Agent, run. Here are the inputs. Go do your thing,"</em> and an output comes back. Fingers crossed it works.</p>
+<h3 id="why-its-a-black-box">Why it's a black box</h3>
+<p>With that one-line interface, all the real decisions happen unseen:
+- The <strong>LLM decides</strong> whether to call a tool, <em>which</em> tools to call, and in <em>what order</em>.
+- The <strong>Agent Framework</strong> takes the tool results, calls the LLM again, does more steps, loops.
+- All you ever see is the <strong>final output</strong>. No visibility into the intermediate steps.</p>
+<p><strong>Demo (black box):</strong> A purchase request for <strong>$3,200</strong> for the <strong>engineering team</strong> to buy an updated <strong>IDE</strong>. The agent returns "approved" with a reason. It <em>could</em> be right or wrong — you simply don't know. "Complete black box."</p>
+<h3 id="observability-opentelemetry-openinference">Observability: OpenTelemetry → OpenInference</h3>
+<ul>
+<li><strong>OpenTelemetry</strong>: the standard way to see what applications are doing — bolt it onto a web app, see request durations, 500s/400s/200s. Wouldn't it be nice to apply that same open-standard principle to AI apps?</li>
+<li><strong>OpenInference</strong>: an open-standard <em>extension</em> for OpenTelemetry that works with the <strong>semantic conventions for AI</strong> — basically making AI work with OpenTelemetry.</li>
+<li>The OpenTelemetry project is working on its own <strong>GenAI standard</strong>, but it's "in a committee and we all know what committees are like." Until that lands, <strong>OpenInference has existed for a few years</strong> and is usable now.</li>
+<li>Notable tie-in: OpenInference is the standard being used for Microsoft's <strong>assert framework and Agent Control specification</strong> (referenced from <strong>Sarah Bird's</strong> session the day before).</li>
+</ul>
+<p><strong>Instrumenting is simple:</strong> because OpenTelemetry is a standard, you just drop in a couple of lines to say "I want to trace this," send it to OpenInference, and export to a backend that exposes the visibility.</p>
+<h3 id="phoenix-visualising-the-traces">Phoenix: visualising the traces</h3>
+<p>The backend shown is <strong>Phoenix</strong> — a free, open-source telemetry backend made by <strong>Arize</strong> (the folks who invented OpenInference). It's the default out-of-the-box way to render OpenInference data.</p>
+<p>What Phoenix shows for the agent run:
+- <strong>Top-level span</strong>: the process run — the $3,200 / IDE-upgrade request and the response ("Yes, it's compliant").
+- <strong>Tree diagram</strong> of everything the agent did:
+  - Microsoft Agent Framework <strong>kicks off the agent</strong>.
+  - It <strong>calls an LLM</strong> — you can see the <strong>system prompt</strong>, <strong>user prompt</strong>, the requests, and the <strong>tool calls</strong> that come back.
+  - Drill into <strong>attributes</strong>: <strong>token counts in and out</strong>, the model (OpenAI), framework (Microsoft Agent Framework).
+  - You can see exactly <strong>what goes into the LLM and what comes back</strong>, and the LLM's decision to call a tool.
+  - The <strong>check-policy tool</strong> is called (3,200 / "TechFlow") and you can see the <strong>response it returns</strong>, and so on down the tree.</p>
+<p>This gives <strong>granular, end-to-end visibility</strong> over everything the app does — usable in <strong>dev</strong> (1–2 runs while experimenting) and in <strong>production</strong> (thousands / millions of rows).</p>
+<p><strong>Standard-OTel bonus:</strong> because it's plain OpenTelemetry, you can use standard tricks — e.g. drop in a <strong>span processor to strip out PII / customer data</strong> or otherwise manipulate the data on the way out.</p>
+<p>➡️ This answers the first question: <strong>you can now see inside the black box.</strong> Next question: <strong>is it working?</strong></p>
+<h3 id="evals-testing-non-deterministic-ai">Evals: testing non-deterministic AI</h3>
+<p>Jim pivots to correctness, gently ribbing the room about not writing unit tests ("I'm not mad, I'm just disappointed").</p>
+<ul>
+<li><strong>Deterministic code</strong>: given inputs → expect a specific output. Easy to unit test.</li>
+<li><strong>LLMs</strong>: given inputs → <strong>non-deterministic</strong> output. The classic test pattern breaks.</li>
+</ul>
+<p>So how do you know an LLM is working?
+- <strong>Easiest: ask a human to look.</strong> But humans aren't great evaluators — they get <strong>bored</strong>, have <strong>biases</strong>, and <strong>make mistakes</strong>. Example: parole reviews scheduled <strong>just before lunch</strong> go badly; <strong>after lunch</strong> you're fine — bias driven by boredom/fatigue.
+- <strong>AI as evaluator</strong> is "just as good as a human, still makes mistakes, but <strong>doesn't get bored</strong>" — and crucially it <strong>runs at scale</strong>.</p>
+<p><strong>The failure mode to catch:</strong> what if a tool fails — e.g. the <strong>policy tool returns blank</strong>? A "helpful" agent reasons "there's no policy, so it must be fine — approved," and now anyone can buy a million dollars of software because there was no policy. How do you detect this? Because you now have full visibility, you can take that trace data and <strong>throw it at an AI judge</strong>: "Is this good? Does it actually do what it's supposed to?"</p>
+<p>This is what <strong>evals</strong> are — "the fancy AI word for testing." (Jim's aside: "We should have called it testing because people know what testing is, but we have to call it evals because we're cool and different.")</p>
+<h3 id="writing-the-eval-prompt-llm-as-a-judge">Writing the eval prompt (LLM-as-a-judge)</h3>
+<p>Jim shows an eval prompt roughly structured as:
+- <strong>Role</strong>: <em>"You are auditing an automated procurement evaluator."</em>
+- <strong>Task</strong>: decide whether the <strong>recommendation is supported by the tool evidence alone</strong> (i.e. is the decision <em>grounded</em> in the data the tools returned?).
+- <strong>Rubric</strong> for scoring: approve / reject / blank-for-review.
+- <strong>Fill-in slots</strong>: the original <strong>purchase request</strong>, the <strong>evidence</strong> (data returned by the tools), what the <strong>agent said</strong>, <strong>why</strong> the agent said it.
+- <strong>Output</strong>: "is the recommendation supported by tools — supported / unsupported — return one word."</p>
+<p>The key idea: layering this eval on top of the agent <strong>converts the non-deterministic agent output into a deterministic output</strong> (supported / unsupported → 1 / 0).</p>
+<p><strong>Running it:</strong> go to Phoenix, <strong>download the telemetry data</strong>, pull out the tool outputs, drop them into the eval prompt, send to an AI, and get a score (<strong>0 = doesn't work, 1 = works</strong>).</p>
+<h3 id="eval-results-the-agent-only-works-50-of-the-time">Eval results — the agent only works ~50% of the time</h3>
+<p>Switching to a different Phoenix project to see scored results:
+- <strong>First trace example</strong>: <strong>supported</strong> — "the evidence shows sufficient budget, the vendor's preferred, the purchase amount is under the auto-approval threshold." The tool data agrees with the decision. 
+- <strong>But across all rows</strong>: pass, pass, <strong>fail, fail, fail, fail, fail</strong> — it only works about <strong>half the time</strong>. Half the time the agent's decision is <strong>not grounded</strong> in the tool data.
+- <strong>Concrete bad row</strong>: marked <strong>unsupported</strong>. There's sufficient budget, but <strong>the policy requires BP (business-partner) approval</strong> for this level. The agent <strong>rejected</strong> it — but it should have <strong>flagged it for BP review</strong>, not rejected it. The judge surfaces exactly what went wrong and why.</p>
+<p>With LLM-as-a-judge, you can see precisely what's happening and what mistakes are being made.</p>
+<h3 id="closing-the-loop-datasets-continuous-testing-tdd-for-agents">Closing the loop: datasets + continuous testing (TDD for agents)</h3>
+<p>Now there are <strong>inputs + tests + results</strong> — enough to build automated testing:
+- Extract all the input data into a <strong>dataset</strong>.
+- <strong>Run inputs through the agent → score with the evaluator → read the score.</strong>
+- Make fixes, run again — just like <strong>test-driven development</strong>: write tests up front, keep running until everything goes green. Keep tweaking the agent until the numbers come out good.</p>
+<h3 id="model-selection-the-headline-result-50-90">Model selection — the headline result (50% → 90%)</h3>
+<p>The classic application of this loop is <strong>model selection</strong> — your app is bad and you want a better model, or it's good and you want a <strong>cheaper</strong> model, or a provider just shipped a new model and you need to confirm your app still works.</p>
+<p><strong>Demo:</strong> the <strong>exact same application/agent, nothing changed except the model</strong> — running against <strong>"GPT-5.4" instead of 4.1</strong> (i.e. a GPT-5-class model in place of GPT-4.1). Result: now <strong>~90% effective</strong>, up from ~50%, with <strong>zero code changes</strong> — purely a model swap, validated by the dataset + eval loop.</p>
+<h3 id="coding-agents-self-improving-software">Coding agents → self-improving software</h3>
+<p>Take it further with <strong>coding agents</strong> (GitHub Copilot CLI, or Claude — Jim jokes "any Claude people in the room? It's okay, Microsoft won't shoot you"). Coding agents can have <strong>skills</strong>, and skills can access this eval/telemetry data. So you can hand a coding agent:
+- your <strong>code / GitHub repo</strong>,
+- the <strong>inputs</strong> you run through the agent,
+- the <strong>evals</strong> you run,</p>
+<p>and say <strong>"fix my application."</strong> The coding agent then:
+1. Spins the app up in a <strong>sandbox</strong> environment.
+2. Pumps in the inputs and <strong>runs the evals</strong>.
+3. Looks at the results.
+4. <strong>Tweaks prompts, changes the model, adjusts tool descriptions</strong>, etc.
+5. Runs it again… and again, <strong>converging on a better solution</strong> over ~<strong>4–6 cycles</strong> toward the <strong>~90%</strong> mark.</p>
+<blockquote>
+<p><strong>Top tip:</strong> agents will never be 100% — humans aren't either — so target ~90%.</p>
+</blockquote>
+<p>This is the foundation of a <strong>self-improving software loop</strong>: monitor apps, see what's going wrong, ask coding agents to fix it. Jim frames this as "the future of the software we're building."</p>
+<h3 id="recap">Recap</h3>
+<ul>
+<li>An agent is a <strong>black box</strong> — you don't know what it's doing.</li>
+<li>Add <strong>observability</strong> so you can see inside it. <strong>OpenInference</strong> is the industry standard for AI observability; it gives you the view.</li>
+<li>Build <strong>evals</strong> — use <strong>LLM-as-a-judge</strong> to test agent runs.</li>
+<li>Use that data to drive <strong>self-improvement</strong>: deploy models to <strong>Foundry</strong>, build with <strong>Microsoft Agent Framework</strong>, then point <strong>GitHub Copilot CLI</strong> at it and say "fix it."</li>
+</ul>
+<h3 id="logistics-closing">Logistics (closing)</h3>
+<ul>
+<li>Jim shares a QR code linking to his LinkedIn for follow-up questions.</li>
+<li><strong>Phoenix</strong> is free and open-source — scan the QR to grab it; you can run it <strong>completely locally</strong>.</li>
+<li>He <em>would</em> have shown deploying Phoenix to <strong>Azure Container Apps</strong>, but his <strong>Microsoft MVP Azure credit ran out three hours earlier</strong> — so no Azure demo.</li>
+<li>A <strong>GitHub repo</strong> with all the code is provided so attendees can reproduce the whole demo.</li>
+</ul>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Microsoft Agent Framework</strong> — framework for building agents; reduces the agent to ~11 lines + a single <code>run</code> call, orchestrating LLM↔tool loops.</li>
+<li><strong>Microsoft Foundry</strong> — platform/place to run your models (and related capabilities); deployment target for the models used here.</li>
+<li><strong>OpenAI model (GPT-4.1)</strong> — the model originally powering the agent (~50% effective in the eval).</li>
+<li><strong>GPT-5.4 / GPT-5-class model</strong> — the upgraded model that lifted effectiveness to ~90% with no code changes (name per auto-captions).</li>
+<li><strong>OpenTelemetry (OTel)</strong> — open standard for application observability (timings, status codes); foundation that AI observability extends.</li>
+<li><strong>OpenInference</strong> — open-standard extension to OpenTelemetry implementing AI/GenAI semantic conventions; usable today; created by Arize.</li>
+<li><strong>OpenTelemetry GenAI standard</strong> — official GenAI conventions still in committee (not yet ready).</li>
+<li><strong>Phoenix</strong> — free, open-source telemetry backend by Arize that renders OpenInference data as a span tree; runnable locally; deployable to Azure Container Apps.</li>
+<li><strong>Arize</strong> — company that created OpenInference and Phoenix.</li>
+<li><strong>assert framework / Agent Control specification</strong> — Microsoft work built on OpenInference (referenced from Sarah Bird's session).</li>
+<li><strong>Span processor</strong> — OpenTelemetry mechanism used here to strip PII / customer data on export.</li>
+<li><strong>LLM-as-a-judge / evals</strong> — pattern of using an AI to score agent outputs against a rubric, producing deterministic pass/fail.</li>
+<li><strong>GitHub Copilot CLI</strong> — coding agent that, via skills, can access eval data and iteratively fix the application in a sandbox.</li>
+<li><strong>Claude</strong> — alternative coding agent mentioned alongside Copilot CLI.</li>
+<li><strong>Azure Container Apps</strong> — intended (but unshown) deployment target for Phoenix.</li>
+<li><strong>GitHub repo</strong> — companion repo containing all demo code for reproduction.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p>None explicitly announced as a new product release in this session. The talk is educational/demo-focused. Notable contextual items:
+- <strong>OpenInference is the standard powering Microsoft's new assert framework / Agent Control specification</strong> (referenced from Sarah Bird's prior-day session) — a forward-looking pointer rather than a launch here.
+- The <strong>OpenTelemetry GenAI standard</strong> is noted as still in committee (not yet available) — roadmap context.</p>
+<h2 id="demos">💡 Demos</h2>
+<ol>
+<li><strong>Black-box agent run</strong> — The ~11-line procurement-evaluator agent approves a <strong>$3,200 IDE purchase</strong> for engineering. <em>Proves:</em> an agent is trivial to build and call, but you only see the final answer — no insight into the tool calls/decisions behind it.</li>
+<li><strong>Phoenix trace view</strong> — The same run rendered as a span tree (agent → LLM call with system/user prompts, token counts → check-policy tool call + response). <em>Proves:</em> OpenInference + Phoenix give granular, end-to-end visibility inside the black box at dev and production scale.</li>
+<li><strong>Eval scoring (LLM-as-a-judge)</strong> — A judge prompt scores whether each decision is "supported by tool evidence alone," yielding 1/0 across rows. Result: ~<strong>50%</strong> pass; a flagged row shows a request that was <strong>rejected</strong> when it should have been <strong>flagged for BP review</strong>. <em>Proves:</em> evals turn non-deterministic output into deterministic, debuggable pass/fail and expose real grounding failures.</li>
+<li><strong>Model swap (4.1 → GPT-5.x)</strong> — Identical agent, only the model changed, re-run through the dataset + evals. Result jumps to ~<strong>90%</strong>. <em>Proves:</em> the eval loop lets you safely evaluate model changes/upgrades and quantify the impact with zero code changes.</li>
+<li><strong>Coding-agent self-improvement</strong> — Hand the repo + inputs + evals to GitHub Copilot CLI / Claude; it sandboxes the app, runs evals, and iterates on prompts/model/tool descriptions over ~4–6 cycles toward ~90%. <em>Proves:</em> the foundations of a self-improving software loop are achievable today.</li>
+</ol>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>~11 lines of code</strong> define the entire agent.</li>
+<li><strong>One line of code</strong> (<code>agent.run(...)</code>) is the whole interaction surface.</li>
+<li><strong>$3,200</strong> sample purchase request (engineering team, IDE upgrade).</li>
+<li><strong>~50% → ~90%</strong> effectiveness improvement <em>from a model swap alone</em> (GPT-4.1 → GPT-5-class), no code changes.</li>
+<li><strong>~4–6 cycles</strong> for a coding agent to converge toward ~90%.</li>
+<li>"<strong>Agents will never be 100%. Humans are never 100%.</strong> But you want to work towards 90%."</li>
+<li>"We should have called it <strong>testing</strong> because people know what testing is. But we have to call it <strong>evals</strong> because we're cool and different."</li>
+<li>On AI vs human evaluators: "<strong>AI is just as good as a human. Still makes mistakes, but doesn't get bored.</strong>"</li>
+<li>The <strong>parole-before-lunch bias</strong> anecdote — humans get fatigued/biased; AI doesn't get bored and runs at scale.</li>
+<li>"My <strong>Microsoft MVP Azure credit ran out three hours ago</strong>" — why the Azure Container Apps deploy wasn't shown.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Clone the session's <strong>GitHub repo</strong> and reproduce the procurement-evaluator agent end-to-end.</li>
+<li>Run <strong>Phoenix locally</strong> and wire up <strong>OpenInference</strong> instrumentation on an existing <strong>Microsoft Agent Framework</strong> app.</li>
+<li>Write an <strong>LLM-as-a-judge eval</strong> ("supported by tool evidence alone" + rubric) and build a small <strong>dataset</strong> for a TDD-style regression loop.</li>
+<li>Reproduce the <strong>model-swap experiment</strong> (e.g. 4.1 → a GPT-5-class model) and measure effectiveness deltas via evals.</li>
+<li>Try a <strong>span processor</strong> to strip PII before export.</li>
+<li>Point <strong>GitHub Copilot CLI</strong> (with skills) at repo + inputs + evals and let it iterate toward ~90%.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>Exact model name behind "GPT-5.4" (auto-caption) — confirm the real GPT-5-class model used.</li>
+<li>What exactly is Microsoft's <strong>assert framework / Agent Control specification</strong> (from Sarah Bird's session), and how does it consume OpenInference?</li>
+<li>OpenInference vs the in-committee <strong>OTel GenAI</strong> conventions — migration/compatibility path when the official standard ships?</li>
+<li>Recommended way to deploy Phoenix to <strong>Azure Container Apps</strong> for team/production use.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Building/operating production agents on <strong>Microsoft Foundry + Agent Framework</strong>.</li>
+<li>AI observability, evals, and CI-style regression testing for any agentic / LLM app.</li>
+<li>Line-of-business approval/automation workflows where decisions must be grounded in tool data.</li>
+<li>Self-improving software / autonomous-fix pipelines using coding agents.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Build 2026">Microsoft Build 2026</span></li>
+<li>Sarah Bird session (Build 2026) — assert framework / Agent Control specification (built on OpenInference)</li>
+<li><a href="https://github.com/Arize-ai/openinference">OpenInference</a> — open standard for AI observability</li>
+<li><a href="https://github.com/Arize-ai/phoenix">Phoenix by Arize</a> — open-source telemetry backend</li>
+<li><a href="https://opentelemetry.io/">OpenTelemetry</a> — base observability standard</li>
+<li>Microsoft Agent Framework · Microsoft Foundry · GitHub Copilot CLI</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEM351.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEM351</span><span class="pager-title">AI Skills Navigator: Accelerate tech skills with personalized learning</span></a>
+    <a class="pager pager-next" href="DEM362.html"><span class="pager-dir">Next →</span><span class="pager-code">DEM362</span><span class="pager-title">Building a Multi-Agent Workflow in Microsoft Fabric</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

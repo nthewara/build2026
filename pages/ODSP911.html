@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ODSP911 — Build AI-first business apps that turn dashboards into actions</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">ODSP911</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=_dTUUKlvKx8" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Build AI-first business apps that turn dashboards into actions</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Paul Usher (DevExpress)</span>
+      <span class="meta-item">⏱️ 14m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="business-apps">Business Apps</span><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="blazor">Blazor</span><span class="chip" data-tag="devexpress">Devexpress</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Paul Usher — DevExpress<br>
+<strong>Duration:</strong> ~14 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=_dTUUKlvKx8">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>A DevExpress-led walkthrough of how to embed AI into a modern <strong>Blazor</strong> line-of-business app <em>without</em> just bolting a chatbot next to it. By wiring <strong>Azure OpenAI</strong> (via <code>IChatClient</code>) to DevExpress controls using <strong>tool calling</strong>, the demo turns passive dashboards into an actionable "application assistant": users express <strong>intent</strong> in natural language ("group by profit", "export", "highlight payment risk", "translate this report", "review this contract"), and the AI invokes a curated, app-registered toolbox that drives the real control APIs. The recurring principle: <strong>AI handles the intent, DevExpress handles the interaction</strong> — Azure OpenAI provides the intelligence, the controls give that intelligence <em>shape</em> and somewhere structured to act.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li>The goal is <strong>not</strong> code generation and <strong>not</strong> a chatbot dropped beside an app — it's connecting AI to the <strong>controls, data, and workflows</strong> users already rely on.</li>
+<li>Stack: <strong>Visual Studio + .NET + DevExpress Blazor controls + DevExpress Reporting + Azure OpenAI</strong> accessed through <strong><code>IChatClient</code></strong>.</li>
+<li><strong>Tool calling</strong> is the core mechanism: the AI is given a <em>toolbox</em> of approved, screen-scoped methods (filter, group, export, summarize, etc.) — it never gets the whole application.</li>
+<li>"<strong>AI handles the intent, DevExpress handles the interaction</strong>" — the assistant <em>triggers</em> actions through controlled DevExpress APIs rather than telling the user how to do them.</li>
+<li>The grid demo's <strong>main loop</strong>: user prompt → Azure OpenAI → DevExpress tool → public control API → real UI action.</li>
+<li>Tools are just <strong>normal static C# methods with metadata</strong>; the <code>[AIIntegrationTool]</code>-style description tells the model <em>when</em> to use a function and what its parameters mean — these descriptions drive tool selection.</li>
+<li>DevExpress <strong>injects the live control instance</strong> (e.g. the DX Grid) from the tools context at runtime — the model never supplies the grid; the method body calls the same API you'd call from a button click.</li>
+<li>Registration happens in <strong><code>Program.cs</code></strong> via a <strong>keyed chat client</strong> (<code>DXTools</code>) using <code>UseDXTools</code> (adds DevExpress tool definitions) + <code>UseFunctionInvocation</code> (executes calls, feeds results back to the model).</li>
+<li>Three integration <strong>patterns</strong> are shown: (1) AI <strong>drives a control</strong> via tool calling, (2) AI is <strong>built into the control</strong> (Report Viewer translation), (3) AI is part of a <strong>custom workflow</strong> whose output a report visualizes.</li>
+<li>The <strong>Report Viewer owns the AI experience</strong> for translation — no custom chat panel needed; enabled in <code>Program.cs</code> with <code>AddBlazorReportingAIIntegration</code> + <code>AddTranslation</code>.</li>
+<li>The <strong>contract review</strong> pattern decouples AI from rendering: the report knows <em>only</em> whether each clause <code>IsRisky</code> (true/false) and applies conditional formatting — "<strong>AI creates the state, DevExpress presents the state</strong>."</li>
+<li>Architecturally, the <strong>AI layer doesn't swallow the app</strong>: pages keep using DevExpress controls for UX, services still own business data, AI tools expose only <em>selected</em> capabilities.</li>
+<li>Custom-thought-out buttons only cover scenarios you anticipated; natural-language + tools let users work in ways you <em>didn't</em> pre-build — and when a request can't be honored, the user gets an <strong>explanation, not a flat "no."</strong></li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="thesis-connect-ai-to-controls-not-chatbots-beside-apps">Thesis: connect AI to controls, not chatbots beside apps</h3>
+<p>The session opens by ruling out two anti-patterns: this is <strong>not about generating code</strong>, and <strong>not about dropping a chatbot beside an existing app and calling it done</strong>. The real objective is to connect AI to the <strong>controls</strong>, the <strong>data</strong>, and the <strong>workflows</strong> users already use. The demo app is built in <strong>Visual Studio</strong> with <strong>.NET</strong>, <strong>DevExpress Blazor controls</strong>, <strong>DevExpress Reporting</strong>, and <strong>Azure OpenAI through <code>IChatClient</code></strong>. Three worked examples follow, each illustrating a different integration pattern.</p>
+<h3 id="example-1-ai-drives-a-devexpress-grid-via-tool-calling">Example 1 — AI drives a DevExpress Grid via tool calling</h3>
+<p><strong>The command center.</strong> The home page is a "command center" with KPI cards, a <strong>DX Chart</strong> control, a <strong>DX Grid</strong>, and a <strong>DX AI Chat</strong> on the right. Sales data comes from a <strong>CSV</strong> loaded through a <strong>data service</strong>: <code>GetOrders()</code> feeds the grid (~<strong>10,000 rows</strong> of USA sales data), <code>GetSummary()</code> feeds the KPI cards, and <code>GetRegionMetrics()</code> feeds the chart. The presenter uses pre-baked recorded prompts.</p>
+<p><strong>Traditional interaction still matters.</strong> Users conventionally filter, sort, group, page, and export — and the DX Grid is very good at all of it (demoed: filter to <strong>Texas</strong>, group by <strong>region</strong>, expand, sort by <strong>customer name</strong>). You <em>could</em> build buttons for these, but buttons only cover the scenarios you thought of ahead of time. The framing question: <strong>can we give the user a more natural way to work with this data?</strong></p>
+<p><strong>Natural language → control actions.</strong> Via the DX AI Chat the user asks in plain language:
+- <em>"How did we perform this week?"</em> → handled by the <strong>sales analysis tool</strong>, which can call methods like <code>SummarizePerformance</code> (built-in executive-summary method) producing a concise business summary. (Analysis-only; no UI change.)
+- <em>"Group the orders by customer."</em> → the grid responds and <strong>groups by customer</strong>.
+- <em>"Group by profit"</em> → the code-behind has been deliberately scoped, so instead of silently failing or refusing, the user is <strong>given an explanation</strong> of what's going on.
+- <em>"Highlight the payment risk accounts."</em> → grid updates; behind the scenes it calls a <code>FilterRiskAccounts</code> method.
+- <em>"Export."</em> → an <strong>XLSX</strong> download is created via the export API.</p>
+<p><strong>The key distinction.</strong> This is the difference between a <strong>chat answer</strong> and an <strong>application assistant</strong>: the AI is <em>not telling the user how</em> to export — it <strong>triggers the export through a controlled DevExpress API</strong>. Mantra: <strong>AI handles the intent, DevExpress handles the interaction.</strong></p>
+<h3 id="code-deep-dive-example-1">Code deep-dive (Example 1)</h3>
+<p><strong><code>Home.razor</code> — the chat control.</strong> The page hosts the <strong>DX AI Chat</strong> control. The crucial setting is <code>ChatClientServiceKey = "DXTools"</code>, which points the chat control at the <strong>tool-enabled AI client</strong> registered in <code>Program.cs</code>. <code>IncludeFunctionCallInfo</code> is set to <strong>true</strong> for the demo so it can show which calls the tools make; in production you'd typically set this to <strong>false</strong>.</p>
+<p><strong>Registering the toolbox (<code>OnAfterRender</code>).</strong> A new <strong>AI Tools Context Builder</strong> is created. It registers two <strong>live targets</strong> — the actual <strong>DX Grid instance</strong> and the <strong>sales data service</strong> — then registers the methods the AI is <em>allowed</em> to call: <code>FilterByRegion</code>, <code>FilterByState</code>, <code>FilterRiskAccounts</code>, <code>GroupBy</code>, <code>ClearView</code>, <code>Export</code>, <code>Summarize</code>, and <code>ListTopCustomers</code>. This is the <strong>toolbox for the current screen</strong> — the AI does <strong>not</strong> get the whole application, only the approved capabilities registered here. At the end of the method the context is added to the <strong>AI tools container</strong>, making it available to the <strong>DevExpress tool-calling pipeline</strong>.</p>
+<p><strong>A single tool (<code>SalesGridAITools</code> → <code>FilterByRegion</code>).</strong> Each tool is a <strong>normal static C# method with metadata</strong>:
+- An AI-integration-tool attribute gives the model the <strong>function name</strong>.
+- A <strong>description</strong> tells the model <em>when</em> to use the function and what the parameters mean — <em>these descriptions matter because they guide tool selection.</em>
+- The <strong>DevExpress-specific part</strong>: the model does <strong>not</strong> provide the grid; <strong>DevExpress injects the live DX Grid instance</strong> from the tools context at runtime.
+- The method body then calls the <strong>normal DevExpress Grid API</strong> — the same code you'd write from a button click.
+- All other tools follow the same pattern; <strong>not every tool changes the UI</strong> (some only return analysis).</p>
+<p><strong><code>Program.cs</code> — wiring the chat client.</strong> Configuration is read from <strong>.NET user secrets</strong>: the <strong>Azure OpenAI endpoint</strong>, <strong>key</strong>, and <strong>deployment name</strong>. A <strong>keyed chat client</strong> named <strong><code>DXTools</code></strong> is created, and:
+- <code>UseDXTools()</code> adds the <strong>DevExpress tool definitions</strong>.
+- <code>UseFunctionInvocation()</code> <strong>executes the tool calls and feeds the results back to the model</strong>.</p>
+<p>This is exactly what the DX AI Chat on the home page consumes. <strong>The main loop</strong> is stated as a key takeaway: <strong>user prompt → Azure OpenAI → DevExpress tool → public control API → real UI action.</strong></p>
+<h3 id="example-2-ai-built-into-the-devexpress-report-viewer-translation">Example 2 — AI built into the DevExpress Report Viewer (translation)</h3>
+<p>The second pattern moves into the <strong>Report Viewer</strong>, showing a generated <strong>quarterly memo report</strong> built with DevExpress Reporting — but written in <strong>French</strong>. Using the <strong>built-in AI tooling</strong>, the user selects to translate the <strong>entire document back to English</strong> and presses <strong>Translate</strong>. Notably there is <strong>no custom chat panel</strong> on this page: <strong>the DevExpress Report Viewer owns the AI experience</strong>.</p>
+<p><strong>Under the hood.</strong> The report is a standard <code>XtraReport</code> that sets up a French memo section and a simple <strong>report header / detail band / footer / page footer</strong>. In <code>Program.cs</code>, AI behavior is enabled via <strong><code>AddBlazorReportingAIIntegration</code></strong> and <strong><code>AddTranslation</code></strong>. Configured languages include <strong>English, French, Spanish, German, and Japanese</strong>. <code>EnableTranslation</code> adds translation, and <code>EnableInlineTranslation</code> lets the translated content appear <strong>inside the rendered report</strong>. Pattern summary: <strong>the control owns the AI experience.</strong></p>
+<h3 id="example-3-ai-as-a-custom-workflow-report-visualizes-the-result-contract-review">Example 3 — AI as a custom workflow; report visualizes the result (contract review)</h3>
+<p>The third pattern composes a <strong>custom workflow</strong>. A <strong>Master Service Agreement</strong> is rendered in the DevExpress Report Viewer. The goal is <strong>not</strong> a text summary — the team wants <strong>Azure OpenAI to identify risky clauses</strong> <em>and</em> the <strong>document itself to show them</strong>. A button asks the chat control to <strong>"review for issues."</strong> The AI reviews the contract, identifies <strong>risky / one-sided clauses</strong>, and the report re-renders with <strong>visual warnings</strong>: a <strong>side-panel findings</strong> list, <strong>highlighted clauses</strong>, a <strong>warning tag</strong>, and a <strong>red left border</strong>. The answers appear on the right, but the <strong>experience lives inside the document</strong>.</p>
+<p><strong>Code deep-dive — <code>ReviewAsync</code>.</strong> Here there is <strong>no DX AI Chat control</strong>; the page <strong>injects the AI chat client directly</strong>:
+- A <strong>system prompt</strong> instructs the model to act as a <strong>commercial contract attorney</strong>.
+- The <strong>user prompt</strong> sends the <strong>full contract text</strong> via <code>ContractReport.GetFullText()</code>.
+- <code>ChatClient.GetResponseAsync(...)</code> sends the request to the configured AI client; the response is stored for the findings panel.
+- <code>ParseRiskyClauseNumbers</code> extracts references like <strong>"clause 4"</strong> or <strong>"clause 9"</strong>.
+- The page constructs a <strong>new <code>ContractReport</code></strong>, passing in the <strong>risky clause numbers</strong>.
+- <code>RenderFindings</code> formats the AI response for the side panel, <strong>preserving line breaks and bold headings</strong>.</p>
+<p><strong>Decoupling AI from rendering.</strong> <code>ContractReport</code> holds the <strong>12 contract clauses</strong> and a clause source. <code>GetFullText</code> joins clauses into plain text for the model. The constructor receives the <strong>risky clause numbers</strong> and projects each clause into the report data source with <strong><code>IsRisky</code> = true/false</strong>. Crucially, <strong>the report doesn't know anything about AI</strong> — it only knows whether each clause is risky; if risky, it <strong>changes the band color and adds the warning tag</strong>. Principle: <strong>AI creates the state, DevExpress presents the state.</strong></p>
+<h3 id="architecture-the-ai-layer-doesnt-swallow-the-app">Architecture: the AI layer doesn't swallow the app</h3>
+<p>A quick look at the <strong>project structure</strong> — component pages, an <strong>AI</strong> folder, <strong>reports</strong>, <strong>services</strong>, and <strong>data</strong> — illustrates the design value: the <strong>AI layer doesn't swallow the application</strong>.
+- <strong>Pages</strong> still use DevExpress controls for the user experience.
+- <strong>Services</strong> still own the business data.
+- <strong>AI tools</strong> expose only <strong>selected capabilities</strong>.
+- <strong>Reports</strong> render through the <strong>DevExpress Reporting APIs</strong>.</p>
+<p>The DevExpress controls make the AI <em>useful</em> by giving it <strong>somewhere structured to act</strong>: a grid can filter/group/sort, a report viewer can translate and render document content, and a report can <strong>visualize AI-derived state through conditional formatting</strong>. <strong>The AI is powerful, but the control gives it shape.</strong></p>
+<h3 id="closing-intent-action-three-ways">Closing: intent → action, three ways</h3>
+<p>Across three pages the session shows practical ways to bring AI into a DevExpress app: (1) AI <strong>drives the grid</strong> via tool calling; (2) AI is <strong>built directly into the control</strong> (Report Viewer); (3) AI becomes part of a <strong>custom workflow</strong> that DevExpress reports <strong>visualize</strong>. The point is <strong>not</strong> to add a chatbot beside every app — it's to <strong>let users express intent and use controls to turn that intent into action</strong>. The closing line: <strong>Azure OpenAI provides the intelligence, DevExpress provides the application service, and Visual Studio brings it all together.</strong></p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>DevExpress Blazor Controls</strong> — DX Grid, DX Chart, KPI cards, <strong>DX AI Chat</strong> control.</li>
+<li><strong>DevExpress Reporting</strong> — <code>XtraReport</code>, <strong>Report Viewer</strong>, conditional formatting (band color, warning tags), report header/detail band/footer.</li>
+<li><strong>DevExpress AI integration</strong> — tool-calling pipeline, AI Tools Context Builder, <code>UseDXTools</code>, AI-integration-tool attributes/metadata, <code>AddBlazorReportingAIIntegration</code>, <code>AddTranslation</code>, <code>EnableTranslation</code>, <code>EnableInlineTranslation</code>.</li>
+<li><strong>Azure OpenAI</strong> — accessed via <strong><code>IChatClient</code></strong> (Microsoft.Extensions.AI); <code>UseFunctionInvocation</code> for tool execution; <code>GetResponseAsync</code>.</li>
+<li><strong>.NET / Blazor</strong> — <code>Program.cs</code> service registration, <strong>keyed chat client</strong> (<code>DXTools</code>), <strong>.NET user secrets</strong> for endpoint/key/deployment.</li>
+<li><strong>Visual Studio</strong> — the IDE tying the solution together.</li>
+<li><strong>Data layer</strong> — CSV-backed data service (<code>GetOrders</code>, <code>GetSummary</code>, <code>GetRegionMetrics</code>), ~10,000 rows USA sales data.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p>None explicitly announced. This is a practitioner/partner demo session (DevExpress) showing patterns and existing capabilities for integrating Azure OpenAI tool calling with DevExpress Blazor controls and Reporting — no new product launches or release dates were called out.</p>
+<h2 id="demos">💡 Demos</h2>
+<ol>
+<li><strong>AI-driven grid (command center).</strong> Natural-language prompts ("how did we perform this week?", "group by customer", "group by profit", "highlight payment risk accounts", "export") drive a 10k-row DX Grid via tool calling, producing real grouping, filtering, an executive summary, and an XLSX export — with a graceful explanation when a request is out of scope.</li>
+<li><strong>In-control report translation.</strong> A French quarterly-memo report is translated <strong>back to English</strong> entirely through the DevExpress Report Viewer's built-in AI tooling (no custom chat panel), with inline translation appearing inside the rendered report.</li>
+<li><strong>Contract review workflow.</strong> A Master Service Agreement (12 clauses) is sent to Azure OpenAI with a "commercial contract attorney" system prompt; risky clauses (e.g. clause 4, clause 9) are parsed and re-projected into the report, which renders highlighted clauses, warning tags, red left borders, and a side-panel findings list.</li>
+</ol>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>~10,000 rows</strong> of USA sales data bound to the DX Grid.</li>
+<li><strong>12 contract clauses</strong> in the contract-review report; risky ones flagged with <code>IsRisky = true</code>.</li>
+<li>Supported translation languages: <strong>English, French, Spanish, German, Japanese</strong>.</li>
+<li><em>"This is the difference between a chat answer and an application assistant."</em></li>
+<li><em>"AI handles the intent, DevExpress handles the interaction."</em></li>
+<li><em>"The AI does not get the whole application, simply the approved capabilities that we register here."</em></li>
+<li><em>"AI creates the state. DevExpress presents the state."</em></li>
+<li><em>"The AI is powerful, but the control gives it shape."</em></li>
+<li><em>"Azure OpenAI provides the intelligence, DevExpress provides the application service, and Visual Studio brings it all together."</em></li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Build a minimal Blazor sample wiring a <strong>keyed <code>IChatClient</code></strong> + <code>UseDXTools</code> + <code>UseFunctionInvocation</code> to drive a DX Grid by tool calling.</li>
+<li>Experiment with <strong>tool description wording</strong> to see how much it affects model tool-selection accuracy.</li>
+<li>Reproduce the <strong><code>IsRisky</code> conditional-formatting</strong> pattern to visualize AI-derived state in a report independent of the AI call.</li>
+<li>Try the <strong>Report Viewer inline translation</strong> with <code>AddTranslation</code> across the five supported languages.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>How are tool-call failures / refusals surfaced to users beyond the "explanation, not no" example — is there a standard guardrail pattern?</li>
+<li>What's the latency/cost profile of <code>UseFunctionInvocation</code> round-trips for multi-step grid operations on 10k rows?</li>
+<li>Which DevExpress + Microsoft.Extensions.AI versions are required, and does this work with non-Azure <code>IChatClient</code> providers?</li>
+<li>How is sensitive data (full contract text, sales data) handled re: Azure OpenAI data-handling / content filtering?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Internal Blazor LOB apps that want <strong>agentic, intent-driven</strong> UX over dashboards.</li>
+<li>Teams evaluating <strong><code>IChatClient</code> / Microsoft.Extensions.AI</strong> tool-calling patterns.</li>
+<li>Reporting/document-heavy workflows (translation, contract/risk review) needing <strong>AI-derived visual state</strong>.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Build 2026">Microsoft Build 2026</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Azure OpenAI">Azure OpenAI</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Blazor">Blazor</span></li>
+<li><span class="wikilink wikilink--unresolved" title="IChatClient">IChatClient</span></li>
+<li><span class="wikilink wikilink--unresolved" title="DevExpress">DevExpress</span></li>
+<li><span class="wikilink wikilink--unresolved" title="AI Tool Calling">AI Tool Calling</span></li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="ODSP909.html"><span class="pager-dir">← Previous</span><span class="pager-code">ODSP909</span><span class="pager-title">Take AI agents from prototype to production with OpenTelemetry</span></a>
+    <a class="pager pager-next" href="ODSP912.html"><span class="pager-dir">Next →</span><span class="pager-code">ODSP912</span><span class="pager-title">Build agentic testing systems to validate AI generated code</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

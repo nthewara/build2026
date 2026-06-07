@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRK230 — Build smarter AI systems in Foundry as models and costs evolve</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">BRK230</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=05naxQpKqaU" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Build smarter AI systems in Foundry as models and costs evolve</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Yina (Product Lead, Microsoft Foundry), Naomi (Models, Microsoft Foundry)</span>
+      <span class="meta-item">⏱️ 46m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ai-foundry">Ai Foundry</span><span class="chip" data-tag="model-router">Model Router</span><span class="chip" data-tag="cost-optimization">Cost Optimization</span><span class="chip" data-tag="evals">Evals</span><span class="chip" data-tag="fine-tuning">Fine Tuning</span><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="models">Models</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Yina (leads product for Microsoft Foundry) · Naomi (ships the models in Microsoft Foundry) · Demos built by Nthia (credited)<br>
+<strong>Duration:</strong> ~46 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=05naxQpKqaU">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>A year ago, building an AI app was simple: pick a model, wire it up, ship. Now you're building long-running <strong>agentic systems</strong> that must continuously improve while the landscape — models, tools, context, costs — keeps shifting underneath you. This session argues that durability comes not from a better prompt or a newer model, but from <strong>building a system</strong> on a governed platform (Microsoft Foundry) that decouples your solution from any single model. The core mental shift: <strong>stop QA-ing at the end — shift left to define your success criteria and evals first</strong>, then "hill climb" toward your target. Using a worked <strong>trip-planning app</strong> demo, Yina and Naomi walk a baseline (single GPT-4.1 model = "a Ferrari for a grocery run", quality 0.59 vs target 0.8) through four optimization stages — <strong>Select → Evaluate → Optimize → Scale/Operate</strong> — applying decomposition, the <strong>model router</strong> (28 models, now with governance policies), custom &amp; new <strong>rubric-based evals</strong>, <strong>explicit prompt caching</strong> (Azure context cache you own), and <strong>distillation/fine-tuning</strong> (GPT-4.1-nano fine-tune hit target quality at low cost). Key announcements: <strong>Claude now runs on Azure on GB300s</strong> (Opus 4.8 in catalog), <strong>Microsoft first-party models live</strong> (incl. image 2.5), <strong>rubric-based evaluators</strong>, <strong>explicit prompt caching (private preview)</strong>, <strong>model-router governance policies</strong>, <strong>serverless RL fine-tuning API</strong>, and <strong>Fireworks GA</strong> on Foundry. Catalog now exceeds <strong>11,000+ models</strong>. The throughline: it's not about model choice, it's about the <strong>entire platform</strong> — build smarter systems as models and costs keep evolving.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Build the system, not the prompt.</strong> "Long gone are the days of just prompt engineering." Durable AI solutions decouple from the model, the tools, and the context — all of which keep evolving around you.</li>
+<li><strong>Shift left: evals first, not QA last.</strong> The one thing to take from the session — define success criteria and evaluation <em>before</em> you build, so you can continuously improve. Evals become your product spec; as you hill-climb, your evals/data/criteria become your <strong>IP</strong>.</li>
+<li><strong>"Hill climbing"</strong> is the operating loop: set a baseline → measure honestly → decide where the next gain comes from → repeat. Demo started at quality <strong>0.59</strong>, target <strong>0.8</strong>.</li>
+<li><strong>Don't use one frontier model for every task</strong> — that's "a Ferrari for a grocery run." Decompose the workflow into jobs-to-be-done and pick the right model per task (microservices-architecture thinking for AI).</li>
+<li><strong>Model choice is by task, not by app</strong> — an ongoing systems decision because the model lifecycle keeps accelerating.</li>
+<li><strong>Model router</strong> auto-analyzes each prompt and routes to the best model: supports <strong>28 models</strong> (GPT-4.x, GPT-5.5 family, Claude, OSS), with <strong>automatic failover</strong> and <strong>agentic support</strong>; <strong>NEW today: governance policies</strong> to restrict which models the router may use. Roadmap: customizable/fine-tunable router + bring fine-tuned models.</li>
+<li><strong>DIY router alternative:</strong> use a small model (e.g. <strong>GPT-4.1-nano</strong> or <strong>Mistral Small</strong>) with rules to route intent to job-specific models.</li>
+<li><strong>Benchmarks don't decide for you.</strong> "Evaluate on your workload, not the beautiful benchmarks." The answer comes from your data/scenario.</li>
+<li><strong>Three model-selection questions:</strong> (1) Capability — can it do the job at all? (2) Production bar — latency/cost good enough for prod? (3) Affordability — can you run it at scale?</li>
+<li><strong>NEW: rubric-based evaluators</strong> — Foundry analyzes your agent definition + sample trajectories and auto-generates weighted rubric dimensions (demo produced <strong>7 dimensions</strong>); editable weights; plus cluster analysis of failures (hallucination, inadequate final answer).</li>
+<li><strong>Cost reduction rarely comes from a cheaper model — it comes from architecture.</strong> Stack levers: routing by workload, batch inference, async jobs, structured outputs, caching, distillation. Gains <strong>compound</strong>.</li>
+<li><strong>NEW: explicit prompt caching (private preview)</strong> via <strong>Azure context cache</strong> — <em>you</em> own the cache (not the inference provider); better privacy controls and operational availability for long-running tasks.</li>
+<li><strong>Latency is engineered, not hoped for:</strong> route to faster models, reserve capacity (PTU), priority processing ("toll road"), prompt caching, predicted/structured outputs, tighter token budgets, streaming for perceived speed, API gateways for regional traffic.</li>
+<li><strong>Quality levers progress lightweight → heavyweight:</strong> start with <strong>prompt design</strong> (cheapest/fastest), then grounding (retrieval/tools), then <strong>fine-tuning/distillation</strong>, then custom domain model training. Don't jump to the heaviest first.</li>
+<li><strong>Distillation + fine-tuning embedded the travel policy into the model:</strong> a bigger teacher model taught a smaller student; a fine-tuned <strong>GPT-4.1-nano (v1.2)</strong> reached target quality while keeping cost low.</li>
+<li><strong>Foundry post-training spectrum:</strong> managed fine-tuning (SFT / DPO / RL, easiest, highest success for non-ML folks) → <strong>NEW serverless RL fine-tuning API</strong> (control rewards/hyperparameters, produces LoRA weights, no cluster mgmt) → full-control RL (own code/algorithms/GPU clusters; frameworks like <strong>slime</strong>, <strong>veRL</strong>). Start simplest, move right as needed.</li>
+<li><strong>Operate with discipline = observability:</strong> tracing (end-to-end prompt/tool visibility) + evaluation (quality/safety/agent behavior) + monitoring (Azure Monitor for real-time cost/latency). Copilot can suggest fixes in-portal (e.g. "how do I improve time-to-last-byte?").</li>
+<li><strong>Announcements:</strong> Claude on Azure (GB300s, Opus 4.8), MS first-party models live (image 2.5), rubric evals, explicit prompt caching (private preview), router governance policies, serverless RL API, <strong>Fireworks GA</strong>, Aurora 1.5 (geospatial/weather), expanded Nvidia partnership (Nemotron, Cosmos, Earth-2).</li>
+<li><strong>Catalog scale: 11,000+ models</strong>; the Foundry value prop spans Select → Scale → Optimize → Operate (security, compliance, rollback, CI/CD via GitHub) — "it's not about model choice, it's the entire platform."</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="the-problem-the-landscape-keeps-evolving-under-you">The problem: the landscape keeps evolving under you</h3>
+<p>Yina opens by framing the shift every AI team faces: you build a system and the world around it keeps moving — the models, the tools, the surrounding capabilities. A year ago, building an AI app felt simpler: pick a model, wire it up, ship it. But teams are no longer building chat apps — they're building <strong>full agentic systems</strong>: long-running systems that have to continuously improve. Three pain points she sees in <em>every</em> developer:
+1. <strong>Picking the right model is hard.</strong> Many models, more arriving daily; benchmarks look great on paper but don't tell you if a model is good for <em>your</em> scenario.
+2. <strong>Costs are hard to predict.</strong> You can analyze during build, but the production bill is "painful."
+3. <strong>It never stops.</strong> The moment you ship, the next model and next tool drop, and you must keep changing the system as the landscape moves.</p>
+<p>What you want: a system that is <strong>simpler, better, more cost-effective, and scalable</strong> into production, giving the best outcome for <em>your</em> scenario.</p>
+<h3 id="the-thesis-build-a-system-on-a-governed-platform-not-a-better-prompt">The thesis: build a system on a governed platform, not a better prompt</h3>
+<p>The fix is <strong>not</strong> a better prompt, a newer model, or the latest MCP tool. It's <strong>a system that continuously improves over time</strong> plus a platform that spans building → governing → managing at scale. Yina sketches the end-to-end Foundry stack:
+- <strong>Build</strong> with GitHub Copilot CLI.
+- <strong>Ground</strong> with your organization's knowledge: productivity data in <strong>Work IQ</strong>, structured data in <strong>Fabric IQ</strong>, agent context/knowledge via <strong>Foundry IQ</strong>, and the world's knowledge via <strong>Web IQ</strong>.
+- <strong>Run</strong> in Foundry using <strong>Foundry-hosted agents</strong>.
+- <strong>Govern</strong> with <strong>H365</strong> (Microsoft 365 / agent governance).
+- <strong>Improve over time</strong> with Foundry's platform capabilities.</p>
+<p>Foundry is positioned as the platform that brings together models, agent service, grounding, tools, and post-training capabilities — <strong>fully governed for the entire agentic lifecycle</strong>, not just inferencing or a single point solution. You build, deploy, operate at scale, and continuously improve.</p>
+<h3 id="the-core-mental-shift-shift-left-from-qa-to-evals">The core mental shift: shift left from QA to evals</h3>
+<p><strong>If there's one thing to take from the session:</strong> evolve how you think about QA-ing solutions. Old model: "I'll build it, then think about QA at the end." New model: <strong>shift left</strong> — define your <strong>success criteria and evaluation first</strong>, so you can then continuously improve and build a resilient solution that <strong>decouples from the model evolving, the tools changing, and the context evolving</strong>. That's how you build something "ready for the test of time." Once evals are defined, they reveal the <strong>set of levers</strong> you can pull to optimize. The talk is structured around the optimization categories: <strong>Selection → Evaluation → Optimization → Scaling</strong>, organized around the model ecosystem (with other conference sessions going deeper on the agentic side and post-training).</p>
+<h3 id="select-foundry-models-as-your-raw-materials">Select — Foundry models as your raw materials</h3>
+<p>Naomi takes Select. Lots and lots of models are available in Foundry — building on the morning keynote announcements. Every AI system "belongs with selecting models," but the framing is <strong>model choice by task</strong>, an <strong>ongoing systems decision</strong>, because the model lifecycle is continuously accelerating. Models are your <strong>raw materials</strong> — but what matters is whether it's the <strong>right model for the job</strong>, not the model itself. With Foundry models, developers can <strong>access, explore, compare</strong> across the catalog with a <strong>consistent API</strong> and built-in <strong>enterprise curation</strong>, enabling faster experimentation, faster path to production, and quick redeployment as requirements change.</p>
+<p>Flagship/partner highlights on the slide:
+- <strong>OpenAI</strong> and <strong>Anthropic</strong> flagship models.
+- A special call-out to the <strong>Hugging Face</strong> partnership (shout-out to "Jeff" in the room) — they populate much of the catalog; "we love our OSS models."
+- <strong>Nvidia</strong> mentioned from the morning keynote.</p>
+<h3 id="claude-on-azure-gb300s-and-microsoft-first-party-models">Claude on Azure (GB300s) and Microsoft first-party models</h3>
+<ul>
+<li><strong>Claude:</strong> <strong>Opus 4.8</strong> launched last week into the Foundry catalog. <strong>Announcement: Claude is finally running on Azure</strong>, on <strong>GB300s</strong> (highest-end hardware), bringing the full Anthropic lifecycle and dev tools directly from Azure. (Crowd was warm — "one person at least was excited about Claude.")</li>
+<li><strong>Microsoft AI models:</strong> Announced in the keynote with <strong>Mustafa</strong>, several first-party models went <strong>live that morning</strong> ("my team just pushed them"). Foundry isn't just the platform — Microsoft is also bringing <strong>first-party models</strong> running efficiently with strong <strong>cost-optimization</strong> scenarios. <strong>image 2.5</strong> called out as one of the latest — a full <strong>multimodal application stack</strong> spanning thinking, image, code, and audio models.</li>
+</ul>
+<h3 id="strategy-innovate-across-the-full-ai-spectrum-11000-models">Strategy: innovate across the full AI spectrum (11,000+ models)</h3>
+<p>Foundry strategy = innovate across the full spectrum:
+- <strong>Production-grade frontier models</strong> — usable quickly inside apps under strict operational requirements.
+- <strong>Cutting-edge / experimentation</strong> — research-grade exploration, e.g. <strong>Foundry Labs</strong>: a new set of capabilities primarily from <strong>Microsoft Research</strong>, the latest/greatest pieces, a place to build models with confidence and explore future frontiers.</p>
+<p>Catalog scale: <strong>11,000+ models</strong>, with more coming.</p>
+<h3 id="the-shift-to-purpose-built-models">The shift to purpose-built models</h3>
+<p>It's not one reasoning/frontier model for all use cases — there's a shift toward <strong>purpose-built, domain-specific models</strong>. Not every problem warrants the same general-purpose model. Domains called out: <strong>geospatial, robotics, biomedical, material science, code, search, media</strong>. Developers should design the system to apply the right domain model per area. Specific call-out: <strong>Aurora 1.5</strong> (geospatial) — an "amazing weather modeling system" using satellite imagery + atmospheric data that scales where traditional models can't.</p>
+<h3 id="expanded-nvidia-partnership-into-physical-ai">Expanded Nvidia partnership — into physical AI</h3>
+<p>Foundry is expanding the <strong>Nvidia</strong> partnership with additional models: <strong>Nemotron</strong> reasoning models, <strong>Cosmos</strong> for physical AI, and new Nvidia <strong>AI weather models like Earth-2</strong>. These let developers build systems that <strong>reason, act, and respond to real-world conditions</strong> — going beyond software workloads into <strong>physical AI</strong>. A <strong>pre-recorded session with a "very cool" physical-AI demo</strong> is recommended. Together with Nvidia, Foundry enables a <strong>unified platform</strong> to build, run, and scale AI systems spanning into the physical world.</p>
+<h3 id="the-foundry-portal-leaderboards-comparison-save-as-agent">The Foundry portal — leaderboards, comparison, save-as-agent</h3>
+<p>Yina gives a portal tour:
+- See <strong>all models and providers</strong>; a <strong>leaderboard</strong> benchmarking across <strong>quality, safety, throughput, and cost</strong> dimensions, with <strong>trade-off charts</strong> to select by your priorities.
+- <strong>Compare models</strong> across providers (open-source vs closed) across benchmarks, and run <strong>side-by-side</strong> on a given set of prompts to see latency and responses — great for prototyping.
+- <strong>Save as an agent:</strong> unlocks new capabilities — add <strong>tools, knowledge, memory, guardrails</strong>, and set <strong>metrics</strong>. In the demo she set <strong>task adherence, intent resolution, relevance</strong> as out-of-the-box metrics; Foundry then <strong>evaluates every time the agent is invoked</strong>.
+- Running a request produces a <strong>trace</strong> with <strong>spans</strong> (duration per turn), the <strong>evaluation outputs</strong>, <strong>LLM-as-a-judge</strong> pass/fail, and <strong>verbatim</strong> on what happened during the call.</p>
+<h3 id="the-running-scenario-a-trip-planning-app">The running scenario: a trip-planning app</h3>
+<p>The session uses a <strong>trip-planning app</strong> as a typical enterprise scenario: understand intent → make decisions based on prompts → produce output for the user. The key takeaway repeated: <strong>start with what success looks like</strong> — success criteria across <strong>correctness, compliance, user behavior</strong>, and what you'll use in production. This introduces <strong>hill climbing</strong> (also shown in the keynote): with a clear success criteria you can continuously improve. The standard developer workflow: have a scenario → understand success → <strong>prototype with the latest/greatest model</strong> to establish a <strong>baseline</strong>. All demo code is in a GitHub repo (aka.ms link), built <strong>with agents</strong> so you can try it yourself; they show outputs rather than deep code. Gratitude to <strong>Nthia</strong>, the "mastermind behind all of the demos."</p>
+<h3 id="establishing-the-baseline-one-model-for-everything-the-anti-pattern">Establishing the baseline — one model for everything (the anti-pattern)</h3>
+<p>Naomi runs the baseline: take <strong>GPT-4.1</strong> and apply it to <strong>every task</strong>. Start with a small seed dataset (<strong>~20 seed rows</strong>) — you're prototyping. The <strong>scorecard</strong> is honestly "not great": <strong>quality</strong> is well below target, <strong>cost per task</strong> is "pretty expensive," <strong>latency</strong> is "not bad." Quality here uses <strong>out-of-the-box evaluators</strong> (task adherence, task completion); domain-specific evals come later. The big problem: <strong>one frontier-ish model for every job</strong>, including cheap ones — <strong>"a Ferrari for a grocery run."</strong> Reality check on the hill climb: target <strong>0.8</strong>, baseline <strong>0.59</strong> — and that gap tells you where to go. The job is <strong>not to guess</strong> but to proceed <strong>methodically</strong>: baseline → measure honestly → decide the next gain.</p>
+<h3 id="decomposition-the-first-optimization-move">Decomposition — the first optimization move</h3>
+<p>An employee travel request looks simple but should be <strong>decomposed into distinct tasks</strong> (jobs-to-be-done). For each job, use the <strong>right model</strong> — don't overbuild each step. Choose the right <strong>prompt, model, tool, and context</strong> per job. Yina's framing: think <strong>microservices architecture</strong> — don't use a single model for everything; break it apart, and for each job optimize the model you use. <strong>Smaller models = faster + cheaper</strong>, more room for cost optimization.</p>
+<h3 id="routing-the-model-router-vs-diy-router">Routing — the model router vs DIY router</h3>
+<p>Two ways to route once decomposed:
+1. <strong>Model router</strong> (simplest): automatically analyzes each prompt and routes to the best model. Foundry's router supports <strong>28 models</strong> (incl. <strong>GPT-4.x</strong>, <strong>GPT-5.5 family</strong>, <strong>Claude</strong>, <strong>OSS</strong> models), with <strong>automatic failover</strong> to improve customer experience and <strong>agentic support</strong>. <strong>NEW today:</strong> ability to <strong>govern the policies</strong> of which models the router may use — so from a governance standpoint you can auto-select only approved models. <strong>Roadmap:</strong> open up the ability to <strong>customize/fine-tune the router itself</strong> and <strong>bring in fine-tuned models</strong>.
+2. <strong>DIY router:</strong> build it yourself with a <strong>small intent-routing model</strong> — e.g. <strong>GPT-4.1-nano</strong> or <strong>Mistral Small</strong> — given a set of rules describing scenarios/jobs, routing to job-specific models.</p>
+<h3 id="routing-in-action-synthetic-data-improved-scorecard">Routing in action — synthetic data + improved scorecard</h3>
+<p>Demo of the <strong>simple router</strong>: it decomposes tasks, examines <strong>intent</strong>, and recommends a model <strong>per task</strong> (optimizing for quality here). Then <strong>synthetic data generation</strong> in Foundry scales the dataset: <strong>20 seed rows → 170 synthetic rows</strong>, of which <strong>50</strong> are sampled and run. Re-running the eval against the <strong>multi-model router</strong> vs the single GPT-4.1 baseline shows <strong>cost per task significantly improved</strong> (down to target range), with <strong>latency</strong> still an area to work on.</p>
+<h3 id="model-selection-the-three-questions-evaluate-on-your-workload">Model selection — the three questions + "evaluate on your workload"</h3>
+<p>Model selection comes down to three questions:
+1. <strong>Capability</strong> — can it even do the job at all?
+2. <strong>Production bar</strong> — latency and cost good enough for production?
+3. <strong>Affordability</strong> — can you afford to run it at scale?</p>
+<p>Benchmarks <strong>help</strong> you understand direction but <strong>shouldn't make the decision for you</strong>. The decisive principle: <strong>"Evaluate on your workload, not the beautiful benchmarks."</strong> The answer comes from your scenario/data.</p>
+<h3 id="evaluate-evals-are-your-product-spec-and-your-ip">Evaluate — evals are your product spec and your IP</h3>
+<p>Yina: benchmarks won't drive model selection — <strong>how you evaluate on your data</strong> should. Foundry ships an extensive <strong>evaluation catalog</strong>. Key reframes:
+- In the improvement loop, <strong>evaluations become your product spec</strong>.
+- As you hill-climb, the <strong>evaluations become your IP</strong> — your data, success criteria, and definition of "good" live here; they define which trade-offs matter and are the <strong>measuring stick for every change</strong> — whether a change you make <em>or</em> one you must react to (e.g. <strong>model lifecycle</strong>: a model is removed from the catalog, so you must continuously re-run evals as you swap components to confirm expected behavior).</p>
+<p>For the trip planner, eval dimensions include <strong>correctness</strong>, <strong>policy compliance</strong> (companies have travel policies — max $/day, business class only if trip &gt; 7 hours, etc.), <strong>tool-call validity</strong>, <strong>escalation accuracy</strong> (when to escalate to a human vs not), and <strong>safety/privacy</strong>.</p>
+<h3 id="evaluator-types-in-foundry-built-in-custom-and-new-rubric-based">Evaluator types in Foundry — built-in, custom, and NEW rubric-based</h3>
+<ul>
+<li><strong>Built-in evaluators:</strong> <strong>quality</strong> (e.g. intent adherence), <strong>risk &amp; safety</strong>, and <strong>agentic</strong> evaluators (whether the solution follows correctly across multiple turns).</li>
+<li><strong>Custom evaluators:</strong> <strong>prompt</strong>, <strong>code</strong>, and — <strong>announced today</strong> — <strong>rubric-based</strong> evaluators.</li>
+</ul>
+<p><strong>Rubric-based eval demo:</strong> in the evaluation catalog, create an evaluator → choose <strong>rubric / prompt / code</strong>. With <strong>rubric</strong>, select an agent; Foundry <strong>analyzes the agent definition + seed trajectories</strong> (takes a moment) and <strong>auto-generates rubric dimensions across multiple axes</strong>. For the <strong>concierge starter agent</strong> (the travel agent), it generated <strong>7 dimensions</strong>. You can <strong>edit weights</strong> (e.g. bump policy compliance from weight 5 → 8) and re-run. Results show per-dimension successes/failures plus a <strong>cluster analysis</strong> across evaluators — revealing where the agent <strong>hallucinated</strong> or <strong>didn't produce an adequate final answer</strong> — so you can drill into system behavior. Everything in the UI is also available <strong>in code</strong>.</p>
+<h3 id="custom-policy-evaluator-why-generic-judges-arent-enough">Custom policy evaluator — why generic judges aren't enough</h3>
+<p>Demo of the <strong>travel policy</strong> (a <strong>skill file</strong> grounds the rubric). A <strong>generic LLM judge</strong> looks at <strong>answer quality</strong>, but the scenario needs a <strong>five-axis rubric</strong>. Re-running both agents with all three evaluators produces a scorecard: <strong>policy adherence</strong> improved with the multi-model router but <strong>still missed target</strong> — the generic LLM judge couldn't handle policy on its own. Important call-out (Yina): baseline evaluators said "about halfway there," but checking <strong>policy adherence</strong> specifically showed it wasn't following the travel policy — so they had to build a <strong>custom evaluator specific to the travel policy</strong>. The lesson: your <strong>quality definition</strong> is critical and <strong>may shift over time</strong> as you learn more about the scenario.</p>
+<h3 id="optimize-the-biggest-wins-come-from-architecture-not-cheaper-models">Optimize — the biggest wins come from architecture, not cheaper models</h3>
+<p>Naomi opens Optimize: this is where the <strong>biggest wins</strong> live, across the whole application. Crucial: <strong>cost reduction rarely comes from choosing a cheaper model</strong> — "I see customers doing this all the time." It's about <strong>architectural decisions</strong>. Optimization is the <strong>hill climb</strong> across multiple dimensions (cost, quality, latency) — not just pushing on cost. It's <strong>iterative</strong>: start with <strong>prompt improvements</strong>, then <strong>better context</strong>, then <strong>decomposition/routing</strong> (as shown), then <strong>deeper architectural latency levers</strong>. The goal isn't a perfect endpoint — it's making the <strong>system operate measurably faster and better with every choice</strong>.</p>
+<h3 id="the-full-stack-of-cost-levers-gains-compound">The full stack of cost levers — gains compound</h3>
+<p>When teams talk AI cost (Naomi: ~three-quarters of the room thinks about cost; "the rest of you are obviously ballers"), the instinct is to ask for a cheaper model — but the biggest wins come from <strong>system design</strong>. Foundry's full stack of levers:
+- <strong>Routing by workload</strong>
+- <strong>Batch inference</strong> (can save a lot of money)
+- <strong>Async jobs</strong>
+- <strong>Structured outputs</strong> (avoid wasted tokens)
+- <strong>Caching</strong> (avoid repeated work)
+- <strong>Distillation</strong> (brings down cost)</p>
+<p>The point: gains <strong>compound</strong> — there's no single magical fix; you need an <strong>architecture</strong> that lets you <strong>stack</strong> optimizations.</p>
+<h3 id="explicit-prompt-caching-azure-context-cache-that-you-own-private-preview">Explicit prompt caching — Azure context cache that YOU own (private preview)</h3>
+<p>Caching has evolved from low-level <strong>implicit caching</strong> toward a richer set of caching capabilities. <strong>Announcement: explicit prompt caching</strong> — a new service treating caching as a <strong>core system capability</strong> of the AI platform: not just one lever, but understanding not just <em>where the request lands</em> but <strong>delivering consistent, guaranteed performance</strong> and the savings you need. The differentiator: <strong>Azure context cache</strong> — it is <strong>not owned by us (the inference provider); it is owned by you</strong>. It's <em>your data</em>; you can see your deployments and your savings. Benefits: <strong>better privacy controls</strong> and <strong>better operational availability across long-running tasks</strong>. <strong>Available in private preview today.</strong></p>
+<h3 id="latency-engineered-not-hoped-for">Latency — engineered, not hoped for</h3>
+<p>Latency isn't about picking a faster model — it's about <strong>designing a faster system</strong>, improving responsiveness at multiple stages:
+- <strong>Route each task to a faster model</strong> (as demoed).
+- <strong>Reserve capacity</strong> with <strong>PTU</strong> for consistency under large workloads.
+- <strong>Priority processing</strong> — a "toll road" for low-latency when you need it.
+- <strong>Prompt caching</strong> to remove wasted work.
+- <strong>Predicted outputs</strong>, <strong>structured outputs</strong>, and <strong>tighter token budgets</strong>.
+- <strong>Streaming</strong> for perceived speed.
+- <strong>API gateways</strong> to optimize traffic across regions.</p>
+<p>The premise: <strong>production latency is engineered for</strong>, not something you hope and wish for.</p>
+<h3 id="quality-levers-lightweight-heavyweight">Quality levers — lightweight → heavyweight</h3>
+<p>When quality is the constraint, there's a <strong>progression</strong> of levers from lightweight to heavyweight:
+1. <strong>Prompt design</strong> — always start here (fastest, cheapest).
+2. <strong>Grounding</strong> — retrieval / tool use.
+3. <strong>Fine-tuning &amp; distillation</strong> — when you need to go stronger.
+4. <strong>Custom domain model training</strong> — for highly specialized domains.</p>
+<p>Key: <strong>don't jump to the heaviest solution first</strong> (tempting, but don't). Start with prompts, move along the spectrum as needed, and <strong>incrementally stack</strong> the benefits. (Yina notes a <strong>full session on agent optimization</strong> that shows automatically analyzing your agent, optimizing prompts, and optimizing tools — recommended.)</p>
+<h3 id="distillation-fine-tuning-embedding-the-travel-policy-into-the-model">Distillation + fine-tuning — embedding the travel policy into the model</h3>
+<p>To fix the <strong>travel-policy adherence</strong> gap, they deliberately start with the <em>heaviest</em> lever (the model): use <strong>distillation + fine-tuning</strong> to <strong>embed the travel-policy knowledge into the model</strong>. Approach: take a <strong>bigger teacher model</strong> and <strong>teach a smaller student model</strong>, preserving the cost optimization they want. In Foundry, <strong>fine-tuning is simple</strong> — supervised fine-tuning, <strong>preference optimization (DPO)</strong>, and <strong>RL</strong>, all as a <strong>managed service</strong> (a few clicks in the UI or a few lines of Python). Flow: select <strong>endpoint</strong> → select <strong>dataset</strong> → choose <strong>base model</strong> + <strong>training model</strong> → in <strong>under ~100 lines of code</strong>, the job is ready to submit.</p>
+<p><strong>Result:</strong> they ran the training, then deployed into a <strong>developer tier</strong> — a cheap way to try multiple fine-tuned models and test against your data. Versus prior runs, the fine-tuned <strong>GPT-4.1-nano (v1.2)</strong> got <strong>all the way up to the target quality</strong> for the scenario in a <strong>single simple fine-tuning run</strong>. The Foundry fine-tuning experience also shows the <strong>loss curve</strong> and <strong>token accuracy</strong>; you can <strong>continuously fine-tune</strong> as new trajectories arrive, with <strong>checkpoints</strong> you can inspect and bring in.</p>
+<h3 id="foundry-post-training-spectrum-managed-serverless-rl-full-control-rl">Foundry post-training spectrum — managed → serverless RL → full-control RL</h3>
+<p>Foundry offers multiple ways to post-train models:
+- <strong>Managed fine-tuning</strong> (what was demoed) — the <strong>simplest</strong>: bring your data, Foundry handles <strong>data prep, training, monitoring, deployment</strong>. <strong>Highest likelihood of success</strong> if you're not an ML professional/data scientist; very low effort; pick <strong>SFT / DPO / reinforcement fine-tuning</strong>.
+- <strong>Serverless API (NEW at Build)</strong> — you control <strong>rewards and hyperparameters</strong>; Foundry handles infrastructure. Produces a set of <strong>LoRA weights</strong> overlaid on top of deployments; <strong>no cluster management</strong>.
+- <strong>Full-control RL</strong> — full ownership of the <strong>code, distributed strategies, algorithms, GPU clusters</strong>; Foundry manages compute and orchestration. Use frameworks like <strong>slime</strong> or <strong>veRL</strong> for training.</p>
+<p>Recommendation: <strong>start at the simplest</strong>, see what you get (you have the evals to judge), and <strong>move right as your scenario demands</strong>.</p>
+<h3 id="running-customized-open-models-fireworks-ga-managed-compute-hugging-face">Running customized &amp; open models — Fireworks GA, managed compute, Hugging Face</h3>
+<p>Once you have a customized model, you bring it into Foundry and run it:
+- <strong>Open-source models:</strong> use <strong>Foundry managed compute</strong>, or the <strong>Fireworks</strong> partnership (<strong>announced GA today</strong>) — or deploy on your own compute clusters.
+- <strong>Fireworks GA on Foundry</strong> brings customers <strong>zero-day access to optimized frontier models</strong>, <strong>best-in-class inferencing performance</strong>, and <strong>native Azure integration</strong> for an enterprise foundation. Key differentiator vs Fireworks directly: deep integration across Azure's <strong>enterprise stack</strong>.
+- <strong>Managed compute in Microsoft Foundry</strong> for teams standardizing on open models wanting broad selection — where the <strong>Hugging Face</strong> partnership shines (thousands of models from Hugging Face, Nvidia, Microsoft Research). Use optimized runtimes (<strong>vLLM</strong>, <strong>SGLang</strong>, <strong>Nvidia NIM</strong>); Foundry manages accelerators; bring your own capacity; <strong>same API endpoints, same SDK</strong>, no separate management.</p>
+<h3 id="operate-observability-with-discipline">Operate — observability with discipline</h3>
+<p>Once <strong>selection, evaluation, and optimization</strong> are done, the next challenge is <strong>operating with discipline</strong>, which means <strong>observability</strong>. Taking something from prototype to production makes observability critical. Three pillars:
+- <strong>Tracing</strong> — end-to-end visibility across prompts and tools.
+- <strong>Evaluation</strong> — quality, safety, and agent behavior.
+- <strong>Monitoring</strong> — via <strong>Azure Monitor</strong>, real-time signals for <strong>cost</strong> and <strong>latency</strong>.</p>
+<p>Build observability into your loop <strong>straight away</strong>. Demo: in the Foundry portal you can inspect these directly — picking <strong>time-to-last-byte</strong> and asking <strong>Copilot "how do I improve this?"</strong> surfaces guidance <strong>in-portal</strong>.</p>
+<h3 id="take-it-home-the-recap">Take it home — the recap</h3>
+<p>Yina closes: across the end-to-end scenario, every step improved quality — the <strong>hill-climbing</strong> notion from the keynote. The recap:
+- <strong>Start with your evals</strong> — the definition of success; Foundry helps with the new <strong>rubric-based</strong> capabilities (bring code, bring prompts, or let Foundry build the rubrics).
+- <strong>Build the system, not just the prompt</strong> — "long gone are the days of just prompt engineering."
+- <strong>Pick the best model for the workload</strong>; <strong>decompose</strong> scenarios (microservices-architecture thinking); <strong>evaluate on your particular scenario</strong>.
+- Use the full set of <strong>optimization levers</strong> across <strong>quality, latency, cost</strong>; your scenario understanding becomes your <strong>IP</strong>.
+- <strong>Operate with control</strong> — monitoring, versioning, governing, rollback, fully integrated into <strong>CI/CD</strong> (GitHub integration).
+- <strong>Continuously improve</strong> so solutions not only meet the goal but <strong>keep meeting it</strong> as everything changes around you.</p>
+<h3 id="the-foundry-value-proposition">The Foundry value proposition</h3>
+<p>Stepping back: the value prop is <strong>Select → Scale → Optimize → take global / handle changing demand → iterate → keep control (security, compliance, operations)</strong>. "It's <strong>not about model choice</strong> — it's about the <strong>entire platform value</strong> that Foundry delivers," giving a way to <strong>build smarter systems as models and costs keep evolving</strong>. Closing pointers: more sessions on <strong>post-training</strong>, <strong>agentic solutions</strong>, and <strong>safety/responsible AI</strong>; remember <strong>ai.azure.com</strong> ("AI.asher.com" in the captions); use the <strong>session-code aka.ms link</strong> for all the demo code; and join the <strong>active Discord community</strong>.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Microsoft Foundry</strong> — the governed platform for the entire agentic lifecycle (build, deploy, operate, continuously improve).</li>
+<li><strong>Foundry model catalog</strong> — <strong>11,000+ models</strong>, consistent API, enterprise curation, leaderboard (quality/safety/throughput/cost), trade-off charts, side-by-side compare.</li>
+<li><strong>Model router</strong> — auto-routes prompts to the best of <strong>28 models</strong>; automatic failover; agentic support; <strong>NEW governance policies</strong>; roadmap for customization/fine-tuning.</li>
+<li><strong>Foundry evaluation catalog</strong> — built-in (quality, risk &amp; safety, agentic), custom (prompt, code), and <strong>NEW rubric-based</strong> evaluators; cluster analysis of failures.</li>
+<li><strong>Save-as-agent</strong> — add tools, knowledge, memory, guardrails, metrics; auto-eval on each invocation; traces with spans + LLM-as-a-judge + verbatim.</li>
+<li><strong>Synthetic data generation</strong> — expand seed data (20 → 170 rows demo) for testing.</li>
+<li><strong>Explicit prompt caching</strong> / <strong>Azure context cache</strong> — customer-owned cache (private preview).</li>
+<li><strong>Managed fine-tuning</strong> — SFT, DPO, reinforcement fine-tuning; loss curve, token accuracy, checkpoints; <strong>developer tier</strong> for cheap testing.</li>
+<li><strong>Serverless RL fine-tuning API</strong> (NEW) — control rewards/hyperparameters; LoRA weights; no cluster mgmt.</li>
+<li><strong>Full-control RL</strong> — own code/algorithms/GPU clusters; frameworks <strong>slime</strong>, <strong>veRL</strong>.</li>
+<li><strong>Foundry managed compute</strong> — run open models; runtimes <strong>vLLM</strong>, <strong>SGLang</strong>, <strong>Nvidia NIM</strong>; same API/SDK.</li>
+<li><strong>Observability</strong> — tracing, evaluation, monitoring (<strong>Azure Monitor</strong>); Copilot in-portal assistance.</li>
+<li><strong>Grounding IQ stack</strong> — <strong>Work IQ</strong>, <strong>Fabric IQ</strong>, <strong>Foundry IQ</strong>, <strong>Web IQ</strong>.</li>
+<li><strong>Foundry Labs</strong> — cutting-edge capabilities from <strong>Microsoft Research</strong>.</li>
+<li><strong>Foundry-hosted agents</strong>, <strong>GitHub Copilot CLI</strong>, <strong>H365</strong> governance, <strong>PTU</strong> reserved capacity, <strong>priority processing</strong>, <strong>API gateways</strong>, <strong>CI/CD via GitHub</strong>.</li>
+<li><strong>Models named:</strong> GPT-4.1, GPT-4.1-nano, GPT-5.5 family, Claude <strong>Opus 4.8</strong>, <strong>image 2.5</strong>, <strong>Mistral Small</strong>, <strong>Aurora 1.5</strong> (geospatial/weather), Nvidia <strong>Nemotron</strong> / <strong>Cosmos</strong> / <strong>Earth-2</strong>.</li>
+<li><strong>Partners:</strong> OpenAI, Anthropic, Hugging Face, Nvidia, <strong>Fireworks</strong> (GA).</li>
+<li><strong>Resources:</strong> <strong>ai.azure.com</strong>, session-code <strong>aka.ms</strong> code repo, Discord community.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Claude on Azure</strong> — Anthropic Claude now <strong>runs on Azure</strong> on <strong>GB300s</strong> (highest-end hardware); <strong>Opus 4.8</strong> launched last week into the Foundry catalog. <em>(GA-style availability in catalog.)</em></li>
+<li><strong>Microsoft first-party models live</strong> — several models announced in the keynote with Mustafa went <strong>live that morning</strong>, including <strong>image 2.5</strong>; full multimodal stack (thinking/image/code/audio). <em>(Live/GA.)</em></li>
+<li><strong>Rubric-based evaluators</strong> — <strong>announced today</strong>; auto-generate weighted rubric dimensions from an agent definition + trajectories. <em>(New capability; appears available in portal — GA/preview status not explicitly stated.)</em></li>
+<li><strong>Explicit prompt caching (Azure context cache)</strong> — customer-owned cache; <strong>private preview today</strong>.</li>
+<li><strong>Model-router governance policies</strong> — <strong>starting today</strong>, govern which models the router may use. <em>(New.)</em></li>
+<li><strong>Serverless RL fine-tuning API</strong> — <strong>launching at Build</strong>; control rewards/hyperparameters, LoRA weights, no cluster mgmt. <em>(New — launch status; preview/GA not explicitly stated.)</em></li>
+<li><strong>Fireworks on Foundry — General Availability (GA)</strong> — zero-day access to optimized frontier models, best-in-class inferencing, native Azure integration.</li>
+<li><strong>Aurora 1.5</strong> — newest geospatial/weather modeling model (satellite imagery + atmospheric data).</li>
+<li><strong>Expanded Nvidia partnership</strong> — additional models: <strong>Nemotron</strong> reasoning, <strong>Cosmos</strong> (physical AI), <strong>Earth-2</strong> AI weather. <em>(New/expanding.)</em></li>
+<li><strong>Foundry Labs</strong> — new set of cutting-edge capabilities from Microsoft Research. <em>(New.)</em></li>
+<li><strong>Roadmap (not yet shipped):</strong> customizable/fine-tunable <strong>model router</strong> + bringing fine-tuned models into the router.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Foundry portal tour</strong> — model catalog, leaderboard, trade-off charts, side-by-side model comparison on shared prompts; <strong>save-as-agent</strong> with task adherence/intent resolution/relevance metrics; live <strong>trace</strong> with spans, LLM-as-a-judge pass/fail, and verbatim.</li>
+<li><strong>Baseline (anti-pattern)</strong> — single <strong>GPT-4.1</strong> applied to every task in the trip-planning app; ~20 seed rows; scorecard “not great”: quality below target (<strong>0.59</strong> vs <strong>0.8</strong>), cost-per-task expensive, latency okay. (“Ferrari for a grocery run.”)</li>
+<li><strong>Decomposition + simple router</strong> — break the employee travel request into jobs-to-be-done; router examines intent and recommends a model per task; <strong>synthetic data 20 → 170 rows</strong>, sample <strong>50</strong>, re-run eval → <strong>cost-per-task significantly improved</strong>; latency remains to optimize.</li>
+<li><strong>Rubric-based evaluator</strong> — on the <strong>concierge starter agent</strong>, Foundry analyzed the agent + trajectories and generated <strong>7 rubric dimensions</strong>; edited a weight (policy compliance 5 → 8) and re-ran; results + <strong>cluster analysis</strong> showing hallucinations / inadequate final answers.</li>
+<li><strong>Custom policy evaluator</strong> — travel-policy <strong>skill file</strong> grounds a <strong>five-axis rubric</strong>; generic LLM judge alone insufficient; re-run shows policy adherence improved with the router but still under target.</li>
+<li><strong>Distillation + fine-tuning</strong> — teacher → student; fine-tuned <strong>GPT-4.1-nano (v1.2)</strong> deployed to a <strong>developer tier</strong>; reached <strong>target quality in one simple run</strong>; Foundry shows <strong>loss curve</strong>, <strong>token accuracy</strong>, and <strong>checkpoints</strong>.</li>
+<li><strong>Observability</strong> — Foundry portal metrics; pick <strong>time-to-last-byte</strong> and ask <strong>Copilot “how do I improve this?”</strong> for in-portal guidance.</li>
+<li><strong>Pre-recorded physical-AI demo (Nvidia)</strong> — referenced/recommended (not shown live).</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>11,000+ models</strong> in the Foundry catalog.</li>
+<li><strong>Model router supports 28 models</strong> with automatic failover.</li>
+<li><strong>Baseline quality 0.59 → target 0.8</strong> (the hill-climb gap).</li>
+<li><strong>Synthetic data: 20 seed rows → 170 generated → 50 sampled.</strong></li>
+<li><strong>Rubric auto-generated 7 dimensions</strong> for the concierge agent.</li>
+<li><strong>Fine-tune job ready in under ~100 lines of code.</strong></li>
+<li>Claude runs on <strong>GB300s</strong> (highest-end hardware).</li>
+<li><strong>~3/4 of the room</strong> said they think about AI cost.</li>
+<li>
+<blockquote>
+<p>“We used a <strong>Ferrari for a grocery run</strong>.” — on using one frontier model for every task.</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>“<strong>Evaluate on your workload, not the beautiful benchmarks.</strong>”</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>“In the improvement loop the <strong>evaluations become your product spec</strong>… as you’re hill climbing the <strong>evaluations become your IP</strong>.”</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>“Build the <strong>system, not just the prompt</strong>. Long gone are the days of just prompt engineering.”</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>“Cost reduction in AI <strong>rarely comes from just choosing a cheaper model</strong> … it is about the <strong>architectural decisions</strong>.”</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>“The Azure context cache … is <strong>not owned by us, the inference provider — it is owned by you</strong>.”</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>“Production latency is <strong>engineered for</strong>. It is not something you just hope and wish for.”</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>“It’s <strong>not about model choice</strong> — it’s about the <strong>entire platform value</strong>.”</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Clone the session repo (session-code <strong>aka.ms</strong> link) and run the <strong>trip-planning</strong> hill-climb end-to-end on a real workload.</li>
+<li>Stand up the <strong>model router</strong>, enable the <strong>NEW governance policies</strong> to restrict to approved models, and measure cost/quality vs a single-model baseline.</li>
+<li>Build a <strong>rubric-based evaluator</strong> from one of our agents; compare auto-generated dimensions to our hand-written eval criteria.</li>
+<li>Prototype a <strong>DIY router</strong> with <strong>GPT-4.1-nano</strong> or <strong>Mistral Small</strong> for intent routing and benchmark against the managed router.</li>
+<li>Pilot <strong>explicit prompt caching (Azure context cache)</strong> on a long-running task and verify privacy/ownership + savings (private preview — check eligibility).</li>
+<li>Try a <strong>managed fine-tune (SFT/DPO)</strong> of a small model to embed a policy/domain doc; deploy to the <strong>developer tier</strong> to test cheaply.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>GA/preview status + pricing for <strong>rubric evals</strong>, <strong>serverless RL API</strong>, and <strong>router governance policies</strong>?</li>
+<li>How to <strong>request access</strong> to explicit prompt caching private preview?</li>
+<li>Which exact 28 models are in the router, and how does <strong>failover</strong> affect cost attribution?</li>
+<li>For Claude-on-Azure (GB300s): data residency, regions, and rate limits vs Anthropic-direct?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Any team building <strong>cost-aware agentic systems</strong> on Azure AI Foundry.</li>
+<li>Platform/eval-first teams adopting <strong>hill-climbing</strong> + evals-as-IP.</li>
+<li>FinOps / cost-optimization initiatives (caching, batch, routing, distillation).</li>
+<li>Lab work: routing + fine-tuning + observability reference architecture.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><a class="wikilink wikilink--resolved" href="BRK231.html">BRK231 - Deploy Observe Learn Reinforcement learning for production agents</a> — deeper on the RL / reinforcement fine-tuning thread for production agents.</li>
+<li><a class="wikilink wikilink--resolved" href="BRK252.html">BRK252 - From observability to ROI for AI agents on any framework</a> — extends the observability → cost/ROI story across frameworks.</li>
+<li><a class="wikilink wikilink--resolved" href="DEM333.html">DEM333 - How Foundry integrates with open-source frameworks and tools</a> — the open/composable Foundry ecosystem these model strategies plug into.</li>
+<li><a class="wikilink wikilink--resolved" href="DEM322.html">DEM322 - Smaller faster smarter Distilling models with fine-tuning</a> — the distillation/fine-tuning technique used to build the GPT-4.1-nano student here.</li>
+<li><a class="wikilink wikilink--resolved" href="BRK246.html">BRK246 - Foundry IQ Fuel agents with enterprise knowledge</a> — grounding/knowledge step in the same Foundry build journey.</li>
+<li><span class="wikilink wikilink--unresolved" title="Model router">Model router</span> — the 28-model routing layer (with governance policies) central to this session's cost strategy.</li>
+<li><span class="wikilink wikilink--unresolved" title="Prompt caching">Prompt caching</span> — Azure explicit/context cache (private preview) covered as a core cost lever.</li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="BRK229.html"><span class="pager-dir">← Previous</span><span class="pager-code">BRK229</span><span class="pager-title">From Skeptic to Superpower: Real-World AI Coding Workflows That Scale</span></a>
+    <a class="pager pager-next" href="BRK231.html"><span class="pager-dir">Next →</span><span class="pager-code">BRK231</span><span class="pager-title">Deploy. Observe. Learn. Reinforcement learning for production agents</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

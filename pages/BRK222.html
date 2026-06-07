@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRK222 — The honest practitioner&#x27;s take on agentic AI on Kubernetes</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">BRK222</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=_SzOdHMVPnY" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">The honest practitioner&#x27;s take on agentic AI on Kubernetes</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Lachlan Evenson (Microsoft)</span>
+      <span class="meta-item">⏱️ 50m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="kubernetes">Kubernetes</span><span class="chip" data-tag="aks">Aks</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="cloud-native">Cloud Native</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Lachlan Evenson (Microsoft — Kubernetes/AKS, 10+ yrs in Kubernetes); demo voiceovers by colleagues Ralph (AI Runway demo) and Bob (Anyscale/Ray demo)<br>
+<strong>Duration:</strong> ~50 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=_SzOdHMVPnY">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>An unusually candid, practitioner-level walkthrough of running AI — and especially <strong>agentic</strong> — workloads on Kubernetes/AKS. Lachlan Evenson frames the core decision as a spectrum: <strong>fully-managed AI platforms (PaaS, e.g. Microsoft Foundry) on the left</strong> for speed and curation, versus <strong>AKS/Kubernetes on the right</strong> as a composable, "you-tuned", open substrate for teams that need extreme scale, tunable cost-per-token, data sovereignty, multi-cloud/on-prem/edge, or to <em>build</em> a platform rather than rent one. Neither end is "wrong" — it depends where your team sits. He argues Kubernetes is <strong>necessary but not sufficient</strong>: it provides declarative resource management, heterogeneous scheduling, namespace isolation, and a durable ecosystem, but AI needs more layered on top (gang scheduling, accelerator/topology awareness, GPU/token-based autoscaling, durable state). The session walks a <strong>four-layer stack</strong> — Kubernetes substrate → inference/serving (KAITO + AI Runway) → training/fine-tuning (Ray + Anyscale on Azure) → agentic orchestration (skills, MCP, OpenClaw, KARS) — with live demos, real customers (RBC, Wave), and a batch of AKS announcements (GA: AKS Automatic managed system node pools, Azure Container Linux; Preview: AKS on bare metal, Fleet for Arc-enabled clusters, Anyscale-on-Azure managed Ray). The honest message: agentic orchestration is the <strong>least mature, fastest-changing</strong> layer — but you can run it up <em>today</em> and start experimenting, with Kubernetes primitives (namespaces, service mesh, workload identity, Azure Linux sandboxes) supplying the security and observability guardrails.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>It's a spectrum, not a binary.</strong> Managed AI PaaS (Foundry) = fastest path, curated, standardized, vendor-tuned. AKS/Kubernetes = composable, open, <em>you-tuned</em>, deeper into the stack. Choose based on where your team sits, not hype.</li>
+<li><strong>Pick AKS/Kubernetes when</strong> you need extreme scale, tight tunable cost control (cost per token/inference/tenant), data sovereignty, multi-cloud / on-prem / edge / sovereign portability, or you're an ISV building &amp; shipping an AI platform yourself.</li>
+<li><strong>The AI "iron triangle":</strong> quality, speed, cost — pick your trade-offs. Kubernetes gives four levers: <strong>granular control</strong> (scheduler, accelerators, isolation = quality), <strong>open tooling</strong> (no vendor lock-in, runs anywhere), <strong>data sovereignty</strong> (data/weights stay in your boundary), and <strong>digital unit economics</strong> (tunable cost per token). The price you pay at the bottom of the triangle is <strong>operational complexity</strong> — you buy flexibility with operational overhead.</li>
+<li><strong>Kubernetes is necessary but NOT sufficient for AI.</strong> It ships declarative resource mgmt, heterogeneous scheduling, namespace isolation, and a durable primitive ecosystem — but the AI era demands more layered on top.</li>
+<li><strong>Four gaps Kubernetes must close for AI:</strong> (1) <strong>gang scheduling / advanced queuing</strong> (start tens-of-thousands of pods together, not one at a time, don't use the default scheduler); (2) <strong>heterogeneous-hardware / accelerator awareness</strong> (GPU family awareness, topology, NUMA-aware placement as first-class signals); (3) <strong>AI-aware autoscaling</strong> (scale on tokens/sec, queue depth, GPU utilization — not just CPU/mem — and release accelerators when idle); (4) <strong>durable state</strong> (caching + storage so training and agentic workloads survive evictions, drains, topology changes, spot interruptions).</li>
+<li><strong>Three distinct AI workloads, three operational profiles:</strong> <strong>Inference</strong> (ms–sec/request, GPU+CPU, often single-node, drop overflow, optimize latency &amp; cost/token → KAITO, AI Runway); <strong>Training</strong> (throughput-bound, hours–weeks, checkpoint/resume, keep expensive GPUs saturated → Ray, Anyscale); <strong>Agentic</strong> (sessions/minutes-per-turn, multi-modal, resume-on-state mid-session, tool-call latency sensitive → skills, MCP, OpenClaw). They share GPUs but not operational assumptions.</li>
+<li><strong>Start your AI-on-K8s journey at inference/serving</strong> — it's the logical entry point: take a model, get a reliable inference endpoint into dev/prod, let developers integrate it.</li>
+<li><strong>AI Runway = the platform layer:</strong> Kubernetes-native inference platform with a web UI + unified model-deployment controller; "App Store for AI models" with a curated catalog (Qwen, Phi, DeepSeek, Llama) + Hugging Face gallery integration; supports vLLM, SGLang, TensorRT, llama.cpp; key feature is a <strong>GPU-fit indicator</strong> telling you instantly if a model fits your cluster (and triggers autoscaling if not). One-click deploy.</li>
+<li><strong>KAITO (Kubernetes AI Toolchain Operator) = the operation layer:</strong> optimized presets for pipeline/data/tensor parallelism, KV-cache-aware routing via Kubernetes primitives (inference pool). AI Runway is the platform; KAITO is <strong>one of its providers</strong> alongside NVIDIA Dynamo, llm-d, and others. Both open-source, Kubernetes-native, run on any conformant cluster.</li>
+<li><strong>From browse-to-serve in a few clicks, on primitives you already operate:</strong> browse catalog → check GPU fit → create model deployment → KAITO workspace estimates GPU + autoscaling → live endpoint → ship; Kubernetes does the rest (KEDA autoscaling, vLLM metrics, canary + rollback-aware deployments). "We're not giving you anything new — we're just shaping it for AI."</li>
+<li><strong>Ray fills the training/fine-tuning gap AKS doesn't cover natively:</strong> distributed CPU+GPU scheduling in one job, <strong>fractional GPU allocation</strong> (keep GPUs ~100% utilized), multi-node training + reinforcement-learning orchestration (a CI/CD pipeline for models), autoscaling, and one <strong>Python-native API</strong> across data prep, training, tuning, and serving. AKS is the cluster; Ray is the workload.</li>
+<li><strong>Anyscale on Azure = managed Ray (public preview):</strong> Azure-native integration; open-source Ray is the engine, Anyscale provides managed lifecycle, observability, and 24/7 support. Runs <strong>in your subscription</strong>, billed through your Azure agreement (no new vendor relationship). Two boundaries: <strong>Anyscale control plane</strong> (dev tools, observability, orchestration, monitoring) in Anyscale's managed Azure tenant; <strong>your data + models</strong> stay in your subscription/AKS cluster. Provisioned from the Azure portal, unified billing, Entra ID security (workload identity, RBAC, audit trails). Data/models never leave your environment.</li>
+<li><strong>Agentic orchestration is the frontier — and the least mature, fastest-changing layer.</strong> You build agents on Kubernetes with <strong>skills</strong> (any script your platform team would run, registered in a catalog, callable by any permitted agent — turns checked-in repos into agent capabilities), <strong>MCP</strong> (protocol for agents↔tools/data/other agents; Microsoft exposes an <strong>AKS MCP server</strong> so you can provision/operate AKS in natural language with workload identity), and Kubernetes primitives filling the gaps (namespaces for isolation, service meshes for observe/filter/policy).</li>
+<li><strong>OpenClaw</strong> = a reference implementation of a multi-channel, multi-tool personal AI assistant that bridges a chat platform into a multi-agent orchestrator with approval flows, tools, and memory — a base pattern you can build on. Microsoft has codified AKS support-engineer troubleshooting skills into agents for <strong>day-2 operations</strong>.</li>
+<li><strong>KARS (Agent Reference Stack for Kubernetes, <code>azure/kars</code>) released today:</strong> a vertically integrated, <strong>secure sandbox</strong> for running agents on any Kubernetes cluster (even local) via a single <code>kars up</code> binary; applies workload-identity policies, sandboxes leveraging <strong>Azure Linux</strong>, a <code>kars-system</code> namespace for the machinery, a <strong>Headlamp</strong> plugin + mesh-topology view to introspect where agents run / what tools/policies/access they have. Keeps agents from "running wild."</li>
+<li><strong>Four reasons practitioners build the agent layer on Kubernetes:</strong> session state, multi-state coordination built-in, tool-call observability, and a composable stack.</li>
+<li><strong>Real customers prove it in production:</strong> <strong>Royal Bank of Canada</strong> runs KAITO for production model serving inside a strict compliance perimeter (Entra ID, Key Vault, private ACR, self-service GPU provisioning via CI/CD, secure-by-default). <strong>Wave</strong> rewrote the self-driving playbook with end-to-end deep learning on <strong>AKS + Ray + Anyscale</strong>, connecting thousands of GPUs into a flexible supercomputer — their AI driver demonstrated autonomous driving in Tokyo after only ~4 months. Microsoft itself runs <strong>AKS Claw</strong> (SRE subject-matter expertise encoded as an agent — each on-call engineer gets an isolated Claw instance, up and running in minutes).</li>
+<li><strong>The takeaway checklist:</strong> start with Kubernetes (the substrate you likely already run) → build the agent layer with MCP + skills + reference stacks like OpenClaw/KARS → choose tooling matching your build-vs-buy (KAITO/AI Runway for inference, Ray/Anyscale for training, KARS for agentic runtime specialization) → <strong>invest in Fleet early</strong>, before your workloads outgrow a single cluster.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-the-honest-practitioner">Framing: "the honest practitioner"</h3>
+<p>Lachlan Evenson opens with high energy (5pm slot, "the only thing between you and the Chainsmokers tonight") and sets the session's promise: this is for people <strong>already running Kubernetes</strong> who are trying to figure out <strong>what AI workloads actually need on top of Kubernetes</strong>. The arc is deliberately three-part: <strong>what works today, what's harder than it looks, and where the ecosystem is going.</strong> He repeatedly returns to being the <em>honest</em> practitioner — naming trade-offs and immature areas rather than selling hype. He promises a tangible payoff: demos, real customer cases, links to Kubernetes repos, and a <strong>checklist you can take back to your team this week</strong>.</p>
+<h3 id="why-kubernetes-shows-up-as-the-ai-substrate">Why Kubernetes shows up as the AI substrate</h3>
+<p>The "why" comes before the "what" and "how." His blunt caveat: <strong>"Kubernetes is a big hammer, and with a big hammer everything looks like a nail."</strong> It isn't always the right fit — but where <strong>scale</strong> is involved (and AI + scale go hand-in-hand), Kubernetes is one of the right answers. The session is fundamentally about earning the right to choose Kubernetes consciously, not defaulting to it.</p>
+<h3 id="the-paas-kubernetes-spectrum">The PaaS ↔ Kubernetes spectrum</h3>
+<p>He draws a left-to-right spectrum:
+- <strong>Left — fully-managed AI services (PaaS).</strong> Microsoft Foundry is the cited example (the <em>preceding</em> Build session covered "Microsoft boundary"/Foundry). This is the <strong>fastest path to a deployment model</strong>: curated, standardized, vendor-tuned. Best for <strong>common patterns, speed, and deployment</strong>.
+- <strong>Right — AKS / Kubernetes.</strong> A <strong>deeper path into the stack</strong>: composable, open, <em>you-tuned</em>. The <strong>"open"</strong> is the powerful part — multi-cloud, on-prem, sovereign environments all get a <em>very similar experience</em>. Best for <strong>extreme scale, tunable tight cost control, data sovereignty, or building something a managed stack can't tune</strong>.</p>
+<p><strong>Neither end is wrong — it's a matter of where your team sits.</strong> If you already run Kubernetes, AKS/Kubernetes may be the right place to chart your AI course.</p>
+<h3 id="the-ai-iron-triangle-and-four-control-levers">The AI iron triangle and four control levers</h3>
+<p>He loves the <strong>iron triangle of project management</strong> (fast / good / cheap — pick two). AI has its own version with <strong>quality, speed, cost</strong> at each apex. Kubernetes/AKS gives four levers to navigate it:
+1. <strong>Granular control → quality.</strong> Choose your scheduler, accelerators, and isolation model to match what your customers need.
+2. <strong>Open tooling.</strong> Leverage the <em>entire</em> AI open-source stack <strong>without vendor lock-in</strong>; run on-prem, in other data centers, or other clouds with a near-identical experience.
+3. <strong>Data sovereignty.</strong> Workloads, data, and weights <strong>stay where compliance demands</strong> — inside your security boundary, never sent off-premises.
+4. <strong>Digital unit economics.</strong> The "talk of the town" is <strong>cost per token</strong>; self-hosting lets you tune <strong>cost per token / per inference / per tenant</strong>.</p>
+<p><strong>The trade-off at the bottom of the triangle: complexity.</strong> "You're buying flexibility with operational overhead" — this platform gives ultimate flexibility but <em>you</em> operate it. (Foreshadow: agentic systems can help operate it — covered later.)</p>
+<h3 id="who-wins-by-self-managing">Who wins by self-managing</h3>
+<p>Profiles where self-managed Kubernetes wins (Microsoft's observed customers):
+- Teams running <strong>AI at scale</strong> with cost sensitivity or sensitivity to <strong>where the data sits</strong>.
+- <strong>ISVs / cloud-agnostic vendors</strong> building and shipping AI platforms to <strong>on-prem and edge</strong>.
+- <strong>Platform owners</strong> who want <strong>composability rather than rent</strong>.</p>
+<p>For these, "composability isn't optional — it's required."</p>
+<h3 id="kubernetes-primitives-that-do-the-work">Kubernetes primitives that do the work</h3>
+<p>What Kubernetes ships out of the box to manage the substrate:
+- <strong>Declarative resource management</strong> — memory, GPUs, and quotas all defined as code; everything declarative.
+- <strong>Heterogeneous scheduling</strong> — in a world of many accelerators, match the right workload to the right accelerator at the right time; compose clusters with different compute and networking accelerators.
+- <strong>Namespace isolation</strong> — multi-tenant AI that doesn't cross the security boundary (so you don't have to rewrite your security tools).
+- <strong>A complete ecosystem of durable primitives</strong> — abstractions stable enough that other platforms build on top of them. (He shouts out <strong>Mark</strong> in the audience, who works on <strong>Dapr</strong> — caption-garbled as "Dapper" — which sits <em>on top of</em> Kubernetes as an example.)</p>
+<p>Kubernetes was <em>built for</em> this complexity, "not in spite of it."</p>
+<h3 id="three-ai-workloads-different-conditions-lifetimes-compute">Three AI workloads — different conditions, lifetimes, compute</h3>
+<p>A pivotal slide: each AI workload has its <strong>own operational environment</strong>. They share GPUs but <strong>not</strong> the same operational assumptions.</p>
+<p><strong>Inference (left, red):</strong>
+- Lifetime: <strong>milliseconds to seconds per request.</strong>
+- Compute: <strong>GPU + CPU</strong> (heterogeneous); <strong>often single-node.</strong>
+- Overflow behavior: just <strong>drop the request.</strong>
+- Optimize for: <strong>latency and cost per token.</strong>
+- Tools: <strong>KAITO, AI Runway.</strong></p>
+<p><strong>Training (middle):</strong>
+- <strong>Throughput-bound</strong>; lifetime <strong>hours to weeks.</strong>
+- Data scientists "get really mad when training jobs break" — they must <strong>resume from a checkpoint.</strong> Hardware is extremely expensive, so <strong>time is money</strong>; keep GPUs <strong>absolutely saturated/utilized.</strong>
+- Measure: <strong>throughput / iteration time</strong> (how long a training iteration takes).
+- Tools: <strong>Ray, Anyscale on Azure.</strong></p>
+<p><strong>Agentic systems (right):</strong>
+- Lifetime: <strong>sessions / minutes per turn.</strong> Autonomous/autopilot agents act on our behalf, ingest data, make decisions.
+- <strong>Multi-modal</strong> (images, text, voice, video streams); <strong>resume on state mid-session</strong> → need state awareness.
+- <strong>Tool-call latency</strong> is very sensitive.
+- Tools: <strong>skills, MCP, OpenClaw.</strong></p>
+<h3 id="necessary-but-not-sufficient-four-gaps-to-close">Necessary but not sufficient: four gaps to close</h3>
+<p>"Kubernetes gives you the foundation, but the era of AI asks for more on top." Necessary, not sufficient. Four gaps (being actively worked on):
+1. <strong>Scheduling at AI scale.</strong> Traditional Kubernetes schedules <strong>one pod at a time</strong>; AI wants <strong>tens/hundreds of thousands of pods to start together</strong> → use <strong>gang scheduling and advanced queuing</strong>, not the default scheduler (Kubernetes lets you clip in a custom one).
+2. <strong>Heterogeneous-hardware awareness.</strong> Each new accelerator generation shouldn't force a platform rewrite — just use the new one alongside the trusted old. <strong>GPU family awareness, accelerator topology, and NUMA-aware placement</strong> must become <strong>first-class signals.</strong>
+3. <strong>AI-aware autoscaling.</strong> Traditional Kubernetes scaled only on <strong>CPU and memory</strong> — not enough. Scale on <strong>tokens/sec, queue depth, GPU utilization</strong>, and <strong>release accelerators when idle.</strong>
+4. <strong>Durable state.</strong> Kubernetes was designed for <strong>stateless</strong> services. AI needs <strong>caching + storage</strong> so long-running <strong>training</strong> jobs and <strong>agentic</strong> workloads survive <strong>evictions, drains, topology changes, and spot interruptions.</strong></p>
+<h3 id="the-four-layer-mental-model">The four-layer mental model</h3>
+<p>The rest of the session is structured bottom-up as a <strong>four-layer stack</strong>:
+1. <strong>Kubernetes / AKS</strong> — the substrate (bottom).
+2. <strong>Inference &amp; serving</strong> — <strong>KAITO + AI Runway</strong> (where most customers start).
+3. <strong>Training &amp; fine-tuning</strong> — <strong>Ray + Anyscale on Azure</strong> (green layer).
+4. <strong>Agentic orchestration</strong> — <strong>skills, MCP, OpenClaw</strong> (top; the layer he's most excited about).</p>
+<p>Presentation order: <strong>inference first</strong>, then jump to the <strong>top (agentic)</strong>, and finish with the <strong>substrate + announcements</strong> at the bottom.</p>
+<h3 id="layer-2-inference-serving-kaito-ai-runway">Layer 2 — Inference &amp; serving (KAITO + AI Runway)</h3>
+<p><strong>Why start here:</strong> if you haven't begun your AI-on-Kubernetes journey, this is the logical entry point — you have a model, you want a reliable <strong>inference endpoint</strong> in dev and prod so developers can integrate it and you can <em>see the value</em> AI provides.</p>
+<p>Two open-source tools, both on GitHub today, with one goal — <strong>get a model serving reliably behind an inference endpoint</strong>:
+- <strong>AI Runway = the platform layer.</strong> A <strong>Kubernetes-native inference platform</strong> with a <strong>web UI</strong> and a <strong>unified model-deployment controller</strong>. Get a model up on Kubernetes in a few clicks. Supports all major serving engines — <strong>vLLM, SGLang, TensorRT, llama.cpp</strong> — so you can plug in your own engine (each has different trade-offs). One-click deploy, nice UI, runnable on any cluster this afternoon.
+- <strong>KAITO (Kubernetes AI Toolchain Operator) = the operation layer.</strong> Handles the operational burden of running/serving a model in production: <strong>optimized presets</strong> for <strong>pipeline, data, and tensor parallelism</strong>, and <strong>KV-cache-aware routing</strong> using Kubernetes primitives like <strong>inference pool</strong>.</p>
+<p><strong>Key relationship:</strong> AI Runway is the <strong>platform</strong>; KAITO is <strong>one of its providers</strong>, alongside <strong>NVIDIA Dynamo, Q Bright, and llm-d</strong>. All open-source and Kubernetes-native → run on any conformant Kubernetes cluster, anywhere.</p>
+<h3 id="the-browse-to-serve-flow-on-primitives-you-already-operate">The browse-to-serve flow (on primitives you already operate)</h3>
+<p>The promise: <strong>from browsing a model to serving in production in just a few clicks</strong>, on primitives you already run:
+1. <strong>Browse</strong> — open AI Runway, pick a model from the <strong>catalog</strong> (integrates the <strong>Hugging Face UI</strong> for the latest open-weight models), and <strong>check GPU fit</strong> (it states whether the model fits, or triggers cluster autoscaling to make it fit), then create a model deployment.
+2. <strong>Create a KAITO workspace</strong> — estimates required GPU utilization, the autoscaling/nodes needed, and where the workload runs, with <strong>optimized presets</strong>. Spins up a <strong>live endpoint</strong>.
+3. <strong>Ship it</strong> — Kubernetes does the rest: <strong>KEDA</strong> for autoscaling, <strong>vLLM metrics</strong> integration (scale on many metrics), <strong>canary deployments</strong>, and <strong>rollback-aware deployments</strong>.</p>
+<p>Every item on the right of the slide is <strong>a Kubernetes primitive you already know how to operate</strong> — "we're not giving you anything new, we're just shaping it for AI."</p>
+<h3 id="demo-ai-runway-voiced-by-ralph">Demo — AI Runway (voiced by Ralph)</h3>
+<p>Filmed by colleague <strong>Ralph</strong> ("a voice for radio — smooth and buttery"):
+- <strong>Model catalog</strong> = "App Store for AI models": curated popular models (<strong>Qwen, Phi, DeepSeek, Llama</strong>), each card showing size, supported engines, and what it's good at (chat, text generation, multimodal).
+- <strong>GPU-fit indicator on every card</strong> — instantly shows whether a model will run on <em>your</em> cluster. No guesswork, no trial-and-error.
+- <strong>Runtime tab</strong> — shows the inference frameworks under the hood; <strong>multiple runtimes, fully extensible, never locked in.</strong>
+- <strong>Hugging Face gallery</strong> — search <strong>DeepSeek R1, 671B params</strong>. Won't fit the single node (8× H100), so select <strong>Dynamo</strong> as runtime, deploy to default namespace. Because the model is huge, it <strong>recommends 3 nodes = 24 GPUs total</strong>; with the <strong>cluster autoscaler enabled</strong>, deploying eventually brings the extra nodes online.
+- <strong>Storage volumes</strong> — attach a <strong>persistent volume backed by Azure Managed Lustre</strong> (high-performance shared FS). Model weights are <strong>cached</strong> so restarts/scale-out don't re-download hundreds of GB; it's <strong>read-write-many</strong> so all nodes access it simultaneously.
+- <strong>Live cost estimate</strong> — per-hour and per-month on Azure, updating in real time (varies by cloud provider).
+- <strong>Autoscale + rollout</strong> — cluster starts at 1× H100 node (8 GPUs); needs 24 across 3 nodes; on deploy, nodes come online, rollout completes across all three, status → running.
+- <strong>Use it</strong> — deployment page shows storage, mounted disk, and the <strong>gateway endpoint</strong>. AI Runway integrates the <strong>Gateway API Inference Extension</strong> (using <strong>Istio</strong> here) for a <strong>single stable endpoint</strong> across all models, plus a ready-to-use <strong>curl</strong> command. It's a <strong>standard OpenAI-compatible API</strong> — any tool/SDK that speaks OpenAI talks to your models unmodified.</p>
+<p><strong>The kicker:</strong> Ralph did the whole thing in <strong>3 minutes</strong> — "what used to take me 3 weeks to get up and running" — all with open-source tools available on GitHub today.</p>
+<h3 id="layer-3-training-fine-tuning-ray-anyscale-on-azure">Layer 3 — Training &amp; fine-tuning (Ray + Anyscale on Azure)</h3>
+<p>Next up the stack: you have a running model, now <strong>fine-tune it with your own data</strong> for your own workflow. Eventually all agents need a <strong>fine-tuned model with your data behind it</strong>, and <strong>Ray</strong> is the workload that powers that.</p>
+<p><strong>What AKS provides natively:</strong> pod scheduling, autoscaling, node lifecycle, networking, storage — the substrate, hardened for production at scale. <strong>What production AI also needs that AKS doesn't provide natively, and Ray fills:</strong>
+- A <strong>distributed computing / scheduling framework</strong> that schedules <strong>both CPUs and GPUs in a single job.</strong>
+- <strong>Heterogeneous hardware</strong> handling via <strong>fractional GPU allocation</strong> (critical for keeping GPUs at ~100% as long as possible).
+- <strong>Multi-node orchestration</strong> for both <strong>training and reinforcement learning</strong> — effectively a <strong>CI/CD pipeline for your models.</strong>
+- <strong>Autoscaling</strong> on your behalf.
+- <strong>One Python-native API</strong> across <strong>data prep, training, tuning, and serving</strong> — hosted in their interface, deployable from it, running on an AKS cluster.</p>
+<p>"AKS is the cluster, Ray is the workload."</p>
+<h3 id="announcement-anyscale-on-azure-managed-ray-public-preview">Announcement — Anyscale on Azure (managed Ray, public preview)</h3>
+<p><strong>Public preview of Anyscale on Azure</strong> — <strong>managed Ray</strong>, an <strong>Azure-native integration</strong> built in collaboration with Anyscale. Open-source <strong>Ray is the distributed compute engine</strong>; <strong>Anyscale provides the managed lifecycle, observability, and 24/7 support.</strong> Crucially it <strong>runs in your subscription</strong> and is <strong>billed through your Azure agreement</strong> — no new vendor relationship; you pay Microsoft and Microsoft handles Anyscale.</p>
+<p><strong>Architecture / two boundaries that matter (for sovereignty):</strong>
+- <strong>Anyscale control plane (top, orange)</strong> — runs in the <strong>Anyscale-managed Azure tenant</strong>: dev tools, observability, APIs, controllers, job orchestration, monitoring, etc.
+- <strong>Your subscription (bottom, blue)</strong> — where <strong>your data and models live.</strong> The <strong>Anyscale runtime runs a managed Ray operator on your AKS cluster</strong> with your blob storage and your GPU/CPU nodes. Everything stays within your tenant.</p>
+<p><strong>Three pillars:</strong> (1) <strong>Provisioning from the Azure portal</strong> — one portal, same familiar workflow; (2) <strong>unified billing</strong>; (3) <strong>enterprise security with Entra ID</strong> — workload identity <em>plus</em> identity with your own credentials, RBAC, audit, and compliance trails. <strong>Data and models never leave the environment.</strong></p>
+<h3 id="demo-anyscale-on-azure-end-to-end-with-bob">Demo — Anyscale on Azure end-to-end (with Bob)</h3>
+<p>Colleague <strong>Bob</strong> helped; a <strong>7-minute</strong> end-to-end <strong>training + fine-tuning</strong> exercise for a <strong>product-catalog search</strong>:
+- <strong>All in the Azure portal</strong> — search "Anyscale" → <strong>Anyscale Cloud</strong> (in preview) → create flow familiar to Azure users: pick subscription, resource group (e.g. "Bob's testing"), region (<strong>South Central US</strong>), cloud name (identifies the cloud talking to the Anyscale control plane), and provision a <strong>new or existing AKS cluster</strong> (link existing clusters).
+- <strong>Managed identity</strong> — how all workloads on the Anyscale Cloud identify with Azure and the storage accounts holding <strong>model checkpoints and weights</strong>; <strong>ACR</strong> stores container images supporting the Ray/Anyscale operator.
+- <strong>Create</strong> — runs validation ("tap blade"), submits, and provisions in seconds ("magic of video editing"). From <strong>no Anyscale to a running Anyscale-on-Azure cluster in a few clicks, never leaving the portal.</strong>
+- <strong>Launch the Anyscale UI</strong> — <strong>same Azure credentials</strong> carry over ("one identity, multiple platforms"). Inside: dashboards, <strong>workspaces</strong> + <strong>Jupyter notebooks</strong> (where data scientists work), <strong>jobs</strong> (short-run to completion) and <strong>services</strong> (for inferencing endpoints).
+- <strong>Templates</strong> — zero-to-running-pipeline in a minute via a <strong>template library</strong> (multimodal inferencing, LLMs, hero demos, etc.).
+- <strong>The fine-tune</strong> — a pre-provisioned <strong>CPU-only cluster</strong> with a head node, running on an <strong>8-node Kubernetes cluster</strong>. Launch an <strong>embedded VS Code instance</strong> from the portal and run Python directly. The demo fine-tunes an <strong>embedding model</strong> on a <strong>product catalog of images</strong> so "shoe" → "sock", "headphones" → "speakers", etc. Click play to <strong>clean data + run the fine-tune</strong>; accuracy graphs update (note: the narrated numbers are caption-garbled — he describes accuracy <em>improving</em> via fine-tuning to give better recommendations).
+- <strong>Embedded vectors / relationships</strong> — related items (laptop stands, smartwatches, portable SSDs, webcams) cluster together; before/after embedding clouds show scattered colors → aggregated, i.e. a <strong>more accurate model</strong> from the provided data.
+- <strong>Serving</strong> — Anyscale on Azure <strong>handles routing</strong>: <strong>3 endpoints</strong> (HTTP ingress + two models: image-to-text and the fine-tuned recommendations). Ask about "wireless headphones" → relevant matched references.
+- <strong>Monitoring/observability</strong> — integrated stack shows node/cluster utilization, what's running, and <strong>dependencies</strong> (something only the Anyscale-on-Ray platform surfaces) so you can troubleshoot and confirm full utilization.</p>
+<p><strong>The kicker:</strong> "In only 7 minutes — that took me <strong>3 months</strong> to do." Notebook-to-production in a few clicks, ideal for <strong>fine-tuning and reinforcement learning</strong>.</p>
+<h3 id="layer-4-agentic-orchestration-skills-mcp-openclaw-kars">Layer 4 — Agentic orchestration (skills, MCP, OpenClaw, KARS)</h3>
+<p>The layer he's most excited about — and openly the <strong>"least mature part of the stack, changing very rapidly"</strong> (name-checking emerging things like "open floor" and "Hermes" — caption-uncertain — with "I don't know where it's going"). The honest pitch: <strong>you can run it up and start experimenting today.</strong> The question this layer answers: <em>how do I serve inference + training up to my autonomous agents?</em></p>
+<p><strong>Building an agent on Kubernetes uses three things plus Kubernetes primitives:</strong>
+- <strong>Skills</strong> — a <strong>discrete set of capabilities an agent can run</strong>; essentially <strong>any script your platform team would run.</strong> "Everything I had checked into a repo has now become a skill, and I have agents running on my behalf." Register a skill in a <strong>catalog</strong>; any agent with the right permissions can call it. (Hold that in mind for <strong>day-2 operations.</strong>)
+- <strong>MCP</strong> — a <strong>protocol</strong> letting agents talk to <strong>tools, data, and other agents.</strong> Microsoft <strong>exposes the AKS MCP server today</strong> — so in <strong>VS Code</strong> you can say "Provision me an AKS cluster" in natural language and the LLM makes the call and provisions the infrastructure. Open-source today, runs your tools under the hood, secured with <strong>workload identity.</strong>
+- <strong>Kubernetes primitives fill the gaps</strong> — <strong>namespaces</strong> to isolate the agent and scope its privileges; <strong>service meshes</strong> to <strong>observe, filter, and apply policy</strong> to the calls. "Kubernetes has all the primitives we need under the hood to make this work."</p>
+<p>This is "right out on the edge of the frontier."</p>
+<h3 id="openclaw-as-the-reference-agent-pattern">OpenClaw as the reference agent pattern</h3>
+<p><strong>OpenClaw</strong> — a <strong>reference implementation for a multi-channel, multi-tool personal AI assistant</strong> (he jokes he uses it to book his Pilates lessons). It <strong>bridges a chat platform into a multi-agent orchestrator</strong> with <strong>approval flows, tools, and memory</strong> — a <strong>base pattern</strong> to build on. Microsoft has <strong>codified the skills its AKS engineers use to troubleshoot environmental issues</strong> into agents — effectively "creating agents out of our support engineers," giving them the <strong>right tools at the right time</strong> so they skip the monotony of pulling logs. Used <strong>right now for day-2 operations</strong> — a likely high-value starting point for teams experimenting with agents.</p>
+<h3 id="announcement-kars-agent-reference-stack-for-kubernetes-azurekars">Announcement — KARS: Agent Reference Stack for Kubernetes (<code>azure/kars</code>)</h3>
+<p><strong>Released today: KARS</strong> (k-a-r-s) — a <strong>vertically integrated, secure sandbox environment</strong> for running agents, where you <strong>apply workload-identity policies</strong> and run <strong>sandbox environments leveraging Azure Linux</strong> under the hood, so you have the <strong>right security primitives in place</strong> and "don't let agents run wild" (security being a major concern).</p>
+<h3 id="demo-kars-openclaw-live-unedited">Demo — KARS + OpenClaw (live, unedited)</h3>
+<p>2-minute demo of the agent reference stack (<code>azure/kars</code>):
+- <strong><code>kars up</code></strong> — ships as a <strong>single binary</strong>; run on <strong>any Kubernetes cluster, even local</strong>. It runs preflight checks and installs anything missing; here it runs against a real AKS cluster.
+- <strong><code>kars-system</code> namespace</strong> — where all the machinery runs on your AKS cluster.
+- <strong>Run up OpenClaw via a custom resource</strong> — declaratively in Kubernetes: "Please OpenClaw, be a helpful agent. Here's the access you have, the tools you have, what you can call." Apply to the cluster → access the OpenClaw UI.
+- <strong>Headlamp</strong> — an open-source <strong>heads-up display for Kubernetes</strong> with plugins; Microsoft built a <strong>KARS plugin</strong> so you can <strong>introspect</strong> where sandboxes/agents run, their <strong>security capabilities, policies, and access</strong>, plus a <strong>mesh-topology graph</strong> of where calls flow (agents → LLMs / elsewhere).
+- <strong><code>kars operator</code> / <code>kars list</code></strong> — a <strong>binary</strong> view of the same info; list <strong>sandboxes</strong>, connect to one, and it <strong>passes back the OpenClaw URL with an embedded token</strong> to log in.
+- <strong>Live agent answer</strong> — unedited, recorded "yesterday": ask the agent <strong>"what announcements did Microsoft have with NVIDIA this week?"</strong> — it goes to the <strong>web</strong>, consults media/press analysis, and returns a well-thought-out response, demonstrating a fresh/live agent giving real value <strong>in a couple of minutes and a couple of clicks</strong>, on top of AKS/Kubernetes.</p>
+<h3 id="why-practitioners-build-the-agent-layer-on-kubernetes">Why practitioners build the agent layer on Kubernetes</h3>
+<p>Four reasons summarized: <strong>session state</strong>, <strong>multi-state coordination built-in</strong>, <strong>tool-call observability</strong>, and a <strong>composable stack</strong> (pick up skills/MCP — cloud providers publish MCP skills constantly; interact with Azure via the <strong>AKS MCP server</strong> in natural language).</p>
+<h3 id="layer-1-substrate-announcements-aks">Layer 1 — Substrate announcements (AKS)</h3>
+<p>Four AKS announcements spanning <strong>single-cluster, multi-cluster, and fleet</strong>:</p>
+<ol>
+<li><strong>AKS Automatic + managed system node pools — GA.</strong> AKS Automatic is "the easiest way to get started with Kubernetes/AKS." Now Microsoft <strong>manages and scales the system node pools</strong> (the pods running the Kubernetes components themselves). <strong>Why it matters for AI:</strong> you don't waste your <strong>GPU nodes</strong> running system components — milk every cycle for AI workloads.</li>
+<li><strong>Azure Container Linux — GA.</strong> "The best of Azure and the best of Linux." Benefits: <strong>smaller attack surface</strong> (curated package set, smaller CVEs, predictable/fast patching), <strong>transparent supply chain</strong> (packaged + distributed with <strong>predictable signed artifacts</strong> and upgrade paths for <strong>regulated workloads</strong>), and <strong>consistency across hosts</strong>. Runs in <strong>containers, on VMs, or even WSL on Windows</strong>. Philosophy: the <strong>OS layer in AKS should be invisible, secure-by-default, consistent, and out of your way.</strong></li>
+<li><strong>AKS on bare metal — public preview.</strong> <strong>Direct hardware access</strong> from AKS to manage <strong>physical nodes</strong> — install AKS on physical hardware with <strong>no hypervisor / no virtualization layer</strong> for your workload. Important for <strong>GPUs, NICs, and specialized accelerated hardware</strong>. <strong>Same AKS control plane, same operational model.</strong> Matters for AI because you can <strong>extend AI to on-prem and other clouds</strong> while staying inside Azure and <strong>not paying the virtualization tax</strong> on-prem — scaling quickly.</li>
+<li><strong>Fleet for Arc-enabled clusters — (preview/new).</strong> Clusters "get really, really big, really quickly," so manage a <strong>fleet of clusters</strong>: <strong>progressive rollouts across clusters</strong>, <strong>intelligent workload placement</strong> across boundaries/environments (on-prem, edge), and <strong>consistent policy enforcement</strong> (push the same policies everywhere at once). <strong>Arc-enabled</strong> → has an Azure identity, same control plane. "All AI workloads outgrow a single cluster very quickly — this is how you stay ahead of that."</li>
+</ol>
+<h3 id="customer-story-royal-bank-of-canada-kaito-in-production">Customer story — Royal Bank of Canada (KAITO in production)</h3>
+<p><strong>RBC</strong> runs <strong>KAITO in production</strong>. Their <strong>platform onboarding &amp; deployment operator</strong> wraps <strong>GPU resource provisioning into a CI/CD workflow</strong> that <strong>developers run themselves</strong> — self-service deployment, <strong>secure by default</strong>. KAITO powers the <strong>production model-serving workspace</strong>; AI models deploy as <strong>pods</strong> with images stored in the <strong>bank's ACR</strong> (Azure Container Registry). The critical piece is the <strong>compliance perimeter</strong>: Entra ID, Key Vault, private ACR — <strong>all models and data stay inside their secure perimeter, subscription, and boundary.</strong> A flagship example of banks running <strong>KAITO on AKS</strong> for model serving.</p>
+<h3 id="customer-story-wave-self-driving-on-aks-ray">Customer story — Wave (self-driving on AKS + Ray)</h3>
+<p><strong>Wave</strong> is "rewriting the self-driving playbook with <strong>end-to-end deep learning</strong>," running on <strong>AKS with Ray</strong>. Their <strong>AI driver demonstrated autonomous driving in Tokyo after only ~4 months</strong> — in a brand-new <strong>Nissan</strong> vehicle, <strong>learning on the go</strong>. That generalization required <strong>massive infrastructure</strong>; they use <strong>AKS + Anyscale on Azure</strong> to connect <strong>thousands of GPUs into a flexible supercomputer</strong> for training and validation. The training layer is pushed to its limits — <strong>the scale of the infrastructure directly determines how fast they can iterate and train.</strong></p>
+<h3 id="microsofts-own-dogfooding-aks-claw">Microsoft's own dogfooding — AKS Claw</h3>
+<p><strong>AKS Claw</strong> = Microsoft's <strong>SRE subject-matter expertise encoded as an agent.</strong> Each dedicated/on-call engineer gets an <strong>isolated instance of Claw</strong>; once installed, <strong>every new on-call engineer is up and running within minutes</strong> with minimal training, getting the <strong>right tools and environment access</strong> to make decisions and get customers back online. One <strong>natural-language interface</strong> that <strong>replicates consistent operational behavior</strong> by encoding it into agents — a concrete agentic-day-2-operations pattern built on the same primitives.</p>
+<h3 id="closing-so-now-what">Closing — "so now what?"</h3>
+<p>The takeaway checklist for the audience:
+- <strong>Start with Kubernetes</strong> — the substrate many already run today.
+- <strong>Build the agent layer</strong> with <strong>MCP + skills</strong> and <strong>reference stacks like OpenClaw</strong> (and KARS).
+- <strong>Choose tooling that matches your build-vs-buy</strong> — there's a tool for every layer: <strong>KAITO + AI Runway</strong> (inference/serving), <strong>Ray + Anyscale on Azure</strong> (training/fine-tuning), and the <strong>runtime specialization for agentic AI</strong> announced today (<strong>KARS</strong>). Mix and match.
+- <strong>Invest in Fleet early</strong> — before workloads outgrow a single cluster.</p>
+<p>He closes by inviting the audience to come build, share what they're building, and "next time you're on stage telling me what y'all built."</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Azure Kubernetes Service (AKS)</strong> — the managed Kubernetes substrate; central to every layer.</li>
+<li><strong>Kubernetes</strong> — declarative resource mgmt, heterogeneous scheduling, namespace isolation, durable primitive ecosystem.</li>
+<li><strong>Microsoft Foundry</strong> — cited as the fully-managed AI PaaS example on the "left" of the spectrum (covered in the preceding session).</li>
+<li><strong>KAITO (Kubernetes AI Toolchain Operator)</strong> — inference operation layer; presets for pipeline/data/tensor parallelism, KV-cache-aware routing via inference pool. Open-source.</li>
+<li><strong>AI Runway</strong> — Kubernetes-native inference <em>platform</em> (web UI + unified model-deployment controller); GPU-fit indicator; OpenAI-compatible endpoints. Open-source.</li>
+<li><strong>Inference serving engines:</strong> vLLM, SGLang, TensorRT, llama.cpp.</li>
+<li><strong>AI Runway providers:</strong> KAITO, NVIDIA Dynamo, Q Bright, llm-d (llmd).</li>
+<li><strong>Ray</strong> — distributed compute/scheduling engine for training/RL; fractional GPU allocation; one Python-native API across data prep/training/tuning/serving. Open-source.</li>
+<li><strong>Anyscale on Azure</strong> — managed Ray, Azure-native integration (public preview); runs in your subscription, Azure-billed.</li>
+<li><strong>KARS — Agent Reference Stack for Kubernetes (<code>azure/kars</code>)</strong> — secure agent sandbox; single <code>kars up</code> binary; <code>kars-system</code> namespace; Azure Linux sandboxes; <code>kars operator</code>/<code>kars list</code>.</li>
+<li><strong>OpenClaw</strong> — reference multi-channel/multi-tool personal AI assistant; chat → multi-agent orchestrator with approval flows, tools, memory.</li>
+<li><strong>MCP (Model Context Protocol)</strong> + <strong>AKS MCP server</strong> — natural-language provisioning/operation of AKS (e.g. from VS Code), secured by workload identity.</li>
+<li><strong>Skills</strong> — discrete agent capabilities (any script), registered in a catalog, callable by permitted agents.</li>
+<li><strong>Headlamp</strong> (+ KARS plugin) — open-source Kubernetes heads-up display / introspection UI with mesh-topology view.</li>
+<li><strong>KEDA</strong> — event-driven autoscaling for serving.</li>
+<li><strong>Gateway API Inference Extension</strong> + <strong>Istio</strong> — single stable endpoint across models.</li>
+<li><strong>Azure Managed Lustre</strong> — high-performance RWX shared file system for cached model weights.</li>
+<li><strong>Azure Container Linux</strong> — hardened, minimal, signed-supply-chain OS for AKS nodes / VMs / WSL.</li>
+<li><strong>AKS Automatic</strong> — easiest on-ramp; now with managed system node pools.</li>
+<li><strong>AKS on bare metal</strong> — hypervisor-free AKS on physical nodes.</li>
+<li><strong>Fleet (for Arc-enabled clusters)</strong> — multi-cluster progressive rollouts, workload placement, policy enforcement.</li>
+<li><strong>Azure Arc</strong> — gives non-Azure clusters an Azure identity / common control plane.</li>
+<li><strong>Entra ID, Azure RBAC, Key Vault, ACR (Azure Container Registry)</strong> — enterprise identity/security/compliance for workloads, weights, and images.</li>
+<li><strong>Workload identity</strong> — used across MCP server, KARS, and managed Ray for secure auth.</li>
+<li><strong>Hugging Face</strong> — model gallery integrated into AI Runway's catalog.</li>
+<li><strong>AKS Claw</strong> — Microsoft's SRE expertise encoded as an isolated per-engineer agent.</li>
+<li><strong>Dapr</strong> — mentioned (audience member "Mark"; caption-garbled "Dapper") as a durable abstraction built on top of Kubernetes.</li>
+<li><strong>Models referenced:</strong> Qwen, Phi, DeepSeek (incl. DeepSeek R1 671B), Llama.</li>
+<li><strong>Hardware referenced:</strong> NVIDIA H100 GPUs; NICs; heterogeneous accelerators.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>AKS Automatic — managed system node pools: GENERALLY AVAILABLE.</strong> Microsoft manages/scales the Kubernetes system components so GPU nodes are reserved for AI workloads.</li>
+<li><strong>Azure Container Linux: GENERALLY AVAILABLE.</strong> Hardened, minimal-CVE, signed-supply-chain OS; runs in containers, on VMs, and in WSL.</li>
+<li><strong>Anyscale on Azure (managed Ray): PUBLIC PREVIEW.</strong> Azure-native managed Ray; control plane in Anyscale's managed Azure tenant, data/models in your subscription; provisioned via Azure portal, Azure-billed, Entra ID-secured.</li>
+<li><strong>AKS on bare metal: PUBLIC PREVIEW.</strong> Hypervisor-free AKS on physical hardware for direct GPU/NIC access; same AKS control plane and operational model; extends AI to on-prem/other clouds without the virtualization tax.</li>
+<li><strong>Fleet for Arc-enabled clusters: NEW (multi-cluster/fleet).</strong> Progressive cross-cluster rollouts, intelligent workload placement, and consistent policy enforcement across on-prem/edge, Arc-enabled with an Azure identity.</li>
+<li><strong>KARS — Agent Reference Stack for Kubernetes (<code>azure/kars</code>): RELEASED today.</strong> Vertically integrated secure agent sandbox with workload-identity policies and Azure Linux sandboxes; runnable on any cluster (incl. local) via a single binary.</li>
+<li><strong>AKS MCP server: available (open-source).</strong> Natural-language provisioning/operation of AKS via MCP, secured by workload identity. (Presented as available now rather than newly GA.)</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>AI Runway (voiced by Ralph, ~3 min):</strong> browse the model catalog (Qwen/Phi/DeepSeek/Llama) with per-card <strong>GPU-fit indicator</strong>; pick <strong>DeepSeek R1 671B</strong> from the Hugging Face gallery; select <strong>NVIDIA Dynamo</strong> runtime; it recommends <strong>3 nodes / 24 GPUs</strong>; <strong>cluster autoscaler</strong> brings nodes online; attach <strong>Azure Managed Lustre</strong> RWX persistent volume for cached weights; <strong>live cost estimate</strong>; rollout to running; consume via <strong>Gateway API Inference Extension + Istio</strong> single endpoint with an <strong>OpenAI-compatible curl</strong>. "3 minutes vs the 3 weeks it used to take."</li>
+<li><strong>Anyscale on Azure end-to-end (with Bob, ~7 min):</strong> create an <strong>Anyscale Cloud</strong> entirely in the <strong>Azure portal</strong> (subscription/RG/region/cluster, managed identity, ACR); launch the <strong>Anyscale UI with the same Azure credentials</strong>; open an <strong>embedded VS Code</strong> notebook; <strong>fine-tune an embedding model</strong> on a product-catalog of images (better recommendations, accuracy graphs, before/after embedding clusters); <strong>serve 3 endpoints</strong> (HTTP ingress + image-to-text + recommendations); view <strong>integrated monitoring/observability</strong> with dependencies. "7 minutes vs the 3 months it used to take."</li>
+<li><strong>KARS + OpenClaw (live, unedited, ~2 min):</strong> <code>kars up</code> on a real AKS cluster; <strong><code>kars-system</code> namespace</strong>; declaratively run <strong>OpenClaw</strong> via a Kubernetes custom resource; introspect agents/sandboxes/policies in <strong>Headlamp (KARS plugin)</strong> + <strong>mesh topology</strong>; <code>kars list</code> → connect → token-embedded OpenClaw URL; ask the live agent <strong>"what announcements did Microsoft have with NVIDIA this week?"</strong> → it browses the web and returns a fresh analysis.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>"Kubernetes is a big hammer, and with a big hammer everything looks like a nail."</strong> — the honest framing of when <em>not</em> to use it.</li>
+<li><strong>"Kubernetes is necessary, but it's not sufficient"</strong> for AI — the session's thesis.</li>
+<li><strong>"We're not giving you anything new — we're just shaping it for AI."</strong> (every serving primitive is one you already operate).</li>
+<li><strong>"AKS is the cluster, Ray is the workload."</strong></li>
+<li><strong>AI Runway demo: ~3 minutes</strong> vs <strong>"3 weeks"</strong> the manual way.</li>
+<li><strong>Anyscale demo: 7 minutes</strong> vs <strong>"3 months"</strong> the manual way.</li>
+<li><strong>DeepSeek R1 = 671B parameters</strong>, requiring <strong>24 GPUs across 3 nodes</strong> (won't fit one 8×H100 node).</li>
+<li><strong>Agentic orchestration is "arguably the least mature part of the stack"</strong> and "changing very rapidly."</li>
+<li><strong>Wave's AI driver: autonomous driving in Tokyo after only ~4 months</strong>, using <strong>thousands of GPUs</strong> stitched into a flexible supercomputer (AKS + Anyscale/Ray).</li>
+<li><strong>AKS Claw:</strong> every new on-call engineer <strong>up and running within minutes</strong> with minimal training.</li>
+<li><strong>Four announcements</strong> spanning single-cluster, multi-cluster, and fleet.</li>
+<li>Speaker has <strong>10+ years in Kubernetes</strong>; likens agentic AI on Kubernetes to a "world of pure imagination" (Wonka) and his original Kubernetes "aha moment" scaling 1 → 100 containers.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Spin up <strong>AI Runway + KAITO</strong> on a test AKS cluster; deploy a small open-weight model (Phi/Qwen) and hit the OpenAI-compatible endpoint; watch the <strong>GPU-fit indicator</strong> + KEDA autoscaling.</li>
+<li>Try <strong><code>azure/kars</code></strong> (<code>kars up</code>) against a local kind/minikube cluster, then run <strong>OpenClaw</strong> via the custom resource and introspect it in <strong>Headlamp</strong>.</li>
+<li>Stand up the <strong>AKS MCP server</strong> in VS Code and provision/operate a throwaway cluster via natural language (with workload identity).</li>
+<li>Evaluate <strong>Anyscale on Azure (preview)</strong> for a real fine-tuning/RL job — confirm the control-plane/data boundary split satisfies our sovereignty needs.</li>
+<li>Codify a couple of our own <strong>day-2 ops runbooks as "skills"</strong> and expose them to an agent.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What's the production maturity / SLA story for <strong>AKS on bare metal</strong> GPU scheduling vs virtualized AKS?</li>
+<li>How does <strong>KARS</strong> sandboxing (Azure Linux) compare to gVisor/Kata for agent isolation, and what's the blast-radius model?</li>
+<li>Pricing/billing specifics for <strong>Anyscale on Azure</strong> managed Ray through the Azure agreement?</li>
+<li>Is <strong>KAITO</strong>'s KV-cache-aware routing (inference pool) compatible with multi-tenant isolation at scale?</li>
+<li>Roadmap for the named-but-uncertain agentic frameworks ("open floor"/"Hermes") — worth tracking?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Anyone running (or planning) <strong>AKS</strong> who is deciding <strong>managed PaaS (Foundry) vs self-managed Kubernetes</strong> for AI.</li>
+<li><strong>Platform engineering / SRE</strong> teams building internal AI platforms, day-2 agent ops, and cost-per-token controls.</li>
+<li><strong>Regulated / sovereign</strong> customers (banking, gov) needing data/weights to stay in-boundary (Entra ID, Key Vault, private ACR).</li>
+<li>Teams scaling beyond one cluster → <strong>Fleet</strong> + Arc.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><a class="wikilink wikilink--resolved" href="ODSP914.html">ODSP914 - Run AI at scale with Ray Kubernetes using Anyscale on Azure</a></li>
+<li><a class="wikilink wikilink--resolved" href="ODSP933.html">ODSP933 - Agentic infrastructure needs agentic observability</a></li>
+<li><a class="wikilink wikilink--resolved" href="DEM311.html">DEM311 - Scale cloud-native workloads with Azure Linux</a></li>
+<li><a class="wikilink wikilink--resolved" href="OD827.html">OD827 - Build deploy and run Linux workloads on Azure</a></li>
+<li><a class="wikilink wikilink--resolved" href="OD870.html">OD870 - Azure Storage for AI workloads</a></li>
+<li><a class="wikilink wikilink--resolved" href="OD800.html">OD800 - Using autonomous SRE to move from alerts to action</a></li>
+<li><a class="wikilink wikilink--resolved" href="OD837.html">OD837 - Build and deploy AI at the edge for real-world impact</a></li>
+<li><a class="wikilink wikilink--resolved" href="BRK241.html">BRK241 - From prototype to production build and run agents at scale</a></li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="BRK221.html"><span class="pager-dir">← Previous</span><span class="pager-code">BRK221</span><span class="pager-title">Idea to production-ready agent in seconds on AI-native runtime</span></a>
+    <a class="pager pager-next" href="BRK223.html"><span class="pager-dir">Next →</span><span class="pager-code">BRK223</span><span class="pager-title">From rows to reasoning: Designing databases for AI apps and agents</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRK229 — From Skeptic to Superpower: Real-World AI Coding Workflows That Scale</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">BRK229</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=avfVJQWkF2A" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">From Skeptic to Superpower: Real-World AI Coding Workflows That Scale</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Priyanka (Marketing/Product, ex-CNCF), Mario (Backend Engineer) — Think</span>
+      <span class="meta-item">⏱️ 38m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="coding-agents">Coding Agents</span><span class="chip" data-tag="github-copilot">GitHub Copilot</span><span class="chip" data-tag="developer-productivity">Developer Productivity</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Priyanka (one-person MarTech team / product; previously ran the Cloud Native Computing Foundation, CNCF) &amp; Mario (backend engineer; telco + IoT background) — both at <strong>Think</strong>, an energy-management company<br>
+<strong>Duration:</strong> ~38 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=avfVJQWkF2A">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Two builders from <strong>Think</strong> — a startup that runs HVAC/energy orchestration for 10,000+ buildings (critical infrastructure, some in −40 °C polar-circle Sweden) — share how they went from AI skeptics to running an almost-fully-autonomous "software factory." Priyanka frames the cultural and business arc (CEO mandate → early friction → "wow" moments → an Anthropic ban that took them offline for 10 days), drawing a strong <strong>deja-vu parallel to cloud-native adoption</strong>: vendor lock-in, lack of data/workflow portability, and a FinOps/"AI-Ops" cost problem. Mario presents the technical core: the <strong>"Think Harness,"</strong> a spec-driven, immutable, multi-agent pipeline (PRD → features → tasks → parallel implementation as a DAG) built on <strong>GitHub Copilot CLI in autopilot</strong>, heavy use of skills/specialized agent personas, a Socratic "grill-me" gate, model-switching for adversarial QA, and arch-linting to fight code drift. The headline live demo: a feature was kicked off at the start and <strong>merged to main on stage</strong> while they talked. Core message — AI is a brilliant but quittable colleague; harness the drift, stay vendor-neutral, and have fun.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>AI coding adoption is re-running the cloud-native playbook.</strong> The same enterprise twists/turns Priyanka saw over 10 years with Kubernetes/CNCF are reappearing in generative AI: lock-in, portability gaps, cost/FinOps pain.</li>
+<li><strong>"Drift" is the central engineering risk.</strong> LLMs hold an internalized, over-confident view of code/terms (and can invent things "from thin air"). Without a harness the codebase rots, divergent terms accumulate, and because the AI is fast, bugs explode quickly.</li>
+<li><strong>A cited investigation:</strong> teams using AI for ≥50% of their coding saw <strong>bug frequency rise ~53%</strong> — largely because they hadn't harnessed it.</li>
+<li><strong>The fix is context management, not raw model power.</strong> Restate purpose, architectural &amp; design principles; scaffold the repo so agents can navigate (ports = interfaces, adapters = implementations, clear domain context).</li>
+<li><strong>Spec-driven + immutable everything.</strong> PRDs → features → tasks, all written into the repo in a machine-interpretable way, then frozen so an agent can trust "I can read this path and stop worrying."</li>
+<li><strong>Multi-agent orchestration via Copilot CLI's task scheduler.</strong> Sub-agents can schedule further sub-agents, which manages context well; work runs as a <strong>topology-sorted DAG</strong> and parallelizes in "waves" by dependency.</li>
+<li><strong>Switch models for QA on purpose.</strong> Different models are "seeded differently" and catch different issues; they implement with one (e.g. Claude 4.8) and run adversarial QA reviews with another (e.g. GPT-5.5), or reverse. Models won't critique themselves well ("I do nothing wrong").</li>
+<li><strong>Human-in-the-loop steering at the gates</strong>, not line-by-line coding. Mario now acts as architect/designer; the engineer corrects partitioning, security, resilience decisions and re-iterates.</li>
+<li><strong>Vendor neutrality is a hard business requirement.</strong> An <strong>Anthropic org ban on 19 Apr 2026</strong> halted all Claude-based processes; resolved ~10 days later, but exposed lock-in. Anything with a token markup (e.g. routing Claude through Cursor) is a poor backup for a bootstrapped startup.</li>
+<li><strong>Portability is fragile.</strong> Work tied to implicit memory or a specific chat window can be truly lost (Priyanka lost a long copywriting conversation when a context window vanished).</li>
+<li><strong>The 10x shows up where you're weakest.</strong> A non-security-minded dev suddenly ships better security posture in PRs; a backend engineer ships a "fully functional ugly mock" UI to start from.</li>
+<li><strong>Real business impact at Think:</strong> an RFQ/RFP quoting workflow went from days → minutes (each application worth ~$100k–$800k); Priyanka's in-house website/CMS/CRM build saves ~$120k–$200k/year.</li>
+<li><strong>A new structural difference vs. cloud era: wider surface area</strong> — <em>everyone's</em> a builder now ("it's the Oprah show… you get to build"), so problems can hit the business from many more directions.</li>
+<li><strong>"Brilliant colleagues — human or machine — can quit at any time."</strong> Prepare accordingly (the ban was their proof).</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="who-they-are-the-setup">Who they are &amp; the setup</h3>
+<ul>
+<li><strong>Priyanka</strong> — works at <strong>Think</strong> (energy-management space); previously ran <strong>CNCF</strong> (Cloud Native Computing Foundation, the home of Kubernetes) for ~10 years. Now effectively the <strong>one-person MarTech team</strong> building Think's website + CMS/CRM. Has been <strong>"vibe coding" for 6+ months</strong> and frames the talk around the deja-vu with cloud-native.</li>
+<li><strong>Mario</strong> — telco + IoT background. Started coding "Energy OS" in 2022, a platform <strong>built to let LLMs execute on it</strong>. His epiphany was <strong>2021 trying GitHub Copilot</strong> (early tab-completion era), predicting then that within 5–10 years <strong>80% of simple code would be done by AI</strong> — "and we're here now."</li>
+<li><strong>Think's stakes:</strong> powers <strong>10,000+ buildings</strong> (commercial + residential) for power needs; parts are <strong>critical infrastructure</strong> (heating, ventilation, orchestration). Deployed near the polar circle where winters hit <strong>−40 °C</strong> — a failure could mean a pensioner in northern Sweden loses heat. This is <em>why</em> they were cautious skeptics.</li>
+<li><strong>Live framing device:</strong> Mario is visibly "nervous" / itching to code, so early on he <strong>kicks off a real autonomous build</strong> on stage (from a to-do list) that runs in the background for the whole talk and is merged live at the end.</li>
+</ul>
+<h3 id="the-autonomous-flow-kicked-off-live">The autonomous flow (kicked off live)</h3>
+<ul>
+<li>It's an <strong>autonomous flow with gating that forks out lots of agents.</strong></li>
+<li>Structure: <strong>PRDs → broken into features → features broken into tasks → tasks implemented in waves, in parallel, by dependency graph.</strong></li>
+<li>Run on the <strong>Copilot CLI in "autopilot"</strong> (so it doesn't stop for "allow all" approvals).</li>
+<li>A custom command lists all tasks + status. A <strong>skill called "implement feature"</strong> acts as an orchestrator that <strong>forks sub-agents</strong> using Copilot's task scheduler (sub-agents can schedule further sub-agents → good context handling).</li>
+<li>On kickoff it reads the <strong>immutable</strong> context: which tasks belong to the feature, which PRDs they belong to, the architecture — then plans the implementation.</li>
+</ul>
+<h3 id="the-cultural-arc-from-skeptic-to-superpower-priyanka">The cultural arc: from skeptic to superpower (Priyanka)</h3>
+<ul>
+<li><strong>Early 2025:</strong> the CEO mandated AI-enabled tooling "bigger, better, faster." Crucially, <strong>the CEO used the tools himself</strong>, giving him credibility about what worked.</li>
+<li><strong>The team was not stoked</strong> — critical-infrastructure risk made them wary.</li>
+<li><strong>Early experience = friction.</strong> First attempts were "POCs that were glitchy." Priyanka "wrestled hard" with early Sonnet then Opus models building a new Think website — "fighting every day."</li>
+<li><strong>Feb 2026 "wow" moment:</strong> with <strong>Claude Opus 4.6</strong>, Priyanka built a website section <strong>in 5 minutes</strong> and messaged the CEO — a memorable turning point. (Mario notably did <em>not</em> like 4.6 — his model story differs; see below.)</li>
+<li><strong>Wins spread across the business:</strong></li>
+<li>CEO + controller built a <strong>cloud-based RFQ workflow</strong> (like an RFP process to apply for commercial-building installation / electrical projects). <strong>Days → minutes</strong>, with <strong>each application worth ~$100k–$800k.</strong></li>
+<li><strong>Head of product experience</strong> (engineer by training, but had leaned into product and felt reticent to code) prototyped features <strong>zero → working in days</strong>, e.g. <strong>"Sparky,"</strong> a chat agent — built largely with <strong>Codex</strong> under her guidance.</li>
+<li><strong>Priyanka</strong> became the one-person MarTech team, building the company website + CMS/CRM in-house, saving <strong>~$120k–$200k/year</strong>. Caveat/joke: she showed <em>screenshots not the live site</em> — generative AI "enabling her OCD," now <strong>six iterations</strong> deep and needing to ship. (That site isn't used for lead-gen, so she had leeway to over-polish; case-study/news pages that would've taken weeks took <strong>two days</strong> incl. approvals.)</li>
+<li><strong>Mario as proof of the "10x where you're weakest":</strong> identifies as a backend engineer; ships an <strong>"ugly mock"</strong> UI in his GitHub repo — not a Picasso, but <strong>fully functional</strong> and a great starting UI.</li>
+</ul>
+<h3 id="new-tech-old-problems-the-deja-vu">New tech, old problems (the deja-vu)</h3>
+<ul>
+<li><strong>19 April 2026: Anthropic banned Think's organization.</strong> All Claude-related AI processes halted.</li>
+<li><strong>Business response:</strong> pause Claude-dependent business processes (RFQ, front-end) until resolved; keep <strong>core engineering moving via backup tooling like Cursor</strong> — but Cursor adds a <strong>token markup that costs money</strong>, a real constraint for a <strong>bootstrapped startup</strong>.</li>
+<li><strong>Dark, demoralizing ~10 days</strong>, then resolved — but with lingering <strong>billing/payments glitches</strong>, echoing cloud-native <strong>FinOps</strong> pain.</li>
+<li><strong>Priyanka's named lessons:</strong>
+  1. <strong>No real portability</strong> in many app/chat-based workflows — data and workflow can be truly lost; anything relying on <strong>implicit memory or a specific chat window</strong> is at risk. (She lost a rich copywriting conversation — tone of voice, product marketing direction, built up in a ~1M-token context window — when it vanished.)
+  2. <strong>Any tool with a markup is a poor backup</strong> — financial responsibility forces hard choices when you "go dark" with one vendor.
+  3. <strong>"Brilliant colleagues, human or machine, can quit at any time"</strong> — prepare accordingly. The fun of building with an always-available smart collaborator is real, but so is the risk of it "going dark."</li>
+<li>Net: <strong>vendor lock-in, lack of data/workflow portability, a FinOps nightmare</strong> — "we just got into this new era and we're talking about all the things from the old era." Oddly comforting: <em>we solved this before, we'll solve it again.</em></li>
+</ul>
+<h3 id="the-drift-problem-mario">The drift problem (Mario)</h3>
+<ul>
+<li><strong>Software drift</strong> exists among humans because each person has an <strong>internalized view</strong> of how a function behaves / what a word means; teams sync this via <strong>architecture/design meetings and code reviews.</strong></li>
+<li><strong>An LLM is no different</strong> — it's ingested huge internet data and formed an internalized view of everything — but with <strong>more limited context and attention.</strong> It also <strong>writes very self-confident code that's wrong by your standards</strong> and can <strong>invent things from thin air</strong>, very fast.</li>
+<li><strong>Consequence if unharnessed:</strong> the <strong>codebase rots</strong> — same concept gets different words, the LLM then <strong>interpolates code wrong</strong>, compounding errors quickly. <strong>Bug frequency goes "through the roof."</strong></li>
+<li><strong>Cited finding:</strong> teams using AI for <strong>≥50% of coding → bug frequency up ~53%</strong>, largely from not harnessing it. It becomes <strong>expensive to maintain</strong> the very thing meant to accelerate you — "what should accelerate us will decelerate us."</li>
+<li><strong>Nuance:</strong> vibe coding is great for <strong>prototypes</strong>, but for a <strong>product shipping next year and the year after</strong>, drift problems pile up.</li>
+</ul>
+<h3 id="enter-the-think-harness">Enter the "Think Harness"</h3>
+<p>The harness = "do as we always have done" (spec → design → architecture) but <strong>communicated properly into context</strong>, because <em>"it's all about context management."</em> Its evolution:</p>
+<ol>
+<li><strong>Early: chatGPT for research/design iteration</strong> — tiny context window, it <strong>derailed immediately</strong>, hard to get usable code/tests (docs were OK-ish).</li>
+<li><strong>Claude 4.1:</strong> could start doing <strong>audit-to-test</strong>, small fixes, documentation.</li>
+<li><strong>The architecture-expression problem:</strong> Think has many products, multiple languages, somewhat different architectures, <strong>1M+ lines of code</strong> (better and worse parts, mostly sound). They needed a way to <strong>express architecture that doesn't make the LLM derail.</strong>
+   - They'd used parts of <strong>Domain-Driven Design (DDD)</strong>, <strong>Clean Architecture</strong>, and <strong>Hexagonal architecture.</strong>
+   - <strong>First discovery:</strong> <strong>restate purpose + architectural/design principles</strong> and add <strong>scaffolding</strong> so the AI can navigate — e.g. <em>"go to </em><em>ports</em><em> to examine an interface, go to </em><em>adapters</em><em> to see implementations,"</em> clear <strong>domain context.</strong></li>
+<li><strong>Claude 4.5 — the model that "really could code."</strong> (They <strong>disliked 4.6</strong>: it "stopped adhering to instructions," overriding system prompts / "I do whatever I like." <strong>4.7 was the patch</strong> for that.) With 4.5 they could take <strong>two separate services to be joined</strong>, do data work, and have the model <strong>actually understand both</strong> — previously that "would crap."</li>
+<li><strong>Specialized agents &amp; skills:</strong> they wrote many — <strong>security auditor, resilience auditor, API experts</strong>, etc.</li>
+<li><strong>The context Goldilocks problem:</strong> context was first <strong>too small</strong> to express intent, then <strong>too large</strong> (everything packed in). Since an <strong>LLM is fundamentally an attention mechanism</strong> (the transformer), you must signal <strong>what to be guided by vs. what to pay <em>most</em> attention to.</strong> Solution: keep <strong>"must" / "must not" rules sparse</strong> so the few that exist get real attention.</li>
+<li><strong>Repo-as-context (vs. RAG):</strong> put info into the repository in a <strong>machine-interpretable</strong> way. RAG (vector similarity) is "take this and this and this" and you can get clever (even <strong>graph DB + RAG</strong>), but it's a lot of work; instead <strong>stick to good old strict traditions — define specs, adjust them slightly so LLMs can ingest them</strong> into context.</li>
+</ol>
+<h3 id="the-end-to-end-pipeline-how-a-feature-actually-ships">The end-to-end pipeline (how a feature actually ships)</h3>
+<ul>
+<li><strong>Input from the product owner</strong> — "awesome," knows the business/customers/tech, does <strong>chaos engineering</strong>-style creativity: lots of Google Docs, <strong>mocks built with Claude</strong> to visualize concepts → turned into <strong>roadmap items</strong> with a few goals + use cases.</li>
+<li><strong>Break down with skills:</strong></li>
+<li>A skill breaks roadmap items into <strong>"pods"</strong> (scopes).</li>
+<li>Take one pod → run the <strong>"tech feature"</strong> skill, which <strong>auto-breaks it into features that can be parallelized</strong>, using <strong>several sub-agents</strong> depending on the PRD/feature.</li>
+<li><strong>Human-in-the-loop steering:</strong> the engineer corrects it — <em>"you got this wrong, partition this way, have you thought about that?"</em> — and it <strong>re-iterates from the prior iteration's instructions</strong>, e.g. realizing it needs help with <strong>security and resilience</strong> it under-covered. Output: a <strong>feature draft.</strong></li>
+<li><strong>Socratic gate — "grill me":</strong> heavily inspired by <strong>Matt Peacock's "grill me"</strong> (praised as "a few lines of code… awesome"). It reads their context and <strong>grills the user on common terms</strong> (ubiquitous language, DDD), asks whether <strong>architectural changes</strong> are needed, etc. The engineer <strong>must answer every question.</strong> It <strong>forks sub-agents to grill specific areas</strong> — frequently a <strong>security agent.</strong> Output: a <strong>written brief</strong>, <strong>canonicalized keywords</strong>, and <strong>ADRs (Architecture Decision Records).</strong></li>
+<li><strong>Ratify / QA gate:</strong> a final QA sync to confirm everything is set; then it <strong>writes the ADRs and the ubiquitous-language definitions.</strong> Because <strong>everything is immutable</strong> (can't be changed afterward), this lets the LLM trust a path absolutely: <em>"I can read this and don't need to care anymore."</em></li>
+<li><strong>Task split (the executing "yellow" stage):</strong> the feature is split into <strong>tasks along DDD / hexagonal boundaries.</strong> Currently there's a <strong>human step to approve tasks</strong> ("never had to adjust them" — so this will likely be automated/skipped next). Tasks form a <strong>DAG, topology-sorted</strong>, so <strong>dependencies run in the right order</strong> and independent ones <strong>parallelize</strong> for speed.</li>
+<li><strong>Quality controls during implementation:</strong></li>
+<li><strong>QA-gated</strong>, with awareness of <strong>which agents were used</strong> → those become <strong>candidates for QA review.</strong></li>
+<li><strong>Arch-linting</strong> keeps it on track (e.g. don't put something under <strong>ports</strong> that belongs in <strong>adapters</strong>) and on the right "trail."</li>
+<li><strong>TDD / testing</strong> throughout.</li>
+<li><strong>Adversarial QA reviews</strong> with <strong>model-switching</strong> (optional): implement with <strong>Claude 4.8</strong>, QA-review with <strong>GPT-5.5</strong> (or reverse) — <em>because models are seeded differently they discover different things</em>, and a model tends to think its own output is flawless.</li>
+<li><strong>Feature review (whole-scope):</strong> integration testing over the entire feature scope, plus <strong>security over adjacent systems</strong> (not just the current change — must consider the larger blast radius). If it detects <strong>more work is needed, it auto-adds new tasks</strong>, and the <strong>feature-implement scheduler picks them up and keeps going</strong> — the goal is to <strong>implement as much as possible overnight</strong> so the morning isn't "everything stopped" with only 4–5 hours to fix.</li>
+<li><strong>Output:</strong> a <strong>PR ready to merge to main</strong> (if not, fix via prompting or by hand).</li>
+</ul>
+<h3 id="a-working-day-with-the-harness">A working day with the harness</h3>
+<ul>
+<li><strong>Morning:</strong> review all the PRs — <em>"merge, merge, merge."</em> Blocked ones usually mean a <strong>genuine architecture change</strong> needing a human; sometimes the agent <strong>hallucinates a block</strong> and you just tell it <em>"this is in your imagination, continue"</em> and it proceeds.</li>
+<li><strong>Afternoon:</strong> PRDs, features, <strong>grilling</strong>, and the rest of the spec work.</li>
+<li><strong>Night:</strong> <strong>implementation time — the agent codes while you sleep</strong> (and sometimes during the day too).</li>
+<li><strong>Role shift:</strong> Mario used to spit out <strong>1,000–1,500 lines of code</strong> easily and implement lots of features; <strong>now he fixes things and does much more thinking — architect/designer</strong>, letting AI implement most of it. Because they control <strong>sensitive infrastructure</strong>, some hard parts (security, compliance) are <strong>still hand-developed</strong> for now, though they intend to delegate more over time.</li>
+</ul>
+<h3 id="security-compliance">Security &amp; compliance</h3>
+<ul>
+<li>Security checks run at <strong>both spec time and implementation time</strong> — on the <strong>feature itself</strong> and on the <strong>surrounding subsystem/system.</strong></li>
+<li>They must be <strong>ISO 27000-series compatible</strong> (Mario references "ISO 27,000XX," possibly an EU-related obligation) with processes and audits.</li>
+<li>They're <strong>writing an MCP plus skills/agents</strong> to conform and <strong>automate the tedious, hard compliance tasks.</strong></li>
+</ul>
+<h3 id="the-live-demo-payoff">The live demo payoff</h3>
+<ul>
+<li>The task Mario kicked off at the start ran <strong>all the described steps autonomously while they talked.</strong> Priyanka narrated the "drama" live: at one point an <strong>adversarial reviewer</strong> appeared and she didn't know if it would stop the build — <em>"it fought it, it won… like a video game, super fun."</em></li>
+<li>Result: <strong>"Shipped and approved."</strong> It did <strong>two rounds with five reviewers</strong>; everything passed.</li>
+<li>It produced a <strong>PR to merge</strong> — a <strong>new SQLite repository</strong> implemented for persistence, properly documented. They then <strong>live-merged to main on stage</strong> (applause). Punchline: <em>"You did it." — "I did nothing." — "That's the best part."</em></li>
+</ul>
+<h3 id="closing-message-future-plans">Closing message &amp; future plans</h3>
+<ul>
+<li>We're in the <strong>"heady phase"</strong> of a new tech — same excitement as the <strong>iPhone</strong> and <strong>cloud computing</strong>, followed by the same problems.</li>
+<li><strong>Vendor neutrality + data portability are non-negotiable</strong> if you'll rely on this for important workflows: <em>"If you lock me out of your system that's okay, but I need my stuff."</em></li>
+<li><strong>FinOps moved fast</strong> — people now call it <strong>"AI-Ops"</strong>; encouraging that the gen-AI era is thinking about cost early (it took longer in cloud).</li>
+<li><strong>Drift compounds fast</strong> when agents are involved; the <strong>one new difference is a wider surface area</strong> because <strong>everyone's a builder</strong> → more ways for problems to hit the business.</li>
+<li><strong>Future:</strong> stay <strong>nimble</strong>, <strong>aggressively support open-source / vendor-neutral options</strong>, keep <strong>building the software factory</strong> (excited about <strong>Copilot's parallelization</strong>), and continuously evaluate <strong>build vs. buy vs. open-source</strong> to stay focused on customer deliverables, not tool-building.</li>
+<li><strong>Final note:</strong> it's a new, sometimes intimidating/annoying era, but you've been given a <strong>brilliant always-available colleague</strong> to amplify you — <em>"why don't we just have a good time with it?"</em></li>
+<li>Contact: Priyanka on <strong>LinkedIn / Twitter / GitHub</strong> (handle ~"Priyanka"); Mario on <strong>GitHub</strong> ("minus the dot"). She asks the audience to follow Think on LinkedIn to pressure her to ship the website, and to give feedback / contribute to the <strong>Think Harness by emailing Mario.</strong></li>
+</ul>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>GitHub Copilot CLI</strong> — primary agent runtime; run in <strong>"autopilot"</strong> so it doesn't stop for approvals. Core of the autonomous pipeline.</li>
+<li><strong>Copilot task scheduler / sub-agents</strong> — lets sub-agents schedule further sub-agents; manages context for the parallel multi-agent flow.</li>
+<li><strong>GitHub Copilot (original, ~2021)</strong> — the early tab-completion experience that gave Mario his "AI will write most simple code" epiphany.</li>
+<li><strong>Claude (Anthropic)</strong> — primary coding/model family across the story.</li>
+<li><strong>Claude Opus 4.6</strong> — Priyanka's "wow" model (Feb 2026); but Mario found it stopped adhering to instructions.</li>
+<li><strong>Claude 4.7</strong> — the "patch" that fixed 4.6's instruction-following regression.</li>
+<li><strong>Claude 4.5</strong> — the model that "really could code" / understand two services to join.</li>
+<li><strong>Claude 4.1</strong> — early viable model for audit-to-test, small fixes, docs.</li>
+<li><strong>Claude 4.8</strong> — current default implementation model (paired with GPT-5.5 for QA).</li>
+<li><strong>Codex (OpenAI)</strong> — used by Think's head of product to build "Sparky" and prototype features.</li>
+<li><strong>GPT-5.5</strong> — used for adversarial QA reviews (paired against Claude 4.8).</li>
+<li><strong>ChatGPT</strong> — early research/design-iteration tool; small context window caused derailing.</li>
+<li><strong>Cursor</strong> — backup engineering tool during the Anthropic ban; downside = token markup.</li>
+<li><strong>MCP (Model Context Protocol)</strong> — being written (with skills/agents) to automate ISO 27000-series compliance tasks.</li>
+<li><strong>Skills (Copilot/agent skills)</strong> — Think's custom toolkit: <code>implement feature</code> (orchestrator), <code>tech feature</code> (breaks pods into parallelizable features), plus skills for pods/scoping, security/resilience auditing, QA, arch-linting.</li>
+<li><strong>Specialized agent personas</strong> — security auditor, resilience auditor, API experts, adversarial QA reviewer, grilling sub-agents.</li>
+<li><strong>"Grill me" (by Matt Peacock)</strong> — a Socratic-method tool ("a few lines of code") they heavily adapted into their ratify gate.</li>
+<li><strong>SQLite</strong> — the persistence layer implemented by the live-demo PR (a new SQLite repository).</li>
+<li><strong>DDD / Clean Architecture / Hexagonal architecture</strong> — design approaches underpinning the harness; ports/adapters scaffolding and DDD boundaries drive task splitting.</li>
+<li><strong>RAG / vector similarity / graph databases</strong> — discussed as an alternative to repo-as-context; deliberately <em>not</em> their primary approach.</li>
+<li><strong>ADRs (Architecture Decision Records)</strong> — written and frozen (immutable) as canonical decisions for agents to trust.</li>
+<li><strong>Kubernetes / CNCF (Cloud Native Computing Foundation)</strong> — Priyanka's prior world; the source of the cloud-native adoption parallels (and the FinOps framing).</li>
+<li><strong>Think's platform / "Energy OS"</strong> — Mario's LLM-executable energy-management platform (started 2022) powering 10,000+ buildings.</li>
+<li><strong>"Sparky"</strong> — an internal chat agent built (with Codex) by Think's head of product experience.</li>
+<li><strong>ISO 27000-series</strong> — security/compliance standard set Think must conform to (driving the MCP + automation effort).</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p>This was a <strong>customer experience/practitioner talk, not a Microsoft product launch session</strong> — no first-party GA/preview announcements were made. Notable forward-looking / status items mentioned:
+- <strong>Copilot CLI parallelization</strong> — Mario reports the parallelization is "just the best"; Think is excited about how <strong>Copilot is developing</strong> and has "seen awesome demos." (Praise/roadmap sentiment, not a formal announcement.)
+- <strong>Think's roadmap:</strong> continue building the <strong>"software factory"</strong>, automate <strong>ISO 27000-series compliance</strong> via a custom <strong>MCP + skills/agents</strong>, push to <strong>automate the human task-approval step</strong> (DAG task split), and keep delegating more <strong>security/compliance</strong> work to agents over time.
+- <strong>Model-version timeline referenced</strong> (as experienced by Think, not announced here): Claude 4.1 → 4.5 → 4.6 (instruction-adherence regression) → 4.7 (patch) → 4.8 (current); GPT-5.5 used for QA.
+- <strong>Event date marker:</strong> the Anthropic org ban was <strong>19 April 2026</strong>; the "wow" moment was <strong>February 2026</strong>.</p>
+<blockquote>
+<p><em>None of the above are confirmed Microsoft Build product announcements — they are the speakers' experiences, tooling, and plans.</em></p>
+</blockquote>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Live autonomous build → on-stage merge (the centerpiece).</strong> Mario kicked off a real feature at the <em>start</em> of the talk via the Copilot CLI in autopilot; it ran the full pipeline (plan → implement waves → arch-lint → TDD → adversarial QA with model-switching → feature review) <strong>autonomously while they presented.</strong></li>
+<li><strong>What it proved:</strong> the end-to-end harness genuinely runs unattended and produces a mergeable PR — not a scripted mock-up.</li>
+<li><strong>Drama as narrative:</strong> an <strong>adversarial reviewer</strong> appeared mid-run and the outcome was uncertain ("like a video game… it fought it, it won").</li>
+<li><strong>Result:</strong> <strong>"Shipped and approved,"</strong> <strong>two rounds with five reviewers</strong>, all passing; produced a <strong>new SQLite persistence repository</strong>, properly documented.</li>
+<li><strong>Payoff:</strong> they <strong>live-merged the PR to main on stage</strong> (audience applause). Punchline reinforced the role shift: <em>"I did nothing" — "That's the best part."</em></li>
+<li><strong><code>t stats</code> / task-status command</strong> — Mario showed a custom command listing all tasks and their status in the repo.</li>
+<li><strong>Screenshots (not live) of Priyanka's website</strong> — shown deliberately as screenshots (she hasn't shipped the real site after six iterations); illustrates the "AI enabling perfectionism" point rather than a live demo.</li>
+<li><strong>Mario's "ugly mock" UI</strong> (in his GitHub repo) — shown as evidence the AI gives a non-frontend engineer a fully functional starting UI.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>10,000+ buildings</strong> powered by Think (commercial + residential); parts are <strong>critical infrastructure</strong>.</li>
+<li><strong>−40 °C</strong> winters near the polar circle where Think is deployed — the stakes framing.</li>
+<li><strong>~53% increase in bug frequency</strong> for teams using AI for <strong>≥50%</strong> of coding (cited investigation) — largely from not harnessing the AI.</li>
+<li><strong>Each RFQ application worth ~$100,000–$800,000</strong>; the workflow went from <strong>days → minutes</strong>.</li>
+<li><strong>Priyanka's website/CMS/CRM build saves ~$120,000–$200,000/year.</strong></li>
+<li>Case-study/news pages: <strong>weeks → two days</strong> (incl. final approvals).</li>
+<li><strong>Anthropic ban:</strong> 19 Apr 2026, <strong>~10 days</strong> offline.</li>
+<li><strong>"Wow" moment:</strong> built a section in <strong>5 minutes</strong> with Claude Opus 4.6 (Feb 2026).</li>
+<li>Mario: used to write <strong>1,000–1,500 lines of code</strong> easily; now mostly architects and fixes.</li>
+<li><strong>2021</strong> — Mario tried GitHub Copilot; predicted <strong>80% of simple code</strong> done by AI within <strong>5–10 years</strong>.</li>
+<li><strong>1M+ lines of code</strong> across Think's products; copywriting context window referenced as <strong>~1M tokens</strong>.</li>
+<li>
+<blockquote>
+<p><em>"Brilliant colleagues, whether they're human or machine, can quit at any time, and you have to prepare accordingly."</em> — Priyanka</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p><em>"It's all about context management here."</em> — Mario</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p><em>"What should accelerate us will decelerate us."</em> — Mario, on unharnessed drift.</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p><em>"It's the Oprah show. You get to build, you get to build, you get to build."</em> — Priyanka, on everyone becoming a builder (and the wider problem surface).</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p><em>"I did nothing." / "That's the best part."</em> — after the live merge.</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p><em>"Standing on the shoulders of giants"</em> — learning from cloud-native mistakes.</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li class="task-list-item"><input type="checkbox" disabled> <strong>Matt Peacock's "grill me"</strong> Socratic tool — Mario rates it highly and it's tiny; worth trialing as a spec/ratify gate.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Run <strong>Copilot CLI in autopilot</strong> with a <strong>sub-agent task scheduler</strong> for a small PRD → features → tasks DAG and see how it parallelizes.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Experiment with <strong>model-switching for adversarial QA</strong> (implement with one model, review with another) to catch more issues.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Adopt <strong>"immutable specs/ADRs in the repo"</strong> + sparse <strong>must/must-not</strong> rules to fight context overload and drift.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Add <strong>arch-linting</strong> (ports vs adapters / DDD boundaries) to keep agents on the right "trail."</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li class="task-list-item"><input type="checkbox" disabled> What exactly triggered the <strong>Anthropic org ban</strong> (policy/usage) — how to avoid it for an org relying on Claude?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Source/citation for the <strong>"+53% bug frequency at ≥50% AI coding"</strong> figure?</li>
+<li class="task-list-item"><input type="checkbox" disabled> How is the <strong>DAG task scheduler</strong> implemented in/around Copilot CLI — native feature vs. their own orchestration?</li>
+<li class="task-list-item"><input type="checkbox" disabled> What's in their <strong>compliance MCP</strong> for ISO 27000 automation — reusable pattern?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li class="task-list-item"><input type="checkbox" disabled> Anyone scaling <strong>agentic coding</strong> beyond prototypes to shippable products (drift/harness lessons).</li>
+<li class="task-list-item"><input type="checkbox" disabled> <strong>Vendor-neutrality / portability / FinOps ("AI-Ops")</strong> planning for AI tooling.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Teams designing <strong>spec-driven, multi-agent CI-style</strong> software factories.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+<li>Topics: agentic coding workflows, context engineering, DDD / hexagonal architecture, AI FinOps / "AI-Ops", vendor lock-in &amp; data portability</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="BRK228.html"><span class="pager-dir">← Previous</span><span class="pager-code">BRK228</span><span class="pager-title">Modern resiliency from build to recovery through Agentic AI</span></a>
+    <a class="pager pager-next" href="BRK230.html"><span class="pager-dir">Next →</span><span class="pager-code">BRK230</span><span class="pager-title">Build smarter AI systems in Foundry as models and costs evolve</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

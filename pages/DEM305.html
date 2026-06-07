@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEM305 — GitHub Copilot Anywhere: From Remote Control CLIs to Cloud Sandboxes</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEM305</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=JJmmunwXcu8" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">GitHub Copilot Anywhere: From Remote Control CLIs to Cloud Sandboxes</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Ali (Ellie), Denson (Dennis)</span>
+      <span class="meta-item">⏱️ 23m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="github-copilot">GitHub Copilot</span><span class="chip" data-tag="cli">Cli</span><span class="chip" data-tag="cloud-sandboxes">Cloud Sandboxes</span><span class="chip" data-tag="ai">AI</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Ali ("Ellie") &amp; Denson ("Dennis") — GitHub Copilot product/engineering presenters<br>
+<strong>Duration:</strong> ~23 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=JJmmunwXcu8">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>GitHub Copilot is breaking free of the single desktop session. This session demos two complementary ways to use Copilot <strong>anywhere</strong>: <strong>Remote Control sessions</strong>, which let you take a <em>locally-running</em> Copilot session (CLI, the new Copilot desktop app, VS Code, or JetBrains) with you on the go — steering and monitoring it in real time from github.com or the GitHub mobile app via a link/QR code; and <strong>Cloud Sandboxes</strong> (now in <strong>public preview</strong>), which give every Copilot session its own <em>isolated cloud environment</em> so the host machine becomes optional — Copilot keeps running even if your laptop disconnects, shuts down, or "goes off the balcony." The talk closes with <strong>Chronicle</strong>, a feature that indexes all your Copilot sessions across every client so you can query your history for tips, stand-up reports, custom-instruction improvements, and cost/token reduction guidance. The unifying theme: developer choice over <strong>how, where, and when</strong> you work.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Remote Control</strong> lets you take a local Copilot session on the go and steer/monitor it in real time from a phone or browser — your local machine stays the host.</li>
+<li>It works across <strong>most Microsoft/GitHub Copilot clients</strong>: the CLI, the new Copilot desktop app (launched the day before this talk), VS Code, and JetBrains.</li>
+<li>It works with <strong>any project structure</strong> — GitHub repos, Azure DevOps (ADO) repos, or even a CLI session with <strong>no repository</strong> at all.</li>
+<li>You activate it with <strong><code>remote on</code></strong> in the CLI; <strong><code>remote off</code></strong> stops it, <strong><code>remote show</code></strong> reports whether the active session is remotable. <strong>Ctrl+E</strong> surfaces a <strong>QR code</strong> alongside the link.</li>
+<li>Remote sessions appear on <strong>github.com</strong> and in the <strong>GitHub mobile app</strong>, but are <strong>private to you by default</strong> — the permission structure is unchanged; you can optionally share with others who have repo access.</li>
+<li>Tip: set <strong><code>remote sessions true</code></strong> in <code>settings.json</code> to make <em>all</em> local sessions remotable by default; use <strong><code>keep alive on</code></strong> so the session doesn't sleep while your machine must stay online.</li>
+<li>Enterprise/org licenses require an admin to enable the <strong>remote control</strong> policy and set it to <strong>view and control</strong>.</li>
+<li><strong>Cloud Sandboxes (public preview)</strong> give each Copilot session its <strong>own isolated cloud environment</strong> — sandboxed at the tools, file system, and network level for safer, more confident coding.</li>
+<li>With a sandbox, the <strong>host machine becomes optional</strong>: Copilot runs in the cloud and keeps working even after the laptop disconnects or shuts down (vs. Remote, where closing the host kills the session).</li>
+<li>Launch a sandbox session with the <strong><code>--cloud</code></strong> flag (e.g. <code>copilot --cloud</code>); it provisions a sandbox in seconds and wraps it in a remote-control session.</li>
+<li><strong>Cloud agent policies</strong> govern sandboxes — the <em>same</em> firewall rules, recommended allow-list, and custom allow-list used by Copilot Cloud Agent (under Settings → Copilot → Cloud Agent) apply when scoped to a repository.</li>
+<li><strong>Billing/persistence model:</strong> while Copilot works, the sandbox runs; when it finishes, an <strong>implicit snapshot</strong> of process + disk is taken, the sandbox enters a <strong>stopped</strong> state, and <strong>compute scales to zero</strong> (no idle cost). A follow-up message <strong>resumes</strong> from the snapshot with the same files and processes.</li>
+<li>Cloud Sandboxes also enable <strong>agent fan-out</strong> — run many agents (e.g. ~30) on cloud resources instead of overloading your local machine.</li>
+<li><strong>Chronicle</strong> indexes <em>all</em> your Copilot sessions across every client (CLI, desktop app, VS Code, JetBrains, github.com, Cloud Agent, code review) and lets you query that history via <strong><code>/chronicle</code></strong> for tips, search, stand-up reports, custom-instruction improvements, and cost tips.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-developer-choice-how-where-and-when-you-work">Framing: Developer Choice — How, Where, and When You Work</h3>
+<p>The presenters open with a (self-deprecating) Copilot-generated title slide and a serious point: <strong>the pace of innovation has never been faster</strong>, expanding what's possible day-to-day. They argue your best ideas don't only arrive while sitting at the computer — they come at the airport, on the train, in the living room. The session is therefore about <strong>developer choice</strong>: not just <em>how</em> you work, but also <em>where</em> and <em>when</em>. Two capabilities deliver this — <strong>Remote Control sessions</strong> (Ali/Ellie) and <strong>Cloud Sandboxes</strong> (Denson/Dennis) — bookended by <strong>Chronicle</strong>.</p>
+<h3 id="remote-control-sessions-what-they-are">Remote Control Sessions — What They Are</h3>
+<p>Remote Control "lets you take your local work on the go." You take a Copilot session <strong>running on your own machine</strong> and continue to <strong>monitor and steer it in real time</strong> from another device. Key properties:
+- <strong>Clients supported:</strong> demoed via the <strong>CLI</strong>, but the same applies to the <strong>new Copilot app</strong> (launched the day before), <strong>Copilot in VS Code</strong>, and <strong>Copilot in JetBrains</strong> — "most of the local clients" in the Microsoft/GitHub ecosystem.
+- <strong>Surfaces to control from:</strong> <strong>github.com</strong> (web) and the <strong>GitHub mobile app</strong>.
+- <strong>Project-structure agnostic:</strong> works with a <strong>GitHub repo</strong> (demoed), an <strong>ADO repo</strong>, or even a <strong>CLI session with no repository</strong>.
+- <strong>Same session everywhere:</strong> the exact CLI session is mirrored to phone and web — "same exact experience."</p>
+<h3 id="remote-control-how-to-use-it-commands-flow">Remote Control — How to Use It (Commands &amp; Flow)</h3>
+<p>The core workflow, all from the CLI:
+- <strong><code>remote on</code></strong> — turns the active session into a remotable session; produces a <strong>shareable link</strong>.
+- <strong>Ctrl+E</strong> — displays a <strong>QR code</strong> in addition to the link (scan it to open the session in the GitHub mobile app).
+- <strong><code>remote off</code></strong> — stops a started remote session.
+- <strong><code>remote show</code></strong> — reports whether your active session is currently remotable.</p>
+<p>In the live flow, Ali turns remote on, scans the QR with a phone, opens the session in the <strong>GitHub app</strong>, and types an instruction ("add Mexico to the header") from the phone. The change is reflected <strong>back in the CLI in real time</strong>, demonstrating true bidirectional steering. <strong>Permission requests</strong> raised by Copilot surface on the mobile/internet-connected device for approval. Alternatively, without the mobile app, you simply open <strong>github.com</strong> and view/steer the same session there.</p>
+<h3 id="remote-control-permissions-privacy">Remote Control — Permissions &amp; Privacy</h3>
+<p>By default, remote sessions are <strong>viewable only to you</strong> — they appear in your github.com and GitHub mobile app, but the <strong>permission structure is unchanged</strong>. If you <em>want</em> to share a session with someone who also has access to that repo, that's an option, but <strong>nothing is shared by default</strong>.</p>
+<h3 id="remote-control-tips-tricks">Remote Control — Tips &amp; Tricks</h3>
+<ul>
+<li><strong>Make all sessions remotable by default:</strong> edit <code>settings.json</code> and set <strong><code>remote sessions true</code></strong>, so every local session is steerable on the go without per-session opt-in.</li>
+<li><strong>Keep the host awake:</strong> because Remote Control requires your <strong>local machine to be online</strong>, use <strong><code>keep alive on</code></strong> (in the CLI or whichever client — desktop app, VS Code, JetBrains) so the session doesn't go to sleep.</li>
+<li><strong>Enterprise/org policy:</strong> if your Copilot license comes through an <strong>enterprise or organization</strong>, work with your <strong>enterprise admin</strong> to enable the relevant policy. The policy to turn on is <strong>remote control</strong>, set to <strong>view and control</strong>.</li>
+<li><strong>Known limitation (the bridge to Cloud):</strong> Remote requires the host to stay online — which is exactly the constraint Cloud Sandboxes remove.</li>
+</ul>
+<h3 id="the-motivating-question-can-copilot-have-its-own-machine">The Motivating Question: "Can Copilot Have Its Own Machine?"</h3>
+<p>Denson reframes: Remote Control is powerful (he says he uses it "almost every day"), but the natural next question is <strong>what if Copilot had its own isolated environment</strong> — its own machine to work in, decoupled from your laptop? That question motivates <strong>Cloud Sandboxing</strong>.</p>
+<h3 id="cloud-sandboxes-what-they-are-public-preview">Cloud Sandboxes — What They Are (Public Preview)</h3>
+<p>Announced <strong>now in public preview</strong>. At the core: <strong>every Copilot session that uses a cloud sandbox gets its own isolated environment in the cloud.</strong> Three headline benefits:
+1. <strong>Confidence / true isolation:</strong> the session is "truly sandboxed literally to the tools you want to give it" — scoped at the <strong>tools</strong>, <strong>file system</strong>, and <strong>network</strong> level. You can code with more confidence because Copilot operates in a contained ecosystem.
+2. <strong>Host-optional, work-from-anywhere (literally):</strong> the Copilot instance runs in the cloud, so you can connect even if your laptop disconnects from the internet, shuts down, or "if I throw my laptop out the balcony — it will still work." (Contrast: with Remote, closing the host <strong>kills</strong> the session.)
+3. <strong>Scale beyond local resources:</strong> for "ultra agent maxers" who want ~30 agents running simultaneously on heavy apps, sandboxes <strong>allocate cloud resources</strong> instead of overloading your local machine.</p>
+<h3 id="cloud-sandboxes-how-to-launch-demo-walkthrough">Cloud Sandboxes — How to Launch (Demo Walkthrough)</h3>
+<p>Using the same World Cup demo app, Denson contrasts the two modes:
+- He first shows that Ali's <strong>Remote</strong> CLI session is steerable from github.com — then <strong>mocks a laptop shutdown</strong> by closing the host session/tab. Result: on github.com the session is <strong>no longer interactable</strong> ("it's been shut down") — the defining limit of Remote.
+- He then launches Copilot with the <strong><code>--cloud</code></strong> flag (<code>copilot --cloud</code>). The flow:
+  1. <strong>Provision a cloud sandbox</strong> within the first few seconds of initiating.
+  2. <strong>Create a remote-control session</strong> for that sandbox.
+  - "The only thing that's actually changing here is <strong>where does this session run</strong>" — in this case, the cloud.
+- The in-sandbox experience is <strong>identical to local CLI</strong>: plan mode, <strong>autopilot</strong>, "enable all" permissions, etc. He asks it to <strong>create a PR for a live broadcasting experience</strong> for the World Cup final.
+- <strong>Proof of host independence:</strong> the session shows up in github.com tabs as a "create PR" session; he then <strong>closes the cloud working tab and refreshes</strong> — the Copilot session is <strong>still working</strong> because it's hosted in the cloud.</p>
+<h3 id="cloud-sandboxes-policies-governance">Cloud Sandboxes — Policies &amp; Governance</h3>
+<p>To prevent a cloud session from going "off the rails," <strong>cloud agent policies</strong> apply to sandboxes. Under <strong>Settings → Copilot → Cloud Agent</strong>, the <strong>same policies</strong> used by Copilot's Cloud Agent govern the sandbox used by the CLI:
+- <strong>Firewall rules</strong>
+- <strong>Recommended allow-list</strong>
+- <strong>Custom allow-list</strong></p>
+<p>These apply to sandboxes created when you're <strong>scoped to a specific repository</strong>.</p>
+<h3 id="cloud-sandboxes-persistence-billing-the-snapshot-model">Cloud Sandboxes — Persistence, Billing &amp; the Snapshot Model</h3>
+<p>The "magic" of cloud sandboxing is its lifecycle and cost model:
+- <strong>While Copilot is active/working → the sandbox runs</strong> (compute is on).
+- <strong>When Copilot finishes its job →</strong> the system takes an <strong>implicit snapshot</strong> of the <strong>process and disk</strong> of the sandbox; the sandbox moves to a <strong>stopped</strong> state; <strong>compute scales down to zero</strong> (no active compute, no idle cost).
+- <strong>When you send a follow-up →</strong> the system <strong>resumes the Copilot instance from that snapshot</strong>, restoring the <strong>same sandbox, same files, and same processes</strong> that were active before.</p>
+<p>This means sessions are durable and resumable without paying for idle compute between turns.</p>
+<h3 id="remote-vs-cloud-summary-comparison">Remote vs. Cloud — Summary Comparison</h3>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Remote Control</th>
+<th>Cloud Sandbox</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Where it runs</td>
+<td>Your local machine</td>
+<td>Isolated cloud environment</td>
+</tr>
+<tr>
+<td>Resources used</td>
+<td>Local</td>
+<td>Cloud</td>
+</tr>
+<tr>
+<td>Host required?</td>
+<td><strong>Yes</strong> (must stay online)</td>
+<td><strong>No</strong> (host optional)</td>
+</tr>
+<tr>
+<td>Best for</td>
+<td>Local iteration on your active machine</td>
+<td>Persistent cloud workspace; isolation; many agents</td>
+</tr>
+<tr>
+<td>Steerable from</td>
+<td>github.com, GitHub mobile app</td>
+<td>github.com (remote-control session over the sandbox)</td>
+</tr>
+<tr>
+<td>Survives laptop shutdown?</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<h3 id="chronicle-turning-session-history-into-guidance">Chronicle — Turning Session History into Guidance</h3>
+<p>Denson hands back to Ali to close with <strong>Chronicle</strong>. Core idea: <strong>every Copilot session you run builds a history you can query</strong>, and from that history you can take <strong>actionable steps</strong> to improve how you work with Copilot.
+- <strong>Where it runs / what it indexes:</strong> Chronicle runs in the <strong>desktop app, CLI, VS Code, JetBrains, and github.com</strong>, and it <strong>indexes all of your sessions specific to you</strong> across all of those surfaces — including <strong>Copilot Cloud Agent</strong> and <strong>Copilot code review</strong>.
+- <strong>How to access:</strong> in any session, regardless of client, run <strong><code>/chronicle</code></strong> to see the available options.
+- <strong>Capabilities (the options shown):</strong>
+  - <strong>Tips</strong> based on your <strong>usage patterns</strong> (<code>chronicle tips</code>).
+  - <strong>Search across all of your sessions</strong>.
+  - <strong>Stand-up report</strong> (if your team does stand-ups).
+  - <strong>Custom-instruction improvements</strong> — suggestions to update your custom instructions.
+  - <strong>Cost tips</strong> — guidance on reducing <strong>token usage and cost</strong>.
+- <strong>Works with both modes:</strong> Chronicle covers <strong>all</strong> your Copilot sessions whether they used a <strong>cloud sandbox</strong> or <strong><code>--remote</code></strong>.
+- <strong>Goal:</strong> "turn your session history into a practical source of guidance" for working with Copilot.</p>
+<h3 id="closing-theme">Closing Theme</h3>
+<p>The presenters return to the opening idea: it's never been a more dynamic time to be building, and these features are about improving not just <strong>how</strong> you work, but <strong>where</strong> and <strong>when</strong> you choose to work.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>GitHub Copilot</strong> — across CLI, desktop app, VS Code, and JetBrains clients.</li>
+<li><strong>Copilot CLI</strong> — primary demo client; commands <code>remote on/off/show</code>, <code>keep alive on</code>, <code>copilot --cloud</code>, <code>/chronicle</code>.</li>
+<li><strong>New Copilot desktop app</strong> — "launched yesterday" (relative to the talk); recommended by both presenters.</li>
+<li><strong>Copilot in VS Code</strong> and <strong>Copilot in JetBrains</strong> — supported clients for Remote, keep-alive, and Chronicle.</li>
+<li><strong>GitHub mobile app</strong> — surface for steering/monitoring remote sessions and approving permission requests.</li>
+<li><strong>github.com</strong> — web surface for viewing/steering remote and cloud-sandbox sessions.</li>
+<li><strong>Remote Control sessions</strong> — take a local session on the go (link + Ctrl+E QR code).</li>
+<li><strong>Cloud Sandboxes</strong> — isolated per-session cloud environments (public preview).</li>
+<li><strong>Cloud Agent policies</strong> — firewall rules, recommended allow-list, custom allow-list (Settings → Copilot → Cloud Agent).</li>
+<li><strong>Copilot Cloud Agent</strong> and <strong>Copilot code review</strong> — among the session sources Chronicle indexes.</li>
+<li><strong>Chronicle</strong> — session-history indexing and guidance (tips, search, stand-up, custom-instruction improvements, cost tips).</li>
+<li><strong>Autopilot / plan mode</strong> — Copilot CLI working modes shown in the cloud demo.</li>
+<li><strong><code>settings.json</code></strong> — config file where <code>remote sessions true</code> enables remote-by-default.</li>
+<li><strong>Azure DevOps (ADO) repos</strong> — supported alongside GitHub repos.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Cloud Sandboxing for GitHub Copilot — now in public preview.</strong> Each Copilot session gets its own isolated cloud environment (tools/file system/network scoped), with a host-optional, snapshot-and-resume, scale-to-zero billing model and cloud agent policy governance.</li>
+<li><strong>New Copilot desktop app</strong> — referenced as having <strong>launched the day before</strong> the session ("we launched yesterday").</li>
+<li><strong>Remote Control sessions</strong> and <strong>Chronicle</strong> are presented as available capabilities across the Copilot client family (CLI, desktop app, VS Code, JetBrains, github.com).</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Remote Control (Ali/Ellie):</strong> A purpose-built <strong>World Cup app</strong> is improved via Copilot (UI theming PR). Spotting a missing host country (<strong>Mexico</strong> alongside USA &amp; Canada) in the header, Ali runs <strong><code>remote on</code></strong>, hits <strong>Ctrl+E</strong> for a QR code, scans it live on stage into the <strong>GitHub mobile app</strong>, and instructs Copilot from the phone to add Mexico — the edit reflects <strong>live in the CLI</strong>. She also shows the identical session on <strong>github.com</strong>.</li>
+<li><strong>Cloud Sandbox (Denson/Dennis):</strong> Demonstrates Remote's limitation by <strong>closing the host tab</strong> (session becomes non-interactable on github.com). Then launches <strong><code>copilot --cloud</code></strong>, which <strong>provisions a sandbox in seconds</strong> and creates a remote session; asks Copilot to build a <strong>live, minute-by-minute broadcasting experience for the World Cup final</strong> as a PR. <strong>Closes the cloud tab and refreshes</strong> to prove the session keeps running host-free. Previews the resulting PR and runs a <strong>live simulation</strong> (group stage → round of 32 → final) culminating in a <strong>"live" final</strong> broadcast.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>"If I throw my laptop out the balcony, it will still work. Copilot still gets to go."</strong> — on cloud sandbox host-independence.</li>
+<li><strong>"The only thing that's actually changing here is where does this session run."</strong> — Remote vs. Cloud distinction.</li>
+<li><strong>"~30 of our agents working at the same time"</strong> — the "ultra agent maxer" scenario motivating cloud resource allocation.</li>
+<li><strong>Compute scales to zero</strong> between turns via an <strong>implicit snapshot</strong> of process + disk — resumed on the next follow-up message.</li>
+<li>Audience poll: only a handful (~"four people") had previously tried Remote Control — i.e. a new/early-adoption feature.</li>
+<li>Demo flourish: simulated <strong>Turkey winning the World Cup final 3–0</strong> (goal "from Kenan Yıldız, 30th minute") to validate the new live broadcast feature ("This is live. This is real, not coded in.").</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Run <strong><code>remote on</code></strong> + <strong>Ctrl+E</strong> on a CLI session and steer it from the GitHub mobile app.</li>
+<li>Set <strong><code>remote sessions true</code></strong> in <code>settings.json</code> and test <strong><code>keep alive on</code></strong>.</li>
+<li>Launch <strong><code>copilot --cloud</code></strong> and verify the host-optional behavior (close tab → refresh → still running).</li>
+<li>Configure <strong>Cloud Agent policies</strong> (firewall + allow-lists) scoped to a repo and confirm they apply to sandboxes.</li>
+<li>Run <strong><code>/chronicle</code></strong> → try <code>tips</code>, search, stand-up report, custom-instruction improvements, and <strong>cost tips</strong>.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What are the <strong>exact pricing/compute units</strong> for cloud sandboxes (snapshot storage vs. active compute)?</li>
+<li>Which <strong>enterprise policies</strong> gate Cloud Sandboxes vs. just Remote Control's "view and control"?</li>
+<li>Sandbox limits: max <strong>concurrent agents</strong>, region availability, and runtime/timeout ceilings?</li>
+<li>How long are <strong>snapshots retained</strong>, and is there a separate storage cost?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Mobile/on-the-go developer workflows; long-running agent tasks; teams wanting isolation/governance for AI coding; cost-conscious agent fan-out.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEM304.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEM304</span><span class="pager-title">Union types in C#</span></a>
+    <a class="pager pager-next" href="DEM310.html"><span class="pager-dir">Next →</span><span class="pager-code">DEM310</span><span class="pager-title">Ship code faster with AI-powered NoSQL schema design</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

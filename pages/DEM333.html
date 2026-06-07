@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEM333 — How Foundry integrates with open-source frameworks and tools</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEM333</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=AmqjXd7v_x4" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">How Foundry integrates with open-source frameworks and tools</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Facundo (Principal PM, Microsoft), Nakumar (Senior Software Engineer, Microsoft)</span>
+      <span class="meta-item">⏱️ 16m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ai-foundry">Ai Foundry</span><span class="chip" data-tag="open-source">Open Source</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="frameworks">Frameworks</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Facundo (Principal Product Manager, Microsoft) &amp; Nakumar (Senior Software Engineer, Microsoft — driving the demo)<br>
+<strong>Duration:</strong> ~16 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=AmqjXd7v_x4">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>A live, build-it-from-scratch demo answering one practical question: <strong>if you build an agent with open-source frameworks, how do you take it to production without rewriting it?</strong> The presenters incrementally build a "OpenClaw-style" general-purpose agent using LangChain/LangGraph for the agent loop, then progressively layer on capabilities through <strong>open standards</strong> — MCP (Model Context Protocol) for tools, lightweight markdown <strong>skills</strong> for repeatable behavior, a Playwright CLI for browsing, and OpenTelemetry GenAI semantic conventions for observability. Finally they host the <em>same</em> LangGraph agent on <strong>Microsoft Foundry</strong>, which exposes it via an <strong>OpenAI-compatible Responses API</strong> and an <strong>A2A (agent-to-agent) endpoint</strong>, then have <strong>Copilot CLI</strong> discover and invoke it. The thesis: every component is composable, swappable, and connected through open interfaces — nothing is locked in, and "none of these components knew about each other."</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>The minimum viable agent = a model + an agent loop.</strong> The loop asks the model for the next step, runs tools when needed, and uses each result to decide what happens next. That's the irreducible core — no platform required.</li>
+<li><strong>Foundry models expose OpenAI-compatible APIs</strong>, so LangChain talks to a Foundry model with the same protocol it already understands. <strong>Changing the model target is configuration, not a rewrite.</strong></li>
+<li><strong>Separation of concerns:</strong> LangChain owns the agent loop (via <code>create_deep_agent</code>); Foundry provides the models (via the OpenAI-compatible protocol).</li>
+<li><strong>MCP (Model Context Protocol)</strong> is the open pattern for giving agents tools. The agent connects to an MCP server, asks for tools, and receives tool schemas at runtime — it never needs to know every underlying HTTP endpoint.</li>
+<li><strong>Work IQ Mail MCP server</strong> gives the agent Microsoft 365 capabilities (mail, calendar, Teams) through a clean tool interface (<code>search messages</code>, <code>get message details</code>, <code>draft replies</code>, etc.).</li>
+<li><strong>Tools are verbs; skills are playbooks.</strong> A skill (e.g. "triage inbox") is just a <strong>markdown document with a small formatting block</strong> — no proprietary schema or special service.</li>
+<li><strong>Skills are mounted into a virtual skills path</strong>; the agent lists and reads them only when the prompt is relevant — keeping the system prompt lean.</li>
+<li><strong>Skills make agent behavior repeatable</strong> without turning every instruction into a massive system prompt — same model, same tools, completely different behavior.</li>
+<li><strong>Playwright CLI</strong> brings web browsing to the agent. They chose a <strong>CLI tool over an MCP server</strong> because browser work creates a large tool surface; a command line is a simpler, more <strong>token-efficient</strong> utility (snapshots/details only enter the context window on demand).</li>
+<li><strong>Foundry hosts the same LangGraph agent as a hosted agent</strong> and exposes it through an <strong>OpenAI-compatible Responses API</strong> via a thin adapter layer — the <em>same code</em> runs locally and in the cloud.</li>
+<li><strong>Order matters in the adapter:</strong> initialize the Foundry server host <em>before</em> building the graph, so OpenTelemetry LangChain instrumentation can attach before graph construction.</li>
+<li><strong>Observability is open:</strong> Foundry integrates with <strong>Application Insights + OpenTelemetry</strong> using the <strong>Microsoft OpenTelemetry distro</strong> and <strong>GenAI semantic conventions</strong> — you can inspect LangGraph spans, model calls, latencies, captured I/O, do trace replay, and review historical traces.</li>
+<li><strong>Because telemetry data is open</strong>, you're not locked into Foundry's trace viewer — you could use Grafana or any other debugging tool. Traces also expose <strong>per-section token spend</strong>, so you see exactly where budget goes in production.</li>
+<li><strong>A2A (agent-to-agent):</strong> hosting in Foundry yields an <strong>A2A endpoint</strong> where any A2A-compatible client can discover the <strong>agent card</strong> and send messages — enabling agents-calling-agents composition.</li>
+<li><strong>Copilot CLI consumed the hosted agent</strong> by exposing a tiny <strong>A2A directory as an MCP server</strong> with two tools (<code>search agent</code>, <code>call agent</code>), discovering the right agent and invoking it over A2A.</li>
+<li><strong>The central thesis:</strong> compose modules via open standards (LangGraph, MCP, skills, Playwright CLI, OpenTelemetry, Responses API, A2A); each piece works in isolation and stays freely swappable — no component knew about the others.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="the-framing-question">The framing question</h3>
+<p>The session opens with a deliberately simple premise: developers love building agents with open-source technology, but the hard part is <strong>packaging and deploying to production without a rewrite.</strong> To make it concrete, the presenters set out to <strong>build their own "OpenClaw" live</strong> — a general-purpose agent (the kind that browses the web, searches email, and gets things done) — using only open-source frameworks and tools, then deploy it to <strong>Microsoft Foundry</strong> for production. The whole talk is a progressive enhancement story: start with the smallest possible agent, then add one open-source capability at a time.</p>
+<h3 id="step-1-the-minimal-agent-model-agent-loop">Step 1 — The minimal agent: model + agent loop</h3>
+<p>Asked what the <em>minimum</em> code is to build an agent with "no magic platform, no Foundry," Nakumar reduces it to two essentials:
+- <strong>A model</strong>
+- <strong>An agent loop</strong> — the thing that "keeps the agent moving." It asks the model for the next step, runs tools when needed, and uses each result to decide what happens next.</p>
+<p>In the demo, the file is intentionally tiny:
+- The <strong>model</strong> comes from LangChain's <code>init_chat_model</code>.
+- The <strong>loop</strong> is built with <code>create_deep_agent</code>.</p>
+<p>This is plain <strong>LangChain / LangGraph-style code</strong>. The crucial enabler: <strong>most Foundry models expose OpenAI-compatible APIs</strong>, so LangChain can talk to a Foundry model using the same protocol it already understands. Swapping the model target is <strong>configuration, not a rewrite</strong>. Facundo summarizes the architecture cleanly: <strong>LangChain owns the agent loop</strong> (via <code>create_deep_agent</code>) and <strong>Foundry provides the models</strong> (via the OpenAI-compatible protocol). They run the small local agent, say "hello," and it replies — proving the core works.</p>
+<h3 id="step-2-giving-the-agent-hands-mcp-model-context-protocol">Step 2 — Giving the agent hands: MCP (Model Context Protocol)</h3>
+<p>A bare model "cannot do anything outside of what the model already knows." To let the agent <em>get things done</em>, they introduce <strong>MCP — Model Context Protocol</strong>, an <strong>open protocol that lets an agent discover tools and call them</strong>.</p>
+<p>For this demo the MCP server is <strong>Work IQ Mail</strong>, which gives the agent access to <strong>Microsoft 365 mail capabilities</strong> through a tool interface. The key benefit: the agent <strong>does not need to know every HTTP endpoint</strong> Microsoft 365 exposes. Instead it:
+1. Connects to the Work IQ MCP server,
+2. Asks for tools,
+3. Receives <strong>tool schemas</strong> like <code>search messages</code>, <code>get message details</code>, <code>draft replies</code>, etc.</p>
+<p>In the code, the MCP server <strong>URL is passed in</strong>, and the tools are simply <strong>added to the same agent loop</strong> as additional tools — no change to the loop itself. Facundo confirms the generalization: you can point <em>any</em> existing LangGraph agent at this MCP server (over the open protocol) and instantly gain Work IQ mail, calendar, Teams, and other capabilities.</p>
+<p><strong>Demo run:</strong> With MCP enabled, Nakumar asks the agent to "check my email." Watching the <strong>tool boundary</strong>, the agent <strong>discovers the mail tools at runtime</strong> and chooses the right one. It comes back having found <strong>five emails</strong> via the Work IQ MCP server. The point stressed: the tool boundary is <strong>inspectable</strong>, and the agent is "just normal Python code."</p>
+<h3 id="step-3-teaching-the-agent-how-to-use-tools-skills">Step 3 — Teaching the agent <em>how</em> to use tools: Skills</h3>
+<p>Having "hands" isn't enough — knowing <em>which</em> emails are unread "is not that special." The real goal is to <strong>triage the inbox</strong>, which requires the agent to understand <em>how</em> to use each tool together. The open-source pattern for this is <strong>skills</strong>.</p>
+<p>The mental model:
+- <strong>Tools are like verbs</strong> (e.g. <code>search messages</code>).
+- <strong>A skill is a playbook</strong> — e.g. "triaging inbox" — which can pull fields, <strong>classify emails into categories</strong>, <strong>assign priority</strong>, and <strong>draft replies</strong> when asked.</p>
+<p>Critically, a <strong>skill is just a markdown document with a small formatting block</strong>. There is <strong>no special service and no proprietary schema</strong>. The agent <strong>reads the skill when the prompt is relevant</strong>. Mechanically, skills are <strong>mounted into a virtual skills path</strong>; the agent can <strong>list them and read them</strong> only when it needs guidance — so they don't bloat the system prompt.</p>
+<p><strong>Demo run:</strong> Nakumar asks the skills-enabled agent to "triage my inbox." Observations:
+- The agent <strong>picks up the triage skill</strong>.
+- Unlike the earlier single-tool email check, <strong>multiple tools are now called</strong> — including <code>get message</code> to fetch the <strong>actual content</strong> of emails (you can't triage without reading what's inside).
+- It returns a <strong>triage summary</strong> with, for each item: the <strong>category</strong>, the <strong>recommended action</strong>, and the <strong>reasons</strong> for that action.</p>
+<p>Same model, same tools — but <strong>completely different behavior</strong>, all from a reusable skill. Nakumar's "big point": <strong>skills are a lightweight way to make agent behavior repeatable without turning every instruction into a massive system prompt.</strong></p>
+<h3 id="step-4-browsing-the-web-playwright-cli-and-why-not-mcp">Step 4 — Browsing the web: Playwright CLI (and why not MCP)</h3>
+<p>Another hallmark of OpenClaw-style agents is <strong>web browsing</strong>. The open-source story here is <strong>Playwright</strong> — an open-source framework that exposes a <strong>CLI utility</strong>. They again pair it with a <strong>skill</strong> that teaches the agent how to drive the Playwright CLI.</p>
+<p>In <code>agent.py</code>, the Playwright tool is added to the <code>get_tools</code> method and passed in with the rest. The Python tool signature is minimal: <strong>one arg string and an optional browser session.</strong></p>
+<p><strong>Demo run:</strong> The agent is asked to "open Amazon and tell me the price of the first Microsoft-branded coffee cup." It picks up a <strong>different skill</strong> (web browser) and uses the <strong>Playwright CLI tool</strong> (alongside the MCP server). It reports it couldn't find a Microsoft-branded cup, but the first non-Microsoft mug it found was <strong>$16.19</strong>.</p>
+<p><strong>Why CLI instead of MCP?</strong> This is a deliberate design contrast:
+- Browser work usually creates a <strong>large tool surface</strong> (many endpoints/operations).
+- A command line is a <strong>simpler utility</strong>.
+- <strong>Token efficiency:</strong> with the CLI, <strong>snapshots and command details only enter the context window when the agent asks for them.</strong> With an MCP server you'd retrieve big JSON tool/instruction blobs, feed them back to the model on every turn, and burn tokens. Facundo underscores: the CLI is both <strong>easier for the model to use</strong> and <strong>more token-efficient.</strong></p>
+<h3 id="step-5-taking-it-to-production-with-foundry-responses-api">Step 5 — Taking it to production with Foundry (Responses API)</h3>
+<p>Everything so far runs in a terminal — but production users "don't want to be SSHing into your laptop." Foundry's answer: it <strong>hosts the same LangGraph agent as a hosted agent</strong> and exposes it through an <strong>OpenAI-compatible Responses API.</strong></p>
+<p>The mechanism is an <strong>adapter layer</strong> file that:
+- Calls the <strong>same <code>build_agent</code></strong> used earlier (no agent rewrite).
+- Uses the <strong>responses host server</strong> to expose the LangGraph agent as a <strong>Responses-compatible endpoint.</strong>
+- <strong>Initializes the Foundry server host <em>before</em> building the graph</strong>, so the <strong>OpenTelemetry LangChain instrumentation can attach before the graph is constructed.</strong> (Ordering is important.)</p>
+<p>Facundo's read: the agent is <strong>wrapped in the Responses API protocol</strong>, so the <strong>same code runs locally on your machine <em>and</em> in the cloud.</strong> For the demo, the agent was pre-deployed, and Nakumar sends the "triage my inbox" prompt to the hosted version.</p>
+<h3 id="step-6-observability-application-insights-opentelemetry">Step 6 — Observability: Application Insights + OpenTelemetry</h3>
+<p>When you move to production you need to know <em>exactly</em> what the agent did. Foundry <strong>integrates with Application Insights and OpenTelemetry.</strong> The demo uses:
+- The <strong>Microsoft OpenTelemetry distro</strong>, and
+- <strong>OpenTelemetry GenAI semantic conventions.</strong></p>
+<p>This lets you inspect <strong>LangGraph spans, model calls, latencies, and captured input/output.</strong> In the <strong>Traces tab</strong> you can see all requests sent to the agent and how long each took. Specific capabilities shown:
+- The <strong>invoke agent span</strong> and the <strong>chat span</strong> from a Foundry trace.
+- <strong>Trace replay.</strong>
+- A <strong>historical trace</strong> showing user input, user output, and <strong>all tool actions</strong> — including the agent <strong>executing a tool to read the skill</strong> it was told to use for triage.</p>
+<p>Two strategic points:
+1. <strong>Open data → tool freedom.</strong> Because OpenTelemetry with semantic conventions is a <strong>widely industry-adopted open standard</strong>, you can use Foundry <em>or</em> <strong>Grafana or any other debugging tool</strong> — the data is open, so you focus only on its content.
+2. <strong>Cost visibility.</strong> Production is "when you get surprised about where the time and budget go." Traces expose the <strong>token count per section</strong>, so you can see <strong>exactly where your money is going</strong> and which parts need optimization.</p>
+<h3 id="step-7-composition-a2a-agent-to-agent-copilot-cli">Step 7 — Composition: A2A (agent-to-agent) + Copilot CLI</h3>
+<p>The 2026 theme is <strong>agents calling other agents, composing</strong>. The question: can the deployed agent be <strong>consumed by another agent</strong>? Yes — hosting in Foundry yields an <strong>A2A endpoint</strong> that any <strong>A2A-compatible client</strong> can use to <strong>discover the agent card</strong> and <strong>send messages</strong> to the hosted agent.</p>
+<p><strong>Demo with Copilot CLI:</strong> Nakumar has <strong>Copilot CLI</strong> talk to the agent and asks it to "triage my inbox." Setup details:
+- In the Copilot agent, they <strong>expose a tiny A2A directory as an MCP server.</strong>
+- They add <strong>two tools</strong>: <strong><code>search agent</code></strong> and <strong><code>call agent</code></strong> (A2A tool).
+- Copilot uses this to <strong>search the directory</strong> for an agent that can perform the task, then <strong>invoke</strong> it via A2A.</p>
+<p><strong>The full composition chain (the payoff):</strong>
+1. <strong>Copilot CLI</strong> (a completely different runtime) searches for an agent via the <strong>MCP server / A2A directory</strong>.
+2. It finds the matching agent (<code>search agent</code> line in the output).
+3. It <strong>invokes the agent over the A2A protocol.</strong>
+4. That agent is <strong>hosted in Microsoft Foundry</strong> and, under the hood, is <strong>the very LangGraph agent they just built</strong> — using LangGraph as the agent loop with Foundry models.
+5. The Foundry agent calls <strong>Work IQ</strong> (hosted as an MCP server) to access the inbox, retrieve emails/content.
+6. It applies the <strong>triage skill</strong> to classify and draft replies, then returns the answer.
+7. The result flows back to <strong>Copilot CLI</strong>, which answers the original question.</p>
+<p><strong>The beauty:</strong> "<strong>none of these components knew about each other.</strong>" They were all built in isolation and simply <strong>composed</strong> through open interfaces.</p>
+<h3 id="the-closing-thesis">The closing thesis</h3>
+<p>The takeaway message: you <strong>compose each module using open-source standards</strong>, then build a bigger solution out of those <strong>open interfaces</strong> — which means you're <strong>free to change any component at any time.</strong> That is the open-source story: LangGraph + MCP + skills + Playwright CLI + OpenTelemetry + Responses API + A2A, all swappable, all composable, none locked in. The presenters point the audience to the <strong>repo</strong>, which contains every stage of the agent as it was built up through the demo.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Microsoft Foundry</strong> — production hosting for the agent; provides OpenAI-compatible models, hosts the LangGraph agent, exposes Responses API + A2A endpoints, and integrates observability.</li>
+<li><strong>LangChain</strong> — <code>init_chat_model</code> (model creation) and overall LangChain-style code.</li>
+<li><strong>LangGraph</strong> — the agent loop / graph framework; <code>create_deep_agent</code> builds the loop.</li>
+<li><strong>OpenAI-compatible APIs / protocol</strong> — how LangChain talks to Foundry models (and how the agent is exposed via the Responses API).</li>
+<li><strong>MCP (Model Context Protocol)</strong> — open protocol for tool discovery and invocation.</li>
+<li><strong>Work IQ Mail (MCP server)</strong> — Microsoft 365 mail/calendar/Teams capabilities exposed as tools (<code>search messages</code>, <code>get message details</code>, <code>draft replies</code>).</li>
+<li><strong>Skills</strong> — markdown-based playbooks with a small formatting block, mounted into a virtual skills path.</li>
+<li><strong>Playwright</strong> — open-source browser-automation framework exposed via a CLI utility for web browsing.</li>
+<li><strong>OpenAI-compatible Responses API</strong> — the protocol wrapping the hosted agent (runs locally <em>and</em> in cloud).</li>
+<li><strong>Application Insights</strong> — telemetry backend Foundry integrates with.</li>
+<li><strong>OpenTelemetry</strong> — open observability standard; <strong>Microsoft OpenTelemetry distro</strong> + <strong>GenAI semantic conventions</strong>.</li>
+<li><strong>Grafana</strong> — cited as an alternative trace/debug tool you can use because the telemetry data is open.</li>
+<li><strong>A2A (Agent-to-Agent) protocol</strong> — endpoint + agent card discovery for agents invoking other agents.</li>
+<li><strong>Copilot CLI</strong> — separate runtime that discovers and invokes the hosted agent via A2A (using <code>search agent</code> / <code>call agent</code> tools).</li>
+<li><strong>OpenClaw</strong> — the general-purpose agent used as the conceptual reference ("let's build our own OpenClaw").</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p>None explicitly announced. This was a demo/architecture session showing how existing open-source frameworks and standards integrate with Microsoft Foundry, rather than a feature-launch talk. No GA vs. preview status was called out for any product. The notable capabilities demonstrated as available/working in the demo include Foundry hosting a LangGraph agent behind an <strong>OpenAI-compatible Responses API</strong>, an <strong>A2A endpoint</strong> with agent-card discovery, and OpenTelemetry/Application Insights tracing via the Microsoft OpenTelemetry distro and GenAI semantic conventions — but none were framed as new announcements.</p>
+<h2 id="demos">💡 Demos</h2>
+<p>The entire session is a <strong>single progressive live demo</strong> ("driving the keyboard" = Nakumar), built up in stages — and the repo with each stage was shared:
+1. <strong>Minimal agent</strong> — model (<code>init_chat_model</code>) + loop (<code>create_deep_agent</code>) pointed at a Foundry model via OpenAI-compatible API. Says "hello" → agent replies. ✅
+2. <strong>MCP-enabled agent</strong> — Work IQ Mail MCP server added as tools. "Check my email" → discovers mail tools at runtime, returns <strong>5 emails</strong>. ✅
+3. <strong>Skills agent</strong> — triage skill (markdown) mounted. "Triage my inbox" → multiple tools called (incl. <code>get message</code>), returns a triage summary with <strong>category / recommended action / reasons</strong>. ✅
+4. <strong>Browser agent</strong> — Playwright CLI tool + web-browser skill. "Open Amazon, price the first Microsoft-branded coffee cup" → no Microsoft cup found; first non-Microsoft mug = <strong>$16.19</strong>. ✅ (showcases CLI vs. MCP token efficiency)
+5. <strong>Foundry-hosted agent</strong> — same <code>build_agent</code> wrapped in Responses API adapter; pre-deployed; "triage my inbox" sent to the hosted endpoint. ✅
+6. <strong>Observability</strong> — Traces tab in Foundry: invoke-agent span, chat span, latencies, trace replay, a historical trace showing tool actions (incl. reading the skill) and <strong>per-section token usage</strong>. ✅
+7. <strong>A2A composition</strong> — Copilot CLI (separate runtime) exposes an A2A directory as an MCP server with <code>search agent</code> + <code>call agent</code>; discovers and invokes the Foundry-hosted LangGraph agent via A2A to triage the inbox. ✅</p>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>5 emails</strong> found via the Work IQ MCP server in the email-check demo.</li>
+<li><strong>$16.19</strong> — price of the first non-Microsoft-branded coffee mug found on Amazon in the Playwright browsing demo.</li>
+<li>
+<blockquote>
+<p>"Changing the model target is configuration, not a rewrite." — on swapping Foundry models under LangChain.</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>"Tools are like verbs... A skill is a playbook." — the tools-vs-skills mental model.</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>"Skills are a lightweight way to make agent behavior repeatable without turning every instruction into a massive system prompt." — Nakumar.</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>"None of these components knew about each other... We're just composing all of them." — on the A2A/Copilot composition chain.</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>"You are free to change them at any time. So that's the story we want to tell with open source." — the closing thesis.</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Build the minimal LangGraph agent with <code>init_chat_model</code> + <code>create_deep_agent</code> pointed at a Foundry model via the OpenAI-compatible endpoint, then verify "swap model = config change."</li>
+<li>Stand up (or connect to) the <strong>Work IQ Mail MCP server</strong> and confirm runtime tool discovery (<code>search messages</code>, <code>get message details</code>, <code>draft replies</code>).</li>
+<li>Author a <strong>markdown skill</strong> (small formatting block) for inbox triage; mount it into a virtual skills path and confirm the agent reads it only when relevant.</li>
+<li>Wire up the <strong>Playwright CLI</strong> as a single-arg tool and compare context-window/token cost vs. an MCP browser server.</li>
+<li>Wrap the agent in the <strong>Responses API adapter</strong> and host on Foundry; confirm the <em>same code</em> runs locally and cloud-side.</li>
+<li>Enable the <strong>Microsoft OpenTelemetry distro + GenAI semantic conventions</strong>; inspect spans/latencies and <strong>per-section token spend</strong> in the Traces tab.</li>
+<li>Export the same OpenTelemetry traces to <strong>Grafana</strong> to prove the "open data, any tool" claim.</li>
+<li>Expose the Foundry <strong>A2A endpoint</strong> and consume it from <strong>Copilot CLI</strong> via <code>search agent</code> / <code>call agent</code>.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What exactly is <code>create_deep_agent</code> — is this a LangGraph/LangChain "deep agents" construct, and how does its loop differ from a standard ReAct loop?</li>
+<li>Is the <strong>Foundry hosted-agent + Responses API</strong> path GA or preview? Pricing/limits for hosted agents?</li>
+<li>How is the <strong>A2A agent directory</strong> populated and secured (auth, access control on agent cards)?</li>
+<li>What's the exact ordering requirement for OTel instrumentation vs. graph construction, and what breaks if you get it wrong?</li>
+<li>Is <strong>Work IQ Mail</strong> generally available as an MCP server, and what M365 scopes/permissions does it require?</li>
+<li>For browser automation at scale, when does the CLI-vs-MCP trade-off flip back toward a server?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Any team building agents on <strong>LangChain/LangGraph</strong> that wants a no-rewrite path to production hosting.</li>
+<li>Architects designing <strong>multi-agent / A2A</strong> systems where agents from different runtimes must discover and call each other.</li>
+<li>Anyone standardizing on <strong>open observability</strong> (OpenTelemetry GenAI semantic conventions) for agent cost/latency tracking.</li>
+<li>Building blocks for an internal <strong>OpenClaw-style</strong> assistant composed entirely from open standards (MCP + skills + Playwright + A2A).</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><a class="wikilink wikilink--resolved" href="DEM310.html">DEM310 - Ship code faster with AI-powered NoSQL schema design</a> — sibling Build 2026 demo using MCP + Copilot skills against an open ecosystem.</li>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Agent Framework">Microsoft Agent Framework</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Foundry">Microsoft Foundry</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Model Context Protocol (MCP)">Model Context Protocol (MCP)</span></li>
+<li><span class="wikilink wikilink--unresolved" title="A2A - Agent-to-Agent Protocol">A2A - Agent-to-Agent Protocol</span></li>
+<li><span class="wikilink wikilink--unresolved" title="OpenTelemetry GenAI Semantic Conventions">OpenTelemetry GenAI Semantic Conventions</span></li>
+<li><span class="wikilink wikilink--unresolved" title="LangGraph">LangGraph</span></li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEM332.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEM332</span><span class="pager-title">From zero to teammate in 25 minutes: Build a Teams agent live</span></a>
+    <a class="pager pager-next" href="DEM340.html"><span class="pager-dir">Next →</span><span class="pager-code">DEM340</span><span class="pager-title">Build work-ready agents with Foundry + Work IQ, govern with Agent 365</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

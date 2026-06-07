@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ODSP938 — Mitigate software supply chain risks in GitHub Actions</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">ODSP938</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=FPjvL-No46E" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Mitigate software supply chain risks in GitHub Actions</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Erica Heidi (Staff DevRel Engineer, Chainguard)</span>
+      <span class="meta-item">⏱️ 15m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="supply-chain">Supply Chain</span><span class="chip" data-tag="github-actions">Github Actions</span><span class="chip" data-tag="security">Security</span><span class="chip" data-tag="devops">DevOps</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Erica Heidi — Staff DevRel Engineer, Chainguard<br>
+<strong>Duration:</strong> ~15 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=FPjvL-No46E">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>A short, practical theater session from Chainguard's Erica Heidi laying out <strong>five concrete strategies to reduce software supply chain risk in GitHub Actions</strong>: (1) inspect repos for insecure defaults — and let GitHub Copilot agent audit your workflows for you; (2) minimize your attack surface by stripping unneeded runtime/OS dependencies (e.g. using minimal container images); (3) pull dependencies from trusted sources because ~98% of malware is injected at build/distribution time, not in source; (4) pin actions and images <strong>by digest, not by tag</strong>, since tags can be rewritten/hijacked; and (5) <strong>ban long-lived Personal Access Tokens (PATs)</strong> in favor of short-lived, scoped credentials. The recurring real-world case study is the <strong>Trivy compromise</strong>, where an org-wide PAT plus <code>pull_request_target</code> code execution and tag rewriting gave attackers full control of an org. Chainguard tooling (minimal containers, language libraries, digestabot, Octo STS) is presented as a way to operationalize each tip.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Five-step mental model:</strong> inspect → minimize attack surface → trust your sources → pin by digest → kill long-lived PATs.</li>
+<li><strong><code>pull_request_target</code> + code execution is one of the most dangerous misconfigs:</strong> PR code runs in the context of the main branch, with access to its secrets and environment variables, enabling <strong>secret exfiltration</strong> from forks/external contributors.</li>
+<li><strong>Tags are mutable and therefore untrustworthy:</strong> attackers can rewrite an existing tag to point at a malicious commit, so anyone pinning by tag silently pulls poisoned code. <strong>Always pin actions and container images by digest (immutable hash).</strong></li>
+<li><strong>The Trivy attack is the canonical example:</strong> an <strong>org-wide PAT with broad privileges</strong> was exfiltrated via <code>pull_request_target</code>, and attackers rewrote prior tags to the same malicious commit — giving them full org control (create/delete repos, cut releases, etc.).</li>
+<li><strong>Use GitHub Copilot agent as a security auditor:</strong> prompt it directly in your repo to "evaluate my GitHub Actions and find potential vulnerabilities." In the demo it correctly flagged <code>pull_request_target</code> code execution, write-capable tokens on PRs, secrets exposed to attacker-controlled binaries, and tag-based action pinning.</li>
+<li><strong>~98% of malware is inserted at build &amp; distribution time</strong>, not in the reviewed source code — so source review alone gives a false sense of security. This is the "<strong>ghost release</strong>" gap between verifiable source and the actual published artifact.</li>
+<li><strong>Public registries were built for distribution/collaboration, not security:</strong> most language-ecosystem registries (npm, PyPI, etc.) lack strong anti-tampering protections, making them attractive propagation nodes.</li>
+<li><strong>Minimal images dramatically cut CVE exposure:</strong> Chainguard's Python image reported <strong>~4 CVEs vs ~579</strong> for the default Docker Hub Python image — a "low-hanging fruit" win just from swapping base images.</li>
+<li><strong>Attackers are "shifting left"</strong> — turning developer laptops and CI/CD pipelines into propagation nodes because that's where credentials and secrets live, enabling lateral movement across projects and even orgs.</li>
+<li><strong>Protect <code>main</code> and release tags by default</strong> — these protections are <strong>off out of the box</strong>; enable branch protection (no direct pushes) and tag protection (no rewrites) to contain malicious-code propagation and blunt stolen-PAT injection.</li>
+<li><strong>Short-lived tokens limit blast radius:</strong> even if a credential leaks, it expires quickly. Octo STS issues temporary, scoped credentials using the concepts behind Sigstore/Cosign.</li>
+<li><strong>Defense in depth, not removing functionality:</strong> the goal is removing what you <em>don't</em> need (extra deps, broad scopes, mutable refs), not stripping features you actually use.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-why-github-actions-is-a-supply-chain-target">Framing: why GitHub Actions is a supply chain target</h3>
+<p>GitHub Actions workflows execute code with access to secrets, tokens, and environment variables, and they pull in third-party actions and dependencies — both <strong>direct and transitive</strong>. Any weak link in that chain can become a foothold. Even <strong>low-privilege access</strong> can be a starting point for privilege escalation and further exploitation. Erica frames the talk around five strategies, each illustrated with concrete misconfigurations and the real-world <strong>Trivy</strong> compromise.</p>
+<h3 id="tip-1-inspect-repositories-for-insecure-defaults-and-bad-practices">Tip 1 — Inspect repositories for insecure defaults and bad practices</h3>
+<p>Start by auditing what's already wrong. The bad practices to hunt for:
+- <strong><code>pull_request_target</code> with head/PR code execution</strong> — the headline risk (detailed below).
+- <strong>Long-lived Personal Access Tokens (PATs) with broad privileges</strong> — over-scoped, rarely rotated.
+- <strong>Direct shell execution that can be manipulated by external actors</strong> — untrusted input flowing into shell steps.
+- <strong>Actions pinned by tag</strong> rather than by immutable digest.
+- <strong>Unprotected <code>main</code> branch</strong> and <strong>unprotected release tags</strong> — mutable refs an attacker can overwrite.</p>
+<p>This can feel overwhelming to audit by hand. The recommended shortcut: <strong>use the GitHub Copilot agent directly in your repository</strong> and ask it to evaluate your GitHub Actions and find potential vulnerabilities. Erica built an <strong>intentionally vulnerable demo repo</strong> (designed to demonstrate secret exfiltration) and Copilot was "very successful" at detecting the issues.</p>
+<h4 id="what-copilot-flagged-in-the-demo">What Copilot flagged in the demo</h4>
+<ul>
+<li><strong><code>pull_request_target</code> with code execution</strong> (running a Go setup step). <strong>Why it's dangerous:</strong> when someone opens a PR, the PR's code is executed — and with <code>pull_request_target</code> it runs <strong>in the context of the actual main branch</strong>, with access to all the <strong>secrets and environment variables</strong> used in real main-branch builds. Depending on how the workflow runs code, <strong>any secret or variable can be exfiltrated</strong>. This is the <strong>same method used in the initial Trivy exploitation</strong>, where attackers abused <code>pull_request_target</code> running with a broadly-privileged PAT.</li>
+<li><strong>Secrets exposed to a target/attacker-controlled binary</strong> — rated critical.</li>
+<li><strong>A write-capable token granted permission to write pull requests</strong> — high risk.</li>
+<li><strong>An action snippet pinned to a tag</strong> — insecure because <strong>tags can be rewritten</strong>. This too featured in the Trivy attack: attackers rewrote previous tags to all point to the same malicious commit, so anyone pinning by tag would pull the new, payload-injected code.</li>
+</ul>
+<h4 id="branch-and-tag-protection">Branch and tag protection</h4>
+<p>Because these protections are <strong>off by default</strong>, you must enable them in repo settings:
+- <strong>Protect release tags</strong> so they cannot be rewritten → prevents malicious code from being re-released to downstream users and <strong>contains propagation</strong>.
+- <strong>Protect <code>main</code></strong> so nobody can push directly → blunts attackers who use a <strong>stolen PAT to inject straight onto main</strong>.</p>
+<h3 id="tip-2-minimize-your-attack-surface">Tip 2 — Minimize your attack surface</h3>
+<p>"Simple in theory" — fewer entry points means fewer things to exploit; a low-hanging fruit you can't ignore. Key points:
+- <strong>Account for direct <em>and</em> transitive dependencies</strong> — the dependencies of your dependencies are also risk. Any weak link can be a foothold; even from low privilege, attackers may escalate.
+- <strong>The goal is not to remove functionality</strong> you actually use — it's to remove what <strong>doesn't need to be in your runtime</strong>. There are typically many runtime-level and <strong>base-OS-level dependencies you don't need</strong>.
+- <strong>Use minimal container images</strong> to shrink that surface. Erica's example: <strong>Chainguard containers</strong> are very minimal and <strong>build all packages from source</strong>, which keeps images up to date with patches applied. The payoff cited: a <strong>Chainguard Python image with ~4 CVEs vs ~579 CVEs for the default Docker Hub Python image</strong> — a significant reduction achieved simply by swapping the base image used to build your runtimes and GitHub Actions environments.</p>
+<h3 id="tip-3-pull-from-trusted-sources">Tip 3 — Pull from trusted sources</h3>
+<p>The core statistic and threat model:
+- <strong>98%+ of malware is inserted during build and distribution time</strong>, bypassing the normal maintainer review of source code. You don't see the malicious code in the repo because it's <strong>injected during CI/CD directly into the artifacts</strong> produced at build time and then distributed to registries everywhere. Public repos download these <strong>tampered artifacts</strong>, which differ from the source code. There's generally <strong>low visibility into what happens at build time</strong>.
+- <strong>"Ghost release":</strong> attackers exploit the gap between the <strong>verifiable source code</strong> and the <strong>build artifacts</strong> that consumers actually pull from public registries.
+- <strong>Public registries lack security guarantees:</strong> they were built mostly to facilitate <strong>distribution and collaboration</strong>, not to protect artifacts from tampering. Most public registries across language ecosystems <strong>don't have strong anti-tampering measures</strong> — security wasn't the original concern at the volume/scale we now share code.
+- <strong>Attackers are "shifting left":</strong> they focus on turning <strong>developer laptops and CI/CD pipelines into propagation nodes</strong>, because that's where credentials and secrets live. With those credentials they <strong>spread laterally</strong> to other projects and even other orgs.</p>
+<h4 id="chainguard-libraries-as-a-trusted-source">Chainguard libraries as a trusted source</h4>
+<p>Reduce this risk by pulling language dependencies from a trusted source — <strong>Chainguard libraries</strong>, currently available for the <strong>Python, Java, and JavaScript</strong> ecosystems. How it works:
+- Builds run in a <strong>safe, temporary, reproducible ("tamper-proof") build environment</strong>.
+- Dependencies are pulled directly from Chainguard's repos.
+- <strong>Pre- and post-install scripts are not executed</strong>, so you only get versions that are safe to install.
+- Claimed result: <strong>avoid 90%+ of the risk associated with build/distribution-time attacks.</strong></p>
+<h3 id="tip-4-pin-by-digest-not-by-tag">Tip 4 — Pin by digest, not by tag</h3>
+<p>Even Copilot flagged that you shouldn't reference actions by tag. Instead <strong>pin to a digest</strong>:
+- A <strong>digest is a unique hash</strong> pointing to a <strong>specific build</strong> of a container image or GitHub action. Pinning by digest means you're <strong>never pulling unknown code</strong> — you always pull the exact same build/code you ran before, immune to tag rewriting.
+- <strong>Trade-off:</strong> digests <strong>go stale</strong> over time; you must update the digest when new versions of the image or action are released. The upside is it <strong>gives you time to update on your terms</strong> instead of silently pulling whatever a mutable tag now points to.</p>
+<h4 id="digestabot">digestabot</h4>
+<p>To keep digests current, Chainguard created <strong>digestabot</strong> — a <strong>free, open-source tool</strong> that keeps your workflows and Dockerfiles up to date. Whenever a new version of a container or GitHub action is released, <strong>digestabot opens a pull request with the updated digest</strong>. You configure it via a <strong>workflow YAML file</strong>, and it then performs these digest updates automatically. Pinning by digest (kept fresh by digestabot) is presented as the <strong>safest tagging practice</strong> for containers and GitHub Actions.</p>
+<h3 id="tip-5-ban-long-lived-personal-access-tokens">Tip 5 — Ban long-lived Personal Access Tokens</h3>
+<p>Don't use long-lived tokens — they're dangerous because:
+- People <strong>forget about tokens</strong>, often grant <strong>very long expiry</strong> and <strong>broad privileges</strong>.
+- This is exactly what enabled <strong>Trivy</strong>: an <strong>org-wide PAT was exfiltrated</strong>, giving attackers <strong>full control over the whole org</strong> — they could <strong>delete and create repos, create releases, and do basically anything</strong>.</p>
+<p>The fix is <strong>short-lived tokens</strong> that grant <strong>only limited privilege</strong> to a workflow run <strong>for a limited time</strong>. Even if exfiltrated, the credential <strong>expires quickly</strong>, so a leak is far less catastrophic.</p>
+<h4 id="octo-sts">Octo STS</h4>
+<p>Chainguard offers a <strong>free GitHub App called Octo STS</strong> that implements this strategy using <strong>the same concepts behind Sigstore and Cosign</strong>. It <strong>issues temporary credentials that expire after a short period</strong>. Octo STS acts as the <strong>identity that opens/authorizes requests in your repo</strong>, and you install it from GitHub.</p>
+<h3 id="closing-recap-the-speakers-own-tldr">Closing recap (the speaker's own TL;DR)</h3>
+<ol>
+<li><strong>Inspect</strong> your repository for insecure defaults and bad practices — use <strong>Copilot</strong> to evaluate your GitHub Actions and find vulnerabilities.</li>
+<li><strong>Minimize attack surface</strong> — remove unneeded runtime software → fewer entry points and fewer vulnerabilities.</li>
+<li><strong>Pull from trusted sources</strong> — npm incidents are increasing; be deliberate about <strong>where your open-source software comes from</strong>.</li>
+<li><strong>Pin by digest, not by tag</strong> — tags can be hijacked; use <strong>digestabot</strong> to keep digests updated.</li>
+<li><strong>Ban long-lived PATs; use short-lived tokens</strong> — use <strong>Octo STS</strong> for this.</li>
+</ol>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>GitHub Actions</strong> — CI/CD workflow platform; the subject of the talk and the primary attack surface discussed.</li>
+<li><strong>GitHub Copilot agent</strong> — used in-repo as a security auditor; prompted to "evaluate my GitHub Actions and find potential vulnerabilities," and successfully detected the demo's misconfigs.</li>
+<li><strong><code>pull_request_target</code></strong> — GitHub Actions trigger that runs PR code in the base/main-branch context with access to its secrets; the central dangerous misconfiguration.</li>
+<li><strong>Personal Access Tokens (PATs)</strong> — long-lived GitHub credentials; over-scoped/org-wide PATs are the recurring root cause (Trivy).</li>
+<li><strong>Branch protection / tag protection</strong> — GitHub repo settings (off by default) that prevent direct pushes to <code>main</code> and rewriting of tags/release tags.</li>
+<li><strong>Container image digests</strong> — immutable content hashes for pinning images/actions instead of mutable tags.</li>
+<li><strong>Chainguard containers</strong> — minimal container images built from source, kept patched; cited ~4 CVEs vs ~579 for default Python.</li>
+<li><strong>Chainguard libraries</strong> — trusted-source language dependencies for <strong>Python, Java, and JavaScript</strong>; built in tamper-proof environments, no pre/post-install scripts executed.</li>
+<li><strong>digestabot</strong> — free, open-source Chainguard tool that auto-opens PRs to update image/action digests in workflows and Dockerfiles.</li>
+<li><strong>Octo STS</strong> — free Chainguard GitHub App issuing short-lived, scoped credentials (built on Sigstore/Cosign concepts) as the identity that authorizes repo requests.</li>
+<li><strong>Sigstore / Cosign</strong> — signing/identity technologies whose concepts underpin Octo STS's temporary-credential model.</li>
+<li><strong>Docker Hub</strong> — referenced as the source of the default (high-CVE) Python image, contrasted with Chainguard's minimal image.</li>
+<li><strong>npm / PyPI (public registries)</strong> — language-ecosystem registries cited as lacking strong anti-tampering protections; npm incidents noted as increasing.</li>
+<li><strong>Trivy</strong> — referenced as the real-world supply chain compromise case study (org-wide PAT exfiltration + <code>pull_request_target</code> + tag rewriting).</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p>None explicitly announced. This was a best-practices/strategy theater session; the Chainguard tools referenced (minimal containers, libraries, digestabot, Octo STS) are presented as existing, available offerings rather than new releases or previews.</p>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Intentionally vulnerable demo repository + Copilot audit:</strong> Erica set up a repo containing many deliberately insecure configurations, built specifically to demonstrate <strong>secret exfiltration</strong> via a vulnerable GitHub Actions workflow. She then ran the <strong>GitHub Copilot agent</strong> with a prompt to evaluate the Actions and find vulnerabilities. <strong>Point proved:</strong> Copilot reliably surfaced the real issues — <code>pull_request_target</code> with code execution (running Go setup), secrets exposed to an attacker-controlled binary, a write-capable token allowed to write PRs, and an action pinned by tag — demonstrating that an AI agent can do a fast, effective first-pass security review of your workflows.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>~4 CVEs vs ~579 CVEs</strong> — Chainguard's minimal Python image versus the default Docker Hub Python image.</li>
+<li><strong>98%+ of malware is inserted during build and distribution time</strong> (bypassing source-code review) — the core argument for pulling from trusted sources.</li>
+<li><strong>90%+ of build/distribution-time risk avoided</strong> — claimed benefit of using Chainguard libraries.</li>
+<li><strong>Trivy compromise:</strong> an exfiltrated <strong>org-wide PAT</strong> gave attackers full org control — ability to <strong>create/delete repos and create releases</strong> at will.</li>
+<li>Paraphrased framing: <em>"I hope you stay safe and see you next time."</em> — closing sign-off.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Run the <strong>GitHub Copilot agent</strong> against our own repos with the prompt "evaluate my GitHub Actions and find potential vulnerabilities" as a quick first-pass audit.</li>
+<li>Audit workflows for <strong><code>pull_request_target</code> + code execution</strong> and confirm no fork PR can reach main-branch secrets.</li>
+<li>Enable <strong>branch protection on <code>main</code></strong> (no direct push) and <strong>tag/release-tag protection</strong> (no rewrite) where missing.</li>
+<li>Migrate action and base-image references from <strong>tags → digests</strong>; trial <strong>digestabot</strong> to keep them fresh.</li>
+<li>Evaluate <strong>Chainguard minimal images</strong> (esp. language base images) to cut CVE counts in CI runners.</li>
+<li>Inventory <strong>PATs</strong>; replace long-lived/org-wide PATs with short-lived scoped tokens; trial <strong>Octo STS</strong>.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>How does Octo STS's trust model (Sigstore/Cosign-based OIDC) compare to GitHub's native OIDC-to-cloud federation — when would we pick one over the other?</li>
+<li>What's the maintenance overhead of digest pinning at scale, and does digestabot batch updates sensibly to avoid PR noise?</li>
+<li>Coverage/limits of Copilot's vulnerability detection vs dedicated tooling (e.g. GHAS code scanning, zizmor, StepSecurity Harden-Runner)?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Any team owning GitHub Actions pipelines; DevSecOps / platform engineering; supply chain security (SLSA), SBOM, and CI/CD hardening initiatives.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="ODSP937.html"><span class="pager-dir">← Previous</span><span class="pager-code">ODSP937</span><span class="pager-title">Build realtime multimodal agents with LiveKit and Azure</span></a>
+    <a class="pager pager-next" href="ODSP940.html"><span class="pager-dir">Next →</span><span class="pager-code">ODSP940</span><span class="pager-title">Create enterprise AI apps at scale with Bolt and Microsoft</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

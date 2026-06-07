@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ODSP914 — Run AI at scale with Ray + Kubernetes using Anyscale on Azure</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">ODSP914</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=nwR1NBm3Uug" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Run AI at scale with Ray + Kubernetes using Anyscale on Azure</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Katerina (Product Marketing Manager, Anyscale); Daniel Ariza (Field Engineer, Anyscale)</span>
+      <span class="meta-item">⏱️ 23m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ray">Ray</span><span class="chip" data-tag="kubernetes">Kubernetes</span><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="scaling">Scaling</span><span class="chip" data-tag="anyscale">Anyscale</span><span class="chip" data-tag="aks">Aks</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Katerina — Product Marketing Manager, Anyscale; Daniel Ariza — Field Engineer, Anyscale<br>
+<strong>Duration:</strong> ~23 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=nwR1NBm3Uug">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Anyscale on Azure brings the managed Ray platform — built by the creators of Ray and powered by <strong>Ray on AKS</strong> — into your own Azure subscription. It targets teams who want to <em>own</em> (not just rent) their AI stack: deploying, fine-tuning, and serving open-source and custom models while keeping proprietary data and IP inside their existing Azure security and governance boundary. The session pairs a "why own your AI stack" business framing with a full end-to-end technical demo: provisioning an Anyscale Cloud from the Azure portal onto AKS, then using Ray (Ray Data, Ray Train, Ray Serve) to build a multimodal e-commerce recommendation engine — fine-tuning a PyTorch model, running batch embeddings, and serving multiple composed models behind a single endpoint, all with one-click GPU scaling, fault-tolerant checkpointing, built-in observability, and CLI "skills" that let AI coding assistants generate and optimize Ray workloads.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>AI is a rent-vs-own spectrum.</strong> Renting = calling someone else's model via API. Owning is <em>not binary</em> — it spans deploying open-source models → customizing them with your own data → training your own models. Most teams use a mix; the real question is <em>which workloads</em> justify ownership.</li>
+<li><strong>Ownership makes sense when three drivers apply:</strong> (1) <strong>Control</strong> over models/operations (avoid model deprecations, rate limits, outages), (2) <strong>Data &amp; differentiation</strong> (keep proprietary data inside your boundary), and (3) <strong>Cost &amp; latency</strong> (better unit economics at scale, faster end-to-end response).</li>
+<li><strong>Scaling AI is getting harder</strong> because both data and models are exploding: structured tabular → multimodal data; gigabytes → petabytes; single models → many models; parameter counts growing exponentially. Legacy tooling wasn't designed for this.</li>
+<li><strong>Ray is the convergence point.</strong> The open-source distributed compute framework for Python/AI has <strong>12M+ downloads/week</strong> and is the most widely adopted AI compute framework across AI labs and enterprises (OpenAI, Uber, Tripadvisor, and more).</li>
+<li><strong>Anyscale on Azure = three pillars:</strong> (1) accelerates dev→prod with a <strong>unified runtime</strong> for multimodal data curation, distributed training, and multimodal online serving; (2) runs reliably at scale via <strong>fully managed Ray lifecycle on AKS</strong>, a <strong>priority-aware scheduler</strong> that maximizes GPU utilization, and <strong>24/7 Ray expert support</strong>; (3) is <strong>Azure-native</strong> — runs on AKS in your own subscription, integrates with <strong>Entra ID for RBAC</strong>, available through the <strong>Azure portal</strong>.</li>
+<li><strong>Provisioning is portal-driven.</strong> Create an "Anyscale Cloud" by picking a subscription, resource group, region, and AKS cluster. Bring your own Kubernetes cluster, or use a <strong>one-liner</strong> to create AKS for you — no infra expertise required, but deep Kubernetes integration is retained under the hood.</li>
+<li><strong>Three core console primitives:</strong> <strong>Workspaces</strong> (interactive dev — write/run code, see metrics/logs/observability), <strong>Jobs</strong> (run code over a larger dataset/production, then auto-shut-down the cluster when done), and <strong>Services</strong> (always-on endpoints serving models).</li>
+<li><strong>One-click elastic scaling.</strong> A workspace runs on a Ray cluster; adding worker nodes (e.g. A100 GPUs, scaling from 1 to 10/100/1,000) is a button click — minimal effort to scale up.</li>
+<li><strong>Dev/prod parity.</strong> You can open the same cluster in <strong>VS Code Desktop over SSH</strong> or a web VS Code interface, install deps via pip or a dependencies UI, and <strong>freeze everything into a container image</strong> for fully reproducible dev→prod.</li>
+<li><strong>Ray wraps standard frameworks, doesn't replace them.</strong> It keeps PyTorch (and other OSS libraries) intact and adds an orchestration layer for performance, stability, and scalability across many CPUs/GPUs.</li>
+<li><strong>Ray Train delivers fault tolerance cheaply.</strong> Adding checkpointing is ~10% more code; on any failure it resumes from where it left off — <strong>even mid-epoch</strong> — so massive multi-thousand-GPU runs stay reliable.</li>
+<li><strong>Ray Data keeps GPUs fed.</strong> It streams data to the GPU and auto-scales CPU nodes so the CPU never becomes the bottleneck — avoiding the wasteful 20–30% GPU utilization that's common when GPUs starve for data.</li>
+<li><strong>Ray Serve simplifies multi-model serving.</strong> Compose multiple models (e.g. image-to-text → fine-tuned recommender) behind one endpoint with far less code than hand-stitched Kubernetes microservices; supports <strong>zero-downtime version rollouts</strong>, independent per-model scaling, and <strong>prefix-aware caching</strong>.</li>
+<li><strong>Anyscale "skills" + CLI supercharge AI coding assistants.</strong> <code>anyscale skills</code> exposes packaged capabilities (set up infra/platform, create Ray Data/Train/Serve workloads, RL for post-training, more coming) usable inside your favorite AI code assistant — and the agents can read the platform's metrics/observability to write and <em>optimize</em> code automatically.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="why-teams-choose-to-own-their-ai-stack">Why teams choose to own their AI stack</h3>
+<p>Every team building with AI is positioned somewhere on a spectrum between <strong>renting intelligence</strong> (calling someone else's model through an API) and <strong>owning it</strong>. Crucially, ownership is not a single switch — it's its own sub-spectrum that includes (a) deploying open-source models, (b) customizing open-source models with your own data, and (c) training your own models from scratch. In practice most teams blend renting and owning; the strategic question is identifying <em>which specific workloads</em> warrant ownership rather than going all-in on either side.</p>
+<p>Ownership typically becomes the right call when one or more of three conditions hold:
+- <strong>Control over models and operations</strong> — so you're not exposed to model deprecations, rate limits, or provider outages that you can't influence.
+- <strong>Data and differentiation</strong> — when proprietary data must stay inside your own security/governance boundary, and when your data is the source of competitive advantage.
+- <strong>Cost and latency</strong> — when you need better unit economics at scale and faster end-to-end response times than an external API gives you.</p>
+<p>When several of these stack up, that's the inflection point where teams move toward owning.</p>
+<h3 id="why-owning-is-hard-data-and-models-are-scaling-fast">Why owning is hard: data and models are scaling fast</h3>
+<p>The difficulty of building AI is rising because <em>both</em> inputs are scaling simultaneously:
+- <strong>Data:</strong> what used to be structured tabular data is now <strong>multimodal</strong> (text + images + more), and dataset sizes have jumped from <strong>gigabytes to petabytes</strong>.
+- <strong>Models:</strong> single models have become <strong>many models</strong>, and <strong>parameter counts are growing exponentially</strong>.</p>
+<p>This complexity surfaces across the entire AI lifecycle:
+- <strong>Building</strong> requires <em>coordinated CPU and GPU compute</em> (you can't treat them in isolation).
+- <strong>Training</strong> must be <em>distributed across nodes with fault tolerance built in</em> — at scale, hardware/process failures are expected, not exceptional.
+- <strong>Serving</strong> requires <em>composing many models</em>, often on <em>different hardware</em> profiles.</p>
+<p>These are precisely the problems legacy tools were never designed to handle, which is why teams keep hitting their limits.</p>
+<h3 id="why-ray">Why Ray</h3>
+<p>As AI workloads grow in scale and complexity, teams are converging on <strong>Ray</strong> — the open-source <strong>distributed compute framework for Python and AI workloads</strong>. Ray adoption has tracked this growth:
+- <strong>12M+ downloads per week.</strong>
+- The <strong>most widely adopted AI compute framework</strong> across both AI labs and enterprises.
+- Used by teams such as <strong>OpenAI, Uber, Tripadvisor</strong>, and more.</p>
+<p>Ray's design lets the same framework span the building, training, and serving stages that legacy tools struggle to unify.</p>
+<h3 id="what-anyscale-on-azure-is-the-three-pillars">What Anyscale on Azure is — the three pillars</h3>
+<p><strong>Anyscale on Azure</strong> comes "from the creators of Ray" and is <strong>powered by Ray on AKS</strong>. Three things to know:</p>
+<ol>
+<li><strong>Accelerates dev → prod</strong> with a <strong>unified runtime</strong> covering multimodal data curation, distributed training, and multimodal online serving — one platform across the lifecycle instead of separate stitched tools.</li>
+<li><strong>Runs reliably at scale</strong> via:
+   - a <strong>fully managed Ray lifecycle on AKS</strong> (Anyscale operates Ray for you),
+   - a <strong>priority-aware scheduler</strong> that maximizes GPU utilization, and
+   - <strong>24/7 Ray expert support</strong>.</li>
+<li><strong>Azure-native</strong> by design:
+   - runs on <strong>AKS in your own subscription</strong>,
+   - integrates with <strong>Entra ID for RBAC</strong>, and
+   - is available <strong>through the Azure portal</strong>.
+   The net effect: your <strong>data and IP stay inside your existing Azure security and governance boundaries</strong>.</li>
+</ol>
+<h3 id="demo-part-1-provisioning-an-anyscale-cloud-from-the-azure-portal">Demo part 1 — Provisioning an Anyscale Cloud from the Azure portal</h3>
+<p>Daniel begins in the <strong>Azure console</strong> and creates an <strong>Anyscale Cloud</strong> (from "Anyscale Clouds" → <strong>Create</strong>). The provisioning wizard asks for:
+- <strong>Subscription</strong> to launch into,
+- <strong>Resource group</strong> (he uses one created earlier),
+- <strong>Cloud name</strong> (e.g. "my cloud"),
+- <strong>Region</strong>, and
+- an <strong>AKS cluster</strong> selection.</p>
+<p>Key flexibility point: <strong>bring your own Kubernetes cluster</strong> if you already have one — deploy straight into it. If you're "not a Kubernetes wiz," there's a <strong>one-liner to create the Kubernetes cluster for you</strong>, so you don't have to think about the infra side. Either way, Anyscale <strong>integrates very deeply with Kubernetes</strong>, retaining all the power of that rock-solid infrastructure.</p>
+<p>Remaining wizard steps: pick a <strong>storage account</strong> and the <strong>identity</strong> used to connect to it, choose an <strong>Azure Container Registry</strong> (it can create new resources for you), then set <strong>support plan</strong> and <strong>tags</strong>, and hit <strong>Create</strong>. Provisioning takes some time, so Daniel uses a pre-created cloud for the rest of the demo.</p>
+<h3 id="demo-part-2-the-anyscale-console-workspaces-jobs-services">Demo part 2 — The Anyscale console: Workspaces, Jobs, Services</h3>
+<p>The left-hand nav exposes three primitives:
+- <strong>Workspaces</strong> — <em>interactive development</em>: write code, run it, observe how it behaves, and inspect observability (metrics, logs, etc.). Most of the demo lives here.
+- <strong>Jobs</strong> — once code is ready for a <em>larger dataset or production</em>, launch a Job. It runs in the background over time and <strong>turns off the cluster when done</strong> (cost-efficient).
+- <strong>Services</strong> — an <strong>always-on</strong> endpoint, ready to listen for requests and <strong>serve models</strong>.</p>
+<p>Workspaces also offer <strong>many templates</strong> (inference, training, building a RAG system, etc.) as starting points.</p>
+<h3 id="demo-part-3-inside-a-workspace-cluster-scaling-and-dev-environment">Demo part 3 — Inside a workspace: cluster, scaling, and dev environment</h3>
+<p>Daniel opens a pre-created workspace. The right panel shows it's running on a <strong>Ray cluster</strong>: <strong>8 CPUs / 32 GB on one node</strong>, with a single CPU-based worker node for now. To scale, he clicks <strong>add worker nodes</strong> and can request <strong>GPUs</strong> (e.g. <strong>A100s</strong>) at <strong>10, 100, or 1,000</strong> nodes depending on availability and the job's needs — "not a lot to do in order to scale things up."</p>
+<p>Development options:
+- <strong>Open in VS Code Desktop</strong> → launches VS Code and <strong>SSHes directly into the cluster</strong>, so dev and prod environments are nearly identical (same hardware/environment type).
+- Or use the <strong>web VS Code interface</strong> in-browser.</p>
+<p>He keeps all code in a <strong>notebook</strong> but notes you can use many Python files. <strong>Dependencies</strong> install via <strong>pip</strong> or a dedicated <strong>Dependencies</strong> UI, and you can <strong>freeze all dependencies into a container image</strong> for a <strong>fully reproducible</strong> dev→prod path.</p>
+<h3 id="demo-use-case-a-multimodal-e-commerce-recommendation-engine">Demo use case — A multimodal e-commerce recommendation engine</h3>
+<p>The end-to-end scenario: build an <strong>e-commerce recommendation engine</strong>. Daniel reasons through the options (echoing Katerina's framing):
+- Use a hosted <strong>AI model provider endpoint</strong> → likely <strong>very expensive</strong> and you <strong>lose control</strong>.
+- Use an <strong>open-source model</strong> → much <strong>cheaper</strong>, but <strong>less effective</strong> because it doesn't know your data and tends to be smaller.
+- <strong>Chosen path:</strong> <strong>fine-tune an open-source model</strong> using Ray, which requires data processing, then run <strong>batch embeddings</strong> (inference over all his data with the fine-tuned model).</p>
+<p>Scale considerations baked into the use case:
+- A large store may have <strong>~1M products</strong> with <strong>~10% changing week over week</strong>, so the pipeline must <strong>re-run constantly</strong> — making it a <strong>scheduled Job</strong>, needing real scale to produce a good model.
+- The data is <strong>multimodal</strong> — products have <strong>text descriptions <em>and</em> images</strong> — so the embedding space must process text and images <strong>together</strong>.
+- <strong>Serving needs multiple models</strong> — e.g. an <strong>image-to-text</strong> model feeding the <strong>fine-tuned</strong> recommender — behind a single endpoint.</p>
+<p>The goal is a <strong>full end-to-end solution</strong>: data pre-processing → fine-tuning → batch embeddings → serving.</p>
+<h3 id="demo-fine-tuning-with-ray-train-torchtrainer">Demo — Fine-tuning with Ray Train (<code>TorchTrainer</code>)</h3>
+<p>After installing dependencies and sampling images from the product catalog, Daniel builds a <strong>training dataset</strong> from sampled records, then uses a <strong><code>TorchTrainer</code></strong> — i.e. real <strong>PyTorch</strong> code. The important Ray principle: <strong>Ray doesn't take PyTorch away.</strong> It <strong>wraps the standard OSS frameworks</strong> and adds an <strong>orchestration layer</strong> for better performance, stability, and scalability (scaling to many CPUs/GPUs).</p>
+<p>The trainer config specifies <strong>epochs, batch size, how much to scale (1 worker → 1,000 workers), GPU count</strong>, and <strong>checkpointing</strong>. A standout <strong>Ray Train</strong> capability: on a <strong>failure at any point</strong>, it <strong>resumes from where it left off — even mid-epoch</strong> — so you get fewer fully-failed runs. This is what makes scaling to <strong>thousands of GPUs</strong> reliable instead of brittle.</p>
+<p>In the <strong>per-worker train loop</strong>, the body is <strong>standard PyTorch</strong>; adding checkpointing is "<strong>~10% more code than you'd normally have</strong>," and Ray then handles reliability/checkpointing for you. Daniel ran a couple of epochs and confirmed <strong>training loss went down</strong>.</p>
+<h3 id="demo-keeping-gpus-fed-with-ray-data">Demo — Keeping GPUs fed with Ray Data</h3>
+<p>The data loader uses <strong>Ray Data</strong> to feed the Ray Train job. Ray Data <strong>streams data to the GPU</strong>, keeping it <strong>always fed</strong> so you achieve <strong>full GPU utilization</strong> — avoiding the common <strong>20–30% GPU utilization</strong> that wastes scarce, expensive GPU capacity (and caps how good the model can get). It manages this partly by <strong>scaling up CPU nodes</strong> so the <strong>CPU is never the bottleneck</strong>; you can spin up as many CPU nodes as needed to keep GPUs saturated.</p>
+<h3 id="demo-batch-embeddings-evaluating-the-fine-tuned-model">Demo — Batch embeddings + evaluating the fine-tuned model</h3>
+<p>With a fine-tuned model in hand, Daniel <strong>loads it</strong> and runs <strong>batch embeddings</strong> (inference over his data). The embedding step runs on a single CPU in the demo but can scale to <strong><code>num_gpus=1000</code></strong> with "very little code change."</p>
+<p>Evaluating embedding quality via <strong>product embedding similarity</strong>: <strong>speakers, laptops, and webcams</strong> cluster as similar to each other, but <strong>not</strong> to <strong>shoes or sweaters</strong> — sensible. Comparing the <strong>base open-source model</strong> vs the <strong>fine-tuned model</strong>, the fine-tuned model shows <strong>better-clustered</strong> results (the base model's light-blue group wasn't well grouped), confirming the fine-tune improved results.</p>
+<h3 id="demo-serving-multiple-models-with-ray-serve">Demo — Serving multiple models with Ray Serve</h3>
+<p>Finally, the <strong>serving</strong> code creates an <strong>endpoint</strong> that listens for <strong>recommendation requests</strong> and runs through multiple models: first an <strong>image-to-text</strong> model, then the <strong>fine-tuned</strong> recommender, returning a <strong>JSON response</strong>. Without Ray, you'd likely hand-build and deploy <strong>many microservices in Kubernetes</strong> and stitch them together — painful. With <strong>Ray Serve</strong>, the code is much simpler.</p>
+<p>Demonstrated output: querying recommendations similar to "travel wireless headphones" returns other wireless headphones and related items. The serving stack: a recommendation <strong>endpoint</strong> takes an <strong>image</strong> → runs the <strong>image-to-text</strong> model → runs the <strong>fine-tuned</strong> model → returns JSON. The fine-tuned product recommender loads the model and runs an <strong>embedding norm</strong> (standard PyTorch).</p>
+<p>Deployment story: <strong><code>anyscale service deploy</code></strong> gets the service "up and ready to go" as an <strong>always-available</strong> service. As new versions ship, it supports <strong>zero-downtime</strong> rollouts, <strong>independent per-model scaling</strong> (e.g. if one model gets more traffic than another), and <strong>prefix-aware caching</strong> built in.</p>
+<h3 id="demo-anyscale-skills-cli-and-observabilityagents">Demo — Anyscale "skills", CLI, and observability/agents</h3>
+<p>You don't have to write all this code by hand. From the terminal, the <strong>Anyscale CLI</strong> (<code>anyscale</code>) exposes <strong><code>anyscale skills</code></strong> — packaged capabilities usable in your favorite <strong>AI code assistants</strong>: setting up <strong>infra</strong>, setting up the <strong>platform</strong>, and creating <strong>workloads</strong> (Ray <strong>Data</strong>, <strong>Serve</strong>, <strong>Train</strong> serving, <strong>RL for post-training</strong>, with <strong>more coming</strong>). The CLI can also <strong>create jobs and services</strong>.</p>
+<p>Critically, these <strong>skills/agents can read the platform's metrics and observability</strong>. The <strong>Metrics</strong> tab surfaces utilization, node counts, memory, and CPU. <strong>Ray Workloads</strong> lets you drill into the <strong>different stages</strong> to find <strong>bottlenecks</strong>. If you're not an expert, the <strong>agent can grab this telemetry and both write and optimize code</strong> for you. Daniel stresses observability matters for <strong>day one</strong> ("I wrote code and it kinda works") <em>and</em> <strong>day two</strong> (you scaled up, things regress, and you need to debug).</p>
+<h3 id="next-steps-closing">Next steps (closing)</h3>
+<p>Katerina closes with three calls to action:
+- <strong>First QR code</strong> → the Anyscale <strong>Build conference webpage</strong>: scheduled <strong>table talks</strong> (including <strong>Daniel's session on building multimodal data pipelines</strong>) and a way to <strong>request a meeting</strong> with the team.
+- <strong>Second QR code</strong> → <strong>get started on Anyscale on Azure</strong> to try the demo hands-on.
+- <strong>In person at Build:</strong> visit <strong>booth G201</strong>.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Anyscale on Azure</strong> — managed Ray platform, powered by Ray on AKS, deployed into your own Azure subscription.</li>
+<li><strong>Ray</strong> — open-source distributed compute framework for Python/AI (12M+ downloads/week).</li>
+<li><strong>Ray Train</strong> (<code>TorchTrainer</code>) — distributed training with mid-epoch fault-tolerant checkpointing.</li>
+<li><strong>Ray Data</strong> — streaming data loader that keeps GPUs fed and auto-scales CPU nodes.</li>
+<li><strong>Ray Serve</strong> — multi-model composition, zero-downtime rollouts, independent scaling, prefix-aware caching.</li>
+<li><strong>Azure Kubernetes Service (AKS)</strong> — the underlying compute substrate ("Ray on AKS").</li>
+<li><strong>Azure portal / Azure console</strong> — where Anyscale Clouds are provisioned.</li>
+<li><strong>Microsoft Entra ID</strong> — RBAC integration.</li>
+<li><strong>Azure Container Registry (ACR)</strong> — for container images during provisioning.</li>
+<li><strong>Azure storage account + managed identity</strong> — workspace storage and access.</li>
+<li><strong>PyTorch</strong> — the deep-learning framework Ray wraps (kept intact).</li>
+<li><strong>Anyscale console primitives</strong> — Workspaces, Jobs, Services, Templates.</li>
+<li><strong>Anyscale CLI</strong> (<code>anyscale</code>) — <code>anyscale skills</code>, <code>anyscale service deploy</code>, job/service creation.</li>
+<li><strong>Anyscale Skills</strong> — packaged capabilities for AI coding assistants (infra, platform, Ray Data/Serve/Train workloads, RL for post-training).</li>
+<li><strong>VS Code Desktop (SSH) / web VS Code</strong> — dev interfaces into the Ray cluster.</li>
+<li><strong>A100 GPUs</strong> — example GPU type for scaling worker nodes.</li>
+<li><strong>Priority-aware scheduler</strong> — Anyscale scheduler that maximizes GPU utilization.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p>None explicitly announced as new in this session. The session positions <strong>Anyscale on Azure</strong> (Ray-on-AKS, Azure-portal-provisioned, Entra-integrated) as the offering to try, and notes that additional <strong>Anyscale Skills</strong> (including <strong>RL for post-training</strong>) are present with "more coming," but no dated GA/preview announcement is made in the transcript.</p>
+<h2 id="demos">💡 Demos</h2>
+<p>A single continuous end-to-end demo led by <strong>Daniel Ariza</strong>, structured as:
+1. <strong>Provisioning</strong> — create an Anyscale Cloud from the Azure portal onto AKS (subscription/RG/region/AKS cluster, storage + identity, ACR, support plan, tags). Bring-your-own AKS or one-liner cluster creation.
+2. <strong>Console tour</strong> — Workspaces vs Jobs vs Services; templates (inference, training, RAG).
+3. <strong>Workspace internals</strong> — Ray cluster (8 CPU / 32 GB), one-click worker scaling (A100s up to 1,000), VS Code Desktop SSH vs web VS Code, pip/Dependencies UI, freeze-to-container-image.
+4. <strong>Use case</strong> — multimodal e-commerce recommendation engine (~1M products, ~10% weekly churn; text + image data; multi-model serving).
+5. <strong>Ray Train</strong> — <code>TorchTrainer</code> fine-tuning with config (epochs/batch size/scale/GPUs/checkpointing); ~10% extra code for mid-epoch-resumable checkpointing; training loss decreased.
+6. <strong>Ray Data</strong> — streaming to keep GPUs fed; CPU-node autoscaling to avoid bottlenecks; avoids 20–30% GPU utilization.
+7. <strong>Batch embeddings + evaluation</strong> — load fine-tuned model, embed products, scale to <code>num_gpus=1000</code>; similarity check (speakers/laptops/webcams cluster together, not shoes/sweaters); fine-tuned model clusters better than base.
+8. <strong>Ray Serve</strong> — endpoint chaining image-to-text → fine-tuned recommender → JSON; <code>anyscale service deploy</code>; zero-downtime versions, independent scaling, prefix-aware caching; sample recommendations for "travel wireless headphones."
+9. <strong>CLI / skills / observability</strong> — <code>anyscale skills</code> for AI code assistants; Metrics tab (utilization/nodes/memory/CPU); Ray Workloads stage-level bottleneck drill-down; agents that read telemetry to write and optimize code.</p>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>12M+ downloads per week</strong> — Ray's adoption rate.</li>
+<li><strong>Most widely adopted AI compute framework</strong> across AI labs and enterprises (OpenAI, Uber, Tripadvisor, and more).</li>
+<li><strong>Gigabytes → petabytes</strong> — the shift in dataset sizes driving the scaling challenge.</li>
+<li><strong>8 CPUs / 32 GB on one node</strong> — the demo workspace's starting Ray cluster.</li>
+<li><strong>Scale from 1 to 10 / 100 / 1,000 nodes</strong> (e.g. A100 GPUs) with a button click.</li>
+<li><strong>~10% more code</strong> — what adding fault-tolerant checkpointing to a PyTorch loop costs with Ray Train.</li>
+<li><strong>Resumes mid-epoch</strong> on failure — Ray Train's checkpointing recovers without restarting the whole run.</li>
+<li><strong>20–30% GPU utilization</strong> — the wasteful baseline Ray Data avoids by keeping GPUs fed.</li>
+<li><strong>~1M products, ~10% changing week over week</strong> — the e-commerce scale that forces a scheduled, re-running pipeline.</li>
+<li><strong><code>num_gpus=1000</code></strong> — how far batch embeddings can scale with "very little code change."</li>
+<li><strong>Booth G201</strong> — Anyscale's in-person location at Build.</li>
+<li>
+<blockquote>
+<p>"What is special about Ray is that it doesn't take that stuff away. All it does is it wraps a lot of the open-source regular frameworks that you use and creates an orchestration layer around all of it so that we have better performance and better stability and also great scalability." — Daniel Ariza</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>"You're not getting those 20–30% GPU utilization, which is such a shame because we have such little availability of GPUs." — Daniel Ariza</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>"Your data and IP stay inside your existing security and governance boundaries." — Katerina (on Azure-native deployment)</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Provision an Anyscale Cloud into the default <code>australiaeast</code> Azure subscription and try the <strong>one-liner AKS creation</strong> path vs bring-your-own-AKS.</li>
+<li>Stand up a minimal <strong>Ray Train + Ray Data</strong> fine-tune to feel the mid-epoch checkpoint resume and the GPU-fed streaming behavior.</li>
+<li>Test <strong>Ray Serve</strong> multi-model composition (image-to-text → fine-tuned model) and a <strong>zero-downtime</strong> version rollout.</li>
+<li>Install the <strong>Anyscale CLI</strong> and explore <code>anyscale skills</code> inside an AI code assistant; see how the agent reads Metrics/Ray Workloads to optimize a workload.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>How does the <strong>priority-aware scheduler</strong> interact with AKS node pools / autoscaler and Azure GPU quota in <code>australiaeast</code>?</li>
+<li>What's the pricing model (Anyscale platform fee vs raw AKS/Azure compute) and how does the auto-shutdown Job behavior affect cost?</li>
+<li>How deep is <strong>Entra ID RBAC</strong> integration — workspace/job/service-level permissions? Does it map to existing AKS RBAC?</li>
+<li>What GPU SKUs are actually available for Anyscale-on-AKS in Australian Azure regions (A100/H100 availability)?</li>
+<li>Is there a GA/preview status and SLA for Anyscale on Azure, and what does "24/7 Ray expert support" cover?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Azure lab work where customers want to <strong>own/fine-tune open-source models</strong> while keeping data in-subscription.</li>
+<li>Any AKS + GPU scaling scenarios; demos showing Ray as the distributed compute layer on Azure.</li>
+<li>Multimodal data pipeline / RAG / recommendation-engine reference architectures on Azure.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Build 2026">Microsoft Build 2026</span></li>
+<li>Daniel Ariza's table talk — <strong>building multimodal data pipelines</strong> (Build 2026 schedule)</li>
+<li>Ray docs — Ray Train, Ray Data, Ray Serve</li>
+<li>Azure Kubernetes Service (AKS) + GPU node pools</li>
+<li>Microsoft Entra ID — RBAC for Azure-native services</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="ODSP912.html"><span class="pager-dir">← Previous</span><span class="pager-code">ODSP912</span><span class="pager-title">Build agentic testing systems to validate AI generated code</span></a>
+    <a class="pager pager-next" href="ODSP915.html"><span class="pager-dir">Next →</span><span class="pager-code">ODSP915</span><span class="pager-title">Resolve support cases with multi-agent workflows</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

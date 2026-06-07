@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRKSP92 — Scale agentic AI from on-device to cloud orchestration</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">BRKSP92</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=2O1pBbxk0ac" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Scale agentic AI from on-device to cloud orchestration</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Eddie (Intel, host), Jayen (Intel — AI client demo), Colin (Intel — edge/distributed demo), Imran (Intel — cloud/data center demo)</span>
+      <span class="meta-item">⏱️ 29m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="edge">Edge</span><span class="chip" data-tag="on-device">On Device</span><span class="chip" data-tag="intel">Intel</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026 (Intel partner/sponsor session — "SP" code)<br>
+<strong>Speakers:</strong> Eddie (Intel engineer, host); Jayen (Intel — AI client demo); Colin (Intel — edge / pooled-resource demo); Imran (Intel — data center / cloud orchestration demo)<br>
+<strong>Duration:</strong> ~29 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=2O1pBbxk0ac">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>An Intel-hosted partner session arguing that modern AI is no longer "one model in one place" — agentic systems now span <strong>client → edge → cloud</strong>, and Intel hardware can run real workloads at every tier to escape per-token cloud costs. Three live demos prove it: (1) a small LLM ("ion 1.0 instant", released the day before and name-checked by Satya in the keynote) running <strong>entirely on the Intel Panther Lake NPU</strong> of a Core Ultra Series 3 laptop with near-zero CPU/memory/thermal impact via OS-level APIs (OpenVINO + Windows ML); (2) <strong>three Asus NUC Pro 16 mini-PCs pooled over Thunderbolt</strong> using llama.cpp RPC to expose ~150 GB of VRAM and run up to ~180B-parameter models offline for "free tokens" at &lt;$7,000 total; and (3) a <strong>96-vCPU Azure Xeon 6 VM</strong> running a Qwen3 MoE model on CPU (leveraging AMX) with OpenClaw as the agent harness on Kubernetes, doing real GitHub repo analysis with autoscaling. The recurring theme: <strong>free/cheap tokens, data that never leaves the network, and the same agentic patterns scaling from a laptop NPU to a cloud VM.</strong></p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li>AI apps are now <strong>agentic systems distributed across cloud, edge, and client</strong> — not a single model in a single place; the session walks one demo per tier.</li>
+<li><strong>Every cloud token has a round-trip, latency, and cost</strong> — teams "max out the monthly AI budget" and can't ship features because "the math doesn't math." On-device/local inference removes that ceiling.</li>
+<li><strong>"ion 1.0 instant"</strong> (as spoken — likely a Windows on-device small-LM, referenced by Satya in the keynote, "released yesterday") runs fully on the <strong>Intel Panther Lake NPU</strong> of the <strong>Core Ultra Series 3</strong> with <strong>~50 TOPS</strong> of throughput, using <strong>&lt;20% of NPU capacity</strong> even on bigger prompts.</li>
+<li>On-device inference is achieved with <strong>zero hand-written NPU code</strong> — it's all <strong>OS-level APIs</strong>: OpenVINO at the bottom, Windows ML on top; scheduling onto the NPU is the platform's job, not the developer's.</li>
+<li>On-device runs with <strong>negligible CPU/memory bump, no thermal throttling, no fans, no power cliff</strong> — it coexists with whatever else the user is running, and works <strong>offline</strong> (hospital, airplane, air-gapped networks) and "runs for free."</li>
+<li>Panther Lake enables <strong>aggressive quantization</strong> so you no longer trade "faster vs. smaller" — you get a model that's both faster AND smarter on hardware users already own.</li>
+<li><strong>Edge/pooled demo:</strong> three <strong>Asus NUC Pro 16</strong> units (Core Ultra Series 3 <strong>X7</strong>, big <strong>Arc B390</strong> integrated graphics, 64 GB RAM each) networked via <strong>point-to-point Thunderbolt 4 / USB4 (20 Gbit/s links)</strong> — no network backbone.</li>
+<li>The Intel graphics driver exposes a <strong>"Shared GPU NPU override"</strong> slider letting you assign up to <strong>93% of system RAM as VRAM</strong> (e.g. 51.3 GB VRAM on a 64 GB box); paired with very fast <strong>LPDDR5X (9200+ MT/s)</strong> memory Intel mandates from OEMs.</li>
+<li>Using <strong>llama.cpp's RPC mode</strong>, the three nodes pool into <strong>~150 GB of VRAM</strong>, loading up to a <strong>~180B-parameter</strong> model; the demo ran <strong>Qwen3-Next 80B (A3B)</strong> at <strong>~16–18 tok/s</strong> offline, whole stack <strong>&lt;$7,000</strong>, each node drawing <strong>~100 W</strong>.</li>
+<li><strong>Microsoft MXC</strong> (Microsoft eXecution Containers for agents — announced "yesterday") lets you <strong>sandbox agent code</strong>: control MCP-server access, file-system access, and network in/out, and crucially <strong>enforce it via policy</strong> (admin-set) — demoed through <strong>Copilot CLI</strong> pointed at the local model.</li>
+<li><strong>Copilot CLI</strong> (the agent built into Visual Studio) can target <strong>local models</strong> by setting a few env vars (model name, endpoint IP, API key) instead of cloud — directly answering "my company gives me 5,000 tokens/month and I burn them in an hour."</li>
+<li><strong>Cloud/data-center demo:</strong> a single <strong>Azure Xeon 6 VM (96 vCPUs, ~200 GB RAM)</strong> runs <strong>Qwen3 ~35B (3B active) MoE</strong> on <strong>CPU</strong>, exploiting <strong>Intel AMX</strong> for the matrix-multiply-heavy (&gt;80% MATMUL) transformer ops; <strong>MoE means only a fraction of params activate</strong>, making CPU inference viable.</li>
+<li>That cloud demo uses <strong>OpenClaw as the agent harness on Kubernetes</strong> (<code>oc status</code>), wired to the local LLM (served via <strong>SGLang</strong>), with <strong>GitHub CLI inside the harness</strong> to list issues and find the "riskiest files" for an issue — at <strong>~15–16 tok/s</strong> (→ <strong>~21 tok/s</strong> with <code>torch.compile</code>; speculative decoding/draft models coming to SGLang).</li>
+<li>The harness is <strong>swappable</strong> (OpenClaw, pi-dev, Hermes, etc.) and the K8s pods <strong>autoscale on CPU load</strong>, enabling multi-agent / multi-persona (PM, reviewer) workflows and nightly agent-to-agent jobs to complete a PR/issue.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-ai-spans-client-edge-cloud">Framing — AI spans client → edge → cloud</h3>
+<p>Eddie (Intel engineer, host) opens the partner session by reframing AI: it's "no longer just a single model running in a single place." Developers now build <strong>agentic systems that distribute across cloud, edge, and client</strong>. The session structure mirrors that spectrum with three demos:
+1. <strong>Client</strong> — lightweight agents running locally for fast, real-time interaction.
+2. <strong>Edge</strong> — distributed systems where multiple machines come together to handle more context/complexity.
+3. <strong>Cloud</strong> — multi-agent orchestration at enterprise scale on Azure.</p>
+<p>The through-line across all three: escaping the cost/latency of always-cloud token generation by running capable models on Intel silicon at each tier.</p>
+<h3 id="demo-1-ai-on-the-client-on-device-llm-on-the-intel-npu-jayen">Demo 1 — AI on the Client: on-device LLM on the Intel NPU (Jayen)</h3>
+<p><strong>The pain:</strong> Jayen opens with a show of hands — who's maxed out their monthly AI budget? (He has too, with side-eye from management.) The core problem: <strong>every generated token has a round-trip, latency, and a cost line item.</strong> Many features simply can't be built/shipped because "the math doesn't math."</p>
+<p><strong>The pitch:</strong> a model called <strong>"ion 1.0 instant"</strong> (auto-caption spelling; described as <strong>"released yesterday"</strong> and <strong>mentioned by Satya in the keynote</strong>). Context strongly suggests this is a <strong>Windows on-device small language model</strong> ("Windows instant on"). It runs <strong>entirely on the device</strong> — specifically on the <strong>Intel Panther Lake NPU</strong>, part of the <strong>Core Ultra Series 3</strong> (Jayen notes Panther Lake "just came out in January").</p>
+<p><strong>The setup:</strong> Left side of screen = a plain chat interface ("nothing special, something we can whip up in 30 minutes"). Right side = a <strong>systems panel</strong> showing <strong>NPU neural activity, CPU, memory</strong>. Jayen tells the audience to watch the right side — "that's where the real story is."</p>
+<p><strong>What the demo showed:</strong>
+- Prompt: <em>"What is the color of the sky?"</em> → answer "blue," with a <strong>very small NPU blip</strong>. The Panther Lake NPU offers <strong>~50 TOPS</strong> of AI throughput; this used <strong>&lt;20%</strong> of it.
+- Bigger prompt: <em>"Why is the color of the sky blue?"</em> → returned <strong>very fast</strong>, with visible NPU throughput, and <strong>memory barely moved</strong>.
+- Another prompt about a polluted sky (typed with a spelling error) still answered well — robustness to messy input.
+- Throughout: <strong>small/negligible CPU blip, no memory spike, no thermal throttle, no power cliff, no fans.</strong> The inference <strong>coexists</strong> with everything else the user has running.</p>
+<p><strong>Why it matters / the architecture point:</strong>
+- <strong>No NPU code was written.</strong> It's all <strong>OS-level APIs</strong>: he "got the AI model, put it on the NPU, and ran with it." Stack = <strong>OpenVINO at the bottom, Windows ML on top</strong>. <strong>Scheduling onto the NPU is the platform's job, not the developer's</strong> — "we build features, that's all we do."
+- Division of labor: <strong>Microsoft provides the model + API surface; Intel ensures it runs on-device/on-prem and is always available</strong> even with no network. Code runs "clean, fast, and cool, on hardware users already own."
+- <strong>Aggressive quantization</strong> on Panther Lake means you don't have to choose between a <strong>faster</strong> or a <strong>smaller</strong> model — you get <strong>both faster and smarter</strong>.
+- <strong>Offline/privacy:</strong> runs "in a hospital, on an airplane, anywhere the data does not get out of the network," and "runs for free for the 10,000th time."</p>
+<p><strong>Booth call-out:</strong> a reasoning game ("put in words, get a relation between the two") running on the Intel NPU — showcased as evidence the NPU reasons well.</p>
+<h3 id="demo-2-ai-on-the-edge-pooling-mini-pcs-over-thunderbolt-colin">Demo 2 — AI on the Edge: pooling mini-PCs over Thunderbolt (Colin)</h3>
+<p><strong>The hardware:</strong> three <strong>Asus NUC Pro 16</strong> mini-PCs running <strong>Intel Core Ultra Series 3</strong> processors, specifically the <strong>X7</strong> SKU. The <strong>"X"</strong> denotes Intel's <strong>big built-in graphics</strong> (great for gaming — "a LAN-party stack" — but used here for AI). Each node:
+- <strong>Arc B390</strong> integrated graphics (big iGPU built into the chip).
+- <strong>64 GB RAM</strong>.
+- Very fast <strong>LPDDR5X</strong> memory — Intel pushes OEMs to ship <strong>9200 MT/s or faster</strong>.
+- Draws <strong>~100 W</strong> each; stays cool.</p>
+<p><strong>The VRAM trick:</strong> Intel's free graphics driver (from intel.com) exposes a <strong>"Shared GPU NPU override"</strong> slider. Because the memory is so fast, you can reassign system RAM as VRAM — up to <strong>93%</strong>. The demo had it at ~81%, yielding <strong>51.3 GB of VRAM</strong> on a single 64 GB box (visible in Task Manager; requires a reboot to change). That alone lets a <strong>single</strong> node run the latest <strong>~28B Qwen</strong> models well.</p>
+<p><strong>Pooling for big models:</strong> Colin took it further by using <strong>llama.cpp's RPC functionality</strong> to connect the three nodes over IP, <strong>pooling their resources into ~150 GB of VRAM</strong> — enough to load a very large model. He emphasized the platform's <strong>flexibility</strong>:
+- A single system is already potent; cheap enough to "put one on every developer's desk" before they graduate to enterprise solutions.
+- For a team of ~10, you could load a <strong>28–35B</strong> model on each box and <strong>load-balance</strong> across them.
+- <strong>Total stack cost &lt; $7,000</strong> (individual box ~$2,300–$2,500 at top spec); <strong>low power, stays cool.</strong></p>
+<p><strong>Fully offline networking:</strong> no network backbone — the three nodes are linked with <strong>point-to-point Thunderbolt 4 / USB4 cables</strong>, giving <strong>20 Gbit/s</strong> links between each system. With llama.cpp he can load <strong>up to ~180 billion parameters</strong> across the stack. The live model was <strong>Qwen3-Next 80B (A3B)</strong> running at <strong>~16–18 tok/s</strong>.</p>
+<p><strong>Copilot CLI → local models:</strong> Colin shows <strong>Copilot CLI</strong> (the agent built into Visual Studio). Many don't realize you can <strong>point it at local models</strong>: set a few <strong>environment variables</strong> — model name, <strong>endpoint IP address</strong>, <strong>API key</strong> — and from then on Visual Studio uses (here) an <strong>80B-parameter</strong> model to check/work with your code. Payoff: <strong>free tokens.</strong> Directly addresses "my company gives me 5,000 tokens a month and I use them in an hour — this is your answer."</p>
+<p><strong>Microsoft MXC (announced "yesterday"):</strong> Colin enabled <strong>MXC — Microsoft eXecution Containers for agents</strong> — in Copilot CLI. Purpose: <strong>encapsulate/sandbox the code</strong> so the agent can't "run off and do things you don't want." You can configure:
+- which <strong>MCP servers</strong> it may access,
+- which <strong>file systems</strong> it may touch,
+- <strong>network in/out</strong>.
+The differentiator vs. other sandboxing tools: <strong>MXC is part of the Microsoft platform, so these settings can be enforced via policy</strong> (admins set them) — "developers may not be as happy, but it keeps them reined in and safe." Works with a <strong>local OR cloud</strong> model.</p>
+<p><strong>The sandbox demo (with demo gremlins):</strong> he asks the sandboxed agent to <em>"run a script that pauses 5 seconds."</em> The flow: the agent talks to the model, reasons ("I need PowerShell to run the script"), and because it's containerized a <strong>small execution container pops up on screen</strong> (an executable) then disappears when done. It ran slowly ("demo demons"), so he cancelled and instead showed the model's web interface, prompting <em>"why is the sky blue?"</em> to display <strong>token processing speed</strong> across the three nodes: <strong>~12 tok/s, boosting to ~16</strong> once warmed up (first run after bring-up is slower).</p>
+<p><strong>Takeaway:</strong> start thinking of small edge client PCs not just individually but <strong>distributed</strong> — low-cost, flexible, "free tokens" for experimentation and small-team development.</p>
+<h3 id="demo-3-ai-in-the-cloud-data-center-agentic-orchestration-on-azure-xeon-imran">Demo 3 — AI in the Cloud / Data Center: agentic orchestration on Azure Xeon (Imran)</h3>
+<p><strong>Framing — agentic vs. chat:</strong> Imran notes the billboards all over town about "agentic AI." Agentic AI moves far beyond chat: instead of typing queries and reading an LLM's text reply, today's tools <strong>move and execute commands on a private VM in a sandbox</strong>, return tool output, etc. The common thread is <strong>context size</strong>. Chat historically started around <strong>1,000–2,000 tokens</strong>; <strong>agentic systems start at a minimum of ~10,000 tokens.</strong> Bigger contexts strain GPU memory, which becomes a bottleneck — so why not <strong>reuse the private VMs you already have in your VPCs?</strong></p>
+<p><strong>The setup:</strong>
+- A single <strong>Azure VM</strong> with <strong>96 virtual CPUs</strong> and <strong>~200 GB RAM</strong>.
+- Hosting a local LLM: <strong>Qwen3 ~35B with 3B active parameters</strong> (a <strong>Mixture-of-Experts</strong> model), context window <strong>200,000 tokens</strong>.
+- <strong>Why CPU works:</strong> in an MoE model, <strong>only a fraction of parameters activate</strong> per execution. <strong>Xeon 6 CPUs have AMX</strong> (Advanced Matrix Extensions) built in, which <strong>accelerates matrix multiplication</strong>. Since <strong>&gt;80% of transformer operations are MATMUL</strong>, AMX directly improves <strong>prefill time and time-per-token (TTFT)</strong>.</p>
+<p><strong>The agent harness:</strong>
+- LLM served by <strong>SGLang</strong> ("SG lang") on the VM (visible serving on the left).
+- <strong>OpenClaw</strong> deployed as the <strong>agent harness on a Kubernetes-based system</strong>; status checked with <strong><code>oc status</code></strong> — up and running and mapped to the loaded Qwen3.6 35B / 200K-context model.
+- <strong>GitHub CLI</strong> is installed <strong>inside</strong> the OpenClaw instance so it can run the commands the LLM decides to call.</p>
+<p><strong>What the demo did:</strong>
+1. Asked OpenClaw to <strong>list issues in a private GitHub repo.</strong> Two-step process: (a) OpenClaw parses the command, sends it to the LLM to decide which tools to call; (b) the harness runs the <strong>GitHub CLI</strong> command, returns the result to the <strong>SGLang</strong> serving engine, which <strong>summarizes</strong> the output. Token rate <strong>~15–16 tok/s</strong>.
+   - Throughput levers: <strong><code>torch.compile</code></strong> → ~<strong>21 tok/s</strong> on the 96 cores; <strong>draft model + speculative decoding</strong> coming soon to SGLang (already available in <strong>vLLM</strong> and other engines).
+2. Asked OpenClaw to <strong>create a list of the "riskiest files" for a specific issue</strong> — same loop: translate instruction → run GitHub CLI to extract info → summarize. Result: only <strong>one file</strong> was changed in that issue (so it surfaced as the risky/relevant file).</p>
+<p><strong>Why this architecture (the payoff):</strong>
+- The harness is <strong>easily swappable</strong> — OpenClaw could be replaced by <strong>pi-dev, Hermes, or any other harness</strong>.
+- <strong>Autoscaling on Kubernetes:</strong> start with a couple of replicas (demo had ~2); as <strong>CPU utilization rises, replicas auto-increase.</strong>
+- Enables <strong>multi-agent / multi-persona</strong> workflows: spin up agents acting as <strong>PM, reviewer</strong>, etc., all on a single box, to run an <strong>end-to-end workflow</strong> — or push a <strong>nightly job</strong> where agents communicate with each other to complete the coding for a given PR/issue.
+- All on a <strong>single Xeon-hosted Azure VM</strong>, ideal where you have <strong>spare CPU cycles</strong> and want <strong>private agentic AI</strong> — "not heavy on the pocket."</p>
+<h3 id="qa">Q&amp;A</h3>
+<ul>
+<li><strong>Box cost?</strong> ~<strong>$2,500</strong> individually at highest spec (~$2,300 typical); the <strong>whole 3-node stack ≈ $7,000</strong>.</li>
+<li><strong>How is the model/workload scheduled across the stack?</strong> A <strong>single llama.cpp endpoint</strong>. Colin <strong>sFards/shards the model into three</strong> and pushes it out; the <strong>biggest network usage is the initial load</strong> (faster network = faster assembly). After that, each node runs an <strong>RPC server</strong> and <strong>llama.cpp handles routing</strong> layers/work to whichever machine has them. You then point any agents at the <strong>OpenAI-compatible endpoint</strong> llama.cpp exposes. llama.cpp breaks the model into layers across nodes ("all very off-the-shelf").</li>
+<li><strong>Compile note:</strong> he compiles <strong>llama.cpp</strong> (2–3 terminal lines), enabling the <strong><code>--rpc</code></strong> flag and using the <strong>Vulkan backend</strong> (because he's driving the iGPU directly), which works well for this multi-node case.</li>
+<li><strong>Will OpenVINO get similar capability to what llama.cpp does here?</strong> "It's coming." On <strong>individual machines, OpenVINO beats most of this</strong>; but for the <strong>multi-node RPC</strong> setup OpenVINO "needs a little work — it gets confused about the memory." On a <strong>single machine, OpenVINO is a lot faster than Vulkan.</strong></li>
+</ul>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Intel Core Ultra Series 3</strong> — Intel's client CPU line used across all demos (includes NPU + Arc iGPU).</li>
+<li><strong>Intel Panther Lake NPU</strong> — the NPU in Core Ultra Series 3 (~50 TOPS); ran the on-device LLM; "came out in January."</li>
+<li><strong>"ion 1.0 instant" / Windows "instant on" small LM</strong> — on-device small language model (auto-caption garbled name; said to be "released yesterday" and referenced by Satya in the keynote) running entirely on the Intel NPU.</li>
+<li><strong>OpenVINO</strong> — Intel's inference runtime; the bottom layer enabling NPU execution (and faster single-machine inference).</li>
+<li><strong>Windows ML</strong> — Microsoft's on-device ML API layer sitting on top of OpenVINO; gives developers the model + API surface without writing NPU code.</li>
+<li><strong>Intel Arc B390 (integrated graphics)</strong> — the "big" iGPU in the Core Ultra Series 3 <strong>X7</strong> SKUs used in the NUCs; driven via Vulkan for AI.</li>
+<li><strong>Asus NUC Pro 16</strong> — mini-PC used three-up for the pooled edge demo (64 GB RAM each, ~100 W).</li>
+<li><strong>"Shared GPU NPU override" (Intel graphics driver slider)</strong> — lets you assign up to 93% of system RAM as VRAM (free driver from intel.com).</li>
+<li><strong>LPDDR5X memory (9200+ MT/s)</strong> — the fast memory Intel requires OEMs to ship, enabling the large VRAM allocation.</li>
+<li><strong>llama.cpp</strong> — local inference engine; its <strong>RPC mode</strong> + <strong>Vulkan backend</strong> pool the three NUCs into one ~150 GB-VRAM endpoint and expose an OpenAI-compatible API.</li>
+<li><strong>Thunderbolt 4 / USB4</strong> — 20 Gbit/s point-to-point cabling used to network the three nodes with no switch/backbone.</li>
+<li><strong>Copilot CLI</strong> — the agent built into Visual Studio; can be pointed at local models via env vars (model, endpoint IP, API key).</li>
+<li><strong>Microsoft MXC (Microsoft eXecution Containers)</strong> — execution/sandbox containers for agents, controlling MCP-server/file-system/network access, enforceable via admin policy ("announced yesterday").</li>
+<li><strong>MCP servers</strong> — accessible tools an agent can be granted (or denied) under MXC policy.</li>
+<li><strong>Azure VM (Xeon 6, 96 vCPU, ~200 GB RAM)</strong> — the cloud host running the data-center demo.</li>
+<li><strong>Intel Xeon 6 + AMX (Advanced Matrix Extensions)</strong> — server CPU + built-in matrix-multiply acceleration making CPU LLM inference viable (&gt;80% of transformer ops are MATMUL).</li>
+<li><strong>Qwen3 models</strong> — the open models used: ~<strong>28B</strong> (single NUC), <strong>Qwen3-Next 80B (A3B)</strong> (pooled NUCs, ~16–18 tok/s), and <strong>Qwen3 ~35B / 3B-active MoE</strong> with 200K context (Azure Xeon).</li>
+<li><strong>Mixture-of-Experts (MoE)</strong> — model architecture where only a fraction of parameters activate per token — key to running large models on CPU.</li>
+<li><strong>SGLang</strong> — LLM serving engine used in the cloud demo (torch.compile → ~21 tok/s; speculative decoding "coming soon").</li>
+<li><strong>vLLM</strong> — referenced as already supporting draft-model speculative decoding.</li>
+<li><strong>OpenClaw</strong> — the agent harness on Kubernetes in the cloud demo (<code>oc status</code>), wired to the local LLM + GitHub CLI.</li>
+<li><strong>GitHub CLI</strong> — installed inside the OpenClaw harness to execute repo commands (list issues, find riskiest files).</li>
+<li><strong>pi-dev / Hermes</strong> — alternative agent harnesses mentioned as drop-in replacements for OpenClaw in the cloud setup.</li>
+<li><strong>Kubernetes</strong> — orchestrates the OpenClaw harness pods and provides CPU-load-based autoscaling for multi-agent workflows.</li>
+<li><strong>Satya Nadella keynote</strong> — referenced as where the on-device model was announced "yesterday."</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>"ion 1.0 instant" / Windows on-device small LM</strong> — described as <strong>released the day before</strong> the session and <strong>mentioned by Satya in the Build keynote</strong>; runs entirely on the Intel Panther Lake NPU. <em>(Status: newly released; exact product name uncertain from auto-captions.)</em></li>
+<li><strong>Microsoft MXC (Microsoft eXecution Containers for agents)</strong> — <strong>announced "yesterday"</strong>; available to <strong>start experimenting with today</strong> via Copilot CLI. Sandboxes agents (MCP/file-system/network controls) with <strong>policy enforcement</strong> as the key differentiator. <em>(Status: newly announced, usable now.)</em></li>
+<li><strong>Intel Panther Lake (Core Ultra Series 3)</strong> — noted as <strong>shipping since January</strong>, enabling aggressive quantization on the NPU. <em>(Status: GA / shipping.)</em></li>
+<li><strong>Copilot CLI → local model targeting</strong> — highlighted as a capability (point the VS-built-in agent at local endpoints via env vars). <em>(Status: available now; not a new announcement per se.)</em></li>
+<li><strong>SGLang speculative decoding / draft models</strong> — <strong>"coming soon"</strong> to SGLang (already in vLLM and other engines). <em>(Status: roadmap.)</em></li>
+<li><strong>OpenVINO multi-node RPC pooling</strong> — parity with llama.cpp's RPC pooling is <strong>"coming"</strong> (currently has memory-handling issues across nodes). <em>(Status: roadmap.)</em></li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ol>
+<li><strong>On-device NPU chat (Jayen):</strong> "ion 1.0 instant" running on the Intel Panther Lake NPU of a Core Ultra Series 3 laptop. Split screen: chat on the left, live systems panel (NPU/CPU/memory) on the right. Prompts about the sky's color showed <strong>fast responses, &lt;20% NPU usage (~50 TOPS total), negligible CPU/memory, no thermal/fan/power impact.</strong> <strong>Proved:</strong> capable LLM inference can run fully on-device, offline, "for free," with zero NPU code (just OS-level OpenVINO + Windows ML APIs) — coexisting with the user's other workloads.</li>
+<li><strong>Pooled mini-PC stack (Colin):</strong> three Asus NUC Pro 16 (Core Ultra X7, Arc B390, 64 GB each) linked by point-to-point Thunderbolt 4 (20 Gbit/s), using the driver's "Shared GPU NPU override" to expose ~51 GB VRAM per box and <strong>llama.cpp RPC to pool ~150 GB VRAM</strong>, running <strong>Qwen3-Next 80B at ~16–18 tok/s fully offline</strong> for <strong>&lt;$7,000</strong>. Also demoed <strong>Copilot CLI pointed at the local 80B model</strong> and <strong>MXC sandboxing</strong> (a containerized agent spinning up a visible execution container to run a PowerShell "pause 5s" script — hit demo gremlins, then showed ~12→16 tok/s via the model's web UI). <strong>Proved:</strong> cheap, low-power edge PCs can be pooled to run large models locally for "free tokens," with policy-enforceable agent sandboxing.</li>
+<li><strong>Cloud Xeon agentic orchestration (Imran):</strong> a single Azure Xeon 6 VM (96 vCPU, ~200 GB RAM) running <strong>Qwen3 ~35B / 3B-active MoE (200K context)</strong> on <strong>CPU via AMX</strong>, served by <strong>SGLang</strong>, with <strong>OpenClaw on Kubernetes</strong> as the agent harness + GitHub CLI. Live: listed issues in a private GitHub repo and identified the <strong>"riskiest files" for an issue</strong> (found 1 changed file) at <strong>~15–16 tok/s</strong> with <strong>autoscaling replicas</strong>. <strong>Proved:</strong> private, cost-effective agentic AI can run on spare CPU cloud capacity (no GPU), with swappable harnesses and multi-agent/multi-persona autoscaling.</li>
+</ol>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>~50 TOPS</strong> — Intel Panther Lake NPU AI throughput; on-device LLM used <strong>&lt;20%</strong> of it.</li>
+<li><strong>~150 GB VRAM</strong> — pooled across <strong>3 NUCs</strong> via llama.cpp RPC; supports up to a <strong>~180B-parameter</strong> model.</li>
+<li><strong>51.3 GB VRAM</strong> allocated from a <strong>64 GB</strong> box via the driver's GPU/NPU override (up to <strong>93%</strong> of RAM assignable as VRAM).</li>
+<li><strong>LPDDR5X @ 9200+ MT/s</strong> — the fast memory Intel mandates from OEMs.</li>
+<li><strong>Thunderbolt 4 / USB4 @ 20 Gbit/s</strong> point-to-point links; <strong>~100 W</strong> per NUC.</li>
+<li><strong>&lt; $7,000</strong> total for the 3-node stack (~$2,300–$2,500 per box); <strong>Qwen3-Next 80B at ~16–18 tok/s</strong>.</li>
+<li><strong>96 vCPU + ~200 GB RAM</strong> Azure Xeon 6 VM; <strong>Qwen3 35B / 3B active</strong>, <strong>200K context</strong>; <strong>~15–16 tok/s</strong> (→ <strong>~21 tok/s</strong> with <code>torch.compile</code>).</li>
+<li>Agentic context sizes start at <strong>~10,000 tokens</strong> vs. chat's <strong>1,000–2,000</strong>; <strong>&gt;80%</strong> of transformer ops are <strong>MATMUL</strong> (why AMX helps).</li>
+<li><em>"My company gives me 5,000 tokens a month and I use those in an hour. This is your answer."</em> — Colin, on local models as the fix for token budgets.</li>
+<li><em>"You get a faster and a smarter model and you get both."</em> — Jayen, on Panther Lake quantization.</li>
+<li><em>"It runs for free for the 10,000th time."</em> — Jayen, on on-device inference economics.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Verify the real name/SKU of "ion 1.0 instant" (likely a Windows on-device small LM announced in the Build keynote) and check Windows ML + OpenVINO NPU sample code.</li>
+<li>Spin up <strong>Copilot CLI → local model</strong> via env vars (model / endpoint IP / API key) against a llama.cpp OpenAI-compatible endpoint.</li>
+<li>Experiment with <strong>MXC</strong> agent sandboxing (MCP/file/network controls + policy) once docs are available.</li>
+<li>Try <strong>llama.cpp RPC pooling</strong> across 2–3 machines over Thunderbolt/USB4; compile with <code>--rpc</code> + Vulkan backend.</li>
+<li>Test <strong>CPU LLM inference on Azure Xeon 6 (AMX)</strong> with an MoE model (Qwen3 35B/3B-active) served by SGLang; measure tok/s with <code>torch.compile</code>.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>Exact product name + availability of the on-device model; is it OS-bundled or a separate download?</li>
+<li>MXC GA timeline and which Copilot surfaces support it beyond Copilot CLI?</li>
+<li>OpenVINO multi-node RPC parity ETA vs. llama.cpp?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>On-prem / air-gapped (hospital, regulated) AI deployments where data can't leave the network.</li>
+<li>Cost control on AI token budgets for dev teams (local/edge inference for "free tokens").</li>
+<li>Private agentic AI on existing Azure CPU capacity (cost-effective, no GPU).</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+<li>Microsoft Build 2026 — Intel partner session (BRKSP92)</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="BRKSP91.html"><span class="pager-dir">← Previous</span><span class="pager-code">BRKSP91</span><span class="pager-title">Turn foundation models into production AI on Microsoft Foundry</span></a>
+    <a class="pager pager-next" href="BRKSP94.html"><span class="pager-dir">Next →</span><span class="pager-code">BRKSP94</span><span class="pager-title">Orchestrate specialist agents with NVIDIA Nemotron models on Foundry</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

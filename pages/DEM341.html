@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEM341 — Any agent, any cloud: Standardized tracing with Foundry+OpenTelemetry</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEM341</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=WprbDyANqy0" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Any agent, any cloud: Standardized tracing with Foundry+OpenTelemetry</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Hansi (Software Engineering Manager, Foundry Observability), Nikhil Kumar (Engineer, Foundry)</span>
+      <span class="meta-item">⏱️ 24m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="observability">Observability</span><span class="chip" data-tag="opentelemetry">Opentelemetry</span><span class="chip" data-tag="foundry">Foundry</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="tracing">Tracing</span><span class="chip" data-tag="evaluation">Evaluation</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Hansi — Software Engineering Manager, Foundry Observability team; Nikhil Kumar ("Nikkumar") — Engineer, Foundry<br>
+<strong>Duration:</strong> ~24 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=WprbDyANqy0">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Enterprises rarely run all their agents on one cloud, one language, or one framework — the production reality is a heterogeneous mess of Foundry prompt agents, LangGraph on AWS, Google ADK on GCP, and Copilot SDK as a catch-all. When something goes wrong, teams can't easily answer "which agent did this, why, and how do we stop it?" This session shows how <strong>Microsoft Foundry observability</strong> unifies tracing across <em>any agent, any cloud</em> — not by rewriting agents into a single framework, but by adopting <strong>OpenTelemetry GenAI semantic conventions</strong> with just a few lines of initialization code. A live demo stitched together four agents (Foundry prompt agent, ADK on GCP, LangGraph on AWS, and a Microsoft Agent Framework orchestrator hosted on Foundry, plus a Copilot SDK fallback) into a single unified end-to-end trace, then walked through the full operational loop: <strong>debug → monitor → evaluate → optimize → fleet-level control</strong>, all on one observability plane backed by Azure Monitor / Application Insights.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>The core problem is heterogeneity.</strong> Real enterprises run agents across multiple clouds, languages, and frameworks (different teams pick FoundryPrompt agents, LangGraph/AWS, ADK/GCP, Copilot SDK) → different metrics, different dashboards, no single pane of glass.</li>
+<li><strong>Foundry observability is the unifying answer</strong> — it lets you debug, monitor, and evaluate any agent regardless of framework or hosting location, in one place.</li>
+<li><strong>OpenTelemetry is the bridge.</strong> You don't rewrite agents; you adopt <strong>OpenTelemetry instrumentation</strong> (a few lines of code) and keep your existing agent logic unchanged.</li>
+<li><strong>GenAI semantic conventions</strong> are a <em>common telemetry schema</em> across frameworks — consistent span attributes for agent names, model calls, and key events. Microsoft heavily contributes to this standard.</li>
+<li><strong>The "Microsoft OpenTelemetry distro"</strong> is a unified SDK that auto-instruments most agent frameworks across multiple programming languages. Foundry-native agents have it built in (zero code change); external agents need just a few lines of init code.</li>
+<li><strong>Unified traces "just work" across clouds</strong> — because every sub-agent emits OpenTelemetry traces, Foundry stitches them into one end-to-end trace even when they run on GCP, AWS, and Foundry simultaneously.</li>
+<li><strong>Two agent flavors on Foundry:</strong> <em>no-code</em> <strong>Prompt Agents</strong> (configure in the portal) and <em>pro-code</em> <strong>Hosted Agents</strong> (submit code/container; Foundry manages and runs it). Hosted agents shine for enterprise: VM isolation, Entra agent identity, long-running operations.</li>
+<li><strong>Orchestrator + specialists pattern.</strong> A Foundry hosted orchestrator (built with Microsoft Agent Framework) routes questions by city to specialist sub-agents on different clouds, with a <strong>Copilot SDK fallback</strong> for cities with no specialist.</li>
+<li><strong>It's an operational loop, not just viewing traces.</strong> The real value: answer production questions fast — <em>did routing pick the right sub-agent? did retrieval return weak context causing hallucination? where did latency come from (cold start / network / model)?</em></li>
+<li><strong>Built-in monitoring</strong> shows live traffic patterns, latency distribution, estimated cost, token usage, scheduled evals, scheduled red teams, error rate, and tool-call success — surfacing regressions (error rate up, tool-call success down).</li>
+<li><strong>Fleet-level "Operate" view</strong> shows all agents in a project with active security alerts (malicious URLs, jailbreak attempts — on by default), evaluation-based alerts, agent success rate, and volume over time.</li>
+<li><strong>Evaluation closes the loop.</strong> Set up evaluators (e.g., intent resolution, task adherence) on traces via the Foundry project client; failed evals link straight into the trace view to diagnose <em>why</em> (e.g., a "concise comparison" that didn't actually compare both cities).</li>
+<li><strong>Foundry powered by Azure Monitor &amp; Application Insights</strong> — traces stored in Azure Monitor, so existing Azure Monitor users keep their familiar features for non-agentic workloads too.</li>
+<li><strong>Meet customers where they are:</strong> beyond OpenTelemetry GenAI conventions, Foundry also supports <strong>OpenInference</strong> and <strong>OpenLLMetry</strong> formats for trace viewing and evaluation.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="the-production-reality-heterogeneous-agent-setups">The production reality: heterogeneous agent setups</h3>
+<p>The speaker (a software engineering manager on the Foundry observability team) opened with a show of hands: many in the room build or operate agents in production, but almost <strong>no one</strong> had <em>all</em> their agents running on the same cloud provider, same programming language, and same agent framework ("one lucky person"). This sets up the central thesis.</p>
+<p>What Microsoft hears from customers repeatedly is that big enterprises have a <strong>heterogeneous agent setup</strong> that emerges organically:
+- A <strong>product team</strong> picks <strong>Foundry prompt agents</strong> because they're easy to iterate on in the portal.
+- A <strong>backend team</strong> picks <strong>LangGraph on AWS</strong> because that's the framework they know best.
+- A <strong>third team</strong> adopts <strong>ADK (Agent Development Kit) from Google</strong> because they're already on GCP / Gemini.
+- Then someone asks for <strong>Copilot SDK</strong> as a catch-all because it's the new thing they heard about.</p>
+<p>Very quickly this becomes a mess: <strong>different agent frameworks, different hosting stacks, different metrics, different dashboards.</strong> When a bad response surfaces in production, leadership ("VP") starts asking scary questions:
+- <em>Which agent is that?</em>
+- <em>Why did the agent return this bad answer?</em>
+- <em>How do we prevent bad behaviors in the future?</em></p>
+<p>The session's promise: <strong>answer all these in one place — Foundry observability — without rewriting agents into a single framework.</strong> The method is adopting <strong>OpenTelemetry instrumentation with a few lines of code, no change to existing agent logic.</strong> Everything demoed is live and reproducible from a repo shared at the end.</p>
+<h3 id="demo-1-a-simple-foundry-prompt-agent-the-xian-travel-expert">Demo 1 — A simple Foundry Prompt Agent (the Xi'an travel expert)</h3>
+<p>The speaker grew up in <strong>Xi'an</strong>, a famous tourist destination in China, and often gets asked for travel recommendations — so they built a <strong>travel expert agent</strong> using Foundry's no-code offering, <strong>Prompt Agent</strong>, inside the <strong>Microsoft Foundry portal</strong> using the <strong>Playground</strong> view (lets you quickly configure and test agents).</p>
+<p>How it was built:
+- Picked a <strong>model</strong> for the agent.
+- Gave it a <strong>system prompt</strong> (can be multi-language).
+- <strong>Secret sauce:</strong> uploaded <strong>travel notes as a PDF</strong> (with pictures, links, etc.) into Foundry as an <strong>index</strong>, so the agent can retrieve from those notes when needed — a <strong>classic RAG (Retrieval-Augmented Generation) pattern</strong>.</p>
+<p>Sample query: <em>"Plan a three-day trip in Xi'an for two people, focus on history and food."</em> The agent returned a detailed day-by-day itinerary — famous places to visit (in multiple languages) and restaurant recommendations. "We're in 2026, this shouldn't be a surprise" — the interesting part is <strong>how</strong> the agent got there.</p>
+<h3 id="foundry-traces-view-understanding-agent-behavior">Foundry traces view — understanding agent behavior</h3>
+<p>Switching to the <strong>Traces</strong> view shows a list of all previous conversations with the agent, with dimensions like <strong>token cost, tokens in, tokens out, estimated cost</strong>, plus sort and filter. Drilling into a specific trace gives a clear behavioral view with key per-conversation metrics:
+- <strong>Number of spans</strong>
+- <strong>Number of chat calls</strong>
+- <strong>Number of tool calls</strong>
+- <strong>Latency</strong>
+- <strong>Token consumption</strong></p>
+<p>The <strong>tree view</strong> structure:
+- Everything is rooted under a single <strong><code>invoke agent</code> span</strong> containing the <strong>system message</strong>, the <strong>customer input</strong>, and the <strong>agent output</strong>.
+- Following it is an <strong><code>execute tool</code> span</strong> the agent uses to look up the travel notes.
+- The <strong>metadata tab</strong> on the tool span reveals the <strong>query</strong> the agent used to retrieve content from the PDF, and the <strong>final answer/content</strong> the tool returned to the agent.
+- Everything is ultimately fed into the <strong>LLM for the final answer.</strong></p>
+<p>This is exactly where you'd start debugging <strong>hallucination or groundedness problems</strong> — inspect what the retrieval tool actually returned vs. what the agent claimed.</p>
+<p>Extra UX features:
+- <strong>Replay button</strong> with adjustable speed — watch how the agent actually executed, step by step.
+- <strong>User view</strong> — experience exactly what an end user would see from the agent.</p>
+<p>The takeaway from Demo 1: Foundry gives a very clear view to deeply understand agent behavior and debug issues — but the natural question is, <em>does this only work for Foundry-native agents? What about agents running elsewhere?</em></p>
+<h3 id="demo-2-external-agents-across-clouds-the-multi-cloud-reveal">Demo 2 — External agents across clouds (the multi-cloud reveal)</h3>
+<p>To answer that, the speaker brought in colleague <strong>Nikhil Kumar</strong> ("Nikkumar"). Together they built parallel travel agents to prove Foundry observability works for <em>any</em> agent, <em>any</em> cloud:</p>
+<ul>
+<li><strong>Bangalore travel agent</strong> (Kumar's hometown) — runs on <strong>GCP using Google's ADK</strong>, registered on Foundry as an <strong>external agent</strong>. After registration, it gets the <em>same rich trace experience</em>.</li>
+<li>Proof it's real: Kumar sent a live request <strong>via curl</strong> to the agent running on <strong><code>run.app</code> (Google Cloud Run / GCP)</strong>. The response came back (with the city in it) after a brief network delay — confirming a real agent on GCP, nothing faked, full HTTP request/response.</li>
+<li><strong>Seattle travel agent</strong> (both presenters live in Seattle) — built with <strong>LangGraph, running on AWS</strong>. Kumar sent a curl request asking about Seattle.</li>
+</ul>
+<p>The orchestration layer:
+- A <strong>fourth agent acts as an orchestrator</strong>, built with <strong>Microsoft Agent Framework</strong>, <strong>deployed on Foundry as a hosted agent</strong>.
+- It <strong>routes intelligently based on the city</strong> asked about.
+- <strong>All agents emit OpenTelemetry traces.</strong></p>
+<p>The big multi-cloud demo: a single user message asked about <strong>Seattle, Bangalore, and Lisbon</strong>. Lisbon had no dedicated agent, so a <strong>Copilot SDK fallback</strong> handled cities without a specialized agent / without data. The orchestrator invoked multiple agents across multiple clouds in one flow.</p>
+<p>In the <strong>Traces</strong> tab, an earlier example trace (asking about <strong>Seattle and Berlin</strong>) showed:
+- The <strong><code>invoke agent</code> span</strong> at the root.
+- A <strong>city router</strong> deciding to route to the <strong>Bangalore and Seattle</strong> agents.
+- The <strong>Seattle specialist</strong> invoked to get Seattle details.
+- The <strong>Copilot fallback</strong> handling <strong>Berlin</strong> data.</p>
+<h3 id="the-birds-eye-view-how-unified-tracing-actually-works">The bird's-eye view — how unified tracing actually works</h3>
+<p>Recap architecture (presented as a slide):
+1. A <strong>user asks a question</strong> to the <strong>orchestrator</strong>.
+2. The orchestrator runs as a <strong>Foundry hosted agent</strong> (pro-code).
+3. It <strong>routes the question to the right sub-agent</strong> — the specialist for that specific city.
+4. Each <strong>sub-agent runs on a different cloud with a different agent framework</strong> (Foundry / GCP+ADK / AWS+LangGraph).
+5. <strong>Because all of them emit OpenTelemetry traces, Foundry observability stitches together the end-to-end execution</strong> into one <strong>unified trace</strong>.</p>
+<p>Net effect: even though agents run across multiple clouds, <strong>it feels like one system.</strong></p>
+<h3 id="key-ingredient-1-microsofts-agent-platform-foundry">Key ingredient #1 — Microsoft's agent platform (Foundry)</h3>
+<p>Foundry offers two agent styles:
+- <strong>No-code: Foundry Prompt Agents</strong> — configured in the portal (the Xi'an demo). Fast to iterate.
+- <strong>Pro-code: Foundry Hosted Agents</strong> — you submit your <strong>code or container</strong> to Foundry; Foundry <strong>manages and runs</strong> it, giving you <strong>full control of agent behavior</strong> (the orchestrator was a hosted agent).</p>
+<p><strong>Why hosted agents shine for enterprise:</strong>
+- <strong>Enterprise-grade VM isolation</strong>
+- <strong>Agent identity from Entra</strong> (Entra ID) — guarantees security
+- <strong>Long-running operation routines</strong> and other enterprise-friendly features</p>
+<p>Pro-code or no-code is your choice — "Foundry's got you covered." The full lifecycle:
+- <strong>Build</strong> your agent (code + prompts) and <strong>check into GitHub</strong>.
+- <strong>Run</strong> it in Foundry with built-in <strong>observability, evaluation, and optimization</strong>.
+- <strong>Distribute</strong> your agents to users (referenced as <strong>M365 Copilot</strong> — caption garbled as "M3C5").</p>
+<h3 id="key-ingredient-2-opentelemetry-genai-semantic-conventions">Key ingredient #2 — OpenTelemetry GenAI semantic conventions</h3>
+<p>Think of this as a <strong>common telemetry schema across frameworks</strong> — whether it's a Foundry prompt agent, a LangGraph app, or an ADK service, they all <strong>emit spans with consistent attributes</strong> for:
+- <strong>Agent names</strong>
+- <strong>Model calls</strong>
+- <strong>Key events</strong></p>
+<p>This consistency gives <strong>strong compatibility with downstream observability and evaluation features</strong> on Foundry. <strong>Microsoft heavily contributes to this standard</strong> and actively adds new scenarios to support.</p>
+<h3 id="key-ingredient-3-the-microsoft-opentelemetry-distro-the-code-change">Key ingredient #3 — The Microsoft OpenTelemetry distro (the code change)</h3>
+<p>The <strong>Microsoft OpenTelemetry distro</strong> is a <strong>unified SDK that can instrument most agent frameworks across multiple programming languages.</strong>
+- <strong>Foundry-native agents</strong> have the distro instrumentation <strong>built in → zero code changes.</strong>
+- <strong>External agents</strong> (outside Foundry) use the distro's <strong>auto-instrumentation</strong> — just a <strong>few lines of initialization code.</strong></p>
+<p>Code walkthrough (in <strong>VS Code</strong>) — to instrument an external agent you:
+1. <strong>Enable OpenTelemetry</strong> and wire it up with <strong>Azure Monitor</strong>.
+2. <strong>Pass the Azure Monitor connection string.</strong>
+3. <strong>Tell it which framework</strong> you're using.
+4. <strong>Give it the agent ID</strong> — <em>the same agent ID used to register the agent on Foundry</em>, so Foundry can <strong>pull up the traces and correlate them.</strong></p>
+<p>That's it — no changes to the agent's business logic.</p>
+<h3 id="storage-compatibility-azure-monitor-underneath">Storage &amp; compatibility — Azure Monitor underneath</h3>
+<p><strong>Foundry observability is powered by Azure Monitor and Azure Application Insights.</strong> All traces are <strong>stored in Azure Monitor</strong>. Practical benefit: if you're an <strong>existing Azure Monitor user</strong> (e.g., for non-agentic workflows/architecture), you can <strong>keep using familiar Azure Monitor features</strong> alongside agent traces.</p>
+<h3 id="why-it-matters-in-production-the-operational-loop">Why it matters in production — the operational loop</h3>
+<p>Seeing all traces is great, but the <strong>real value is operational</strong>: debug issues, monitor patterns, and evaluate quality <strong>in one workflow</strong>. Traces are only useful if they <strong>answer questions quickly in production</strong>, e.g.:
+- Did the <strong>routing agent route to the right sub-agents</strong>?
+- Did <strong>retrieval return weak context</strong> that might have caused a hallucination?
+- Did <strong>latency come from a cold start, slow network, or the model itself</strong>?
+- Over time, is there a <strong>trend that agent behavior is shifting / drifting</strong>?</p>
+<h3 id="monitor-tab">Monitor tab</h3>
+<p>The <strong>Monitor</strong> tab surfaces:
+- <strong>Live traffic patterns</strong>
+- <strong>Latency distribution</strong>
+- A few <strong>evaluation results</strong>
+- <strong>Estimated cost</strong> and <strong>total token usage</strong>
+- <strong>Types of evaluations</strong> that ran on the agent
+- <strong>Scheduled evals</strong> and <strong>scheduled red teams</strong>
+- <strong>Operational metrics</strong> further down — including <strong>error rate</strong> (presenter noticed it <em>went up</em> and flagged it for follow-up)
+- <strong>Scheduled evaluation results</strong> and <strong>human-evaluator</strong> input
+- <strong>Tool-call success rate</strong> (noticed it <em>went down recently</em> — flagged to investigate)</p>
+<p>This is the "monitor patterns / catch regressions" half of the loop.</p>
+<h3 id="operate-tab-fleet-level-visibility">Operate tab — fleet-level visibility</h3>
+<p>The <strong>Operate</strong> tab (the "fleet view") lets you look at <strong>all agents in a particular Foundry project</strong>:
+- <strong>Active alerts</strong> — if you have an agent on Foundry, a <strong>security workflow runs by default</strong>, alerting on things like <strong>malicious URLs detected</strong> or a <strong>jailbreak attempt</strong> on your prompt.
+- <strong>Custom evaluation alerts</strong> — set alerts on evaluation results, so if an agent <strong>stops working as intended</strong>, you're notified.
+- <strong>Fleet metrics</strong> — <strong>agent success rate</strong>, <strong>agent volume</strong>, <strong>most-used agent over time</strong>, etc.</p>
+<h3 id="evaluation-closing-the-loop-on-quality">Evaluation — closing the loop on quality</h3>
+<p>Set up evaluations <strong>on traces</strong> using the <strong>Foundry project client</strong>, selecting which <strong>evaluator</strong> to add to the <strong>testing criteria</strong> (example used: <strong>intent resolution evaluator</strong>), then run on a specific <strong>agent ID</strong>. After creating an eval you get <strong>eval results</strong>.</p>
+<p>Walkthrough of a real failure:
+- A trace <strong>didn't work well</strong> → click it → taken <strong>directly into the trace view</strong> of that agent.
+- The <strong>user's intent</strong>: compare <strong>Bengaluru and Barcelona</strong> for an after-work evening, keeping the plan <strong>concise</strong>.
+- The failing metric was <strong>task adherence</strong> — the user asked for a <strong>concise comparison</strong>, but the response <strong>did not cover both cities</strong>.
+- Inspecting the response: "there is no comparison… there is description about both of them." The presenter inferred the <strong>evaluator was looking for a table.</strong></p>
+<p>This demonstrates the diagnostic power: eval failure → jump to trace → see exactly what intent was, what failed, and why.</p>
+<h3 id="the-whole-loop-summarized">The whole loop, summarized</h3>
+<p>The simple loop the presenters wanted to leave the audience with:
+1. <strong>Instrument</strong> your code with OpenTelemetry.
+2. <strong>Debug</strong> in production with live traffic.
+3. <strong>Evaluate</strong> quality.
+4. <strong>Optimize</strong> the agent.
+5. Gain <strong>fleet-level visibility</strong> to manage and control agents.
+…all on <strong>one observability plane.</strong></p>
+<h3 id="bonus-foundry-features-mentioned-not-deep-dived-due-to-time">Bonus Foundry features (mentioned, not deep-dived due to time)</h3>
+<ul>
+<li><strong>Rubric evaluators</strong> — create a customized evaluation plan tailored to your agent, solving the <strong>evaluation cold-start problem</strong>.</li>
+<li><strong>Agent optimization</strong> — improves your agent by <strong>fine-tuning the system prompt</strong>, <strong>trying different models</strong>, and <strong>leveraging new tools</strong>.</li>
+<li><strong>A65 / next-gen model opt-in</strong> (caption garbled — likely a future Azure/Foundry model offering): for customers who want to leverage or opt in, <strong>Foundry supports it natively</strong>.</li>
+<li><strong>Alternative trace formats:</strong> while Microsoft recommends OpenTelemetry GenAI semantic conventions, it <strong>meets customers where they are</strong> by also supporting <strong>OpenInference</strong> and <strong>OpenLLMetry</strong> for <strong>trace viewing and trace evaluation</strong> — for customers not ready to switch trace formats.</li>
+</ul>
+<h3 id="closing">Closing</h3>
+<p>The presenters pointed to <strong>recordings of other Foundry sessions</strong> and <strong>Foundry's public documentation</strong>, plus a <strong>QR code linking to the demo repo</strong> with all the agents showcased. Closing message: <em>"Build what you want, run it where you need, and observe it all in one place. </em><em>Any agent, any cloud, one observability plane.</em><em>"</em></p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Microsoft Foundry</strong> — the AI agent platform / portal at the center of the talk.</li>
+<li><strong>Microsoft Foundry Observability</strong> — unified tracing, monitoring, and evaluation plane.</li>
+<li><strong>Foundry Prompt Agents</strong> — no-code agents configured in the portal.</li>
+<li><strong>Foundry Hosted Agents</strong> — pro-code agents (submit code/container; Foundry runs them); enterprise VM isolation, Entra agent identity, long-running operations.</li>
+<li><strong>Foundry Playground</strong> — quick configure-and-test view for agents.</li>
+<li><strong>Foundry Traces view</strong> — per-conversation spans, metrics, tree view, replay, user view.</li>
+<li><strong>Foundry Monitor tab</strong> — live traffic, latency distribution, cost, token usage, scheduled evals/red teams, error rate, tool-call success.</li>
+<li><strong>Foundry Operate tab (fleet view)</strong> — all agents in a project, active alerts, fleet metrics.</li>
+<li><strong>OpenTelemetry</strong> — open standard for telemetry/tracing.</li>
+<li><strong>OpenTelemetry GenAI semantic conventions</strong> — common telemetry schema for agent names, model calls, key events.</li>
+<li><strong>Microsoft OpenTelemetry distro</strong> — unified SDK auto-instrumenting most agent frameworks across multiple languages.</li>
+<li><strong>Microsoft Agent Framework</strong> — used to build the orchestrator agent.</li>
+<li><strong>Google ADK (Agent Development Kit)</strong> — used for the Bangalore agent on GCP.</li>
+<li><strong>LangGraph</strong> — used for the Seattle agent on AWS.</li>
+<li><strong>Copilot SDK</strong> — used as a fallback agent for cities with no specialist.</li>
+<li><strong>Azure Monitor</strong> &amp; <strong>Azure Application Insights</strong> — power Foundry observability; trace storage.</li>
+<li><strong>GitHub</strong> — agent code + prompts checked in; build stage of the lifecycle.</li>
+<li><strong>M365 Copilot</strong> — distribution target for agents (caption garbled as "M3C5").</li>
+<li><strong>GCP / Google Cloud Run (<code>run.app</code>)</strong> — hosting for the ADK Bangalore agent.</li>
+<li><strong>AWS</strong> — hosting for the LangGraph Seattle agent.</li>
+<li><strong>Entra ID (Entra)</strong> — provides agent identity for hosted agents.</li>
+<li><strong>VS Code</strong> — IDE used for the instrumentation code walkthrough.</li>
+<li><strong>Rubric evaluators</strong> — customized evaluation plans (cold-start solution).</li>
+<li><strong>Agent optimization</strong> — prompt fine-tuning, model swapping, new tools.</li>
+<li><strong>OpenInference</strong> &amp; <strong>OpenLLMetry</strong> — alternative trace formats supported for viewing/evaluation.</li>
+<li><strong>Evaluators</strong> — intent resolution, task adherence (and others) for trace-based evaluation.</li>
+<li><strong>Scheduled red teams</strong> — automated red-teaming runs surfaced in Monitor.</li>
+<li><strong>RAG (Retrieval-Augmented Generation)</strong> — pattern used by the Xi'an agent with a PDF index.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p>No major standalone product launches were announced in the keynote sense. The session was a capability <strong>demo of currently live, reproducible features</strong> (the presenters stressed "everything we show in this demo is live and available on Foundry"). Notable "this exists / is supported now" points worth tracking:
+- <strong>Cross-cloud unified tracing</strong> via OpenTelemetry GenAI conventions is live in Foundry observability — stitching agents on GCP, AWS, and Foundry into one trace.
+- <strong>Microsoft OpenTelemetry distro</strong> auto-instrumentation for external/non-Foundry agents (few lines of init code) is available across multiple languages and frameworks.
+- <strong>Support for OpenInference and OpenLLMetry</strong> trace formats (in addition to OpenTelemetry GenAI conventions) for trace viewing and evaluation — meeting customers where they are.
+- <strong>Rubric evaluators</strong> and <strong>agent optimization</strong> capabilities were called out as available Foundry features (covered briefly due to time).
+- <strong>A65 native support</strong> (caption garbled — appears to be a forthcoming Azure/Foundry model that customers can opt into) is supported natively in Foundry.</p>
+<blockquote>
+<p>Note: This was a demo/enablement session (DEM track), so it focused on showing existing, reproducible capabilities rather than net-new launches. If you need a crisp "announcement" line: <strong>None explicitly announced as a launch</strong> — the emphasis was that all shown features are already live on Foundry.</p>
+</blockquote>
+<h2 id="demos">💡 Demos</h2>
+<p>The session was essentially one continuous, escalating live demo built around <strong>travel agents</strong>, each tied to a presenter's hometown/city:</p>
+<ol>
+<li>
+<p><strong>Demo 1 — Foundry Prompt Agent (Xi'an travel expert).</strong> No-code agent built in the Foundry Playground: pick a model, give a system prompt, upload a <strong>travel-notes PDF as an index</strong> (RAG). Queried <em>"Plan a three-day trip in Xi'an for two people, focus on history and food"</em> → returned a multi-language, day-by-day itinerary with places and restaurants. Then the <strong>Traces</strong> view was used to inspect spans (<code>invoke agent</code> → <code>execute tool</code> for PDF lookup → LLM), the metadata tab (retrieval query + returned content), the <strong>replay</strong> (step-through with speed control), and the <strong>user view</strong>.</p>
+</li>
+<li>
+<p><strong>Demo 2 — Bangalore agent on GCP (Google ADK), registered as an external agent.</strong> Kumar sent a <strong>live curl request</strong> to the agent on <strong><code>run.app</code> (GCP)</strong>; after a network delay the response came back with the city — proving a real, unmodified cross-cloud agent surfaces the same rich trace experience in Foundry.</p>
+</li>
+<li>
+<p><strong>Demo 3 — Seattle agent on AWS (LangGraph).</strong> Kumar sent a <strong>curl</strong> with a Seattle question; the agent emitted OpenTelemetry traces like the others.</p>
+</li>
+<li>
+<p><strong>Demo 4 — Multi-cloud orchestration (the headline demo).</strong> A <strong>Foundry hosted orchestrator</strong> (Microsoft Agent Framework) was asked about <strong>Seattle, Bangalore, and Lisbon</strong> in one message. The <strong>city router</strong> routed to the right specialists; <strong>Lisbon (and earlier, Berlin)</strong> had no specialist, so the <strong>Copilot SDK fallback</strong> handled it. An earlier trace (Seattle + Berlin) was shown end-to-end: root <code>invoke agent</code> span → city router → Seattle specialist → Copilot fallback for Berlin — <strong>all stitched into one unified trace despite spanning GCP, AWS, and Foundry.</strong></p>
+</li>
+<li>
+<p><strong>Demo 5 — Instrumentation code (VS Code).</strong> Showed the few lines needed to instrument an external agent: enable OpenTelemetry, wire to <strong>Azure Monitor</strong> with a <strong>connection string</strong>, specify the <strong>framework</strong>, and pass the <strong>agent ID</strong> (matching the Foundry registration) for trace correlation.</p>
+</li>
+<li>
+<p><strong>Demo 6 — Monitor tab.</strong> Live traffic patterns, latency distribution, estimated cost, token usage, scheduled evals, scheduled red teams; spotted <strong>error rate up</strong> and <strong>tool-call success down</strong> as live regressions to investigate.</p>
+</li>
+<li>
+<p><strong>Demo 7 — Operate tab (fleet view).</strong> All agents in a project, <strong>active security alerts</strong> (malicious URLs, jailbreak attempts — on by default), evaluation-based alerts, agent success rate, and most-used agent over time.</p>
+</li>
+<li>
+<p><strong>Demo 8 — Evaluation.</strong> Set up an <strong>intent resolution evaluator</strong> via the Foundry project client; a failing trace (compare <strong>Bengaluru vs Barcelona</strong>, concise) was opened directly from eval results — <strong>task adherence failed</strong> because the response described both cities but didn't actually compare them (evaluator likely expected a table).</p>
+</li>
+</ol>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>Show of hands:</strong> roughly "one lucky person" in the room had <em>all</em> their agents on the same cloud + language + framework — vivid evidence that <strong>heterogeneity is the norm</strong>.</li>
+<li><strong>Per-conversation trace metrics</strong> highlighted as "the key metrics": number of spans, number of chat calls, number of tool calls, latency, token consumption.</li>
+<li><strong>Trace list dimensions:</strong> token cost, tokens in, tokens out, estimated cost (sortable/filterable).</li>
+<li><strong>"Adopt OpenTelemetry instrumentation with a few lines of code… without changing your existing agent logic."</strong> — the central method.</li>
+<li><strong>"It's just a few lines of initialization code to set up the SDK."</strong> (for external agents).</li>
+<li><strong>"Foundry observability is powered by Azure Monitor and Azure Application Insights… all of [the] traces are stored in Azure Monitor."</strong></li>
+<li><strong>"Because all of them are emitting OpenTelemetry traces, Foundry observability was able to stitch together the end-to-end execution… even though they are running across multiple clouds it feels like everything is in one system."</strong></li>
+<li><strong>Closing line:</strong> <em>"Build what you want, run it where you need, and observe it all in one place. </em><em>Any agent, any cloud, one observability plane.</em><em>"</em></li>
+<li><strong>Live regressions caught on stage:</strong> error rate went up; a tool-call success rate went down — used to show the monitoring is real and actionable.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> <strong>Things to try:</strong></li>
+<li>Clone the <strong>demo repo</strong> (QR code at end of session) and reproduce the multi-cloud orchestrator + specialists locally.</li>
+<li>Instrument a <strong>non-Foundry agent</strong> (e.g., a LangGraph or ADK service) with the <strong>Microsoft OpenTelemetry distro</strong> + Azure Monitor connection string + matching agent ID; confirm traces correlate in Foundry.</li>
+<li>Stand up the <strong>Foundry hosted orchestrator</strong> pattern (Microsoft Agent Framework) with a <strong>Copilot SDK fallback</strong> for out-of-scope inputs.</li>
+<li>Configure <strong>scheduled evals</strong> (intent resolution, task adherence) and <strong>scheduled red teams</strong>; wire <strong>evaluation-based alerts</strong> in the Operate tab.</li>
+<li>Try <strong>rubric evaluators</strong> to bootstrap evaluation criteria from scratch (cold-start solution).</li>
+<li class="task-list-item"><input type="checkbox" disabled> <strong>Questions:</strong></li>
+<li>What exactly is <strong>"A65"</strong>? (Caption garble — likely a forthcoming Azure/Foundry model offering. Confirm name/availability.)</li>
+<li>What are the <strong>cost implications</strong> of storing all agent traces in Azure Monitor at production scale (ingestion + retention)?</li>
+<li>How granular is the <strong>OpenTelemetry GenAI semantic convention</strong> coverage today vs. proprietary spans for newer frameworks?</li>
+<li>For <strong>OpenInference / OpenLLMetry</strong> formats — is evaluation feature-parity with native OpenTelemetry, or viewing-only for some features?</li>
+<li>How does <strong>agent identity from Entra</strong> flow through to cross-cloud sub-agents (e.g., the AWS/GCP-hosted ones)?</li>
+<li class="task-list-item"><input type="checkbox" disabled> <strong>Relevant to:</strong></li>
+<li>Any org running a <strong>heterogeneous / multi-cloud agent estate</strong> wanting a single observability pane.</li>
+<li>Teams already invested in <strong>Azure Monitor / App Insights</strong> who want agent traces in the same place.</li>
+<li>Platform/SRE teams needing <strong>fleet-level alerting</strong> (security, jailbreak, eval-regression) across agents.</li>
+<li>LLMOps/eval workstreams adopting <strong>OpenTelemetry GenAI conventions</strong> as a standard.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Foundry">Microsoft Foundry</span></li>
+<li><span class="wikilink wikilink--unresolved" title="OpenTelemetry">OpenTelemetry</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Agent Framework">Microsoft Agent Framework</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Azure Monitor">Azure Monitor</span> / <span class="wikilink wikilink--unresolved" title="Application Insights">Application Insights</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Agent Observability">Agent Observability</span></li>
+<li><span class="wikilink wikilink--unresolved" title="LLM Evaluation">LLM Evaluation</span></li>
+<li>Other Microsoft Build 2026 sessions — Foundry / observability / agents track</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEM340.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEM340</span><span class="pager-title">Build work-ready agents with Foundry + Work IQ, govern with Agent 365</span></a>
+    <a class="pager pager-next" href="DEM345.html"><span class="pager-dir">Next →</span><span class="pager-code">DEM345</span><span class="pager-title">From prompt to app, build AI powered apps on Windows</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

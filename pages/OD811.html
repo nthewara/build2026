@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OD811 — Powering the next AI frontier with a unified data platform</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">OD811</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=CfRuzCajbVA" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Powering the next AI frontier with a unified data platform</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Amir Netz (Technical Fellow &amp; CTO, Microsoft Fabric)</span>
+      <span class="meta-item">⏱️ 38m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="fabric">Fabric</span><span class="chip" data-tag="onelake">Onelake</span><span class="chip" data-tag="data-platform">Data Platform</span><span class="chip" data-tag="ai">AI</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Amir Netz — Technical Fellow &amp; CTO of Microsoft Fabric<br>
+<strong>Duration:</strong> ~38 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=CfRuzCajbVA">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Amir Netz frames Microsoft Fabric's Build 2026 story around a single mission: giving AI agents the same context, knowledge, and tools that human employees get, so the predicted <strong>billion agents joining the workforce</strong> over the next two years can be as trusted and productive as people. The vehicle is <strong>Fabric IQ</strong> — the "state of the business" pillar of <strong>Microsoft IQ</strong> (alongside Work IQ and Foundry IQ) — built via a four-step journey: <strong>(1) unify the data estate in OneLake, (2) process &amp; harmonize with analytical engines, (3) curate semantic knowledge with semantic models + ontologies + planning, and (4) empower AI agents</strong> to build apps and act autonomously. The session is a dense announcement reel: GPU-accelerated Fabric Data Warehouse (8x→100x+ faster), Agent Skills for Fabric (now including Power BI report generation), Fabric Ontology + integrations, <strong>GA of Planning in Fabric</strong>, <strong>public preview of Apps in Fabric</strong> on the Rayfin SDK, and <strong>GA of Operations Agents</strong>. The throughline: collapse the gap between operational data, analytics, planning, and agents onto one governed foundation so AI sees the whole business instead of "looking at the world through a broken mirror."</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Fabric is a &gt;$2B ARR business (60% YoY growth)</strong> with <strong>35,000 customers</strong> (excluding pure Power BI users) and <strong>90%+ of the Fortune 500</strong> — remarkable for a platform just over 2 years old.</li>
+<li>The big bet: <strong>over a billion agents will join the workforce in the next 2 years</strong>, shifting from chatbots/desktop apps to "real full-fledged employees" — they need the same people/process/real-time context humans get.</li>
+<li><strong>Microsoft IQ = Work IQ + Foundry IQ + Fabric IQ.</strong> Work IQ = how each person works; Foundry IQ = institutional knowledge/SOPs; <strong>Fabric IQ = the live state of the business</strong> drawn from operational systems. Fabric's job is to create Fabric IQ.</li>
+<li><strong>Fabric IQ is built in 4 steps:</strong> unify → process/harmonize → curate semantics → empower agents. The whole stack exists to build the AI's "IQ" — a full picture of what's happening in the org.</li>
+<li><strong>OneLake</strong> is the single secure foundation: all data, open format, indexed, with lineage, sensitivity labels, and certification — plus <strong>zero-ETL shortcuts</strong> to bring in data already living elsewhere (Azure, AWS, GCP, Snowflake, Databricks, Postgres, Cosmos, Dataverse, on-prem, apps) "with zero effort and zero cost."</li>
+<li><strong>Newly GA shortcuts:</strong> SAP and Oracle DB (recent), plus <strong>SharePoint and OneDrive shortcuts announced GA today</strong>. <strong>Public preview:</strong> Dremio, Azure DB for MySQL. <strong>Coming soon:</strong> Azure Monitor, AWS Glue (joins observability data with business data).</li>
+<li><strong>GPU-accelerated Fabric Data Warehouse (limited preview)</strong> — query accelerator via GPUs delivering <strong>~8x single-query</strong>, <strong>~25x at 16 concurrent queries</strong>, and <strong>&gt;100x at 64 concurrent queries</strong> vs today's CPU warehouse; one-click enable per workspace. Based on a <strong>SIGMOD Best Paper</strong>-winning technique.</li>
+<li><strong>Agent Skills for Fabric</strong> moves development from manually crafting artifacts to agent-based "live coding" — skills encode Fabric best practices for analytical engines, and <strong>now extend to generating Power BI reports</strong> (built on the FabCon release from 3 months ago).</li>
+<li><strong>Semantics bridge data → meaning:</strong> <strong>Semantic models</strong> (20M+ in daily use, ~90% of the world's are Power BI-based) carry business metrics + row/column-level security; <strong>Ontologies</strong> go further, modeling business <em>processes</em> (entities, properties, real-time feeds, actions, goals, policies) so agents can <em>participate</em> in operations.</li>
+<li><strong>Fabric Ontology</strong> has new integrations across <strong>Foundry, Palantir Studio, and Agent 365</strong>; still pre-GA/preview, with <strong>GA targeted later this year</strong>.</li>
+<li><strong>Planning in Fabric is now Generally Available</strong> (was public preview 3 months ago), rolling out to remaining regions over the next couple of weeks — a fully Fabric-native enterprise planning tool (budgets, forecasts, scenarios, targets) with write-back to Fabric SQL and OneLake integration.</li>
+<li><strong>Apps in Fabric (public preview, first time shown):</strong> production-grade agentic line-of-business apps on your governed data estate, one managed backend (functions, storage, security/auth), built on the <strong>Rayfin SDK</strong> (type-safe, decorator-based code optimizer for agentic dev) — a safe home for vibe-coded apps.</li>
+<li><strong>Agent-driven BI apps</strong> extend Rayfin: build custom web dashboards/reports against semantic models via a <strong>Power BI skill</strong>, without rebuilding the analytics foundation.</li>
+<li><strong>Operations Agents are now Generally Available</strong> — autonomous "virtual team members" that monitor signals and act in the background (not Q&amp;A chatbots). New at GA: <strong>chat-based authoring, root cause analysis, and Microsoft Teams integration</strong>; configured entirely in natural language and grounded in the operations ontology.</li>
+<li>The unifying message: <strong>one governed foundation</strong> for operational apps, analytics, planning, and agents — eliminating data silos so AI (and humans) see the whole business, all powered by Fabric IQ, which in turn powers many agents across many roles.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="setting-the-stage-what-fabric-is-and-the-adoption-numbers">Setting the stage: what Fabric is, and the adoption numbers</h3>
+<p>Amir Netz (Technical Fellow at Microsoft, CTO of Microsoft Fabric) opens by recapping Fabric, released "just over 2 years ago," as the unification of all of Microsoft's data services under one roof:
+- <strong>Operational databases</strong> — SQL database and Cosmos DB (NoSQL).
+- <strong>Data Factory</strong> — data integration.
+- <strong>Analytics</strong> — data warehousing, data engineering, data science.
+- <strong>Real-Time Intelligence</strong> — live event streams analyzed via <strong>Event Houses</strong> and acted on via the <strong>Activator</strong>.
+- <strong>Power BI</strong> — "the founding father of the entire stack."
+- <strong>Copilot</strong> — a foundational capability across the whole stack.
+- <strong>Governance</strong> — via a catalog.
+- <strong>OneLake</strong> — "the one place we store all your data for the enterprise."</p>
+<p>Adoption proof points he's "incredibly thrilled" to share:
+- <strong>35,000 customers</strong> using Fabric today — and this explicitly <strong>excludes</strong> people who only use Power BI; these are customers using the <em>other</em> Fabric services.
+- <strong>Over 90% of the Fortune 500</strong> are using Fabric.
+- <strong>Over $2 billion in ARR</strong> with <strong>60% year-over-year growth</strong> — "remarkable for a platform that has been around for just over 2 years."</p>
+<h3 id="the-thesis-a-billion-agents-joining-the-workforce">The thesis: a billion agents joining the workforce</h3>
+<p>"The world is changing." Microsoft predicts <strong>over a billion agents joining the workforce over the next 2 years</strong>. Crucially, "joining the workforce" means agents move from being mere chatbots or desktop applications to <strong>"real full-fledged employees."</strong></p>
+<p>This reframes the central question of the talk: <strong>how do we make agents as trusted and productive as human employees?</strong> The answer: give them the same <strong>tools, knowledge, understanding, and context</strong> we give human employees.</p>
+<h3 id="the-three-buckets-of-employee-context">The three buckets of employee context</h3>
+<p>Netz categorizes the context every human employee relies on — and that agents therefore also need — into three buckets:
+1. <strong>People</strong> — every employee works in a team and must understand their teammates, how the org works, and their manager.
+2. <strong>How the organization works</strong> — each org has its own <strong>standard operating procedures, institutional knowledge, and way of doing things</strong>.
+3. <strong>What's going on right now</strong> — the most dynamic context: which orders are in flight, which support cases need resolving, the latest cost-saving initiative. The live state of the business.</p>
+<h3 id="microsoft-iq-work-iq-foundry-iq-fabric-iq">Microsoft IQ: Work IQ, Foundry IQ, Fabric IQ</h3>
+<p>To deliver this context to agents, Microsoft introduced <strong>Microsoft IQ</strong>, composed of three sub-IQs that map onto the three buckets above:
+- <strong>Work IQ</strong> — how employees work: understanding each individual person, their preferences, priorities, and even their personality.
+- <strong>Foundry IQ</strong> — curating institutional knowledge: building <strong>knowledge bases</strong> that define what it means to be an employee, to fulfill a specific role, the SOPs, the regulations to abide by, etc.
+- <strong>Fabric IQ</strong> — the <strong>state of the business</strong>: a real-time feed of how the organization is performing right now, sourced from the org's <strong>operational systems</strong>.</p>
+<blockquote>
+<p>When Microsoft talks about Fabric in this context, they are "really talking about bringing and creating that Fabric IQ." A whole new workload — literally <strong>called Fabric IQ</strong> — was introduced in the last few months to create this context layer.</p>
+</blockquote>
+<p>Netz stresses that creating Fabric IQ "is not as trivial as one can imagine" — it requires thought, work, and planning. The entire Fabric stack is reframed as the machinery for creating that IQ/context so the AI has "a full picture of everything that is going on in the organization."</p>
+<h3 id="the-four-step-fabric-iq-journey-the-spine-of-the-session">The four-step Fabric IQ journey (the spine of the session)</h3>
+<p>Everything that follows is organized as a four-step pipeline to build Fabric IQ:
+1. <strong>Unify the data estate</strong> — bring all the data together.
+2. <strong>Process &amp; harmonize the data</strong> — make it match up and fit together (consistency).
+3. <strong>Create semantic knowledge</strong> — so the AI actually understands the data's meaning.
+4. <strong>Empower AI agents</strong> — put agents on top of the semantics.</p>
+<p>Each step is then walked through with announcements and demos.</p>
+<h3 id="step-1-unify-the-data-estate-with-onelake">Step 1 — Unify the data estate with OneLake</h3>
+<p><strong>OneLake</strong> is "a single secure foundation for every workload, for every piece of data." Properties Netz emphasizes:
+- One place where <strong>all data is stored, in open format, indexed, and managed</strong>.
+- Managed <strong>lineage</strong>, <strong>sensitivity labels</strong>, and <strong>certification</strong> of data.</p>
+<p>But the bigger point is that OneLake isn't <em>just</em> storage — it's a place to <strong>bring in all the data you already have stored elsewhere</strong>, with <strong>zero ETL, zero effort, and zero cost</strong>, via <strong>shortcuts</strong>. Organizations have data everywhere: across multiple clouds (Azure, AWS, GCP), in many databases (Dataverse, SQL, Databricks, Snowflake, Postgres, Cosmos), on-premises, and in applications/files.</p>
+<p><strong>Why this matters (the "broken mirror" argument):</strong> Data has a "terrible quality" — left to itself it <strong>silos</strong>: stored in different containers, platforms, and technologies, then sharded and isolated. That makes the full picture hard for humans to grasp and even harder for AI — "for the AI, when the data is sharded, it's like looking at the world through a broken mirror." OneLake creates a <strong>single pane of glass</strong> spanning all your data regardless of where it physically lives.</p>
+<p><strong>Shortcut/source announcements (Step 1):</strong>
+- <strong>General Availability (recent):</strong> SAP and Oracle DB.
+- <strong>Generally Available — announced today:</strong> <strong>SharePoint and OneDrive shortcuts</strong>.
+- <strong>Public preview:</strong> Dremio, Azure DB for MySQL.
+- <strong>Coming soon:</strong> Azure Monitor, AWS Glue — notably to bring the <strong>observability data estate</strong> into OneLake to join with the business data estate.</p>
+<h3 id="step-2-process-harmonize-with-analytical-engines-gpu-accelerated-data-warehouse">Step 2 — Process &amp; harmonize with analytical engines (GPU-accelerated Data Warehouse)</h3>
+<p>Once data is unified, Fabric's <strong>analytical engines</strong> make it work together and stay consistent — chief among them the <strong>data warehousing engine</strong>. The headline announcement here is the <strong>Query Accelerator for Fabric Data Warehouse via GPUs</strong>, in <strong>limited preview</strong>.</p>
+<p><strong>The benchmark story (TPC-H):</strong> comparing competitors, today's CPU-powered Fabric Data Warehouse, and the new GPU-accelerated warehouse:
+- Where the industry typically celebrates <strong>10–15% annual</strong> warehouse performance gains, the GPU warehouse delivers an <strong>~8x improvement</strong> on average single-query (higher vs some competitors).
+- Counter-intuitively, <strong>performance improves under concurrency</strong>: at <strong>16 concurrent queries</strong>, acceleration reaches <strong>~25x</strong>; you "barely notice the additional load at this scale."
+- At <strong>64 concurrent queries</strong>, acceleration is <strong>over 100x</strong>. "The more you load the data warehouse, the more gains you're seeing."
+- Enabling it is <strong>one click</strong>. The underlying technique <strong>won Best Paper at the SIGMOD conference</strong>. Netz calls it "a revolution."</p>
+<h3 id="step-2-cont-agent-skills-for-fabric">Step 2 (cont.) — Agent Skills for Fabric</h3>
+<p>Building a Fabric application spans many technologies — data warehouse, Spark, functions, real-time event streams, and more. Netz argues we must <strong>move away from manually crafting/curating each artifact</strong> toward <strong>agent-based development</strong> — "just like we do live coding for code."</p>
+<p><strong>Agent Skills for Fabric</strong> give agents the <strong>expertise to work with Fabric correctly, in an optimized way, with best practices baked in</strong>. Timeline/announcement:
+- Skills for the <strong>analytical engines</strong> were released at <strong>FabCon, 3 months ago</strong>.
+- <strong>New announcement:</strong> the skill set now expands so the agent can also <strong>create Power BI reports</strong> for you.</p>
+<h3 id="step-3-curate-semantic-knowledge-semantic-models-ontologies-planning">Step 3 — Curate semantic knowledge (semantic models, ontologies, planning)</h3>
+<p>Even with all data in OneLake, it's still hard for an AI agent to understand the <em>meaning</em> of the data. <strong>Semantics are the bridge</strong> that lets AI understand meaning and build the IQ layer into the agentic world. On top of OneLake's data (structured, unstructured, real-time, graph — "everything you want"), Fabric layers:</p>
+<p><strong>Semantic models</strong> (familiar from Power BI):
+- Where you curate information about <strong>tables, relationships, and measures</strong> — the foundation under every Power BI report and dashboard.
+- The <strong>bridge between business concepts and how data is stored</strong> in OneLake.
+- Scale: <strong>20 million semantic models</strong> are used day in, day out worldwide; Netz estimates <strong>~90% of the world's semantic models are Power BI-based</strong>.
+- They hold business data, cover corporate metrics, and enforce access via <strong>row-level and column-level security</strong>.
+- Great for AI answering <strong>business-intelligence</strong> questions.</p>
+<p><strong>Ontologies</strong> (for moving beyond BI into operational intelligence):
+- Ontologies <strong>expand semantics from reporting/analytics into explaining how the business works</strong> — giving AI an understanding of <strong>business processes</strong>.
+- If the AI is aware of business processes — including the <strong>real-time feed, policies, and actions</strong> — it can <strong>participate</strong> in the business process, not just report on it.
+- <strong>Fabric Ontology</strong> was announced a few months ago; <strong>new integrations</strong> now span <strong>Foundry, Palantir Studio, and Agent 365</strong>. Still <strong>pre-GA (preview)</strong>, "becoming bigger and deeper and more capable" toward <strong>GA later this year</strong>.</p>
+<p><strong>What modeling an ontology means in practice</strong> (retail example):
+- Identify the <strong>entities</strong> participating in the business — suppliers, shipments, inventory, stores — and define each entity's <strong>relationships, properties, and actions</strong>.
+- Example entity <strong>Shipment</strong>: properties like the <strong>SKUs shipped</strong> and <strong>transit status</strong>, plus <strong>real-time feeds</strong> such as <strong>cargo temperature</strong>; and <strong>actions</strong> like <em>pause the inbound</em>, <em>request inspection</em>, or <em>re-route to a different store</em>.
+- The ontology also encodes <strong>business goals, objectives, risk &amp; compliance handling, profitability goals, customer satisfaction, and policies</strong>.</p>
+<p><strong>The three temporal layers an ontology can model:</strong>
+- <strong>What happened</strong> — history of all transactions from all systems of record (from <strong>OneLake</strong>).
+- <strong>What's happening now</strong> — live telemetry/IoT/sensor reads (from <strong>Real-Time Intelligence event streams</strong>).
+- <strong>What should happen</strong> — the organization's forward-looking goals in great detail — which is where <strong>Fabric Planning</strong> comes in.</p>
+<p><strong>Planning in Fabric — now Generally Available:</strong>
+- Announced ~3 months ago in <strong>public preview</strong>; <strong>now GA</strong>, rolling out to remaining regions over the next couple of weeks. Netz calls it "one of the most exciting announcements" of the session.
+- Positioned as "the best enterprise planning tool on the planet" — an end-to-end enterprise planning capability to <strong>model budgets, forecasts, scenarios, and targets</strong>.
+- <strong>Fully Fabric-native:</strong> integrated into the experience, the <strong>security model</strong>, and <strong>OneLake</strong>, with <strong>write-back</strong> to Fabric SQL — "no gap between the planning software and the data."</p>
+<h3 id="step-4-empower-ai-agents-apps-in-fabric-agent-driven-bi-operations-agents">Step 4 — Empower AI agents (Apps in Fabric, agent-driven BI, Operations Agents)</h3>
+<p>With data unified, harmonized, semantically curated, and forward-looking planning added, the final step is <strong>empowering AI agents</strong> to build applications on top of the entire governed data estate.</p>
+<p><strong>Apps in Fabric — public preview (shown for the first time):</strong>
+- Create <strong>production-grade agentic apps</strong> running on your <strong>governed data estate</strong>.
+- Provides <strong>one managed backend</strong> with everything an app needs: <strong>functions, storage, security, and authentication</strong> — "designed from the ground up to be secured."
+- Not just analytical apps — explicitly <strong>line-of-business applications</strong>, and a great environment to run <strong>vibe-coded</strong> applications.
+- Built on the <strong>Rayfin SDK</strong>: a <strong>type-safe, decorator-based code optimizer for agentic development</strong>. (Caption rendered this as "Raefin/Raven"; it is the Fabric Backend-as-a-Service <strong>Rayfin</strong> — see sibling note <a class="wikilink wikilink--resolved" href="BRK225.html">BRK225 - Data apps and agents the future of app dev with Rayfin</a>.)</p>
+<p><strong>Agent-driven BI apps (extending Rayfin):</strong>
+- Semantic models are the basis for Power BI, but if you want a <strong>custom-code web app with embedded analytics</strong>, the next phase of agentic apps lets you build <strong>custom web pages that visualize data based on semantic models</strong>.
+- A <strong>Power BI skill</strong> lets the agent <strong>generate interactive visuals directly against your semantic models</strong> — without rebuilding the foundation the analytics team maintains.</p>
+<p><strong>Operations Agents — now Generally Available:</strong>
+- Not Q&amp;A chatbots — they are <strong>"virtual team members that monitor signals and react autonomously in the background."</strong> They don't wait to be asked; they're "constantly awake," watching and taking actions.
+- <strong>Natural-language setup</strong> — no coding required to create one.
+- New capabilities at GA: <strong>chat-based authoring, root cause analysis, and Microsoft Teams integration</strong>.
+- Grounded in the <strong>operations ontology</strong>, which gives the agent a <strong>common semantic context layer</strong> across the business, letting it inherit existing actions or use custom ones.</p>
+<h3 id="closing-one-foundation-many-agents">Closing: one foundation, many agents</h3>
+<p>Netz recaps the full journey — unify in OneLake → process/harmonize with the engines → curate semantics with semantic models + ontologies → empower agents to build apps and operate autonomously — "all powered by <strong>Fabric IQ</strong>." The key amplifier: Fabric IQ (and Microsoft IQ) isn't for one agent — a <strong>shared foundation of knowledge and semantics can span many agents performing many different roles</strong>, empowering both agents <em>and</em> employees.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Microsoft Fabric</strong> — unified data platform spanning operational DBs, integration, analytics, real-time, BI, and governance; the subject of the talk.</li>
+<li><strong>OneLake</strong> — single secure storage foundation; all data in open format, indexed, with lineage/sensitivity/certification; supports zero-ETL shortcuts to external sources.</li>
+<li><strong>OneLake shortcuts</strong> — bring external data in with zero ETL/effort/cost (SAP, Oracle DB, SharePoint, OneDrive, Dremio, Azure DB for MySQL, etc.).</li>
+<li><strong>OneLake Catalog</strong> — governance/discovery surface where every governed asset (incl. new apps) appears alongside the rest of the estate.</li>
+<li><strong>Microsoft IQ</strong> — umbrella context framework = Work IQ + Foundry IQ + Fabric IQ.</li>
+<li><strong>Work IQ</strong> — understands how each individual employee works (preferences, priorities, personality).</li>
+<li><strong>Foundry IQ</strong> — curates institutional knowledge / knowledge bases / SOPs / regulations.</li>
+<li><strong>Fabric IQ</strong> — new Fabric workload capturing the live state of the business from operational systems; the focus of this session.</li>
+<li><strong>Fabric Data Warehouse</strong> — the data-warehousing analytical engine; now with optional GPU query acceleration.</li>
+<li><strong>Query Accelerator (GPU)</strong> — one-click GPU acceleration for the Fabric Data Warehouse (SIGMOD Best Paper tech).</li>
+<li><strong>Spark (4.0) / Delta (4.0)</strong> — latest Fabric data-engineering runtime shown in the agent-skills demo.</li>
+<li><strong>Custom live pools</strong> — pre-warmed Spark pools cutting cold-start from 3–5 minutes to 3–5 seconds.</li>
+<li><strong>Agent Skills for Fabric</strong> — encode Fabric best practices so agents can build artifacts; now includes Power BI report generation.</li>
+<li><strong>GitHub Copilot / CLI</strong> — the agentic interface driving Fabric development in the demos.</li>
+<li><strong>AI functions</strong> — bring LLMs into Fabric (notebook or warehouse, PySpark or T-SQL) for categorization, sentiment, classification — no config.</li>
+<li><strong>Activator</strong> — real-time alerting/trigger engine; fires actions (e.g. Teams notification) when matching data lands.</li>
+<li><strong>Real-Time Intelligence / Event Houses / event streams</strong> — live telemetry and streaming signals feeding ontologies.</li>
+<li><strong>Semantic models</strong> — curated tables/relationships/measures bridging business concepts to stored data; foundation of Power BI; enforce RLS/CLS.</li>
+<li><strong>Power BI</strong> — BI layer; "founding father" of the stack; semantic models + reports.</li>
+<li><strong>Fabric Ontology</strong> — models entities, properties, real-time feeds, actions, goals, and policies so agents understand business processes.</li>
+<li><strong>Planning in Fabric</strong> — Fabric-native enterprise planning (budgets/forecasts/scenarios/targets) with write-back to Fabric SQL.</li>
+<li><strong>Apps in Fabric</strong> — production-grade agentic line-of-business apps on the governed estate with one managed backend.</li>
+<li><strong>Rayfin SDK</strong> — type-safe, decorator-based code optimizer for agentic app development (the Fabric BaaS); powers Apps in Fabric and agent-driven BI apps.</li>
+<li><strong>Fabric SQL database</strong> — operational SQL store that Rayfin apps provision and write into; lands data straight into the workspace/OneLake.</li>
+<li><strong>Operations Agents</strong> — autonomous virtual team members that monitor signals and act in the background; NL-configured, ontology-grounded.</li>
+<li><strong>Microsoft Teams</strong> — channel where Activator alerts and Operations Agents post and collaborate.</li>
+<li><strong>Foundry / Palantir Studio / Agent 365</strong> — platforms newly integrated with Fabric Ontology.</li>
+<li><strong>Cosmos DB, SQL database, Dataverse, Databricks, Snowflake, PostgreSQL</strong> — named data sources/databases reachable via OneLake.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>OneLake shortcuts — SharePoint &amp; OneDrive: Generally Available</strong> (announced today).</li>
+<li><strong>OneLake shortcuts — SAP &amp; Oracle DB: Generally Available</strong> (recent).</li>
+<li><strong>OneLake shortcuts — Dremio &amp; Azure DB for MySQL: Public Preview.</strong></li>
+<li><strong>OneLake shortcuts — Azure Monitor &amp; AWS Glue: Coming soon</strong> (brings observability data into OneLake).</li>
+<li><strong>GPU Query Accelerator for Fabric Data Warehouse: Limited Preview</strong> (~8x → 25x → 100x+ as concurrency rises; one-click; SIGMOD Best Paper tech).</li>
+<li><strong>Agent Skills for Fabric: expanded</strong> — now generate <strong>Power BI reports</strong> (extends the FabCon release from ~3 months ago covering analytical engines).</li>
+<li><strong>Fabric Ontology: new integrations</strong> across <strong>Foundry, Palantir Studio, and Agent 365</strong>; still preview, <strong>GA targeted later this year</strong>.</li>
+<li><strong>Planning in Fabric: Generally Available</strong> (was public preview ~3 months ago); rolling out to remaining regions over the next couple of weeks.</li>
+<li><strong>Apps in Fabric: Public Preview</strong> — first public showing; agentic line-of-business apps on the Rayfin SDK with a managed backend.</li>
+<li><strong>Agent-driven BI apps:</strong> custom web data apps on Rayfin with a <strong>Power BI skill</strong> generating visuals against semantic models (shown as the next phase of agentic apps).</li>
+<li><strong>Operations Agents: Generally Available</strong> — new at GA: <strong>chat-based authoring, root cause analysis, and Microsoft Teams integration</strong>.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>GPU-accelerated Fabric Data Warehouse:</strong> a developer enables <strong>Query Acceleration</strong> in workspace → data warehousing settings (applies to every SQL endpoint &amp; warehouse in the workspace), runs ad-hoc queries, and watches them accelerate. Monitoring adds an "accelerated?" column and a per-query count; the bird's-eye view shows <strong>~89% of queries were accelerated</strong>. Proves the one-click, transparent speedup.</li>
+<li><strong>Agent Skills for Fabric (medallion architecture from scratch):</strong> from the <strong>GitHub Copilot CLI</strong>, one prompt ("build an ingestion engine, clean my ticket data, prep a silver layer") provisions a <strong>lakehouse + notebook</strong> with best practices applied. Shows <strong>Spark 4.0 / Delta 4.0</strong>, <strong>custom live pools</strong> pre-warmed to start in <strong>~5 seconds</strong> (vs 3–5 min), <strong>AI functions</strong> for sentiment/classification on ticket data, and <strong>Activator</strong> firing a <strong>Teams</strong> alert on a product-quality issue — "from prompt engineering to operational intelligence to real-time alerting in minutes."</li>
+<li><strong>Planning in Fabric:</strong> a beverage-company sales lead builds a <strong>2026 revenue plan</strong> from <strong>2025 data in a OneLake semantic model</strong>; applies growth rates that cascade to brands/quarters and roll up; <strong>locks</strong> figures so changes only redistribute to open categories; toggles <strong>best-case vs base-case</strong> scenarios with sliders; switches tabular ↔ tree views; adds custom columns, security/comment rules, and an <strong>auditing view</strong>; finishes with <strong>write-back to a Fabric SQL database</strong>, then feeds the plan into the <strong>ontology</strong> for a forward-looking business model.</li>
+<li><strong>Apps in Fabric / Rayfin (operational app):</strong> a single <strong>Rayfin CLI</strong> command (blank template + name) scaffolds the whole project — Fabric provisions an <strong>app artifact, a linked SQL database, and a static hosting URL</strong>, live in seconds. GitHub Copilot then generates the schema, UI, pages, and flows for a <strong>delivery app</strong> (drivers log deliveries with photos; customers sign on tablets). The app artifact appears in the <strong>governed workspace</strong> beside its <strong>Fabric SQL database</strong> and in the <strong>OneLake catalog</strong> — an enterprise-ready app in minutes.</li>
+<li><strong>Agent-driven BI app (Rayfin + Power BI skill):</strong> extends the delivery app — a new <strong>data app</strong> item in Fabric, scaffolded via the <strong>Rayfin SDK</strong> in VS Code, uses a <strong>Power BI skill</strong> to generate visuals against a <strong>customer-satisfaction semantic model</strong> joined to live delivery data. Result: an interactive dashboard with <strong>monthly CSAT trends, regional breakdown, on-time delivery, complaint rate, and a delivery-impact correlation</strong> — operational + analytical apps side by side on one governed foundation.</li>
+<li><strong>Operations Agent (customer churn):</strong> create an agent to monitor churn 24/7; define <strong>goals + instructions</strong> in natural language; connect the <strong>operations ontology</strong> for shared semantic context; add a custom <strong>action</strong> (send a promo code with customer ID + discount params); generate a <strong>playbook</strong> of watch-conditions and allowed actions. In <strong>Teams</strong>, the agent first flags a weak signal (add-to-cart); the user tunes instructions, and the agent later flags a stronger signal (<strong>abandoned cart</strong>) and proposes the promo-code action for one-click confirmation — showing the agent <em>learning</em> and acting autonomously.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>35,000 customers</strong> using Fabric (excluding Power BI-only users); <strong>90%+ of the Fortune 500</strong>.</li>
+<li><strong>$2B+ ARR, 60% YoY growth</strong> — for a platform just over 2 years old.</li>
+<li><strong>Over a billion agents</strong> predicted to join the workforce in the next 2 years.</li>
+<li><strong>20 million semantic models</strong> used daily worldwide; <strong>~90%</strong> are Power BI-based.</li>
+<li>GPU Data Warehouse: <strong>~8x</strong> single-query, <strong>~25x</strong> at 16 concurrent, <strong>&gt;100x</strong> at 64 concurrent (vs typical <strong>10–15%/yr</strong> gains); <strong>~89%</strong> of queries accelerated in the demo; <strong>SIGMOD Best Paper</strong>.</li>
+<li>Custom live pools: startup cut from <strong>3–5 minutes</strong> to <strong>3–5 seconds</strong>.</li>
+<li><em>"For the AI, when the data is sharded, it's like looking at the world through a broken mirror."</em></li>
+<li><em>"Operations agents... are virtual team members that monitor signals and react autonomously in the background. They don't wait for you to ask them questions."</em></li>
+<li><em>"There's no gap between the planning software and the data. It lives in one place."</em></li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Enable the <strong>GPU Query Accelerator</strong> (limited preview) on a Fabric workspace and re-run a heavy TPC-H-style or concurrent workload to validate the 8x→100x claims.</li>
+<li>Stand up a <strong>medallion pipeline</strong> end-to-end via <strong>Agent Skills for Fabric</strong> + GitHub Copilot CLI; test <strong>custom live pools</strong> pre-warming.</li>
+<li>Spin up an <strong>Apps in Fabric</strong> project with the <strong>Rayfin SDK</strong> (operational LOB app) and an <strong>agent-driven BI app</strong> using the Power BI skill against an existing semantic model.</li>
+<li>Build a small <strong>Fabric Ontology</strong> (entities + actions + real-time feed) and wire an <strong>Operations Agent</strong> to it; test chat-based authoring + Teams integration.</li>
+<li>Migrate a planning workbook into <strong>Planning in Fabric</strong> (now GA) and test scenario locking + write-back to Fabric SQL.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What are the GPU Query Accelerator's <strong>eligibility limits / cost model</strong> beyond the one-click toggle (region availability, query types not accelerated)?</li>
+<li><strong>GA timing</strong> for Fabric Ontology and for Apps in Fabric (both still preview)? Which regions for Planning GA first?</li>
+<li>How do <strong>Operations Agents</strong> govern autonomous actions (approval gates, guardrails, audit) at scale?</li>
+<li>How does <strong>Fabric IQ</strong> surface to external agents (Foundry/Agent 365/Palantir) — protocol/permissions?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Any data-estate-unification, lakehouse, or agent-grounding initiative; teams standardizing analytics + operational data + planning on one governed foundation.</li>
+<li>Architects evaluating OneLake shortcuts vs traditional ETL; BI teams extending semantic models into agentic apps.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><a class="wikilink wikilink--resolved" href="OD812.html">OD812 - Fabric IQ Bringing enterprise intelligence into the developer workflow</a> — sibling Fabric session diving into Fabric IQ in the developer workflow.</li>
+<li><a class="wikilink wikilink--resolved" href="OD818.html">OD818 - The AI-native Data Engineer</a> — sibling Fabric session on the evolving data-engineer role with agents.</li>
+<li><a class="wikilink wikilink--resolved" href="BRK225.html">BRK225 - Data apps and agents the future of app dev with Rayfin</a> — deep dive on the <strong>Rayfin SDK</strong> that powers Apps in Fabric shown here.</li>
+<li><a class="wikilink wikilink--resolved" href="DEM362.html">DEM362 - Building a Multi-Agent Workflow in Microsoft Fabric</a> — hands-on multi-agent workflows on the same Fabric foundation.</li>
+<li><a class="wikilink wikilink--resolved" href="DEM331.html">DEM331 - Turn APIs tools and data into real agent velocity</a> — complementary take on grounding agents in real data/tools.</li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="OD806.html"><span class="pager-dir">← Previous</span><span class="pager-code">OD806</span><span class="pager-title">.NET 11 in depth: Runtime, libraries, and SDK for the AI era</span></a>
+    <a class="pager pager-next" href="OD812.html"><span class="pager-dir">Next →</span><span class="pager-code">OD812</span><span class="pager-title">Fabric IQ: Bringing enterprise intelligence into the developer workflow</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

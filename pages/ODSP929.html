@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ODSP929 — Build modern .NET apps with Uno Platform, AI, and visual tools</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">ODSP929</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=t_cKjNtB2aU" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Build modern .NET apps with Uno Platform, AI, and visual tools</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Sam Basu (Developer Advocate, Uno Platform)</span>
+      <span class="meta-item">⏱️ 20m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="uno-platform">Uno Platform</span><span class="chip" data-tag="dotnet">.NET</span><span class="chip" data-tag="cross-platform">Cross Platform</span><span class="chip" data-tag="ai">AI</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Sam Basu — Developer Advocate, Uno Platform<br>
+<strong>Duration:</strong> ~20 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=t_cKjNtB2aU">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>A whirlwind partner tour of <strong>Uno Platform</strong> — an open-source stack for building modern cross-platform .NET apps from a single shared C# + XAML codebase that runs on iOS, Android, WebAssembly (web), and Windows/macOS/Linux desktop (plus embedded). On top of the foundational platform sits <strong>Uno Platform Studio</strong>, a suite of AI and design tools: <strong>Hot Design</strong> (a runtime visual designer for a <em>live, running</em> app), <strong>Hot Reload</strong> (keeps running app, design surface, and IDE code in sync), and a built-in <strong>AI agent</strong> for generating UI. The headline theme is grounding AI agents in reality via two out-of-the-box <strong>MCP servers</strong> — an <strong>Uno MCP</strong> (feeds the agent live Uno docs/best practices) and an <strong>Uno App MCP</strong> ("eyes and hands" — essentially <em>Playwright for cross-platform .NET apps</em> that lets the agent screenshot, click, read the visual tree, and validate generated UI). Sam demos Visual Studio scaffolding, the Uno Chefs showcase app with Hot Design, and an AI-built enterprise sales dashboard driven by GitHub Copilot + the MCPs. Closes by teasing a bigger theater session with partner <strong>Kahua</strong> that hints at "a very big announcement and a surprise."</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Single shared C# + XAML codebase → everywhere.</strong> One Uno Platform project targets iOS &amp; Android (mobile), web via WebAssembly, and Windows/macOS/Linux desktop + embedded systems.</li>
+<li><strong>OS/IDE/CLI-agnostic.</strong> Start from any OS, any IDE (Visual Studio, VS Code), any command line, or any agentic workflow. A Visual Studio <strong>Uno Platform extension</strong> smooths the experience.</li>
+<li><strong><code>uno-check</code></strong> is the terminal command/tool that installs all required dependencies and SDKs so you can get up and running on first use.</li>
+<li><strong>Uno Platform Studio</strong> = the AI + design layer on top of the base platform, built to supercharge productivity.</li>
+<li><strong>Hot Design</strong> is a <em>runtime</em> visual designer — you tweak the UI of an app <strong>while it's actually running</strong>, on a real design canvas with a toolbox, visual tree, and live property editing.</li>
+<li><strong>Hot Reload</strong> keeps the running app, the design surface, and the IDE code all in sync — no separate design-time vs runtime; it's all real data, all together.</li>
+<li><strong>Two MCP servers ship out of the box</strong> when Uno detects an Uno Platform project, wired via an <code>mcp.json</code> file: <strong>Uno MCP</strong> (docs grounding) and <strong>Uno App MCP</strong> (UI validation / "eyes and hands").</li>
+<li><strong>Uno MCP</strong> grounds the agent in the latest Uno docs — it can search, fetch multiple pages, summarize, and initialize itself with best practices, so the agent "falls into success."</li>
+<li><strong>Uno App MCP is "Playwright for cross-platform .NET apps"</strong> — the agent can launch the app, take screenshots, read the visual tree, click, paste text, press keys, and <strong>validate</strong> the UI it generated instead of guessing.</li>
+<li><strong>Agent-agnostic AI.</strong> Works with GitHub Copilot, Claude Code ("Cloud Code"), Codex, Gemini, Cursor — from Visual Studio, VS Code, <em>or</em> a terminal-based agent. Same MCP tools everywhere.</li>
+<li><strong>You never need to leave the IDE/terminal.</strong> Doc lookups, builds, launches, UI validation, and design pattern guidance (e.g. MVVM vs MVU/MVUX) all happen in-context.</li>
+<li><strong>Real enterprise proof:</strong> partner <strong>Kahua</strong> runs mission-critical, enterprise-scale cross-platform .NET apps on Uno Platform, using its AI + design tools and embedding AI into the UX.</li>
+<li><strong>AI gallery</strong> on the Uno site showcases UI (Matrix digital rain, a Winamp-classic player, etc.) built with AI that would take "weeks and weeks" by hand — inspiration that the MCP-grounded workflow is real.</li>
+<li><strong>Call to action:</strong> start at <strong>platform.uno</strong>, and catch the live Uno + Kahua theater session at Build, which teases "a very big announcement and a surprise."</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="the-problem-uno-platform-solves">The problem Uno Platform solves</h3>
+<p>Modern .NET is great — until you realize you have to take your .NET apps to <em>all the places</em>. That cross-platform reach is where you need a <strong>foundational platform</strong> that keeps you productive. Uno Platform positions itself as exactly that: a <strong>flexible, open-source stack</strong> for building modern cross-platform .NET apps.</p>
+<p>The core promise is a <strong>single shared codebase of C# and XAML</strong> that produces an app running everywhere:
+- <strong>Mobile:</strong> iOS and Android
+- <strong>Web:</strong> browsers via <strong>WebAssembly</strong>
+- <strong>Desktop &amp; embedded:</strong> Windows, macOS, Linux (and embedded systems)</p>
+<p>On top of that, the developer gets <strong>choice of UI rendering stack</strong>, plus <strong>themes, extensions, toolkits, and lots of prebuilt UI</strong> to accelerate app building.</p>
+<h3 id="whole-lifecycle-thinking">Whole-lifecycle thinking</h3>
+<p>Uno explicitly designs for the <strong>entire lifecycle</strong> of building a cross-platform .NET app:
+- <strong>Start anywhere</strong> — any OS, any IDE (Visual Studio or VS Code), any CLI, any agentic flow.
+- <strong>Simple setup</strong> with lots of tools/utilities to build efficiently.
+- <strong>Run &amp; deploy guidance</strong> to ship to any platform and any device.</p>
+<p>The recommended starting point is <strong>platform.uno</strong> (the website), which links into the <strong>docs</strong> — good for getting situated and getting started — including a <strong>setup guide</strong>. Uno is "fairly agnostic" about environment. If you choose an IDE like Visual Studio, the <strong>Uno Platform extension</strong> makes life easier.</p>
+<h3 id="uno-platform-studio-the-ai-design-layer">Uno Platform Studio (the AI + design layer)</h3>
+<p>Layered on the foundational base is <strong>Uno Platform Studio</strong> — a collection of <strong>AI and design tools</strong> meant to supercharge productivity. Its key pillars:
+- <strong>Hot Design</strong> — a <strong>runtime visual designer</strong> for cross-platform .NET apps. While the app is running, you get a <strong>design canvas</strong> to tweak the UI.
+- <strong>Custom AI agent</strong> — built into the design experience to generate or modify UI for you.
+- <strong>Hot Reload</strong> — keeps everything in sync between the <strong>running app</strong>, the <strong>design surface</strong>, and the <strong>code in the IDE</strong>.</p>
+<h3 id="grounding-ai-the-mcp-story-the-heart-of-the-talk">Grounding AI: the MCP story (the heart of the talk)</h3>
+<p>For developers using <strong>agentic workflows</strong> between terminal and IDE, Uno brings "the context that AI desperately needs" via <strong>MCP (Model Context Protocol)</strong> tools. Two MCP services ship <strong>out of the box</strong>, auto-wired when Uno detects an Uno Platform project (configured through an <strong><code>mcp.json</code></strong> file that the AI agent harness reads):</p>
+<ol>
+<li>
+<p><strong>Uno MCP — documentation grounding.</strong> Brings the context of all the latest Uno docs to the AI agent. The agent can <strong>search the documentation, fetch multiple pages, summarize</strong>, and <strong>initialize itself with best practices</strong> for building Uno Platform apps. The effect: the agent is "falling into a bit of success" because it's grounded in factual, current docs — <strong>no hallucinations</strong>.</p>
+</li>
+<li>
+<p><strong>Uno App MCP — "eyes and hands."</strong> This gives the AI agent the ability to <em>not guess anymore</em> about the UI it builds. Sam frames it as <strong>"Playwright for cross-platform .NET apps."</strong> The agent can:
+   - take a <strong>screenshot</strong> of the running app,
+   - <strong>click</strong> on things in the app,
+   - look at the <strong>visual tree structure</strong>,
+   - read the (PR/default) action,
+   - <strong>paste text</strong>,
+   - perform a <strong>key press</strong>.
+   In short, anything a human tester can do, the AI agent can now do too — which lets it <strong>validate</strong> the UI it generated and gives you far more confidence in whichever agent you use.</p>
+</li>
+</ol>
+<h3 id="demo-flow-1-visual-studio-scaffold-a-fresh-cross-platform-app">Demo flow 1 — Visual Studio: scaffold a fresh cross-platform app</h3>
+<p>On a Windows machine in Visual Studio:
+- First-time users run <strong><code>uno-check</code></strong> (terminal tool) to install all dependencies and SDKs.
+- With the <strong>Uno extension</strong> installed, creating a new app (e.g. named "test") launches a <strong>wizard</strong> that steps through everything you might add to a cross-platform .NET app:
+  - <strong>app runtime</strong>, <strong>target platforms</strong> (iOS, Android, WebAssembly, desktops), <strong>presentation layer</strong>, <strong>markup of choice</strong>, <strong>theme</strong>, <strong>extensions</strong>, <strong>app features</strong>, all the way down to a <strong>CI/CD pipeline</strong>.
+  - All of this is tweakable later; Sam just accepts the defaults and hits create.
+- This <strong>scaffolds a true cross-platform .NET project</strong>, Uno-Platform all the way, cross-platform from the get-go.
+- In the loaded solution, the various <strong>platforms show up as folders</strong>, so platform-specific code is possible where needed, but it's a <strong>single shared codebase</strong>.
+- Running on <strong>desktop</strong> (a fresh build pulls down NuGet dependencies) produces a <strong>super simple starter app</strong> with an <strong>empty shell</strong> to navigate between page one and page two — and it has <strong>Hot Reload and Hot Design wired up from the start</strong>. The same project can run on iOS, Android, WebAssembly, and all desktop targets.</p>
+<h3 id="demo-flow-2-vs-code-on-mac-uno-chefs-hot-design-deep-dive">Demo flow 2 — VS Code on Mac: Uno Chefs + Hot Design deep dive</h3>
+<p>Switching to the Mac in <strong>VS Code</strong> with a more advanced <strong>showcase app, "Uno Chefs"</strong> (open source, in the Uno sample gallery, a recipe app):
+- Deployable to desktop, iOS, Android, or WebAssembly; Sam runs it on desktop.
+- <strong>Hot Reload and Hot Design</strong> are wired up up front. Entering <strong>Hot Design</strong> (the runtime visual designer, app still running) exposes several modes:
+  - <strong>AI agent panel</strong> — ask it to tweak existing UI or build new UI while the app runs.
+  - <strong>Design mode</strong> — full UI design tweaking. Includes a <strong>canvas</strong>, a <strong>toolbox</strong> of drag-and-drop UI, and a <strong>visual design tree</strong> of all UI elements so you can drill down into exactly what to change. Sam drills from a <strong>feed view → value template → item template</strong>, demonstrating <strong>data binding</strong> against <strong>real (not fake) data</strong> — emphasizing there's <strong>no separate design-time vs runtime; it's all together</strong>.
+  - Toggling the <strong>Hot Design button</strong> exits design mode while the <strong>app keeps running</strong> — a key UX win.
+  - <strong>Interactive mode</strong> — use the app exactly as a real user would (tap, navigate). Sam navigates into a <strong>nutrition</strong> page, then re-enters design to <strong>highlight a specific chart view</strong> several layers down; its UI <strong>properties appear on the right</strong>, including <strong>brushes</strong> painting the colors.
+  - Live edit: changing a brush color to <strong>aqua</strong> updates <strong>immediately</strong>. After fully closing and reopening the app to the recipe details page, the <strong>protein brush is now aqua</strong> — confirming the change persisted via the Hot Design + Hot Reload loop between IDE code and running app.</p>
+<h3 id="demo-flow-3-ai-built-enterprise-sales-dashboard-copilot-mcps">Demo flow 3 — AI-built enterprise sales dashboard (Copilot + MCPs)</h3>
+<p>Sam opens a different app: an <strong>enterprise dashboard</strong> (the kind of Salesforce/ERP-style dashboard developers are often asked to build). It's still an Uno Platform app (runs everywhere); he runs it on desktop.
+- Crucially, <strong>he did not hand-code the UI</strong> — <strong>AI agents</strong> did much of the work.
+- He uses <strong>GitHub Copilot</strong> in the inner AI chat, but stresses agent-agnosticism: this works from <strong>Visual Studio or VS Code</strong>, and equally with <strong>Claude Code ("Cloud Code"), Codex, Gemini, or Cursor</strong>.
+- The configuration the agent harness reads is the <strong><code>mcp.json</code></strong> file, which already wires up the <strong>two Uno MCP services</strong> (Uno MCP + Uno App MCP) because the project was detected as Uno Platform.
+- <strong>Starting point options:</strong> he began from a <strong>nice dashboard design</strong>. If you use <strong>design systems</strong>, you can bring assets from <strong>Figma or Penpot ("Pencil")</strong> and have Uno's MCPs talk to those MCPs — or just <strong>start from a screenshot</strong>. The MCP tools then help ensure the UI <strong>looks and behaves</strong> exactly as intended.</p>
+<p><strong>Live AI interaction A — read app state:</strong>
+- Fresh chat prompt: <strong>"launch the app on desktop and tell me the total lead count."</strong>
+- The agent reasons through it: it's a .NET project → reads the <strong>.csproj</strong> → figures out it needs a <strong>build</strong> → how to <strong>launch</strong> → how to <strong>interact</strong>.
+- Tool invocations are <strong>pre-approved</strong> in a couple of workspace spots, so it doesn't prompt before every tool call. <strong>Build is green</strong> → it <strong>launches the Uno app server</strong> → the app runs.
+- The agent takes a <strong>visual tree snapshot</strong> to read the total lead count, gets a <strong>screenshot</strong> (Sam approves it on the workspace), and reads values.
+- Even though <strong>AI built it</strong>, the dashboard still has <strong>Hot Reload + Hot Design</strong> wired in, so Sam can tweak the design as he goes.
+- The dashboard is also <strong>responsive</strong> — running on desktop, but as he <strong>shrinks the UI area</strong> it reflows into a <strong>mobile-suitable form factor</strong> (and can run on web).
+- The agent reports back <strong>"$2,847 is your total income,"</strong> which Sam confirms is <strong>accurate</strong> — proof of MCP-grounded, validated output.</p>
+<p><strong>Live AI interaction B — grounded docs lookup:</strong>
+- Prompt: <strong>"tell me about the MVUX design pattern in Uno Platform apps."</strong>
+- Context: <strong>MVVM</strong> is the common pattern with C# + XAML codebases, but Uno also supports <strong>MVU</strong>, extended as the <strong>MVUX</strong> pattern (shorter dev loop, cleaner approach).
+- The agent does <strong>repeated documentation search + fetch</strong> (about <strong>three different pages</strong>) via the Uno MCP, then <strong>summarizes</strong> how to do MVUX with C# and XAML for Uno Platform apps — returning the <strong>core idea, why it's recommended, the building blocks, and state management</strong>, with an MVUX-vs-MVVM rundown.
+- Sam enables <strong>"bypass all approvals" / "Yolo mode"</strong> to let it run freely (still may need to approve one at a time in spots). The recurring point: <strong>the developer never needs to leave the IDE</strong> — it's all right there, grounded in docs.</p>
+<p><strong>Live AI interaction C — terminal-based agent parity:</strong>
+- Closing the app, Sam runs <strong>GitHub Copilot in the terminal</strong>. It loads up <strong>skills and MCP servers</strong>; inspecting the MCP config shows the <strong>exact same MCP tools</strong> as in Visual Studio / VS Code.
+- Bottom line: your AI agents are <strong>always grounded in factual docs (no hallucinations)</strong>, with <strong>more context</strong> so agents can <strong>test interactive features while the app runs</strong> and <strong>validate the UI</strong> — regardless of IDE or terminal.</p>
+<h3 id="the-ai-gallery-proof-inspiration">The AI gallery (proof + inspiration)</h3>
+<p>Under <strong>Resources</strong> on the Uno site is a whole <strong>AI gallery</strong> — "amazing UI" with incredible, interactive, beautiful UX built <strong>with AI</strong>. Examples called out: a <strong>Matrix digital rain</strong> effect and a <strong>Winamp classic player</strong>. These would take <strong>weeks and weeks</strong> of hand-coding. The message: with the right <strong>specs / requirements document</strong>, plus the ability to <strong>test the UI via MCPs</strong>, "the world is your oyster" — AI agents become a <strong>sidekick</strong> that generates lots of code <em>and</em> validates it.</p>
+<h3 id="enterprise-validation-kahua">Enterprise validation — Kahua</h3>
+<p>Uno's partner <strong>Kahua</strong> is the marquee enterprise success story: cross-platform .NET apps built with Uno Platform, <strong>deployed at enterprise scale</strong> with many <strong>mission-critical apps</strong>. Kahua uses Uno's <strong>AI and design tools</strong> to build modern .NET apps and <strong>includes AI in the user experience</strong> — a model for how to <strong>modernize a .NET codebase</strong> and deploy it cross-platform with AI + design help.</p>
+<h3 id="closing-call-to-action">Closing call to action</h3>
+<p>Back at Build, Sam issues an open invitation:
+- Search the <strong>Build session catalog</strong> for <strong>.NET / Enterprise .NET</strong> — Uno has a session <strong>on stage live with partner Kahua</strong>, promising "a lot more" than this preview, plus a tease of <strong>"a very big announcement and a surprise."</strong>
+- Visit the <strong>booth</strong> in the expo area to talk latest tech / all things AI (and grab swag).
+- <strong>Get started today at platform.uno.</strong></p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Uno Platform</strong> — flexible, open-source stack for building modern cross-platform .NET apps from one shared C# + XAML codebase.</li>
+<li><strong>C# + XAML</strong> — the single shared language/markup combo for Uno apps.</li>
+<li><strong>WebAssembly</strong> — how Uno apps run in the web browser.</li>
+<li><strong>Uno Platform Studio</strong> — the suite of AI + design tools layered on the base platform.</li>
+<li><strong>Hot Design</strong> — runtime visual designer; tweak UI on a canvas while the app is running (toolbox, visual tree, live property/brush editing, interactive mode).</li>
+<li><strong>Hot Reload</strong> — keeps running app, design surface, and IDE code in sync (no design-time/runtime split).</li>
+<li><strong>Uno Platform extension (Visual Studio)</strong> — IDE extension that eases the Uno dev experience (new-app wizard, etc.).</li>
+<li><strong><code>uno-check</code></strong> — terminal tool that installs all Uno dependencies and SDKs for first-time setup.</li>
+<li><strong>MCP (Model Context Protocol)</strong> — the protocol Uno uses to ground AI agents; configured via an <strong><code>mcp.json</code></strong> file.</li>
+<li><strong>Uno MCP</strong> — out-of-the-box MCP server that feeds the agent the latest Uno docs (search, fetch, summarize, best-practice init).</li>
+<li><strong>Uno App MCP</strong> — out-of-the-box MCP server giving the agent "eyes and hands" (screenshot, click, read visual tree, paste text, key press) — "Playwright for cross-platform .NET apps."</li>
+<li><strong>GitHub Copilot</strong> — AI coding agent used in the demos (IDE inner chat <em>and</em> terminal).</li>
+<li><strong>Claude Code ("Cloud Code"), Codex, Gemini, Cursor</strong> — other supported AI agents (Uno is agent-agnostic).</li>
+<li><strong>Visual Studio / VS Code</strong> — supported IDEs demonstrated.</li>
+<li><strong>Uno Chefs</strong> — open-source recipe showcase app from the Uno sample gallery (used to demo Hot Design).</li>
+<li><strong>AI Gallery</strong> — Uno site resource showcasing AI-built UI (Matrix digital rain, Winamp classic player, etc.).</li>
+<li><strong>MVVM</strong> — common design pattern for C# + XAML codebases.</li>
+<li><strong>MVU / MVUX</strong> — Model-View-Update and Uno's extended MVUX pattern (shorter dev loop, cleaner state management).</li>
+<li><strong>Figma / Penpot ("Pencil")</strong> — design-system tools whose MCPs Uno's MCPs can talk to (bring designs over).</li>
+<li><strong>NuGet</strong> — dependency source pulled on first build.</li>
+<li><strong>Kahua</strong> — enterprise partner running mission-critical cross-platform .NET apps on Uno Platform.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p>None explicitly announced in this session. Sam <strong>teases</strong> a "very big announcement and a surprise" reserved for the <strong>live Uno + Kahua theater session</strong> at Build, but no details are revealed here — this is presented as a preview/invitation, not the announcement itself.</p>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Visual Studio scaffolding (Windows):</strong> Created a new Uno app ("test") via the extension wizard (runtime, platforms, presentation layer, markup, theme, extensions, features, CI/CD), accepted defaults, and ran a fresh build on desktop — yielding a starter app with an empty navigation shell and Hot Reload/Hot Design pre-wired. <em>Proved:</em> one wizard scaffolds a true cross-platform .NET project ready to run on iOS/Android/Wasm/desktop.</li>
+<li><strong>Uno Chefs + Hot Design (VS Code, Mac):</strong> Ran the open-source recipe showcase on desktop; entered Hot Design's AI/design/interactive modes; drilled the visual tree (feed view → value template → item template) showing real data binding; used interactive mode to navigate to a chart and changed a <strong>brush to aqua live</strong>, persisting after an app restart. <em>Proved:</em> runtime visual design + Hot Reload edit a <em>running</em> app against real data with no design-time/runtime split.</li>
+<li><strong>AI-built enterprise sales dashboard (GitHub Copilot + MCPs):</strong> Agent launched the app and reported the total lead count and <strong>"$2,847 total income" (confirmed accurate)</strong> by reading the visual tree/screenshot; dashboard shown to be <strong>responsive</strong> (reflows to mobile form factor). <em>Proved:</em> AI agents grounded by the two MCPs can build <em>and validate</em> real UI.</li>
+<li><strong>Grounded MVUX explainer:</strong> Agent fetched ~3 doc pages via Uno MCP and summarized MVUX (core idea, rationale, building blocks, state management; MVUX vs MVVM). <em>Proved:</em> doc-grounded answers without leaving the IDE — "no hallucinations."</li>
+<li><strong>Terminal-agent parity:</strong> Ran GitHub Copilot in the terminal; it loaded the <em>same</em> MCP servers/tools as the IDE. <em>Proved:</em> the grounded experience is identical across IDE and terminal, and agent-agnostic.</li>
+<li><strong>AI Gallery walkthrough:</strong> Showed AI-built UI (Matrix digital rain, Winamp classic player) on the Uno site. <em>Proved:</em> with good specs + MCP-based UI validation, AI can produce UI that would otherwise take weeks by hand.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>"$2,847 is your total income, which is accurate."</strong> — the agent's MCP-validated readout from the AI-built sales dashboard (Sam confirms accuracy as proof the grounding works).</li>
+<li><strong>"This is Playwright for cross-platform .NET apps."</strong> — Sam's framing of the <strong>Uno App MCP</strong> ("eyes and hands" for the agent).</li>
+<li><strong>"No hallucinations."</strong> — repeated claim that agents stay grounded in factual Uno docs via the Uno MCP.</li>
+<li><strong>Targets one codebase → ~6+ platforms:</strong> iOS, Android, WebAssembly/web, Windows, macOS, Linux desktop (plus embedded), from a single shared C# + XAML codebase.</li>
+<li><strong>~3 doc pages fetched</strong> for a single MVUX query, illustrating how the Uno MCP grounds even simple questions.</li>
+<li>AI Gallery apps "would take <strong>weeks and weeks</strong> of coding" by hand (e.g. Matrix digital rain, Winamp classic player).</li>
+<li>Tease: <strong>"a very big announcement and a surprise"</strong> waiting at the live Uno + Kahua session at Build.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Run <code>uno-check</code> and scaffold a new Uno Platform app via the Visual Studio extension wizard; run it on desktop + WebAssembly from the one project.</li>
+<li>Clone/run the <strong>Uno Chefs</strong> showcase app and exercise <strong>Hot Design</strong> (interactive mode → tweak a brush live → confirm Hot Reload persistence).</li>
+<li>Wire up the two MCP servers (<code>mcp.json</code> with <strong>Uno MCP</strong> + <strong>Uno App MCP</strong>) and have GitHub Copilot build a small dashboard, then let the <strong>Uno App MCP</strong> screenshot/validate the UI.</li>
+<li>Try the same MCP flow from a <strong>terminal agent</strong> (Copilot/Claude Code/Codex) to confirm IDE↔terminal parity.</li>
+<li>Browse the <strong>AI Gallery</strong> on platform.uno for prompt/spec inspiration.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>Which model/plan modes give the best results with the Uno App MCP's visual-tree validation loop?</li>
+<li>How well do the Figma/Penpot → Uno MCP handoffs preserve fidelity for real design systems?</li>
+<li>What is the licensing/pricing model for <strong>Uno Platform Studio</strong> (Hot Design + the MCP tooling) vs the open-source base?</li>
+<li>When should I reach for <strong>MVUX</strong> over MVVM in a real Uno app, and what are the migration costs?</li>
+<li>What was the teased "very big announcement" at the Uno + Kahua theater session? (Follow up post-Build.)</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Cross-platform .NET app strategy (single C#/XAML codebase → mobile + web + desktop).</li>
+<li>Agentic/AI-assisted UI development with grounded, validated output (MCP patterns).</li>
+<li>Modernizing legacy .NET codebases for enterprise cross-platform deployment (cf. Kahua).</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Build 2026">Microsoft Build 2026</span></li>
+<li>Uno Platform — https://platform.uno</li>
+<li>MCP (Model Context Protocol) — grounding AI agents in docs + UI validation</li>
+<li>Cross-platform .NET / XAML</li>
+<li>Kahua — enterprise Uno Platform partner</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="ODSP925.html"><span class="pager-dir">← Previous</span><span class="pager-code">ODSP925</span><span class="pager-title">Deliver production-ready AI search on unstructured data with RAG</span></a>
+    <a class="pager pager-next" href="ODSP933.html"><span class="pager-dir">Next →</span><span class="pager-code">ODSP933</span><span class="pager-title">Agentic infrastructure needs agentic observability</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRK241 — From prototype to production: build and run agents at scale</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">BRK241</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=_8UKz197JuM" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">From prototype to production: build and run agents at scale</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Tina Sharkey (CVP, Microsoft Foundry), Jeff Holland (Partner Director, Foundry Agent Platform)</span>
+      <span class="meta-item">⏱️ 43m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="production">Production</span><span class="chip" data-tag="foundry">Foundry</span><span class="chip" data-tag="ai">AI</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Tina Sharkey (Corporate Vice President, Microsoft Foundry) · Jeff Holland (Partner Director, Foundry Agent Platform)<br>
+<strong>Duration:</strong> ~43 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=_8UKz197JuM">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>A live, end-to-end demo of the full agent lifecycle on <strong>Microsoft Foundry</strong>: <strong>build → deploy → operate</strong>, run as one continuous learning-and-improvement loop. Using a real Microsoft scenario (an autonomous <strong>fiber-outage response agent</strong> for the Azure networking operations team), Jeff Holland builds an agent locally in <strong>VS Code with GitHub Copilot</strong> using the now-GA <strong>Microsoft Agent Framework 1.0</strong> (with its new secure <strong>harness</strong>), wires up tools via <strong>Foundry Toolbox</strong>, voice-enables it in seconds, deploys it as a <strong>hosted agent</strong> with per-session sandbox isolation, makes it proactive and long-running with <strong>routines</strong> + <strong>durable task scheduler</strong>, publishes it into <strong>Teams/Microsoft 365 Copilot</strong> as an <strong>autopilot agent</strong> (with its own identity/email), and finally <strong>operates</strong> it — using <strong>trace replay</strong>, auto-generated <strong>eval datasets</strong>, <strong>custom rubrics</strong>, and the <strong>Agent Optimizer</strong> to automatically tune prompts/tools/models for measurable gains (an 11% improvement on a voice-conciseness rubric). The throughline: AI systems are never "done" — they run on production learning loops, and Foundry is the operating system that lets enterprises continuously evolve production agents rather than rebuild from scratch, all with the developer in control of every change.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>The hard part has shifted from "can I build it?" to "can I run it reliably at enterprise scale?"</strong> Coding agents (GitHub Copilot, Copilot CLI, Claude Code) let any developer stand up a powerful agent in minutes; production operation is now the real challenge.</li>
+<li><strong>Agents are general-purpose systems, not static routers.</strong> Modern agents can spawn sub-agents, get full access to their compute environment, create new skills, generate memory, and accomplish tasks they were never explicitly programmed for.</li>
+<li><strong>Agents are teammates, not tools.</strong> They take on business outcomes and do whatever is needed — collaborating with both humans <em>and</em> other agents — across every business function (compliance, finance, supply chain, support).</li>
+<li><strong>Winning enterprises run a coordinated <em>system</em> of agents</strong>, not one super-agent — long-running operators that continuously learn and improve. This demands an operating system for enterprise AI, which is what Foundry positions itself as.</li>
+<li><strong>"AI systems are never done" — they run on production learning loops.</strong> Build → define evals → deploy → feed every action and cost signal back into evaluation/optimization → the system compounds the more it runs. You improve the whole system (model + harness + context + memory), not just fine-tune one model.</li>
+<li><strong>Microsoft Agent Framework 1.0 is production-ready (GA)</strong> with a built-in secure <strong>harness</strong> (execute shell commands; read/write/execute code), integrated skills/memory/middleware, and pluggable harnesses (GitHub Copilot SDK, Claude Agent SDK).</li>
+<li><strong>Foundry Toolbox is <em>the</em> tool feature to remember:</strong> one managed MCP-compatible endpoint for all tools, handling authentication, guardrails (e.g. PII leakage prevention), and <strong>tool search</strong> (returns only relevant tools per task to optimize context-window usage).</li>
+<li><strong>Voice enablement is nearly free:</strong> flip "Voice mode" to wrap a Microsoft Agent Framework agent with industry-leading voice models over a streaming WebSocket connection — no rewrite.</li>
+<li><strong>Hosted agents give per-session sandbox isolation</strong>, sub-second cold start, <strong>zero idle-time cost</strong>, framework-agnostic execution, durable state + file-system access — and now support long-running autonomous ("Claude-like") agents.</li>
+<li><strong>Routines turn agents from reactive to proactive and long-running</strong> — developer-defined events (e.g. an hourly heartbeat) that Foundry queues, executes, and tracks, waking the agent to check logs/anomalies and act.</li>
+<li><strong>Security is solved by isolated sessions:</strong> every conversation/routine gets its own dedicated, isolated workspace with durable persistent state, preventing cross-tenant context/code-execution leakage between (e.g.) subcontractor A and subcontractor B.</li>
+<li><strong>Durable Task scheduler</strong> lets you monitor and resume long-running, serverless agent work across idle sessions — including human-in-the-loop approvals — without rehydrating/restarting state every time.</li>
+<li><strong>Agents can be published to Teams &amp; Microsoft 365 Copilot</strong>, including as <strong>autopilot agents</strong> with their own Azure identity, email address, and Teams presence — able to initiate conversations and follow up on action items, governed end-to-end in <strong>Agent 365</strong>.</li>
+<li><strong>Operate is the hardest phase and where the real work begins.</strong> Foundry's <strong>trace replay view</strong> gives time- and token-level observability into each request's trajectory (reasoning steps, tool calls, inputs/outputs) and can replay a conversation at speed.</li>
+<li><strong>Optimization is automated and rubric-driven:</strong> <code>azd ai agent eval init</code> can auto-generate an eval dataset from historic traces and a <strong>custom rubric</strong> of weighted, context-aware criteria; <code>azd ai agent optimize</code> runs a data-science optimization loop over prompts, tool descriptions, and models to produce ranked candidates compared on quality/cost/latency — developer chooses the winner, with full lineage and rollback.</li>
+<li><strong>Proof it's real:</strong> 80,000+ customers run on Foundry today (Iberdrola, Twilio, KPMG cited), and the demo's optimizer found a candidate giving 11% better performance on the voice-conciseness rubric.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-the-new-era-of-ai-agents-tina">Framing: the new era of AI agents (Tina)</h3>
+<p>Tina Sharkey opens by grounding the audience in three truths about where AI agents are today:
+1. <strong>Building is no longer the hard part.</strong> With coding agents like GitHub Copilot, GitHub Copilot CLI, and Claude Code, any developer can stand up a powerful agent within minutes. The central question has moved from <em>"can I build it?"</em> to <em>"can I run it reliably at enterprise scale?"</em>
+2. <strong>Agent capabilities have exploded.</strong> Agents are no longer static routers shuffling requests between a fixed set of tools. Today's agents can spawn off new agents, have full access to their compute environments, create new skills, generate new memory, and accomplish things they were never originally programmed to do. They are <strong>general-purpose systems</strong>.
+3. <strong>Agents are teammates, not tools</strong> (framed as possibly the biggest shift). We're no longer building chatbots — we're building agents that take on significant business outcomes and do whatever is needed to achieve them, by chatting not only with people but also with other agents.</p>
+<p>Put in a whole-business context (compliance, finance, supply chain, support), the businesses that win <strong>don't just build one super-powerful agent</strong> — they put AI at the core of every function as a <strong>coordinated system of agents</strong> all carrying out business-critical, long-running, high-value tasks. The team of agents becomes a <strong>team of operators</strong>, continuously learning and improving. That demands not just a build, but an <strong>entire operating system for enterprise AI transformation</strong> — which is the positioning of Foundry.</p>
+<h3 id="the-systems-advantage-production-learning-loops">The systems advantage &amp; production learning loops</h3>
+<p>Microsoft's claim is the <strong>most complete system</strong> for enterprises: <strong>Foundry, Azure, GitHub, Microsoft 365, and Microsoft Security</strong> all working as a holistic system rather than siloed tools. The core insight: <strong>AI systems are never done; they run on production learning loops.</strong></p>
+<p>The loop described:
+- <strong>Build</strong> your agent in GitHub (e.g. with GitHub CLI).
+- <strong>Define the eval</strong> to tell the system what "good" looks like.
+- <strong>Deploy</strong> it into Foundry so it runs on production workloads.
+- Every single <strong>action</strong> and <strong>cost signal</strong> is fed into the <strong>evaluation and optimization service</strong>, which continuously learns and improves.
+- <strong>The system compounds the more it runs.</strong></p>
+<p>Crucially, this is <em>not</em> about fine-tuning a single model — it's about improving the <strong>entire system</strong>: tuning models, harness, context, and memory, <strong>with the developer in control of every single change</strong>. The enterprise continually evolves its production agents instead of rebuilding from scratch each time.</p>
+<h3 id="the-demo-scenario-autonomous-fiber-outage-response-agent">The demo scenario: autonomous fiber-outage response agent</h3>
+<p>Microsoft runs the world's largest cloud infrastructure, and sometimes a <strong>fiber cable gets cut near a data center</strong>. The Azure networking operations team has built an agentic system that coordinates with both humans and other agents to respond, dispatch, and resolve such incidents fast. The session builds a simplified version: an <strong>autonomous fiber-outage response agent</strong>.</p>
+<p>End-to-end flow of the target agent:
+- A <strong>sensor detects the fiber outage</strong> and sends a signal that <strong>triggers the agent</strong>.
+- The agent <strong>wakes up</strong> and looks up information via <strong>Foundry Toolbox</strong>:
+  - <strong>Site reliability + location info</strong> via <strong>Fabric IQ</strong>.
+  - <strong>Supplier conversation info</strong> via <strong>Work IQ</strong>.
+  - <strong>Specific work orders + supplier-agreement info</strong> from relevant documents via <strong>Document Intelligence</strong> and <strong>Content Understanding</strong>.
+- It <strong>dispatches a field rep</strong> to respond to the incident.
+- It <strong>files a ticket</strong> to be tracked in <strong>Dynamics 365 (D365)</strong>.
+- It <strong>publishes the latest status into Teams</strong> so everyone is aware.</p>
+<p>The demo is structured into <strong>three developer phases — build, deploy, operate — all inside a continuous learning/improvement loop.</strong></p>
+<hr>
+<h3 id="phase-1-build-jeff">PHASE 1 — BUILD (Jeff)</h3>
+<p><strong>The build-phase challenges:</strong> how do I choose the right framework? the right model? how do I make sure the agent has access to the right organizational context/knowledge — integrated, secured with the right identity, and ready to run in natural interfaces (chat <em>and</em> voice)? The pitch: many of these pieces exist in the ecosystem, but Foundry brings them together as a <strong>single platform</strong> so you don't jump between tools.</p>
+<p><strong>Tooling — use anything, but VS Code + GitHub Copilot is the showcase.</strong> Foundry works with Claude Code, GitHub Copilot CLI, Cursor, Visual Studio, etc. Jeff's preferred combo is <strong>VS Code + GitHub Copilot</strong>, enabled by the <strong>Foundry Tool Kit extension</strong> (now GA). The extension surfaces the whole flow — not just agent creation, but <strong>tracing, evaluations, and model management</strong> — integrated in the editor.</p>
+<p><strong>Creating the agent.</strong> From a blank canvas, options include starting from a <strong>sample</strong> or <strong>"generate with Copilot."</strong> Jeff prompts Copilot to create an agent for the field operations team that, when someone is on site repairing a fiber line, has the right info from <strong>Work IQ / Fabric IQ / Foundry IQ</strong>.</p>
+<p><strong>Baked-in best practices via skills.</strong> A standout feature: the extension automatically integrates <strong>Foundry best-practice skills</strong> ("AI agent expert") into the workload. These skills can be installed standalone into a coding agent, but the extension auto-applies them so generated agents follow Foundry best practices out of the box.</p>
+<p><strong>Framework: Microsoft Agent Framework (Python) + the new harness.</strong> Jeff uses Microsoft's Agent Framework in Python, which is strong at <strong>multi-step / multi-agent workflows</strong>. The key new capability is the <strong>harness</strong> — a <strong>secure environment</strong> that lets the agent <strong>execute shell commands and read/write/execute code</strong>, all managed by the harness. You can plug in the <strong>GitHub Copilot SDK</strong> as an additional harness. The point: agents are no longer limited to predefined configured tools — they can <strong>dynamically investigate, write, and author code</strong> along the way.</p>
+<p><strong>Tools — Foundry Toolbox (the one feature to remember).</strong> Managed right inside VS Code, Toolbox provides:
+- A <strong>single place to configure and manage</strong> a set of tools for one agent or a collection of agents.
+- <strong>Authentication handling</strong> across tools like <strong>Foundry IQ</strong> (indexed documents — e.g. supplier contracts/agreements), <strong>Web IQ / web search</strong>, <strong>Fabric IQ</strong> (site reliability/uptime data surfaced through Fabric), and <strong>Work IQ</strong> (history + integration with Teams/Outlook via the Microsoft Graph).
+- <strong>Guardrails</strong>, e.g. configuring that <strong>PII doesn't leak</strong> from any of these tools.
+- <strong>Tool search:</strong> when enabled, talking to Toolbox through its <strong>single MCP-compatible endpoint</strong> returns only the tools relevant to the specific task — optimizing context utilization / context-window usage and keeping the agent focused on immediate needs.
+- <strong>Thousands of additional tools</strong> available to add.</p>
+<p><strong>Content Understanding (a notable tool).</strong> Jeff highlights <strong>Content Understanding</strong>: given a PDF that contains tabular data (not natively agent-readable), it uses a <strong>specialized model</strong> to convert documents/contracts/specs into an <strong>agent- and AI-ready format</strong> — extracting tables, markdown, figures, or raw JSON. (He flags a dedicated Content Understanding session the next day.)</p>
+<p><strong>Local debug — F5 the agent.</strong> Echoing Satya's keynote theme of UI and code working together, Jeff <strong>F5-debugs</strong> the agent: it spins up locally, <strong>connects to Toolbox</strong> via a single MCP-compatible endpoint line, and runs on localhost. He sets a <strong>breakpoint</strong>, asks the agent an on-site connection-type question, the breakpoint hits, and he can inspect request/response and watch <strong>events streaming in and out</strong> — all without leaving VS Code. This demonstrates the build flow: pull the right tools from the right context (web/Foundry/Fabric/Microsoft Graph via Work IQ), connect them with a framework whose harness can look up the needed specification.</p>
+<p><strong>Voice-enabling the agent.</strong> For a field contractor wearing leather work gloves, a chat interface is a poor experience — so Jeff voice-enables the agent. He <strong>deploys the agent into Foundry</strong> (taking the code he wrote and pushing it to his Foundry account), switches to a pre-deployed version, and toggles <strong>"Voice mode."</strong> Foundry <strong>automatically wraps industry-leading voice models</strong> (configurable — choose the right voice model) onto what was built as a Microsoft Agent Framework agent. Over a <strong>streaming WebSocket</strong> voice connection, he asks it to pull the <strong>fiber termination spec for the Quincy North Site</strong> and which connector to use on the <strong>B-side panel</strong>; the agent streams progress updates ("Pulling that up now," "Getting the spec now") while iterating through Toolbox, then answers: <strong>Connector family — LC/UPC duplex required on the B-side panel.</strong></p>
+<hr>
+<h3 id="phase-1-recap-features-shown-tina">PHASE 1 RECAP — features shown (Tina)</h3>
+<ul>
+<li><strong>Microsoft Agent Framework 1.0 — production ready (GA).</strong> Built-in harness integrated with skills, memory, and middleware; plugin integrations with harnesses like the <strong>GitHub Copilot SDK</strong> and <strong>Claude Agent SDK</strong>.</li>
+<li><strong>Foundry Toolkit for VS Code — GA.</strong> Purpose-built developer experience for building Foundry agents without leaving the editor.</li>
+<li><strong>Toolboxes in Foundry — GA soon.</strong> One single managed endpoint for all the tools powering agents, with the right governance and policy. <strong>Skills are now a first-class integration</strong> with Toolboxes.</li>
+<li><strong>Voice Live integration with Foundry Agent Service</strong> — <strong>GA today</strong> for prompt agents; <strong>public preview</strong> for hosted agents (speech/voice scenarios).</li>
+<li><strong>Hosted agents in Foundry Agent Service — GA soon.</strong> Per-session sandbox isolation, sub-second cold start, zero idle-time cost, framework-agnostic; now supports long-running autonomous agents with durable state execution and file-system access.</li>
+</ul>
+<hr>
+<h3 id="phase-2-deploy-jeff">PHASE 2 — DEPLOY (Jeff)</h3>
+<p><strong>The deploy-phase challenges.</strong> The transformative agents aren't reactive Q&amp;A bots — they're <strong>long-running</strong>, maintaining and building context over time, accomplishing tasks that take <strong>days or weeks</strong>, securely. Because harness agents read/write code, <strong>instances must be isolated</strong> from each other. They must reach users through the <strong>interfaces users care about</strong> (don't make everyone bookmark 10 agents), and each agent increasingly behaves like a <strong>proactive teammate</strong> offering suggestions.</p>
+<p><strong>Meet "Fiby" — a Claude-like agent.</strong> Jeff introduces a different flavor of the agent called <strong>Fiby</strong> (the fiber agent), a <strong>Claude-like agent</strong> that <strong>monitors telemetry and uptime</strong> for the networking infrastructure over time.</p>
+<p><strong>Routines — reactive → proactive.</strong> A new Foundry feature, <strong>routines</strong> let you define events that proactively wake the agent. Jeff configures a simple <strong>hourly heartbeat</strong>: every hour, wake up, <strong>check the investigation log</strong>, look for <strong>anomalies</strong>, and if found, <strong>follow the agent's skills</strong> to alert the right person and issue the right subcontractor. (The real Azure networking team does this: on a networking incident, an agent can act automatically, wait for human approval as needed, and get someone on site.) The heartbeat is what makes the agent proactive — it checks for anomalies on its own, and the demo shows it has been firing routines over time.</p>
+<p><strong>Security via isolated sessions.</strong> People often dedicate a whole Windows box or Mac Mini to a Claude-like agent so its workspace stays secure. The risk: if <strong>subcontractor A</strong> and <strong>subcontractor B</strong> both interact with Fiby, and Fiby reads/writes files with subcontractor A's sensitive data saved locally, <strong>subcontractor B's session could pull those files</strong> — leaking context and code execution. Foundry's <strong>hosted agent capability (GA soon)</strong> solves this: <strong>every conversation/routine can kick off its own dedicated, isolated workspace</strong>, so everything one session does is separate from every other — yet with <strong>durable persistent state</strong>. Jeff opens a session idle since 11 a.m., views its <strong>logs</strong> and <strong>inspects the file-system state</strong> at idle: saved files for anomaly analysis, vendor contacts, investigation — "breadcrumbs" the agent writes just like a local Claude-like agent, <strong>but securely in the cloud</strong>.</p>
+<p><strong>Zero idle cost + resume.</strong> While idle (e.g. waiting for approval, or no event found), <strong>you pay nothing</strong>. When it needs to wake, Foundry <strong>resumes the session</strong>, restoring all state (investigation files) so the agent continues its work.</p>
+<p><strong>Durable Task scheduler — monitor &amp; resume across idle sessions.</strong> Jeff extends the out-of-the-box sessions with the <strong>durable task scheduler</strong> (integrated via the <strong>Microsoft Agent Framework extension for durable task</strong>) to monitor state even when all sessions are idle. Example: Fiby woke, found something, and has been <strong>waiting 2–3 hours for human approval</strong>; all sessions are idle and serverless, but durable task tracks the pending-approval instance. Jeff clicks <strong>Approve</strong> → durable task records the approval and tells Foundry to <strong>resume the session</strong> → the Foundry session view shows the session <strong>woke back up</strong>, restored all prior investigation files, and <strong>continued the work</strong> — long-running, secure, with <strong>human intervention but no manual rehydration/restart</strong> of state.</p>
+<p><strong>Publish to Teams &amp; Microsoft 365 Copilot.</strong> Any built agent can be made available to the whole team — not only via routines or custom apps (like the Fiby portal) but <strong>published to Teams and Microsoft 365 Copilot</strong>, with a guided deployment flow. The demo's agent is already deployed and <strong>working as an autonomous agent in Teams</strong> with <strong>its own identity and even its own email address</strong> (shown as <code>fiby@notareal.co</code>). Jeff asks it in Teams about <strong>active incidents</strong>; the same agent that ran inside Foundry <strong>resumes or starts a session</strong> and returns a status update — demonstrating Claude-like agents integrated into Teams with all the critical building blocks within Foundry.</p>
+<hr>
+<h3 id="phase-2-recap-features-shown-tina">PHASE 2 RECAP — features shown (Tina)</h3>
+<ul>
+<li><strong>Routines (Foundry Agent Service) — public preview.</strong> Turn an agent from reactive to proactive and long-running. Developer decides what needs to happen and when; Foundry <strong>queues, executes, and tracks</strong> every run. Converts one-off reactive tasks into proactive, continuous agents.</li>
+<li><strong>Publish to Microsoft 365 Teams &amp; Copilot — GA soon.</strong> Publish Foundry agents into Teams/Copilot where teams already work; <strong>identity, policy, and permissions flow through automatically</strong>.</li>
+<li><strong>Autopilot agents in Teams — public preview.</strong> Publish Foundry agents as <strong>autopilot agents</strong> that take on <strong>Azure (Entra) IDs, email addresses, and Teams presence</strong>; they can <strong>initiate conversations</strong> and <strong>follow up on action items</strong>, all governed end-to-end in <strong>Agent 365</strong>.</li>
+</ul>
+<p>Progress so far: built locally → hosted in a sandbox → published as an autopilot agent in Teams. Next: the hard part — <strong>operate</strong>.</p>
+<hr>
+<h3 id="phase-3-operate-jeff">PHASE 3 — OPERATE (Jeff)</h3>
+<p>Billed as "the last and maybe the best chapter." <strong>This is where the real work begins:</strong> building/prototyping cool agents takes hours/days, but making the agent <strong>trusted in production</strong> is the challenge — understanding how people use it, what signals occur, what succeeds/fails, and where to improve.</p>
+<p><strong>The tuning dilemma.</strong> When an agent misbehaves, <em>which variable do you tune?</em> The components include the <strong>underlying model</strong>, the <strong>toolbox/tools</strong>, <strong>your own code</strong>, and the <strong>instructions in your code</strong>. It's overwhelming and time-consuming — and this last mile is what Foundry aims to make robust.</p>
+<p><strong>Visibility — Trace Replay view.</strong> In the Fiby agent, Jeff sees all conversations across the agent and opens a request in the <strong>new trace replay view</strong>:
+- See the <strong>question asked</strong> and <strong>answer given</strong>, plus the <strong>full trajectory</strong> the request took.
+- Example trajectory: reasoning on the model (~20s) → call a tool → reason → call another tool. Click into any step for <strong>exact inputs/outputs</strong>.
+- View it from a <strong>time perspective</strong> <em>and</em> a <strong>token perspective</strong> — where tokens are consumed throughout the request.
+- <strong>Replay</strong> the whole conversation at speed (he runs it at <strong>8× speed</strong>) to watch each phase, what the agent was doing, and what the user saw throughout — observability at your fingertips.</p>
+<p><strong>A real improvement target — voice conciseness.</strong> Real feedback from building the demo: the voice-enabled agent answered the fiber-spec question in a <strong>very "LLM" way — a bullet-point list</strong>, which sounds robotic when read aloud by a voice. Jeff wants to optimize the agent to return a <strong>more voice-natural response</strong> — but <em>which variable</em> to tune?</p>
+<p><strong>Eval init — <code>azd ai agent eval init</code>.</strong> Jeff drops to the terminal and runs the <strong>Azure Developer CLI (azd)</strong> command <code>ai agent eval init</code> on the field-operations agent. It initializes the project for evaluations and benchmarks. Two problems it solves:
+- <strong>No eval dataset?</strong> Many people talk about evals but don't have a dataset. Foundry can <strong>auto-generate</strong> one: it looks through <strong>historic traces</strong> and additional signals about your agent and uses an <strong>LLM</strong> to suggest an initial starting-point dataset based on how the agent is actually being interacted with.
+- <strong>The right evaluation logic/evaluator.</strong> Out of the box Foundry has <strong>built-in evaluators</strong> — tool selection, tool output, tool input, retrieval evaluation, fluency evaluator, and more. Because picking the right combination is overwhelming, the tool can <strong>generate the right combination of evaluators</strong> (and even a custom rubric) for your specific agent.</p>
+<p><strong>Custom rubric — context-aware, weighted, editable.</strong> The generated <strong>custom rubric</strong> isn't a single dimension — an LLM suggested <strong>multiple weighted dimensions</strong> likely important for this agent, e.g.:
+- <strong>Correct tool use</strong> (highest weight) — e.g. uptime questions should use <strong>Fabric IQ</strong>.
+- <strong>Safety warning</strong> — a big, custom-to-this-agent concern.
+- <strong>Voice-optimized conciseness</strong> — initially weighted <strong>3</strong>.</p>
+<p>Acting on the real feedback, Jeff <strong>bumps voice-optimized conciseness from 3 to 10</strong> so the evaluator weights voice-friendliness much more heavily. The rubric is fully editable/customizable, yielding a <strong>personalized evaluator</strong> for the scenario.</p>
+<p><strong>Optimize — <code>azd ai agent optimize</code> (favorite command).</strong> With the dataset (questions + answers, pre-generated) and the custom evaluator, Jeff runs <code>azd ai agent optimize</code>. It detects the agent is already initialized for evaluations and considers, as <strong>variables to tune</strong>:
+- the <strong>system prompts / instructions</strong> (both in-code instructions and configured behavior),
+- any <strong>skills</strong> configured for the agent,
+- the <strong>tool configuration</strong>,
+- the <strong>target model</strong> (e.g. GPT-5.5 vs. Anthropic Opus 4.8 — model can be a variable too).</p>
+<p>He picks a model to <strong>drive the optimization process</strong> (leaves it at <strong>GPT-5</strong>). This kicks off an <strong>automatic optimization loop</strong> (takes a couple dozen minutes) that adjusts the variables — "what if I modify your system prompts? your tool descriptions? use a different model?" — using <strong>leading data-science techniques</strong> to find better candidate versions of the agent against the custom rubric.</p>
+<p><strong>Results — ranked candidates with measurable gains.</strong> Jumping to a finished run, the optimizer reports it found a candidate that <strong>boosts the evaluator by 11%</strong> (11% better performance just from letting it run). It identified <strong>four candidates</strong>, each with different pros/cons. You can see exactly <strong>what changed</strong> (old system prompt vs. a new, better-behaving system prompt), <strong>dive into score details</strong> and the eval sets tested against, then <strong>deploy the chosen candidate as the new default version</strong> — getting the voice-conciseness improvement. The whole loop is <strong>AI-powered/automated</strong>, and that power is being put into developers' hands.</p>
+<hr>
+<h3 id="phase-3-recap-features-shown-tina">PHASE 3 RECAP — features shown (Tina)</h3>
+<ul>
+<li><strong>Tracing &amp; evaluation for hosted agents.</strong> Every invocation, tool call, sub-second hop, and handoff is logged in <strong>one OpenTelemetry pipeline</strong>.</li>
+<li><strong>Rubric for custom evaluation — public preview.</strong> Auto-generates <strong>context-aware criteria and weighted scoring</strong> to define what "good" looks like for both evaluation and optimization, so developers don't start from scratch.</li>
+<li><strong>Agent Optimizer for Foundry Agent Service — private preview.</strong> Turns <strong>production traces and evals</strong> into a set of <strong>ranked candidates</strong> by tweaking <strong>skills, prompts, tool configuration, and even models</strong>. Candidates are shown <strong>side by side across quality, cost, and latency</strong>; the <strong>developer stays in control</strong> to choose the winning variant to promote, with <strong>full trace-back/lineage</strong> and <strong>rollback</strong> available. ("The platform finds optimization; developers in control on every change.")</li>
+<li><strong>Procedural memory in Foundry Agent Service — public preview.</strong> Lets the agent <strong>learn the playbook across all sessions</strong>, so it doesn't relearn from scratch each conversation — no manual rewrite of prompts or skills. The agent becomes <strong>smarter, safer, and cheaper</strong> the more it runs, with developer control over every change.</li>
+</ul>
+<h3 id="closing-proof-customers-and-the-through-line-tina">Closing — proof, customers, and the through-line (Tina)</h3>
+<p>This is "not just a roadmap promise." <strong>Over 80,000 customers</strong> run on Foundry today, already using production agents to drive significant business outcomes:
+- <strong>Iberdrola</strong> — scaling mission-critical energy operations across <strong>14 countries</strong>, leveraging identity, memory, governance, and observability from Foundry Agent Service with full control over <strong>regulated operations</strong>.
+- <strong>Twilio</strong> — deployed <strong>Twilio Agent Connect</strong>, their open-source framework connecting AI agents with the Twilio platform, running on <strong>hosted agents in Foundry</strong>.
+- <strong>KPMG</strong> — building their global <strong>KPMG Workbench</strong> platform on hosted agents, using tools and skills in <strong>Foundry Toolbox</strong> to supercharge client interactions worldwide.</p>
+<p><strong>The 43-minute journey recapped:</strong> started from a real scenario (fiber cut near a data center) → <strong>built</strong> an agent locally with <strong>Microsoft Agent Framework</strong> as orchestrator → connected <strong>Foundry Toolbox, Foundry IQ, memory, voice, Document Intelligence, and Content Understanding</strong> → ran it as a <strong>hosted agent</strong> in an isolated secure runtime → <strong>published</strong> it into <strong>Teams as a Copilot agent</strong> → <strong>operated</strong> it so it works autonomously, is traced end-to-end, governed in production, and <strong>meaningfully improves through every run</strong>. The promise: <strong>"Build simply, deploy powerfully, operate with trust"</strong> — seamless hosting, connected intelligence, enterprise trust and reach, all in one runtime, available to every developer.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Microsoft Foundry</strong> — the end-to-end platform / "operating system" for building, deploying, and operating enterprise AI agents.</li>
+<li><strong>Foundry Agent Service</strong> — the service hosting/running agents, with routines, hosted agents, tracing/eval, memory, and optimization.</li>
+<li><strong>Microsoft Agent Framework 1.0</strong> — production-ready (GA) orchestration framework (used in Python here) with a built-in secure harness, skills, memory, middleware; strong at multi-step/multi-agent workflows.</li>
+<li><strong>Agent harness</strong> — secure managed environment letting an agent execute shell commands and read/write/execute code dynamically.</li>
+<li><strong>Foundry Toolkit for VS Code</strong> — GA editor extension for building Foundry agents (agent creation, tracing, evaluations, models) without leaving VS Code; auto-applies Foundry best-practice skills.</li>
+<li><strong>Foundry Toolbox</strong> — single managed, MCP-compatible endpoint for all tools; handles auth, guardrails (e.g. PII), and <strong>tool search</strong> (returns only relevant tools per task).</li>
+<li><strong>Tool search</strong> — Toolbox feature returning only task-relevant tools to optimize context-window usage.</li>
+<li><strong>Skills</strong> — reusable best-practice capabilities; now a first-class integration with Toolboxes and installable into coding agents.</li>
+<li><strong>Foundry IQ</strong> — indexed document knowledge (e.g. supplier contracts/agreements) surfaced as a tool.</li>
+<li><strong>Fabric IQ</strong> — site reliability/uptime and location data surfaced through Microsoft Fabric.</li>
+<li><strong>Work IQ</strong> — history + Microsoft Graph integration (Teams/Outlook) surfaced as a tool.</li>
+<li><strong>Web IQ / web search</strong> — web knowledge as a tool.</li>
+<li><strong>Content Understanding</strong> — specialized model converting PDFs/contracts/specs (incl. tabular data) into agent/AI-ready formats (tables, markdown, figures, raw JSON).</li>
+<li><strong>Document Intelligence</strong> — document extraction service used alongside Content Understanding for work orders/agreements.</li>
+<li><strong>Voice Live</strong> — Foundry integration that wraps agents with industry-leading streaming voice models over WebSocket ("Voice mode").</li>
+<li><strong>Hosted agents</strong> — Foundry-managed agent runtime: per-session sandbox isolation, sub-second cold start, zero idle cost, framework-agnostic, durable state + file-system access.</li>
+<li><strong>Routines</strong> — developer-defined proactive triggers/events (e.g. hourly heartbeat) that Foundry queues, executes, and tracks.</li>
+<li><strong>Durable Task scheduler</strong> — serverless orchestration to monitor/resume long-running agent work across idle sessions, including human approvals; integrated via the <strong>Microsoft Agent Framework extension for durable task</strong>.</li>
+<li><strong>Procedural memory</strong> — lets agents learn a playbook across all sessions (public preview).</li>
+<li><strong>Trace replay view</strong> — observability UI showing a request's full trajectory by time and tokens, with step-level inputs/outputs and speed replay.</li>
+<li><strong>OpenTelemetry pipeline</strong> — single pipeline logging every invocation/tool call/hop/handoff for hosted agents.</li>
+<li><strong>Custom rubric / evaluators</strong> — auto-generated, context-aware, weighted evaluation criteria; built-in evaluators include tool selection, tool input, tool output, retrieval, and fluency.</li>
+<li><strong>Agent Optimizer</strong> — turns production traces + evals into ranked candidate agents (tuning skills, prompts, tool config, models), compared on quality/cost/latency, with lineage and rollback (private preview).</li>
+<li><strong>Azure Developer CLI (azd)</strong> — used via <code>azd ai agent eval init</code> and <code>azd ai agent optimize</code> to initialize evals and run the optimization loop.</li>
+<li><strong>GitHub Copilot / GitHub Copilot CLI / GitHub Copilot SDK</strong> — coding agents and a pluggable harness/SDK for Agent Framework.</li>
+<li><strong>Claude Code / Claude Agent SDK</strong> (rendered from caption "Cloud Code"/"Cloud Agent SDK") — Anthropic coding agent and a pluggable harness/SDK.</li>
+<li><strong>Microsoft 365 Copilot &amp; Microsoft Teams</strong> — publish targets for Foundry agents (identity/policy/permissions flow through).</li>
+<li><strong>Autopilot agents</strong> — agents published to Teams with their own Entra/Azure ID, email address, and Teams presence; can initiate conversations/follow-ups.</li>
+<li><strong>Agent 365</strong> — governance layer providing end-to-end control over autopilot agents.</li>
+<li><strong>Dynamics 365 (D365)</strong> — ticketing/tracking system the target agent files incidents into.</li>
+<li><strong>VS Code, Visual Studio, Cursor</strong> — supported editors; Claude Code/Copilot CLI also supported.</li>
+<li><strong>Models referenced</strong> — GPT-5, GPT-5.5, Anthropic Opus 4.8 (as selectable target/optimization-driver models).</li>
+<li><strong>Customer platforms</strong> — Twilio Agent Connect (Twilio), KPMG Workbench (KPMG).</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Microsoft Agent Framework 1.0 — GA / production-ready</strong> (built-in harness; integrates skills, memory, middleware; plugins for GitHub Copilot SDK and Claude Agent SDK).</li>
+<li><strong>Foundry Toolkit for VS Code — GA.</strong></li>
+<li><strong>Toolboxes in Foundry — GA "soon";</strong> Skills now a first-class integration with Toolboxes.</li>
+<li><strong>Voice Live integration with Foundry Agent Service — GA today</strong> for prompt agents; <strong>public preview</strong> for hosted agents.</li>
+<li><strong>Hosted agents in Foundry Agent Service — GA "soon"</strong> (per-session sandbox isolation, sub-second cold start, zero idle cost, framework-agnostic, durable state + file-system access; supports long-running autonomous agents).</li>
+<li><strong>Routines (Foundry Agent Service) — public preview.</strong></li>
+<li><strong>Publish to Microsoft 365 Teams &amp; Copilot — GA "soon"</strong> (identity/policy/permissions flow through automatically).</li>
+<li><strong>Autopilot agents in Teams — public preview</strong> (own Entra ID, email, Teams presence; governed in Agent 365).</li>
+<li><strong>Rubric for custom evaluation — public preview.</strong></li>
+<li><strong>Agent Optimizer for Foundry Agent Service — private preview.</strong></li>
+<li><strong>Procedural memory in Foundry Agent Service — public preview.</strong></li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Build an agent in VS Code (live):</strong> Generate a fiber field-operations agent with GitHub Copilot in the Foundry Toolkit; auto-applied best-practice skills; built on Microsoft Agent Framework (Python) with the new harness.</li>
+<li><strong>Wire up tools via Foundry Toolbox:</strong> Configure Foundry IQ, Fabric IQ, Work IQ, Web IQ, plus guardrails and tool search through one MCP-compatible endpoint; connect Content Understanding to make a tabular PDF spec agent-readable.</li>
+<li><strong>F5 local debug:</strong> Run the agent on localhost, hit a breakpoint on an on-site connection-type question, inspect request/response and streaming events.</li>
+<li><strong>Voice enablement:</strong> Toggle "Voice mode," then ask by voice for the <strong>Quincy North Site</strong> fiber-termination spec; agent streams progress and answers <strong>LC/UPC duplex on the B-side panel</strong> over a WebSocket voice connection.</li>
+<li><strong>"Fiby" — Claude-like long-running agent:</strong> Configure an hourly <strong>routine/heartbeat</strong> to check the investigation log for anomalies and act.</li>
+<li><strong>Isolated sessions + file-system inspection:</strong> Open a session idle since 11 a.m., view logs and the saved file-system state (anomaly analysis, vendor contacts, investigation breadcrumbs) — secure in the cloud, zero idle cost.</li>
+<li><strong>Durable Task human-in-the-loop:</strong> A pending-approval instance waited 2–3 hours with all sessions idle; clicking <strong>Approve</strong> resumes the session, restores state, and continues work — shown live across the Durable Task and Foundry session views.</li>
+<li><strong>Publish to Teams as an autopilot agent:</strong> Fiby running in Teams with its own identity/email (<code>fiby@notareal.co</code>); asked about active incidents, it resumes/starts a session and replies.</li>
+<li><strong>Trace replay (operate):</strong> Inspect a request's trajectory by time and tokens, click into step inputs/outputs, and <strong>replay the conversation at 8× speed</strong>.</li>
+<li><strong>Eval + optimize loop:</strong> <code>azd ai agent eval init</code> auto-generates an eval dataset and a custom weighted rubric (bumping voice-conciseness weight 3 → 10); <code>azd ai agent optimize</code> runs the optimization loop and surfaces ranked candidates — one giving <strong>+11%</strong> on the rubric — ready to deploy as the new default. (A few live-demo hiccups — a misplaced browser tab/URL — were handled on stage.)</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>80,000+ customers</strong> running on Foundry today.</li>
+<li><strong>Iberdrola</strong> scaling mission-critical energy operations across <strong>14 countries</strong>.</li>
+<li>Optimizer found a candidate giving <strong>~11% better performance</strong> on the voice-conciseness rubric.</li>
+<li>Trace example: initial model reasoning took <strong>~20 seconds</strong> before the first tool call; replay shown at <strong>8× speed</strong>.</li>
+<li>Voice-conciseness rubric weight changed from <strong>3 → 10</strong>.</li>
+<li>Session framed as <strong>~45 minutes</strong> to go from a local laptop agent to one running across <strong>thousands of conversations</strong> in production.</li>
+<li>Fiber spec answer: <strong>Connector family — LC/UPC duplex required on the B-side panel</strong> (Quincy North Site).</li>
+<li><strong>"Building is no longer the hard part... The question has shifted from can I build it to can I run it reliably at enterprise scale?"</strong> — Tina Sharkey.</li>
+<li><strong>"Agents are teammates, not tools."</strong> — Tina Sharkey.</li>
+<li><strong>"AI systems are never done. They run on production learning loops."</strong> — Tina Sharkey.</li>
+<li><strong>"Build simply, deploy powerfully, operate with trust."</strong> — closing tagline.</li>
+<li><strong>"This is as live as it gets"</strong> — Jeff Holland, on the unscripted demo.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Install the <strong>Foundry Toolkit for VS Code</strong> (GA) and scaffold an agent with <strong>Microsoft Agent Framework 1.0</strong> + the new <strong>harness</strong>.</li>
+<li>Stand up a <strong>Foundry Toolbox</strong> with <strong>tool search</strong> + PII guardrails over a single MCP endpoint; connect an IQ source (Foundry IQ / Fabric IQ / Work IQ).</li>
+<li>Run <strong>Content Understanding</strong> on a tabular PDF to get agent-ready markdown/JSON.</li>
+<li>Voice-enable an agent via <strong>Voice Live</strong> and test the streaming WebSocket experience.</li>
+<li>Configure a <strong>routine/heartbeat</strong> on a <strong>hosted agent</strong> and verify per-session isolation + zero idle cost.</li>
+<li>Wire up the <strong>Durable Task scheduler</strong> for a human-in-the-loop approval that resumes state.</li>
+<li>Build the eval → optimize loop with <code>azd ai agent eval init</code> / <code>azd ai agent optimize</code>, generate a <strong>custom rubric</strong>, and review ranked candidates by quality/cost/latency.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What are the exact GA dates / regions behind the many "GA soon" items (hosted agents, Toolboxes, Publish to Teams)?</li>
+<li>Pricing model for hosted agents (zero idle cost — but per-session/runtime billing details)?</li>
+<li>How does <strong>procedural memory</strong> interact with isolated sessions and PII guardrails?</li>
+<li>What's the model/eval cost of running <code>azd ai agent optimize</code> loops at scale?</li>
+<li>How is <strong>Agent 365</strong> governance configured for autopilot-agent identities/emails?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Azure/AI platform teams building production, long-running, multi-agent systems.</li>
+<li>Anyone moving an agent prototype to governed, observable, self-improving production.</li>
+<li>Ops/SRE-style "agent as teammate" automation (incident response, dispatch).</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+<li>Microsoft Build 2026 — Content Understanding session (referenced for the next day)</li>
+<li>Microsoft Build 2026 — Claude-like / autonomous agents session (referenced for next morning)</li>
+<li>Microsoft Build 2026 — Observability session (referenced as the following session)</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="BRK240.html"><span class="pager-dir">← Previous</span><span class="pager-code">BRK240</span><span class="pager-title">Build context-aware agents: From data to decisions</span></a>
+    <a class="pager pager-next" href="BRK242.html"><span class="pager-dir">Next →</span><span class="pager-code">BRK242</span><span class="pager-title">Turn your agents into action: Connect tools, APIs, and documents</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

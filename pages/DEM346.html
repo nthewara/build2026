@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEM346 — WSL improvements and the new Containers CLI and APIs</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEM346</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=i0M13ZvL04M" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">WSL improvements and the new Containers CLI and APIs</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Pooja Trivedi, Craig</span>
+      <span class="meta-item">⏱️ 23m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="wsl">Wsl</span><span class="chip" data-tag="containers">Containers</span><span class="chip" data-tag="windows">Windows</span><span class="chip" data-tag="devtools">Devtools</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Pooja Trivedi (Architect, developer experiences in AI for Linux on Windows) · Craig (Product Manager, Windows Subsystem for Linux &amp; AI tools on Windows)<br>
+<strong>Duration:</strong> ~23 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=i0M13ZvL04M">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Microsoft is shipping <strong>WSL containers</strong> — the ability to run Linux containers locally on Windows, delivered as a built-in part of the Windows Subsystem for Linux (no third-party tools, no daemons to start). It exposes two front doors over the same engine: a <strong><code>WSLc</code> command-line tool</strong> (also aliased to <code>container</code>) whose syntax closely mirrors standard Linux container CLIs, and a <strong>.NET API</strong> shipped as a <strong>NuGet package</strong> that lets Windows applications create and manage Linux containers transparently. Containers can map ports to <code>localhost</code>, mount Windows volumes, and tap the host <strong>GPU</strong> for AI workloads. Under the hood, every app (and the CLI) gets its own isolated lightweight utility VM with a hypervisor security boundary, running the <strong>Moby</strong> runtime, communicating via <strong>HV sockets</strong> and sharing files over <strong>VirtIOFS</strong> (~2× faster than the older Plan 9 protocol). It's built to be <strong>enterprise-ready</strong> (Intune, MDE work against it), fully <strong>open source</strong>, and targets <strong>public preview by end of June</strong>.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>WSL containers</strong> lets you run <strong>Linux containers locally on Windows</strong>, both via a CLI and via an API embedded in Windows apps.</li>
+<li>It ships <strong>as part of WSL</strong> — you get it via a simple <code>wsl --update</code>; <strong>no new install, no third-party tools, no daemons</strong> ("no fasting rituals").</li>
+<li>The CLI tool is <strong><code>WSLc</code></strong>, internally <strong>aliased to <code>container</code></strong>; its subcommands, options and switches <strong>track closely to standard Linux container tooling</strong> (familiar to Docker/Podman users).</li>
+<li>Common flows demoed: <code>run -it</code> an interactive Debian container, detach with <strong>Ctrl-P Ctrl-Q</strong>, list with <code>ps -a</code> / <code>container list</code>, <code>attach</code>, <code>build</code> custom images from a <strong>container file</strong>, <code>images</code>, and <strong>port mapping</strong> with <code>-p</code>.</li>
+<li>Containers can <strong>expose services to the Windows host</strong> — e.g. a web server on port 5000 reached via <code>127.0.0.1</code>/localhost.</li>
+<li>Containers can <strong>mount Windows directories</strong> as volumes (<code>-v</code>) and <strong>access the host GPU</strong> (<code>--gpus all</code>) for AI / graphical / compute scenarios.</li>
+<li>The <strong>API</strong> is a <strong>NuGet package</strong>; container build is integrated into the <strong><code>.csproj</code></strong> (item group) for a single <strong>F5 / one-build</strong> experience — the container file lives alongside app source.</li>
+<li>Both CLI and API are <strong>"two doors for the same engine"</strong>, all powered by the same <strong>WSL VM</strong> technology that powers WSL distributions.</li>
+<li><strong>Architecture:</strong> each Windows app (and the CLI flow) gets its <strong>own dedicated lightweight utility VM</strong> → <strong>hypervisor boundary per app</strong>, with isolated names, volumes, networks, storage (per-app <strong>VHD</strong>) — no conflicts.</li>
+<li>Inside each VM runs the <strong>Moby</strong> container runtime (the open-source engine that powers Docker). <strong>WSL service</strong> (the same service that manages distros today) was augmented to manage containers and relay info to the host via an <strong>HV socket</strong> (a specialized point-to-point WinSock extension, not a network socket).</li>
+<li><strong>Storage</strong> (<code>/var/lib/...</code> container metadata/scratch) is mapped to a <strong>per-app VHD</strong> on Windows; volume mounts use <strong>VirtIOFS</strong> (a newer VM↔host file-sharing protocol, <strong>~2× faster than Plan 9</strong> used by WSL today).</li>
+<li><strong>Enterprise-ready:</strong> industry-standard tools like <strong>MDE and Intune just work</strong>; admins get strong VM isolation without an opaque "black box" they can't inspect or secure.</li>
+<li>Three target audiences: <strong>container developers</strong>, <strong>app builders / ISVs</strong> (embed Linux code in Windows apps), and <strong>enterprise IT admins</strong>.</li>
+<li>Microsoft built its <strong>own</strong> Linux container CLI (rather than reusing Docker/Podman/Rancher) to be <strong>opinionated</strong> and make the CLI + API work together — but <strong>those other tools still work great</strong> and benefit from the same underlying improvements.</li>
+<li>It's <strong>fully open source on WSL</strong>; underlying VM improvements (e.g. <strong>cross-OS file performance</strong>) <strong>accrue to Docker Desktop, Rancher Desktop, Podman Desktop</strong> too.</li>
+<li>Separately announced: <strong>Azure Linux 4.0 is now generally available</strong> (the same distro that runs AKS / powers Azure); WSL distro version <strong>coming soon</strong>.</li>
+<li><strong>Timeline: public preview by the end of June</strong>; progress is open at <strong>microsoft.com/wsl</strong> and announcements will post on the <strong>CLI blog</strong>.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="what-wsl-containers-is-the-three-core-points">What WSL containers is (the three core points)</h3>
+<p>Craig framed the whole talk around three takeaways:
+1. <strong>Run Linux containers locally on Windows</strong> — either directly via a CLI, or via an API used from within Windows applications.
+2. <strong>It's part of the Windows Subsystem for Linux</strong> — a new feature you get directly as part of WSL. No need to install anything new; it's part of an existing package users likely already have.
+3. <strong>Enterprise-ready</strong> — industry-standard tooling (MDE, Intune, and more) "just works" with WSL containers, so it's safe/secure to use inside enterprise environments.</p>
+<p>Delivery is via a simple <strong>WSL update</strong> — no third-party tools to download, no daemons to start ("no fasting rituals").</p>
+<h3 id="the-cli-wslc-aka-container">The CLI: <code>WSLc</code> (aka <code>container</code>)</h3>
+<ul>
+<li>The command-line tool is <strong><code>WSLc</code></strong>, and Microsoft has <strong>internally aliased it to <code>container</code></strong>, so users comfortable with a <code>container</code> binary can use that name instead.</li>
+<li>Pooja showed the <strong>command reference</strong>: subcommands, options and switches <strong>track very closely to standard Linux container tools</strong>, so it feels immediately familiar.</li>
+<li><strong>Simple interactive flow (Debian):</strong></li>
+<li><code>WSLc run -it debian</code> → the <code>-it</code> switch gives an <strong>interactive shell</strong> into a Debian Linux container. Normally the image is <strong>auto-downloaded from a public registry</strong> if not present locally (in the demo it was pre-downloaded due to venue internet issues).</li>
+<li><strong>Detach</strong> from a running container with the standard <strong>Ctrl-P Ctrl-Q</strong> sequence.</li>
+<li><code>WSLc ps -a</code> (or <code>WSLc container list</code>) lists containers and their state (e.g. "started about 40 seconds ago").</li>
+<li><code>WSLc attach &lt;id|name&gt;</code> re-attaches to the running container.</li>
+<li><code>exit</code> terminates the container; <code>WSLc ps -a</code> then shows it as <strong>"exited"</strong>.</li>
+</ul>
+<h3 id="building-custom-images">Building custom images</h3>
+<ul>
+<li>Use case: <strong>bring cloud/production workloads onto your primary Windows dev box</strong> to iterate, test, and debug locally. Because the workload is packaged as a container, you get the <strong>same environment as production</strong>, avoiding "works in dev, doesn't work in prod."</li>
+<li>A <strong>container file</strong> holds all the "ingredients and the recipe" — environment, dependencies, application logic, and run instructions — used to build a container image.</li>
+<li>Demo container file (a "Linux spy" forensics utility that runs Linux inspection commands on any file dropped to it):</li>
+<li>Starts <strong><code>FROM</code> a lightweight Python 3.12 base image</strong>.</li>
+<li>Installs dependencies needed for the container/app.</li>
+<li><strong>Copies</strong> application logic into the container.</li>
+<li>It's a <strong>web server listening on port 5000</strong>, so the file <strong>exposes</strong> that port to map onto the Windows host.</li>
+<li>Final line is the <strong>start/run instruction</strong> for the app.</li>
+<li>Build: <code>WSLc build</code> → named <strong><code>my-linux-spy</code></strong>, using the container file.</li>
+<li><code>WSLc images</code> lists images. (Aside: you <strong>can <code>grep</code> in PowerShell</strong> because Microsoft imported <strong>~168 core Linux utils into Windows</strong>, fully integrated — "shameless plug.") Image showed "9 hours ago" because <strong>base-layer caching</strong> was reused.</li>
+<li>Run with <strong>port mapping</strong>: <code>WSLc run ... -p 5000:5000</code> maps the container's port 5000 to the Windows host; the web server is then reachable at <strong><code>127.0.0.1</code> / localhost</strong>.</li>
+</ul>
+<h3 id="gpu-access-for-ai-graphical-workloads">GPU access for AI / graphical workloads</h3>
+<ul>
+<li>Containers can <strong>tap the GPU present on the Windows host</strong> for AI scenarios, graphical apps, etc.</li>
+<li>Demo "AI container" (pre-built and pre-warmed to save time): a <strong>Jupyter notebook web server</strong> on <strong>port 8888</strong> (exposed via port mapping). It:</li>
+<li>Pulls down a <strong>GPT-2 model</strong>.</li>
+<li><strong>Fine-tunes it on the host GPU</strong>.</li>
+<li><strong><code>torch.compile</code>s</strong> it to generate <strong>fused Triton kernels</strong> (optimized kernels that make the model run much faster on the GPU).</li>
+<li>Runs a <strong>head-to-head race</strong> between the compiled model and its <strong>uncompiled eager-mode</strong> counterpart to show the speedup.</li>
+<li>The launch command combined three switches:</li>
+<li><strong><code>run -it</code></strong> (interactive),</li>
+<li><strong><code>-p</code></strong> (port mapping),</li>
+<li><strong><code>-v</code></strong> to <strong>mount a volume</strong> — mounting the host's <strong>Hugging Face (HF) cache</strong> directory into the container,</li>
+<li><strong><code>--gpus all</code></strong> to grant the Linux container access to the <strong>host GPU</strong>.</li>
+</ul>
+<h3 id="two-ways-to-interact-cli-vs-api">Two ways to interact: CLI vs API</h3>
+<ul>
+<li><strong>CLI</strong> — perfect for <strong>direct container access, building, and running</strong> (what Pooja demoed).</li>
+<li><strong>API</strong> — shipped as a <strong>NuGet package</strong> Windows apps can reference to create/manage containers programmatically.</li>
+<li>"<strong>Two different doors for the same engine</strong>" — both powered by the <strong>same WSL VM</strong> that powers WSL distributions.</li>
+</ul>
+<h3 id="why-microsoft-built-this-three-customer-profiles">Why Microsoft built this (three customer profiles)</h3>
+<ol>
+<li><strong>Container developers</strong> — make it easier to get started with and use containers, running seamlessly on Windows. Microsoft wanted to be <strong>opinionated</strong>: because they're building <strong>both an API and a CLI</strong> that should work together (with some custom commands), they built <strong>their own Linux container CLI</strong> rather than reusing Docker, Podman, or Rancher Desktop. Those tools <strong>still work great</strong> and remain valid choices — this is just another approach.</li>
+<li><strong>App builders / ISVs</strong> — take existing Linux code (local or in the cloud) and run it <strong>directly and locally as part of a Windows application</strong> using standard, powerful APIs.</li>
+<li><strong>Enterprise IT admins</strong> — run containerized Linux apps (e.g. "run OpenClaw in a containerized Linux environment") while <strong>managing them with familiar Windows tools (Intune, MDE)</strong>. The goal is <strong>powerful isolation</strong> without admins fearing an <strong>opaque "black box" VM</strong> their security tools can't inspect or break into.</li>
+</ol>
+<h3 id="open-source-shared-benefit">Open source &amp; shared benefit</h3>
+<ul>
+<li>The work is <strong>fully open source on WSL</strong>. Improvements to the <strong>underlying VM technology accrue to other container tech</strong> too.</li>
+<li>Example: improving <strong>cross-OS file performance</strong> benefits <strong>Docker Desktop, Rancher Desktop, Podman Desktop</strong> — as well as the Linux container CLI inside WSL.</li>
+</ul>
+<h3 id="architecture-how-it-works">Architecture (how it works)</h3>
+<ul>
+<li><strong>Per-app isolation:</strong> every Windows app intending to create Linux containers gets a <strong>dedicated lightweight utility VM</strong> created in the background. All of that app's Linux containers are <strong>co-located on its VM</strong>. The <strong>CLI flow also gets its own VM</strong>.</li>
+<li>This yields a <strong>hypervisor boundary per app</strong>, <strong>resource separation</strong>, and <strong>no conflicts</strong> — each app's container names, volumes, and networks are <strong>isolated on a per-VM basis</strong>.</li>
+<li><strong>Two entry points</strong> into the WSL containers world:</li>
+<li>The <strong>API</strong>, exposed by a library published as a <strong>NuGet package</strong> that Windows apps include.</li>
+<li>The <strong><code>WSLc</code> / <code>container</code> executable</strong> (the CLI demoed earlier).</li>
+<li>Both <strong>talk to WSL service via inter-process communication (IPC)</strong>. <strong>WSL service already exists today</strong>; its job is managing WSL distros, the <strong>lifecycle of the WSL VM</strong>, and host↔VM communication. It was <strong>augmented to also manage the containers</strong> inside these VMs and relay information between containers and Windows-host users.</li>
+<li>Inside each Linux VM runs a <strong>container runtime — Moby</strong> (the open-source engine that powers Docker today).</li>
+<li><strong>WSL service uses an HV socket</strong> to communicate user intent to the container runtime. An HV socket is <strong>not a network socket</strong> — it's a <strong>specialized WinSock API extension</strong>, a <strong>point-to-point per-VM channel to the hypervisor</strong>, giving each VM an <strong>isolated communication channel</strong>.</li>
+<li>When a user issues a create command, the <strong>container runtime creates the containers</strong> and WSL service relays information back and forth.</li>
+</ul>
+<h3 id="storage-file-sharing">Storage &amp; file sharing</h3>
+<ul>
+<li>The container runtime in each VM uses a <strong>central directory</strong> (e.g. <code>/var/lib/...</code>) for <strong>container metadata, scratch space, etc.</strong></li>
+<li>That location is <strong>mapped onto a virtual disk (VHD) on the Windows host</strong>, and <strong>every app (and the CLI flow) gets its own VHD</strong> → <strong>per-app storage separation</strong>.</li>
+<li><strong>Volume mount flow example:</strong> <code>run -it -v C:\data:/data debian:latest</code></li>
+<li>Maps the Windows <strong><code>C:\data</code></strong> directory onto the container's <strong><code>/data</code></strong> mount and creates a <strong><code>debian:latest</code></strong> container.</li>
+<li>Under the hood the <code>/data</code> volume is mapped to <code>C:\data</code> using <strong>VirtIOFS</strong> — a <strong>relatively new file-sharing protocol</strong> for VM↔hypervisor file sharing.</li>
+<li>Added complexity: <strong>translating filesystem semantics between two different OSes</strong> (Windows ↔ Linux).</li>
+<li><strong>VirtIOFS is ~2× faster</strong> than <strong>Plan 9</strong> (the protocol WSL uses today); Microsoft is investing further and evaluating alternatives to make it faster still.</li>
+</ul>
+<h3 id="what-else-is-new-for-wsl-azure-linux-40">What else is new for WSL: Azure Linux 4.0</h3>
+<ul>
+<li><strong>Azure Linux 4.0 is now generally available</strong> for general use.</li>
+<li>It's the <strong>same distro that runs AKS today</strong> and <strong>powers Azure</strong> → a <strong>consistent, battle-tested, proven</strong> environment.</li>
+<li><strong>Microsoft provides the entire stack</strong> (single vendor) with <strong>full supply-chain attestation from build to deployment</strong> — clear support ownership.</li>
+<li><strong>Available today for VMs</strong>; the <strong>WSL distro version is coming soon</strong>. It is <strong>container-optimized and lightweight</strong> — Microsoft asks users to try it as a WSL distro and give feedback.</li>
+</ul>
+<h3 id="wrap-up-availability">Wrap-up / availability</h3>
+<ul>
+<li>Microsoft will <strong>post on the CLI blog</strong> when WSL containers goes live and asks users to <strong>try real-world scenarios and give feedback</strong>.</li>
+<li><strong>Public preview targeted by the end of June.</strong></li>
+<li>It's <strong>open source</strong> — progress visible at <strong>microsoft.com/wsl</strong>.</li>
+<li>The <strong>MoonRay dev lead</strong> was also available for questions at the session.</li>
+</ul>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>WSL (Windows Subsystem for Linux)</strong> — host platform; WSL containers ship as part of it via <code>wsl --update</code>.</li>
+<li><strong>WSL containers</strong> — the new feature for running Linux containers locally on Windows.</li>
+<li><strong><code>WSLc</code> CLI</strong> (aliased to <strong><code>container</code></strong>) — the new Linux container command-line tool.</li>
+<li><strong>WSL containers API</strong> — a <strong>.NET / NuGet package</strong> for embedding container management into Windows apps.</li>
+<li><strong>WSL service</strong> — existing host service, augmented to manage container lifecycle and host↔VM relay.</li>
+<li><strong>Moby</strong> — open-source container runtime (powers Docker) run inside each VM.</li>
+<li><strong>HV socket</strong> — specialized point-to-point WinSock extension for VM↔hypervisor comms (not a network socket).</li>
+<li><strong>VirtIOFS</strong> — newer VM↔host file-sharing protocol (~2× faster than Plan 9).</li>
+<li><strong>Plan 9 (9P)</strong> — the file-sharing protocol WSL uses today (being superseded by VirtIOFS for containers).</li>
+<li><strong>VHD (virtual hard disk)</strong> — per-app/per-CLI storage backing for container data.</li>
+<li><strong>Windows core utils</strong> — ~168 Linux utilities (e.g. <code>grep</code>) integrated into Windows.</li>
+<li><strong>Debian, Python 3.12</strong> — base images used in demos.</li>
+<li><strong>GPU passthrough</strong> (<code>--gpus all</code>), <strong>port mapping</strong> (<code>-p</code>), <strong>volume mount</strong> (<code>-v</code>).</li>
+<li><strong>PyTorch <code>torch.compile</code>, Triton (fused kernels), GPT-2, Jupyter notebook, Hugging Face cache</strong> — AI demo stack.</li>
+<li><strong><code>.csproj</code> integration</strong> — container build wired into MSBuild item group for an F5 experience.</li>
+<li><strong>Azure Linux 4.0</strong> — Microsoft's Linux distro, now GA; same distro that runs AKS.</li>
+<li><strong>AKS (Azure Kubernetes Service)</strong> — referenced as running on Azure Linux.</li>
+<li><strong>MoonRay</strong> — open-source rendering engine (DreamWorks) used in the API demo.</li>
+<li><strong>Intune, Microsoft Defender for Endpoint (MDE)</strong> — enterprise management/security tooling that works with WSL containers.</li>
+<li>Comparison tools (still supported): <strong>Docker / Docker Desktop, Podman / Podman Desktop, Rancher Desktop</strong>.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>WSL containers</strong> — new feature to run Linux containers locally on Windows, delivered as part of WSL (CLI + API). <strong>Status: public preview targeted by the end of June</strong> (not GA at session time).</li>
+<li><strong><code>WSLc</code> CLI</strong> (aliased <code>container</code>) — new first-party Linux container CLI for WSL. <strong>Preview (with WSL containers).</strong></li>
+<li><strong>WSL containers API</strong> — new <strong>NuGet package</strong> for embedding Linux container management in Windows apps, with <strong><code>.csproj</code>-integrated build / F5 experience</strong>. <strong>Preview (with WSL containers).</strong></li>
+<li><strong>VirtIOFS adopted</strong> for container volume sharing — <strong>~2× faster than Plan 9</strong>, with further perf work planned. Cross-OS file-performance gains also flow to Docker/Rancher/Podman Desktop.</li>
+<li><strong>Azure Linux 4.0 — Generally Available</strong> (the distro that runs AKS / powers Azure). <strong>Available today for VMs; WSL distro version coming soon.</strong></li>
+<li><strong>Fully open source</strong> — code and progress at <strong>microsoft.com/wsl</strong>; announcements via the <strong>CLI blog</strong>.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ol>
+<li><strong>Basic CLI flow (Debian):</strong> <code>run -it</code> into an interactive Debian shell, detach with Ctrl-P Ctrl-Q, <code>ps -a</code> / <code>container list</code>, <code>attach &lt;id|name&gt;</code>, then <code>exit</code>/terminate (shown as "exited").</li>
+<li><strong>Build &amp; run a custom image ("Linux spy" forensics web app):</strong> authored a container file (<code>FROM python:3.12</code>, install deps, copy app, expose port 5000, run instruction); <code>WSLc build</code> → <code>my-linux-spy</code>; <code>WSLc images</code> (with <code>grep</code> in PowerShell); <code>run -p 5000:5000</code>; interacted with the web server at <code>127.0.0.1</code>.</li>
+<li><strong>GPU-accelerated AI container:</strong> Jupyter notebook server on port 8888; pulls GPT-2, fine-tunes on the host GPU, <code>torch.compile</code> → fused Triton kernels, then a compiled-vs-eager speed race. Launched with <code>run -it -p ... -v &lt;HF cache&gt;:... --gpus all</code>.</li>
+<li><strong>API demo #1 — MoonRay rendering as a "Windows app":</strong> ran <code>moonray.exe</code> (a Linux rendering engine) on Windows with backslash paths, fed <code>.rdl</code>/render input files, output a <strong>JPEG</strong> (an orange coffee maker via ray tracing). Task Manager showed the render running on CPU inside a transient MoonRay VM that <strong>spun up and released back to Windows</strong> seamlessly — looked like a native Windows app; user would be "none the wiser" Linux was involved.</li>
+<li><strong>API demo #2 — embedded container in a .NET app ("Herbert" stock-trading agent):</strong> NuGet <code>containers</code> package + <code>.csproj</code> item group pointing at the container file (co-located with source); single F5 builds + runs the container. A whimsical AI agent ("Herbert") makes fake stock trades on a container-provided desktop (visualized via an exposed port). It also <strong>randomly deletes files</strong> — but file access was <strong>scoped to <code>C:\temp\Herbert</code></strong>, demonstrating <strong>deep but bounded Windows↔container integration</strong> (explicit ports + restricted file access → minimized blast radius).</li>
+</ol>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>~168</strong> Linux core utilities now integrated into Windows.</li>
+<li><strong>VirtIOFS ≈ 2×</strong> the speed of Plan 9 in this environment today.</li>
+<li><strong>One VM per app + per CLI flow</strong> → <strong>hypervisor boundary per app</strong>; per-app isolation of names, volumes, networks, <strong>and storage (per-app VHD)</strong>.</li>
+<li>Ports used in demos: <strong>5000</strong> (Linux spy web server), <strong>8888</strong> (Jupyter), volume mount example <code>C:\data → /data</code>.</li>
+<li><strong>"Two different doors for the same engine."</strong> — Craig, on CLI vs API.</li>
+<li><strong>"No need to download any third-party tools, no starting of daemons, no fasting rituals."</strong> — Pooja, on the zero-install update.</li>
+<li><strong>"It works in dev, doesn't work in prod"</strong> — the production-parity gotcha WSL containers aims to eliminate.</li>
+<li><strong>"Public preview by the end of June."</strong> — Craig, on availability.</li>
+<li>MoonRay powers films like <strong>The Bad Guys 2</strong> and <strong>The Wild Robot</strong>.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li><code>wsl --update</code>, then <code>WSLc run -it debian</code> and the <code>ps -a</code> / <code>attach</code> / <code>exit</code> loop once preview lands.</li>
+<li>Build a custom image from a container file (<code>WSLc build</code>) and port-map a local web service to <code>localhost</code>.</li>
+<li>Test <strong>GPU passthrough</strong> (<code>--gpus all</code>) + Hugging Face cache volume for a local AI fine-tune.</li>
+<li>Add the <strong>containers NuGet package</strong> to a <code>.csproj</code>, wire the container build item group, and try the <strong>F5</strong> experience.</li>
+<li>Try <strong>Azure Linux 4.0</strong> on a VM now; watch for the WSL distro drop.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>Confirm exact NuGet package name and CLI binary name at preview (transcript captions garbled the library name).</li>
+<li>How does per-app VM creation affect cold-start latency and memory footprint at scale (many apps)?</li>
+<li>Image registry/auth story for enterprise (private registries, signing, supply-chain) with <code>WSLc</code>?</li>
+<li>Networking model between containers in the same VM vs across app VMs (isolation vs intentional comms)?</li>
+<li>How do Intune/MDE policies actually attach to these per-app utility VMs in practice?</li>
+<li>Will image build caching/layers be shared across app VMs, or duplicated per-VHD?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Local dev of Linux/cloud workloads on Windows boxes (prod-parity, no Docker Desktop dependency).</li>
+<li>Windows apps/ISVs wanting to embed Linux engines (rendering, AI, services) transparently.</li>
+<li>Enterprise IT evaluating containerized Linux on Windows under existing Intune/MDE governance.</li>
+<li>Local AI experimentation needing GPU + Hugging Face cache inside isolated containers.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><a class="wikilink wikilink--resolved" href="BRK261.html">BRK261 - Build and ship faster with a developer-optimized experience on Windows</a></li>
+<li><span class="wikilink wikilink--unresolved" title="WSL (Windows Subsystem for Linux)">WSL (Windows Subsystem for Linux)</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Containers">Containers</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Azure Linux">Azure Linux</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Docker">Docker</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Azure Kubernetes Service (AKS)">Azure Kubernetes Service (AKS)</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Build 2026">Microsoft Build 2026</span></li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEM345.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEM345</span><span class="pager-title">From prompt to app, build AI powered apps on Windows</span></a>
+    <a class="pager pager-next" href="DEM350.html"><span class="pager-dir">Next →</span><span class="pager-code">DEM350</span><span class="pager-title">GitHub Agentic Workflows: Automation That Actually Reads the Room</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

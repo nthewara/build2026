@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OD824 — Scalable Applications Without Polyglot tax: Azure SQL Hyperscale</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">OD824</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=qjuHjZKqUms" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Scalable Applications Without Polyglot tax: Azure SQL Hyperscale</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Aditya (Product Manager, Azure SQL)</span>
+      <span class="meta-item">⏱️ 24m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="azure-sql">Azure Sql</span><span class="chip" data-tag="hyperscale">Hyperscale</span><span class="chip" data-tag="database">Database</span><span class="chip" data-tag="vectors">Vectors</span><span class="chip" data-tag="agents">Agents</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Aditya — Product Manager, Azure SQL<br>
+<strong>Duration:</strong> ~24 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=qjuHjZKqUms">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>This session makes the case that you don't need a sprawl of specialized databases (vector DB, graph DB, document DB, data warehouse) to build modern, AI-era applications — and that maintaining that sprawl is a hidden "polyglot tax" you pay in latency, cost, security surface, operational overhead, and cognitive load. The talk is structured in two "acts": <strong>Act 1</strong> shows how the Microsoft SQL core engine now absorbs JSON, graph, vector, and analytical (columnstore) workloads natively, all under one ACID transaction boundary — which matters enormously for agents that need idempotency and reliable rollback. <strong>Act 2</strong> shows how <strong>Azure SQL Hyperscale</strong> scales that core engine with a disaggregated architecture (dedicated log service, page servers, Azure storage), serverless autoscaling, snapshot backups that don't touch compute, and named replicas with isolated buffer pools so reads never affect writes. The pitch: consolidate to one engine, get 68% better performance than competitors, license-free, and "sleep at night."</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>"Polyglot tax" = the cost of choosing multiple databases.</strong> As a successful prototype grows (add semantic/vector search → add graph → add analytics), each specialized DB you bolt on adds latency, cost, a separate security surface, separate backups, separate sync jobs, and developer cognitive load.</li>
+<li>A real-time fraud-detection app <em>naively</em> needs ~5 databases: relational (order history), document/JSON (device fingerprint), graph (relationships between people), vector (similar transactions), and analytics (statistical baseline) — meaning <strong>5 DBs, 5 sync jobs, 5 ops systems, 5 query languages</strong>.</li>
+<li><strong>The fix is the Microsoft SQL core engine</strong>, which now natively handles JSON, graph, vectors, and columnstore analytics — eliminating most of those side-car databases.</li>
+<li><strong>JSON is now a native, pre-parsed binary type</strong> in SQL (no longer <code>nvarchar(max)</code>), saving 30–50% storage, with <strong>path-specific JSON indexes</strong> (index just <code>device</code>, not the whole document — unlike the typical GIN index that indexes the entire document).</li>
+<li><strong>JSON keeps schema flexibility</strong> (docs can have different attribute counts, no <code>ALTER TABLE</code> needed) while still honoring full ACID transaction boundaries (roll back / roll forward). Internal YCSB tests show SQL is "no less than any document database" on JSON performance.</li>
+<li><strong>Graph is built into SQL</strong> (native <code>MATCH</code> syntax understood by the query optimizer) for relationship scenarios like anti-fraud.</li>
+<li><strong>Vectors are a native type</strong> with indexes built on <strong>DiskANN</strong> (Microsoft Research) — described as faster than HNSW — plus recently added <strong>updatable DiskANN indexes</strong>. Co-locating vectors with operational data enables a <strong>pre-filter</strong> (find Bob in relational data first, then search only his similar transactions) that avoids scanning huge numbers of vectors.</li>
+<li><strong>Clustered columnstore</strong> gives OLAP-friendly, highly compressed storage on top of rowstore, exposing an analytics endpoint — making SQL one of the best HTAP/analytical stores while also serving real-time transactions.</li>
+<li><strong>Everything runs in a single stored procedure / one transaction boundary</strong> — fetch relational order history, JSON device footprint, graph risk score &gt; 0.8, vector similar transactions, and a 90-day analytics baseline, all atomically. If the JSON write fails, everything fails.</li>
+<li><strong>ACID matters more in the agentic world than ever.</strong> Agents love idempotency: they may rewrite, so they need reliable rollback. A human dev manages transaction boundaries by hand; agents "just come in, put the transaction, and go out," so ACID is the only guarantee that data committed correctly.</li>
+<li><strong>Hyperscale = "peace of mind database."</strong> A customer told Aditya he could finally sleep at night after switching — no more waking up for a file-full, file-group-full, or log-full; Hyperscale grows as the app grows.</li>
+<li><strong>Hyperscale architecture is disaggregated:</strong> dedicated <strong>log service</strong> for writes, <strong>page servers</strong> (with their own SSDs) for reads, async continuous redo, and <strong>Azure storage</strong> as the durable tier — enabling <strong>snapshot backups that don't read pages into compute</strong> (unlike traditional <code>BACKUP DATABASE</code>).</li>
+<li><strong>Named replicas</strong> give each readable copy its own connection string and <strong>its own buffer pool / L2 cache (RBPEX)</strong>, so different working sets are isolated — writes on primary are unaffected by reads; agents and nightly analytics jobs point at separate named replicas.</li>
+<li><strong>Economics:</strong> eliminate side-cars (no separate vector/graph DB), serverless scales 2→80 cores on demand and back, storage 10 GB → 128 TB with no over-provisioning, <strong>one SQL skillset instead of five personas</strong>, <strong>68% better performance than competitors</strong>, and <strong>license-free</strong>.</li>
+<li><strong>Bottom line ("2 acts, 5 ideas"):</strong> polyglot is a <em>choice, not an inevitability</em>; one size doesn't fit all (extreme DWH or graph cases may still need a specialist), but for most scenarios Microsoft SQL + Hyperscale covers you. <strong>Avoid the tax, ship at scale, sleep at night.</strong></li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="what-is-the-polyglot-tax">What is the "polyglot tax"?</h3>
+<p>The polyglot tax is the price you pay for <strong>choosing multiple databases</strong>. The talk frames it through a relatable lifecycle: everyone builds applications constantly, and you can build a <em>prototype</em> extremely fast — start at 9:00 a.m., have it working before lunch. But success creates pressure to extend it:</p>
+<ul>
+<li>Add <strong>semantic search with vectors</strong> → you reach for a <strong>vector DB</strong>.</li>
+<li>Extend it with relationships → you add a <strong>graph DB</strong>.</li>
+<li>Need reporting → you add an <strong>analytics</strong> store.</li>
+</ul>
+<p>Each addition is a database <em>specific to that one need</em>. The hidden danger: because all this data is being shipped and synced between systems, <strong>a break at one point cascades</strong>. If the data flowing from vectors is broken, the analytics that consume it produce wrong answers. The whole pipeline is only as reliable as its weakest sync. That fragility — plus the operational weight of running many systems — <em>is</em> the polyglot tax, and the session's thesis is that it can be avoided with Microsoft SQL.</p>
+<h3 id="a-concrete-example-real-time-fraud-detection">A concrete example: real-time fraud detection</h3>
+<p>To make the tax tangible, Aditya walks through how a real-time fraud-check app is <em>typically</em> built with a polyglot stack:</p>
+<ul>
+<li><strong>Relational database</strong> → order history.</li>
+<li><strong>JSON / document database</strong> → device fingerprint (is the request coming from an app? a browser? etc.).</li>
+<li><strong>Graph database</strong> → detecting relationships between multiple people (fraud rings).</li>
+<li><strong>Vector search</strong> → finding <em>similar transactions</em> ("what does buying something from Walmart look like? Is there a similar transaction?").</li>
+<li><strong>Analytics</strong> → rolling everything into a <em>statistical baseline</em>.</li>
+</ul>
+<p>That's <strong>five different databases, five sync jobs, five OLTP systems</strong>. The consequences:</p>
+<ul>
+<li><strong>Latency</strong> — the application must wait to read from all five; network latency stacks up.</li>
+<li><strong>Cost</strong> — same multiplication of cost across systems.</li>
+<li><strong>Security surface</strong> — different security models in relational vs. data warehouse vs. graph; separate OLTP systems everywhere, each needing its own hardening and "tax."</li>
+<li><strong>Backups</strong> — separate backups for each; there is no single backup statement covering them all.</li>
+<li><strong>Cognitive load</strong> — the developer must learn five tools and five query languages. For a <em>human user</em> this is merely painful; for an <strong>agent</strong> it's worse, because agents faced with many choices <strong>hallucinate more</strong>, and more hallucination means more wrong data.</li>
+</ul>
+<p>This sets up the two-act structure: <strong>Act 1</strong> — avoid the tax via capabilities built into the Microsoft SQL core engine; <strong>Act 2</strong> — scale that engine with Azure SQL Hyperscale ("you need scale to perform and use the best of this engine; that best comes from Azure SQL Hyperscale").</p>
+<h3 id="act-1-the-core-engine-eliminating-the-side-car-databases">Act 1 — The core engine: eliminating the side-car databases</h3>
+<h4 id="native-json">Native JSON</h4>
+<p>Recently SQL introduced a <strong>native JSON type</strong> plus <strong>JSON indexes</strong>. Key points:
+- It is <strong>no longer <code>nvarchar(max)</code></strong> (the original approach) — it's a <strong>purely native JSON type</strong>.
+- Stored as a <strong>pre-parsed binary</strong>, which makes JSON take <strong>30–50% less</strong> storage.
+- <strong>Path-specific indexing</strong> is the standout differentiator. In other relational/document databases the famous <strong>GIN index</strong> indexes the <em>entire</em> JSON document. Microsoft SQL lets you index a <strong>specific path</strong> — e.g. index only the <code>device</code> attribute path, ignoring date or other fields — and the JSON index will pick exactly that.
+- <strong>Schema flexibility</strong> is preserved (a favorite of document-DB users): one document can have 4 attributes, another 5, with no need to <code>ALTER TABLE</code>/add a column as you would in a rigid relational world.
+- <strong>Full ACID</strong>: all JSON updates follow the <strong>same transaction boundary</strong> — roll back, roll forward, all ASID/ACID properties hold.
+- Internally Microsoft ran <strong>YCSB tests</strong> and found SQL is "<strong>no less than any document database</strong>" on JSON performance and JSON index performance — hence you can "say goodbye" to a separate document database.</p>
+<h4 id="graph">Graph</h4>
+<p>SQL has invested in graph "since forever." You get:
+- Native <strong><code>MATCH</code></strong> syntax that the <strong>query optimizer understands</strong>, producing a proper plan for the match.
+- Built-in graph functionality suitable for relationship-heavy scenarios — explicitly called out for <strong>anti-fraud / fraud detection</strong>. For most graph needs (the "basic graph functionalities"), SQL covers you natively.</p>
+<h4 id="vectors">Vectors</h4>
+<p>SQL recently added vector support, and the implementation evolved quickly:
+- Originally vectors sat on top of <strong>varbinary</strong>, then switched to a <strong>native vector type</strong>.
+- The vector <strong>type</strong> shipped first <strong>without an index</strong>; later, <strong>vector indexes using DiskANN</strong> were released. DiskANN comes out of <strong>Microsoft Research</strong> and is described as <strong>faster than HNSW</strong>.
+- <strong>Updatable DiskANN indexes</strong> were added very recently.
+- <strong>Why co-location beats a standalone vector DB:</strong> a specialized vector database <em>without operational data context</em> forces you to search a large number of rows/vectors, which is costly. With vectors living next to relational data you can <strong>pre-filter</strong>: e.g. find <strong>Bob</strong> in the relational data first, then select only transactions <em>similar to Bob's</em> — giving more context, less cost, and faster search. This pre-filter is the core argument that you no longer need a separate vector database.</p>
+<h4 id="clustered-columnstore-analytics">Clustered columnstore (analytics)</h4>
+<p>A "very famous" SQL feature under continuous investment:
+- SQL is traditionally <strong>rowstore</strong>; you can convert data to <strong>columnstore</strong>, which is <strong>more OLAP-friendly</strong>.
+- Columnstore yields a <strong>huge amount of compression</strong> on top of rowstore and can be <strong>exposed to an analytics endpoint</strong>.
+- Combined with primary transactions and real-time data, this makes Microsoft SQL "<strong>one of the best analytical stores out there</strong>" — i.e. real HTAP: transactions + analytics in one place.</p>
+<h4 id="bringing-act-1-together-one-stored-procedure-one-transaction-boundary">Bringing Act 1 together — one stored procedure, one transaction boundary</h4>
+<p>The payoff is that the whole fraud-detection flow becomes a <strong>single stored procedure</strong> with <strong>one transaction boundary</strong>:
+1. Relational → a person's <strong>order history</strong>.
+2. JSON → the <strong>device footprint</strong> (via <code>JSON_VALUE</code>).
+3. Graph/match → a <strong>risk score &gt; 0.8</strong>.
+4. Vector → <strong>similar transactions</strong> in the vector table.
+5. Analytics → a <strong>90-day baseline</strong> on top.</p>
+<p>All of it executes atomically: <strong>if the JSON write fails, everything fails.</strong> This is "very, very important for agents."</p>
+<h4 id="why-acid-is-even-more-critical-in-the-agentic-world">Why ACID is even more critical in the agentic world</h4>
+<p>A learning Aditya emphasizes: agents need lots of data to <strong>read</strong>, but agents also <strong>love idempotency</strong>. Because of many factors, if an agent writes it <strong>might rewrite</strong> — so it needs proper <strong>rollback</strong>. ACID semantics are <em>more</em> important in the agentic world than the normal world: a human developer sits and ensures each transaction has the right boundary, but agents "just come in, put the transaction, and go out." ACID is the <strong>only way</strong> to know that incoming data is fully committed — so it becomes even more important when agents are doing the writing.</p>
+<h3 id="act-2-azure-sql-hyperscale-scaling-the-core-engine">Act 2 — Azure SQL Hyperscale: scaling the core engine</h3>
+<h4 id="the-peace-of-mind-database">The "peace of mind database"</h4>
+<p>Take the (now polyglot-tax-free) core engine and plug it into something that <strong>scales</strong> → that's <strong>Hyperscale</strong>. Aditya calls it the <strong>"peace of mind database,"</strong> inspired by a customer who said that after switching to Hyperscale he could <strong>sleep peacefully at night</strong>. The reason: the customer never has to wake up for a <strong>file-full, file-group-full, or log-full</strong> condition — <strong>Hyperscale just grows as the application grows</strong>, with its own dedicated log service, page servers, and Azure storage.</p>
+<h4 id="architecture-deliberately-shown-without-a-diagram">Architecture (deliberately shown without a diagram)</h4>
+<p>Aditya intentionally avoids the usual architecture diagram; the key mental model is that Hyperscale is built from <strong>separate components</strong>:
+- <strong>Dedicated log service</strong> handles your <strong>writes</strong>.
+- <strong>Page servers</strong> serve your <strong>reads</strong>; each has <strong>its own SSDs</strong>, and the flow is <strong>asynchronous</strong>.
+- The <strong>log service continuously redoes</strong> into the page servers.
+- The <strong>page servers continuously write back into Azure storage</strong> as the <strong>durable tier</strong>.</p>
+<h4 id="snapshot-backups-a-free-win">Snapshot backups (a free win)</h4>
+<p>Because data ultimately lands in <strong>Azure storage</strong>, Hyperscale can use <strong>Azure storage's snapshot technology</strong> for backups. The big benefit: <strong>compute is not involved</strong> in taking backups — <strong>no pages are read into compute</strong> to produce a backup. Contrast with <strong>traditional SQL</strong> (<code>BACKUP DATABASE &lt;name&gt;</code>), which reads all the data into compute and writes it back out. With Hyperscale <strong>snapshot backups</strong>, that's no longer needed.</p>
+<h4 id="named-replicas-isolated-working-sets">Named replicas — isolated working sets</h4>
+<p>A major Hyperscale advantage. A <strong>named replica</strong> is a <strong>readable copy with its own connection string</strong>. Why it matters:
+- Each named replica has <strong>its own buffer pool / own memory / own L2 cache</strong> — referred to as <strong>RBPEX (Resilient Buffer Pool Extension)</strong> — i.e. <strong>its own working set</strong>, distinct from every other named replica.
+- This lets you <strong>differentiate working sets</strong> across replicas while they all sit on the <strong>same underlying data (up to 128 TB)</strong>, so <strong>writes are not affected by reads</strong>.</p>
+<p>Observed customer patterns:
+- <strong>Primary</strong> handles continuous <strong>OLTP writes</strong>.
+- <strong>Agents</strong> point at one <strong>named replica</strong> to do vector distances / similar transactions / <strong>cosine similarity</strong> lookups.
+- <strong>Nightly jobs</strong> use a <strong>separate named replica</strong> running <strong>serverless</strong>: it sits at ~2 cores during the day and <strong>expands to 128 cores at night</strong> to run analytics, then scales back — letting the team "sleep off."
+- Mix-and-match provisioning: your <strong>primary can be provisioned</strong> while your <strong>named replicas run serverless</strong>.</p>
+<h4 id="business-continuity-security">Business continuity &amp; security</h4>
+<ul>
+<li>Built-in <strong>geo-DR (GoDR)</strong> and <strong>high availability</strong> are part of Hyperscale.</li>
+<li>Because Hyperscale <strong>is</strong> the Microsoft SQL core engine, it inherits "the best security out there": <strong>ledger</strong> support (yes, even in Hyperscale), <strong>dynamic data masking</strong>, <strong>Always Encrypted</strong>, <strong>execute-only stored procedures</strong>, and <strong>tenant-based execution</strong>.</li>
+</ul>
+<h4 id="sql-mcp-server-agent-access">SQL MCP server (agent access)</h4>
+<p>No AI/agent talk is complete without an <strong>MCP server</strong>, and <strong>SQL has its own MCP server</strong>, built with the <strong>Data API Builder (DAB)</strong>:
+- Create a <strong>DAB</strong>, which gives you a <strong>REST endpoint</strong> for your data.
+- Point that REST endpoint to an <strong>MCP server</strong>, served from Hyperscale.
+- Now you can <strong>talk to your data in natural language</strong>: with 128 TB of data, agents, writes, and MCP, you can say things like "update so-and-so person's last name to this" or "change the salary of so-and-so to this" — all via the <strong>SQL MCP server</strong>.</p>
+<h3 id="economics-why-consolidation-pays">Economics — why consolidation pays</h3>
+<p>Coming back to the core engine (now polyglot-tax-free) plus Hyperscale (scale), the economics are central:
+- <strong>Eliminate side-cars</strong> → no separate vector DB, no separate graph DB. Removing them removes the tax.
+- <strong>Pay only for what you use</strong> with <strong>serverless</strong>: scale from <strong>2 cores to 80 cores</strong> only when needed, then back down to 2 cores for a smaller bill.
+- <strong>Storage scales 10 GB → 128 TB</strong> with <strong>no up-front over-provisioning</strong>; you don't pay more until your data actually grows — "we grow with that."
+- <strong>Lower people cost</strong> — no need for five personas with five expertises; <strong>one SQL skillset</strong> suffices.
+- <strong>68% better performance than competitors</strong> — "that's a steal."
+- <strong>License-free model</strong> — Azure SQL Hyperscale is highlighted as the database with a <strong>license-free</strong> model.</p>
+<h3 id="closing-2-acts-5-ideas">Closing — "2 acts, 5 ideas"</h3>
+<p>The summary Aditya leaves the audience with:
+- <strong>Polyglot is a tax — a <em>choice</em>, not an inevitability.</strong> You don't have to go down the polyglot path.
+- <strong>But one size doesn't fit all.</strong> In <em>extreme</em> cases you may still need a dedicated <strong>data warehouse (DWH)</strong> or a separate <strong>graph database</strong>. For the <strong>vast majority of scenarios</strong>, though, Microsoft SQL covers you with an exceptional relational workload.
+- <strong>Hyperscale's architecture is one of the best, purpose-built for cloud and agents</strong> — and agents need these guarantees more than ever.
+- The Microsoft SQL + Azure SQL Hyperscale story is "<strong>shining right now than ever</strong>."
+- Final line: <strong>"Avoid the [polyglot] tax, ship at scale, and sleep at night."</strong></p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Microsoft SQL (core engine)</strong> — the relational engine being positioned as a multi-model database that absorbs JSON, graph, vector, and analytics workloads.</li>
+<li><strong>Azure SQL Hyperscale</strong> — the scale-out service tier built on the SQL core engine; disaggregated log service + page servers + Azure storage; the "peace of mind database."</li>
+<li><strong>Native JSON type + JSON indexes</strong> — pre-parsed binary JSON storage (30–50% smaller) with <strong>path-specific</strong> indexing.</li>
+<li><strong>GIN index</strong> (referenced as the <em>other</em> databases' approach) — indexes the entire JSON document; contrasted against SQL's path-level indexing.</li>
+<li><strong>Graph in SQL (<code>MATCH</code> syntax)</strong> — native graph query support understood by the query optimizer, for relationship/anti-fraud scenarios.</li>
+<li><strong>Native vector type</strong> — first-class vector data type (evolved off varbinary).</li>
+<li><strong>DiskANN</strong> — Microsoft Research approximate-nearest-neighbor index, described as faster than HNSW; now with <strong>updatable</strong> indexes.</li>
+<li><strong>HNSW</strong> — the alternative vector index algorithm DiskANN is compared against.</li>
+<li><strong>Clustered columnstore</strong> — compressed, OLAP-friendly storage exposed to an analytics endpoint (HTAP).</li>
+<li><strong>Stored procedures</strong> — used to bundle the entire multi-model fraud-check flow into one ACID transaction.</li>
+<li><strong>Named replicas</strong> — readable copies each with their own connection string and isolated buffer pool.</li>
+<li><strong>RBPEX (Resilient Buffer Pool Extension)</strong> — the per-replica L2 cache / working set that isolates reads from writes.</li>
+<li><strong>Serverless compute</strong> — autoscaling cores (e.g. 2 → 80, or 2 → 128 for nightly jobs) with pay-for-use billing.</li>
+<li><strong>Azure storage snapshots</strong> — backup mechanism that doesn't read pages into compute.</li>
+<li><strong>Geo-DR (GoDR) &amp; High Availability</strong> — built-in business continuity in Hyperscale.</li>
+<li><strong>Ledger</strong> — tamper-evidence feature, supported in Hyperscale.</li>
+<li><strong>Dynamic Data Masking</strong> — data protection feature.</li>
+<li><strong>Always Encrypted</strong> — client-side encryption feature.</li>
+<li><strong>Execute-only stored procedures / tenant-based execution</strong> — additional security capabilities.</li>
+<li><strong>Data API Builder (DAB)</strong> — generates a REST endpoint over SQL data.</li>
+<li><strong>SQL MCP Server</strong> — Model Context Protocol server fronting Hyperscale via DAB's REST endpoint, enabling natural-language data operations.</li>
+<li><strong>YCSB (Yahoo! Cloud Serving Benchmark)</strong> — the benchmark Microsoft used internally to compare JSON performance against document databases.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p>None explicitly announced as new at this event. The session is a capabilities/positioning talk that <em>describes</em> recently-added features rather than announcing them on stage. Features explicitly framed as "recently" added or evolved (status not stated as preview vs. GA):
+- Native JSON type + path-specific JSON indexes (moved off <code>nvarchar(max)</code>).
+- Native vector type, then DiskANN-based vector indexes, then <strong>updatable DiskANN indexes</strong> ("very recently").
+- Continued investment in clustered columnstore.
+- SQL MCP server built on Data API Builder.</p>
+<h2 id="demos">💡 Demos</h2>
+<p>No live demos were shown. The talk used a <strong>walkthrough narrative</strong> (a real-time fraud-detection scenario) and described code conceptually — e.g. a single stored procedure combining relational order history, <code>JSON_VALUE</code> for device footprint, a graph/risk-score <code>MATCH &gt; 0.8</code>, vector similar-transaction search, and a 90-day analytics baseline under one transaction boundary — but did not demonstrate it running on screen.</p>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>30–50%</strong> — storage savings from SQL's pre-parsed binary native JSON type.</li>
+<li><strong>risk score &gt; 0.8</strong> — example threshold in the fraud-detection stored procedure.</li>
+<li><strong>90-day baseline</strong> — analytics window combined into the single fraud-check query.</li>
+<li><strong>128 TB</strong> — maximum underlying data size shared across named replicas / Hyperscale storage ceiling.</li>
+<li><strong>2 → 80 cores</strong> — serverless autoscale range cited for general use.</li>
+<li><strong>2 → 128 cores</strong> — serverless range for a nightly analytics named replica (≈2 cores by day, expand at night).</li>
+<li><strong>10 GB → 128 TB</strong> — storage scaling range with no up-front over-provisioning.</li>
+<li><strong>68% better performance than competitors</strong> — headline performance claim for SQL + Hyperscale.</li>
+<li><strong>License-free</strong> — Azure SQL Hyperscale highlighted as having a license-free model.</li>
+<li><strong>YCSB result:</strong> Microsoft SQL is "no less than any document database" on JSON performance and JSON index performance (internal tests).</li>
+</ul>
+<p><strong>Memorable quotes / framing:</strong>
+- <em>"Polyglot is a tax — a choice, not an inevitability."</em>
+- <em>"Peace of mind database"</em> — coined after a customer said he could <em>"sleep peacefully in the night"</em> once he switched to Hyperscale.
+- <em>"Avoid the tax, ship at scale, and sleep at night."</em> (closing line)
+- On agents: <em>"They just come in, put the transaction, and go out"</em> — which is why ACID/idempotency matters more than ever in the agentic world.
+- <em>"One size doesn't fit all"</em> — extreme DWH/graph cases may still warrant a specialist store.</p>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Spin up an Azure SQL Hyperscale DB and test the <strong>native JSON type</strong> with a <strong>path-specific JSON index</strong> (e.g. index only a <code>device</code> path); compare storage vs. <code>nvarchar(max)</code>.</li>
+<li>Build a small fraud-detection-style <strong>single stored procedure</strong> that joins relational + <code>JSON_VALUE</code> + graph <code>MATCH</code> + vector search + a windowed analytics baseline, all in one transaction, and confirm rollback-on-failure behavior.</li>
+<li>Create a <strong>vector column + DiskANN index</strong>, then test the <strong>pre-filter</strong> pattern (filter by an entity in relational data first, then run cosine similarity only over that subset) and benchmark vs. an unfiltered full vector scan.</li>
+<li>Stand up the <strong>SQL MCP server</strong> via <strong>Data API Builder</strong> and try natural-language updates against Hyperscale data.</li>
+<li>Configure a <strong>serverless named replica</strong> for a nightly job (2 → 80/128 cores) and verify reads on it don't impact primary write latency (RBPEX isolation).</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What are the <strong>preview vs. GA</strong> statuses for native JSON indexes, updatable DiskANN indexes, and the SQL MCP server? (Not stated in talk.)</li>
+<li>How does <strong>path-specific JSON indexing</strong> behave with deeply nested / array paths, and what are its limits vs. PostgreSQL GIN / document-DB indexes?</li>
+<li>What's the methodology behind the <strong>68% better performance than competitors</strong> claim (which competitor, which workload, which benchmark)?</li>
+<li>What exactly does <strong>"license-free"</strong> cover for Hyperscale, and how does that change TCO vs. provisioned vCore SQL DB?</li>
+<li>What are the <strong>named replica limits</strong> (max count, lag characteristics) and the cold-start behavior of serverless replicas under bursty agent load?</li>
+<li>Where are the boundaries where a <strong>dedicated graph DB or data warehouse</strong> still wins over SQL's built-in graph/columnstore?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Any <strong>AI/agentic app</strong> that needs reliable writes (idempotency + ACID rollback) over multi-model data.</li>
+<li><strong>Database consolidation</strong> initiatives looking to retire side-car vector/graph/document stores and cut sync-pipeline fragility.</li>
+<li><strong>Real-time fraud / risk</strong> systems combining relational, JSON, graph, vector, and analytics signals.</li>
+<li>Cost-optimization efforts (serverless autoscale, no over-provisioning, single-skillset ops, license-free).</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Build 2026">Microsoft Build 2026</span></li>
+<li>Topics: Azure SQL · Azure SQL Hyperscale · Native JSON in SQL · Graph in SQL · DiskANN vector indexes · Clustered columnstore (HTAP) · Named replicas / RBPEX · Serverless compute · Data API Builder · SQL MCP server · ACID for agents</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="OD823.html"><span class="pager-dir">← Previous</span><span class="pager-code">OD823</span><span class="pager-title">Faster AI Responses with Semantic Caching in Azure Managed Redis</span></a>
+    <a class="pager pager-next" href="OD827.html"><span class="pager-dir">Next →</span><span class="pager-code">OD827</span><span class="pager-title">Build, deploy, and run Linux workloads on Azure</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

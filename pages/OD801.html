@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OD801 — Modernize intelligent apps and agents with .NET that scale as you grow</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">OD801</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=wtUD8IV7rdA" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Modernize intelligent apps and agents with .NET that scale as you grow</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Andrew Westgarth, Grace Sef, Gaurav (Azure App Service PMs)</span>
+      <span class="meta-item">⏱️ 49m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="dotnet">.NET</span><span class="chip" data-tag="modernization">Modernization</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="azure">Azure</span><span class="chip" data-tag="app-service">App Service</span><span class="chip" data-tag="mcp">MCP</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Andrew Westgarth (Product Manager, Azure App Service), Grace Sef (Product Manager, Azure App Service), Gaurav (Product Manager, Azure App Service — demo)<br>
+<strong>Duration:</strong> ~49 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=wtUD8IV7rdA">YouTube</a></p>
+  </div>
+</div>
+
+<div class="callout callout-note">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">📝</span><span class="callout-title-text">Caption-uncertain names</span></div>
+  <div class="callout-body">
+<p>Speaker names are auto-caption-derived. "Andrew Westgarth" (rendered "Weskarth") is the well-known Azure App Service PM. "Grace Sef" and the demo presenter "Gaurav" (rendered variously "Gorov / Garav / Gav") are best-effort corrections and may be spelled differently.</p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>This Azure App Service session shows how to <strong>move existing .NET (especially .NET Framework / Windows) applications to PaaS and then make them intelligent</strong> — without a costly rewrite. The centrepiece is <strong>Managed Instance on Azure App Service</strong> (public preview, launched at Ignite Nov 2025), which lets you bring Windows/third-party dependencies, registry access, drive-letter storage mounts, custom install scripts, and even <strong>Bastion-secured RDP</strong> into a fully managed PaaS that scales 1→N instances at a click. The headline Build 2026 announcement is <strong>built-in MCP for App Service</strong>: surface an existing REST API and App Service auto-generates an <strong>MCP server</strong> (one tool per API method), secured by managed identity / OAuth / RBAC, so legacy APIs become AI-consumable tools for agents and coding assistants. The session also covers <strong>agentic application patterns</strong> (orchestrator + specialised domain agents), the <strong>GitHub Copilot app modernization tooling</strong> in Visual Studio (AI-assisted assessment + refactoring for .NET and Java), and new <strong>agent observability</strong> (App Insights-backed agent metrics in the portal). A long live demo stitches all of it together: assess → migrate → configure → expose as MCP → observe.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Managed Instance on App Service = lift-and-modernize PaaS for Windows/.NET Framework apps</strong> — bring Windows dependencies along instead of rewriting (public preview today; launched at Ignite Nov 2025).</li>
+<li>Five recurring modernization blockers are called out: <strong>legacy system dependencies, stateful design, scattered config/secret management, and long migration timelines</strong> — Managed Instance is positioned to dissolve the first set.</li>
+<li><strong>Zero-to-minimal code changes is the stated design goal</strong> — preserve registry access, drive-letter mounts, third-party MSIs, and OS roles via a <strong>custom install script (<code>install.ps1</code>)</strong>, ideal when you don't own the source or can't touch a critical third-party app.</li>
+<li><strong>Custom dependencies install via an <code>install.ps1</code> packaged in a zip</strong> (with any MSIs/fonts/components) uploaded to a storage account; App Service downloads, unzips, and runs it on each instance — re-applied automatically on maintenance/scale so customizations persist.</li>
+<li><strong>Registry read/write is supported</strong>, with the actual registry values stored as <strong>Key Vault secrets</strong> — full secure secret chain end-to-end.</li>
+<li><strong>Storage mounts with drive letters</strong> (e.g. <code>J:</code>) map to <strong>Azure Files, a VNET UNC share, or local temp storage</strong>; connection strings are held as Key Vault secrets. ⚠️ Local mounts are <strong>ephemeral</strong> (lost on restart).</li>
+<li><strong>First-ever Bastion-secured RDP into App Service instances</strong> for troubleshooting with familiar tools (Event Viewer, regedit, MMC, IIS) — but <strong>RDP changes are non-persistent</strong>; bake everything into the install script.</li>
+<li><strong>Built-in MCP (NEW at Build 2026, preview):</strong> App Service detects your API and <strong>auto-exposes it as an MCP server</strong> — one <strong>tool call per REST method</strong> — making legacy/.NET Framework APIs usable by agents and coding assistants.</li>
+<li>Built-in MCP is <strong>language-agnostic</strong> (.NET, Java, Node.js, Python) and <strong>secured via managed identity, OAuth, and RBAC</strong> with auditable interactions.</li>
+<li><strong>You feed an OpenAPI-compliant JSON spec</strong> and configure auth; App Service generates the MCP server at a chosen endpoint path — consumers reference it in <code>mcp.json</code> and immediately call the tools.</li>
+<li><strong>Agentic pattern = orchestrator + specialised domain agents</strong> (e.g. sales, product, shipping); the orchestrator picks the most efficient execution sequence, and per-agent modularity enables <strong>granular, independent scaling</strong>.</li>
+<li><strong>Agentic design works with both greenfield and existing/legacy systems</strong> — you don't need a brand-new language or rewrite to participate in agent workflows.</li>
+<li><strong>GitHub Copilot app modernization tooling (in Visual Studio)</strong> runs an <strong>AI assessment</strong> that reports mandatory vs. potential issues per Azure target, generates refactored code, and accelerates greenfield scaffolding — supports <strong>.NET and Java</strong>.</li>
+<li><strong>Target choice matters in the assessment:</strong> the same .NET Framework app shows <strong>0 mandatory / 4 potential</strong> issues for App Service Managed Instance vs <strong>2 mandatory</strong> for App Service (Windows), because the classic Windows sandbox blocks registry writes and MSI installers — Managed Instance auto-resolves those blockers.</li>
+<li><strong>Premium v4 (Pv4) only:</strong> Managed Instance currently runs on <strong>Pv4 SKUs</strong> (e.g. P1 V4), described as the most performant SKU in the fleet with attractive Windows pricing.</li>
+<li><strong>New agent observability:</strong> with App Insights configured, the portal shows <strong>agent count, call volume, token usage, and error rate</strong> (demo: 5 agents, 52 calls, last 30 days) with drill-through to App Insights logs.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="session-framing-agenda">Session framing &amp; agenda</h3>
+<p>Andrew Westgarth and Grace Sef (Azure App Service PMs) open by previewing new App Service capabilities aimed at accelerating cloud migration <strong>and</strong> AI adoption. The agenda:
+1. Understand the common <strong>modernization challenges</strong> organizations hit.
+2. Review <strong>Managed Instance on Azure App Service</strong> (launched at Ignite, Nov 2025).
+3. Introduce the Build 2026 launch: <strong>built-in MCP</strong> — expose APIs as AI-consumable tools.
+4. Show how <strong>GitHub Copilot app modernization tooling</strong> assesses apps and makes code changes across languages.
+5. A full <strong>live demo</strong> by their colleague Gaurav.
+6. Wrap-up with summary + key resources.</p>
+<h3 id="understanding-modernization-challenges">Understanding modernization challenges</h3>
+<p>From years of customer research, the team groups blockers into a few categories:</p>
+<ul>
+<li><strong>Legacy system dependencies.</strong> Heavy reliance on specific OS features — e.g. <strong>MSMQ client, SMTP</strong>, Windows APIs like <strong>GDI drawing libraries</strong> — plus third-party reporting libraries, control sets, or in-house components. Traditional PaaS (incl. classic App Service) <strong>doesn't let you install third-party/self-built components via MSIs/EXEs</strong>, which blocks migration. (This session directly addresses that.)</li>
+<li><strong>Stateful vs. stateless design.</strong> Apps that lean on in-memory <strong>session management</strong> can't scale massively; stateless architectures (externalizing state to a database, table storage, or a Redis cache — caption said "radius") give scalability and flexibility out of the box. Some customers solved this on-prem; others surface it during cloud adoption.</li>
+<li><strong>Configuration &amp; secret management.</strong> Enterprises accumulate <strong>scattered, non-centralized</strong> config services and shared secrets unique to each flow. The challenge is <strong>centralized governance and secure management</strong> — where Azure (Key Vault + managed identity) helps.</li>
+<li><strong>Migration timelines.</strong> After an assessment, teams face many tasks; even "simple" modernization can take <strong>multiple months</strong>. The goal is to <strong>shorten that and raise ROI</strong>.</li>
+</ul>
+<h3 id="managed-instance-on-azure-app-service-overview">Managed Instance on Azure App Service — overview</h3>
+<p>Introduced at <strong>Ignite (November 2025)</strong>, <strong>public preview today</strong>. Goal: <strong>accelerate the move to PaaS</strong> with extreme flexibility but high scale.</p>
+<ul>
+<li><strong>Preserve Windows dependencies</strong> — bring third-party and Windows Server OS dependencies along.</li>
+<li><strong>Unlock scale</strong> — go from <strong>1 instance to ~30</strong> quickly via a few clicks, a template deployment, or a CLI command, instead of racking servers / building VMs / physical tin.</li>
+<li><strong>Security by design</strong> — uses <strong>managed identity</strong> to talk to SQL (database backends), Key Vault (secrets + certificate management), etc.</li>
+<li><strong>Add Azure AI value immediately</strong> — layer <strong>agents and MCP</strong> onto legacy apps.</li>
+<li><strong>Premium v4 SKU</strong> — deploys on <strong>Pv4</strong>, the most performant SKU in the fleet, with attractive pricing specifically for Windows customers.</li>
+</ul>
+<h3 id="managed-instance-foundation-for-cloud-adoption-zerominimal-code-changes">Managed Instance — foundation for cloud adoption (zero/minimal code changes)</h3>
+<p>The explicit design goal is <strong>minimal — ideally zero — code changes</strong>:</p>
+<ul>
+<li>Use a <strong>configuration/install script</strong> to bring dependencies, install <strong>server roles/features</strong>, or make needed changes.</li>
+<li><strong>Read/write the registry</strong>, storing those key values in <strong>Key Vault</strong> → secure secret chain end-to-end.</li>
+<li><strong>Mount storage volumes with drive letters</strong> (common on-prem pattern) rather than only UNC paths.</li>
+<li>This preserves existing dependencies/config <strong>without any code change</strong>, which is critical when you <strong>don't have the source code</strong> or it's a <strong>third-party app you can't modify</strong> but is business-critical (e.g. during a data-center shutdown / forced migration).</li>
+</ul>
+<h3 id="managed-instance-cloud-native-benefits-out-of-the-box">Managed Instance — cloud-native benefits out of the box</h3>
+<ul>
+<li><strong>Scalability:</strong> horizontal (1→N instances immediately) <strong>and</strong> vertical — start small (single core, low RAM) up to <strong>32 cores / 256 GB RAM</strong>, at the click of a button vs. long procurement.</li>
+<li><strong>High security:</strong> managed identities required throughout, used to connect to other Azure services to improve posture from day one.</li>
+<li><strong>High availability:</strong> multiple instances plus <strong>availability zones</strong> for resiliency.</li>
+<li><strong>Operational offloading:</strong> as PaaS, Microsoft handles <strong>infrastructure maintenance, patching, scaling</strong> — freeing dev teams to focus on value and eliminating ops cost of patching instances.</li>
+<li><strong>Incremental modernization pathway:</strong> Managed Instance can be a <strong>final destination</strong> (just get to the cloud) <strong>or</strong> a launchpad — once you're "in the App Service stable," you can later rewrite <strong>core components</strong> in a newer language (e.g. .NET Core) <strong>piecemeal</strong>, reducing risk and time-to-value instead of rewriting everything before moving.</li>
+</ul>
+<h3 id="managed-instance-capability-details">Managed Instance — capability details</h3>
+<ul>
+<li><strong>Data management backed by Key Vault</strong> — secrets, credentials, config settings all in Key Vault, integrated with managed identity.</li>
+<li><strong>Storage compatibility</strong> — drive-letter mapping onto <strong>Azure Files, local temporary storage, or a UNC file share inside your VNET</strong>, maintaining app compatibility.</li>
+<li><strong>Custom dependency installations</strong> — an <strong>install script</strong> includes custom dependencies for legacy components (third-party, or OS components not installed by default).</li>
+<li><strong>Bastion-secured RDP (first time ever in App Service)</strong> — remote desktop directly to instances over <strong>Azure Bastion</strong> with a secure protocol, giving <strong>full access</strong> to use familiar tools (Event Viewer, registry viewer, server manager) for troubleshooting/investigation.</li>
+<li>⚠️ <strong>RDP-session changes are temporary</strong> — they must be backed by the <strong>install script</strong> to persist, because when Microsoft does maintenance or <strong>replaces instances</strong>, customizations are re-applied from the script.</li>
+<li><strong>Dynamic scaling and maintenance</strong> — configure auto-scale by application need, or scale manually / on a schedule; OS updates and maintenance are handled by the platform team.</li>
+</ul>
+<h3 id="built-in-mcp-the-build-2026-launch">Built-in MCP (the Build 2026 launch)</h3>
+<p>A <strong>new App Service feature announced at Build 2026</strong> that <strong>adds AI value to apps immediately</strong> by turning <strong>APIs into AI tools</strong>:</p>
+<ul>
+<li>You <strong>surface an API</strong>; App Service <strong>detects and discovers</strong> it inside your app and <strong>exposes MCP tooling</strong> you can incorporate elsewhere.</li>
+<li><strong>Secured via managed identity, OAuth, and RBAC</strong>, keeping <strong>auditable API interactions</strong>.</li>
+<li><strong>Language-agnostic</strong> — supports <strong>.NET, Java, Node.js, and Python</strong>.</li>
+<li><strong>Architecture shown in the demo:</strong> a <strong>.NET Framework inventory web API</strong> running on Managed Instance is already exposed as an API; built-in MCP exposes it so its capabilities (built years ago) can be consumed by <strong>modern development frameworks</strong> and agents.</li>
+</ul>
+<h3 id="agentic-application-patterns">Agentic application patterns</h3>
+<p>App Service can host <strong>agent-based modular designs</strong>:</p>
+<ul>
+<li><strong>Specialised agents per domain</strong> — e.g. a <strong>sales</strong> agent, <strong>product</strong> agent, <strong>shipping</strong> agent — each exposing distinct, task-focused functionality (more modular than a monolith).</li>
+<li><strong>Orchestrator coordination</strong> — an orchestrator receives requests and determines the <strong>most efficient execution sequence</strong> and which agents to involve.</li>
+<li><strong>Granular scalability</strong> — because agents are split by task, scaling can flex independently as user demand evolves.</li>
+<li><strong>Works with legacy + greenfield</strong> — agentic design <strong>does not require</strong> brand-new greenfield projects in the latest languages; you can integrate <strong>existing legacy systems</strong> alongside new ones.</li>
+</ul>
+<h3 id="github-copilot-app-modernization-tooling">GitHub Copilot app modernization tooling</h3>
+<p>The bridge between "old app" and "cloud-ready app":</p>
+<ul>
+<li><strong>AI-assisted code modernization</strong> — Copilot analyzes <strong>legacy and modern</strong> codebases and <strong>generates refactored code</strong> aligned with modern architecture practices, identifying improvements that reduce cloud-migration problems and align with newer paradigms.</li>
+<li><strong>Fast greenfield development</strong> — with the right prompts/scaffolding, generate <strong>new APIs, tests, deployment scripts</strong>, and prototypes quickly.</li>
+<li><strong>Multi-language</strong> — covers <strong>.NET and Java</strong>, versatile across enterprise project types.</li>
+<li><strong>Built into Visual Studio</strong> and <strong>integrates directly with platforms like Azure App Service</strong>, enabling <strong>modernization assessments</strong> to find problems/improvements <strong>before</strong> moving to App Service → faster cycles, better collaboration, no piecemeal migrations.</li>
+<li>Also handles <strong>other app types</strong> — e.g. moving a <strong>.NET or Node.js app to App Service Linux</strong> uses the same tooling.</li>
+</ul>
+<h3 id="demo-walkthrough-gaurav-part-1-github-copilot-app-modernization-assessment">Demo walkthrough (Gaurav) — Part 1: GitHub Copilot app modernization assessment</h3>
+<ul>
+<li>Starts with a <strong>classic ASP.NET / .NET Framework web app</strong> containing web forms + an <strong>API controller</strong>.</li>
+<li>Dependencies shown: <strong>log4net</strong> writing logs to <strong>local disk</strong>, a <strong>local SMTP server</strong> writing mail to local disc, and a <strong>database connection string stored in a registry key</strong>.</li>
+<li>To assess: <strong>right-click solution → Modernize → "Migrate to Azure"</strong>, wait for the assessment.</li>
+<li>The <strong>assessment report</strong> proposes Azure targets. For .NET Framework web apps the <strong>default target is Azure App Service Managed Instance</strong>.</li>
+<li>Example guidance: for <strong>logging</strong>, if targeting Managed Instance, <strong>prefer App Insights or App Service logging</strong>; if file-system logs are required, <strong>write to a mounted Azure file share</strong>.</li>
+<li>Report also covers <strong>file-system management</strong> and <strong>static content</strong> handling.</li>
+<li><strong>Target comparison (key point):</strong></li>
+<li><strong>App Service Managed Instance:</strong> <strong>0 mandatory</strong>, <strong>4 potential</strong> issues.</li>
+<li><strong>App Service (Windows):</strong> <strong>2 mandatory</strong> issues — because classic App Service (Windows) runs in a <strong>sandbox</strong> with a security lockdown that <strong>blocks registry read/write and MSI installers</strong>.</li>
+<li>Switching back to Managed Instance <strong>auto-resolves</strong> those blockers — the rationale for launching Managed Instance at Ignite.</li>
+<li><strong>Migration options:</strong> right-click project → <strong>Publish to App Service Managed Instance</strong>, <strong>or</strong> use an <strong>agentic migration flow</strong> via an existing PowerShell script (Gaurav published a <strong>blog with pilot source code on GitHub</strong> — agents you can download and modify).</li>
+</ul>
+<h3 id="demo-part-2-creating-a-managed-instance-app-service-plan">Demo — Part 2: Creating a Managed Instance App Service plan</h3>
+<p>Via <strong>Create resource → Marketplace → type "managed instance" → "Web app for managed instance" → Create</strong>:</p>
+<ul>
+<li>Provide <strong>subscription, resource group</strong> (existing or new), <strong>name</strong>, and <strong>runtime</strong>.</li>
+<li>The runtime list is <strong>shorter</strong> because behind the scenes Managed Instance runs a <strong>child Hyper-V VM</strong> with default runtimes pre-installed — but you <strong>can install other runtimes/versions</strong> (.NET Framework, Node, Java major/minor) via the install script. Demo selects <strong>4.8</strong>.</li>
+<li>Regions are <strong>continuously rolling out</strong>; demo uses <strong>West Central US</strong>.</li>
+<li><strong>SKU:</strong> Managed Instance is <strong>only on Pv4</strong> → demo picks <strong>P1 V4</strong>. <strong>Zone redundancy</strong> is a toggle.</li>
+<li><strong>New step — install package:</strong> the plan asks for a <strong>storage account, container, and zip file</strong>:</li>
+<li>Create an <strong><code>install.ps1</code></strong>, zip it <strong>together with all installers/MSIs/components</strong>, upload to a storage account.</li>
+<li>Select the <strong>storage account + container + zip file name</strong> (only constraint: the script must be named <strong><code>install.ps1</code></strong>; zip name is free).</li>
+<li>A <strong>managed identity</strong> secures app↔storage communication; App Service downloads the zip, unzips, and <strong>runs the install script steps</strong> on the instance.</li>
+<li><strong>Example install script contents:</strong> installing <strong>custom fonts</strong>, <strong>enabling the SMTP server role</strong>; you can also enable other <strong>Windows features</strong>, install <strong>Windows services</strong>, or an <strong>MSMQ client</strong>.</li>
+<li>⚠️ The install package is <strong>optional</strong> — if your app has no extra dependencies, <strong>skip it</strong> ("optional yet super powerful").</li>
+<li><strong>Deployment tab:</strong> standard experience — point at <strong>GitHub source</strong> and App Service pulls and deploys the code on creation.</li>
+<li><strong>Networking tab:</strong> enable <strong>public access</strong> as needed. <strong>Major difference:</strong> instead of configuring a VNET per app, the <strong>entire plan is joined to a virtual network</strong>, so <strong>all web apps in the plan are in the VNET</strong>. Select a <strong>VNET</strong>, enable <strong>VNET integration</strong>, choose a <strong>subnet</strong>.</li>
+<li><strong>Review + Create:</strong> App Service provisions the chosen instance size, creates the plan, downloads the zip, runs the install script, and (if given) pulls + deploys the source.</li>
+</ul>
+<h3 id="demo-part-3-plan-configuration-storage-mounts-registry-bastion">Demo — Part 3: Plan configuration (storage mounts, registry, Bastion)</h3>
+<p>On an already-created Managed Instance plan (looks/behaves like a standard App Service plan), the new <strong>Configuration</strong> option exposes:</p>
+<ul>
+<li><strong>Install package config</strong> — the storage account, script container, and zip name.</li>
+<li><strong>Storage mounts</strong> — demo app has three mounts (e.g. <strong>K:</strong>, <strong>L:</strong>, <strong>H:</strong>). To add one (e.g. <strong>storage4</strong> → <strong>J:</strong>):</li>
+<li>Map to an <strong>Azure file share</strong> (select storage account → file share); connectivity secured by a <strong>secret = connection string stored as a Key Vault secret</strong> (provide the <strong>Key Vault</strong> + <strong>mapped secret</strong>), then assign the <strong>drive letter</strong>.</li>
+<li>Can also be a <strong>UNC path</strong> (a file server on Azure or in your own data center, reachable from the VNET) <strong>or a local file share</strong>.</li>
+<li>⚠️ <strong>Local mounts are ephemeral</strong> — content is lost if the instance restarts.</li>
+<li><strong>Registry entries</strong> — e.g. the app reads its DB connection string from the registry. To add one: provide a <strong>registry path</strong> (e.g. <code>HKEY_LOCAL_MACHINE\SOFTWARE\...</code>), the <strong>Key Vault</strong> holding the actual value as a secret, and the <strong>type</strong> (<strong>string</strong> or <strong>DWORD</strong>). Use case beyond demo: a component that writes a <strong>license file to the local registry</strong>.</li>
+<li><strong>Bastion / RDP</strong> — a <strong>checkbox enables/disables remote desktop</strong> for the plan. Under <strong>Instances</strong>, select an instance → <strong>Connect</strong> for <strong>secure RDP</strong> (or <strong>Restart</strong> an instance). In the RDP session Gaurav verifies the <strong>created registry (regedit)</strong>, the <strong>event log</strong>, the <strong>MMC snap-in showing the SMTP role configured</strong>, and access to the underlying <strong>IIS server</strong>. Install logs live under an <strong><code>install scripts</code></strong> folder (a log folder named after your script), and an overall <strong><code>adapter.log</code></strong> sits on <strong>C:</strong>.</li>
+<li>⚠️ Repeated warning: <strong>RDP changes are not permanent</strong> — put all installers/config in the <strong>install.ps1 + zip</strong> so they persist across <strong>scale-out, scale-up, and restarts</strong>.</li>
+<li>The migrated app is <strong>indistinguishable from a standard Windows App Service app</strong> — so you get <strong>deployment slots, deployment center, quick env-var changes, authentication/identity, backups/resiliency, custom domain certificates</strong>, and <strong>scale up / scale out (rule-based or manual)</strong>.</li>
+</ul>
+<h3 id="demo-part-4-built-in-mcp-turning-a-rest-api-into-an-mcp-server">Demo — Part 4: Built-in MCP (turning a REST API into an MCP server)</h3>
+<ul>
+<li>The web app includes an <strong>inventory REST API</strong> with methods like <em>all inventory</em>, <em>inventory by ID</em>, and <em>inventory by category</em>.</li>
+<li>The second half of "move and improve" is making the app <strong>intelligent / agent-ready</strong> — reuse a powerful existing solution (e.g. inventory management / supply chain) in agentic flows <strong>without writing new functions</strong>.</li>
+<li>Steps:
+  1. Generate an <strong>OpenAPI-compliant JSON</strong> spec for the REST API.
+  2. In the portal, go to the <strong>AI blade → MCP servers</strong> (preview; the <strong>Build 2026</strong> "in-built API MCP" feature). Give it a <strong>name</strong> and an <strong>endpoint path</strong> for the MCP server (demo: "mobile 2026"), optionally a location for the <code>spec.json</code>, then <strong>provide the OpenAPI spec</strong> (browse to the file) and optionally <strong>configure authentication</strong>.
+  3. App Service <strong>creates a tool call per REST method</strong> on the MCP server.</li>
+<li><strong>Using it:</strong> in Visual Studio, add the MCP server to <strong><code>mcp.json</code></strong> (the only change), then ask <strong>GitHub Copilot</strong> (built into Visual Studio) a simple question like "get me the inventory" — Copilot <strong>talks to the MCP server</strong> and pulls inventory via the available tools. Consumers could equally be <strong>your agents</strong> or <strong>any coding assistant/tool</strong>.</li>
+</ul>
+<h3 id="demo-part-5-agent-observability">Demo — Part 5: Agent observability</h3>
+<ul>
+<li>With <strong>agents running on the app</strong> and <strong>App Insights configured</strong>, the portal surfaces agent intelligence: in the demo, <strong>5 agents total</strong>, <strong>52 calls in the last 30 days</strong>, plus <strong>token usage</strong> and <strong>error rate</strong> over 30 days.</li>
+<li><strong>Drill-down:</strong> click <strong>logs</strong> on an individual agent → routes to <strong>App Insights</strong>.</li>
+<li><strong>Where to find it:</strong> same place as the MCP server experience — <strong>AI blade → MCP servers</strong>, with an adjacent <strong>Agents</strong> tab.</li>
+</ul>
+<h3 id="wrap-up-next-steps-andrew">Wrap-up &amp; next steps (Andrew)</h3>
+<p>Andrew closes by framing the three pillars working together — <strong>Managed Instance</strong>, <strong>built-in MCP</strong>, and <strong>GitHub Copilot app modernization tooling</strong> — and points to resources (see Announcements/Related): the <strong>App Service at Build 2026 blog</strong>, a <strong>3-article series on agentic app development with .NET</strong> (build + publish on App Service), <strong>built-in MCP</strong> docs, <strong>agent observability</strong>, <strong>Managed Instance</strong> docs/overviews, the <strong>GitHub Copilot app modernization tooling</strong>, and <strong>Gaurav's article on an agentic migration pathway to Managed Instance</strong>. Theme: <strong>embrace AI gradually</strong> — take an existing app, get it to PaaS, then expose MCP tools and observe agents, expanding as feedback comes in.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Azure App Service</strong> — the PaaS host for web apps/APIs that the whole session builds on.</li>
+<li><strong>Managed Instance on Azure App Service</strong> — flexible PaaS tier (Pv4) that preserves Windows/third-party dependencies, registry, drive-letter mounts, install scripts, and Bastion RDP; public preview (launched Ignite Nov 2025).</li>
+<li><strong>Built-in MCP for App Service</strong> — NEW (Build 2026, preview): auto-generates an <strong>MCP server</strong> from an app's API (one tool per method); secured by managed identity/OAuth/RBAC; supports .NET, Java, Node.js, Python.</li>
+<li><strong>Agent observability in App Service</strong> — NEW: App Insights-backed portal view of agent count, calls, token usage, error rate, with log drill-through.</li>
+<li><strong>GitHub Copilot app modernization tooling</strong> — Visual Studio tooling for AI assessment + refactoring; supports .NET and Java; integrates with App Service targets.</li>
+<li><strong>Visual Studio</strong> — IDE hosting the modernization tooling and GitHub Copilot used to call the MCP server.</li>
+<li><strong>GitHub Copilot</strong> — AI assistant used both for code modernization and (in-IDE) to invoke MCP tools.</li>
+<li><strong>Azure Bastion</strong> — secure connectivity providing first-ever RDP into App Service instances.</li>
+<li><strong>Azure Key Vault</strong> — stores secrets, credentials, registry values, and storage connection strings.</li>
+<li><strong>Managed identity</strong> — required throughout for secure service-to-service auth (SQL, Key Vault, storage, MCP).</li>
+<li><strong>Azure Files / UNC share / local temp storage</strong> — backing options for drive-letter storage mounts.</li>
+<li><strong>Azure SQL</strong> — example database backend reached via managed identity.</li>
+<li><strong>Application Insights (App Insights)</strong> — telemetry backend for app logging and agent observability.</li>
+<li><strong>Availability zones</strong> — used for HA/resiliency across multiple instances.</li>
+<li><strong>OpenAPI specification (spec.json)</strong> — the API contract fed to built-in MCP to generate tools.</li>
+<li><strong><code>mcp.json</code></strong> — client config file where consumers register the generated MCP server.</li>
+<li><strong><code>install.ps1</code> (+ zip package)</strong> — PowerShell install script (zipped with MSIs/components) that provisions custom dependencies, OS roles/features, fonts, and services on instances.</li>
+<li><strong>.NET Framework / ASP.NET / .NET Core</strong> — application runtimes; demo app is .NET Framework 4.8, with .NET Core cited for incremental rewrites.</li>
+<li><strong>log4net</strong> — logging library in the demo app (writing to local disk).</li>
+<li><strong>SMTP server role / MSMQ client / GDI libraries</strong> — examples of Windows/legacy dependencies Managed Instance can carry.</li>
+<li><strong>Hyper-V child VM</strong> — the per-instance compute model behind Managed Instance (enables installing extra runtimes).</li>
+<li><strong>Deployment slots / Deployment Center</strong> — standard App Service capabilities available post-migration.</li>
+<li><strong>Java / Node.js / Python</strong> — additional languages supported by built-in MCP and the modernization/Linux scenarios.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Built-in MCP for Azure App Service — NEW at Build 2026 (preview).</strong> Auto-exposes an app's REST API as an MCP server (one tool per method), language-agnostic (.NET/Java/Node.js/Python), secured via managed identity, OAuth, and RBAC.</li>
+<li><strong>Agent observability in Azure App Service — NEW (announced at Build).</strong> App Insights-backed portal metrics for agents running on the app (count, calls, token usage, error rate) with drill-through to logs.</li>
+<li><strong>Managed Instance on Azure App Service — public preview</strong> (originally launched at <strong>Ignite, November 2025</strong>; reaffirmed here), continuing <strong>regional rollout</strong>; currently <strong>Pv4 SKUs only</strong>.</li>
+<li><strong>App Service at Build 2026 blog</strong> — collects all of the above App Service announcements/capabilities for follow-up.</li>
+<li><strong>Gaurav's blog + GitHub pilot source code</strong> for an <strong>agentic migration flow to Managed Instance</strong> (PowerShell-script-driven agents you can download/modify).</li>
+<li><strong>3-article series on agentic app development with .NET</strong> on App Service (build + publish guidance).</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<p>A single end-to-end demo (presenter: Gaurav) stitching the concepts together:
+- <strong>App modernization assessment (Visual Studio + GitHub Copilot):</strong> assessed a classic .NET Framework web app (log4net, local SMTP, registry-stored DB connection string). Showed the report recommending <strong>App Service Managed Instance</strong> as default target, with logging/file-system guidance. <strong>Proved the core value:</strong> Managed Instance = <strong>0 mandatory / 4 potential</strong> issues vs <strong>App Service (Windows) = 2 mandatory</strong> (registry + MSI blockers in the sandbox), which Managed Instance auto-resolves.
+- <strong>Creating a Managed Instance plan (Azure Portal):</strong> walked the marketplace flow — runtime (4.8), <strong>P1 V4 SKU</strong>, <strong>install-zip (<code>install.ps1</code> + MSIs/fonts/SMTP role)</strong> on a storage account secured by managed identity, GitHub source deployment, and <strong>plan-level VNET integration</strong>. <strong>Proved</strong> dependency-preserving, low-code migration to PaaS.
+- <strong>Plan configuration:</strong> added <strong>storage mounts</strong> (drive letters → Azure Files/UNC/local, secrets in Key Vault), <strong>registry entries</strong> (path + Key Vault secret + string/DWORD), and <strong>Bastion RDP</strong> into an instance — verifying the <strong>registry, event log, SMTP role (MMC), IIS</strong>, and install logs (<code>install scripts</code> folder, <code>adapter.log</code>). <strong>Proved</strong> full Windows-style control + persistence model (RDP changes non-permanent → use the script).
+- <strong>Built-in MCP:</strong> generated an <strong>OpenAPI JSON</strong> for an inventory REST API, used the portal <strong>AI → MCP servers</strong> blade to create an MCP server (endpoint path "mobile 2026"), yielding <strong>one tool per API method</strong>; added it to <strong><code>mcp.json</code></strong> and had <strong>GitHub Copilot</strong> answer "get me the inventory" by calling the MCP tools. <strong>Proved</strong> a legacy REST API becoming an agent/assistant-consumable tool with essentially one config change.
+- <strong>Agent observability:</strong> showed the portal agent dashboard — <strong>5 agents, 52 calls (last 30 days)</strong>, token usage, error rate, with <strong>App Insights</strong> log drill-through. <strong>Proved</strong> built-in operational visibility for agentic apps.</p>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>1 → ~30 instances</strong> at a click / template / CLI — the scale-out promise vs. racking servers.</li>
+<li><strong>Vertical scale up to 32 cores / 256 GB RAM</strong>, from a single-core/low-RAM starting point.</li>
+<li>Assessment counts: <strong>Managed Instance = 0 mandatory + 4 potential</strong> issues; <strong>App Service (Windows) = 2 mandatory</strong> issues for the same app.</li>
+<li><strong>Pv4 only</strong> (e.g. <strong>P1 V4</strong>) — "our most performant SKU in our fleet," with attractive Windows pricing.</li>
+<li>Agent observability snapshot: <strong>5 agents, 52 calls, last 30 days</strong> (+ token usage, error rate).</li>
+<li><strong>Managed Instance launched at Ignite, November 2025</strong>; built-in MCP + agent observability launched at <strong>Build 2026</strong>.</li>
+<li>Design ethos quotes: <em>"we're aiming for zero code changes"</em>; <em>"move and improve"</em>; <em>"optional yet super powerful"</em> (the install package); <em>"embrace AI gradually."</em></li>
+<li><strong>First time ever</strong> in Azure App Service: <strong>RDP (via Bastion) directly into instances</strong>.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Run <strong>GitHub Copilot app modernization assessment</strong> on a .NET Framework app in Visual Studio and compare <strong>Managed Instance vs App Service (Windows)</strong> issue counts.</li>
+<li>Stand up a <strong>Managed Instance plan (P1 V4)</strong> in a test sub and exercise an <strong><code>install.ps1</code> + zip</strong> (e.g. enable SMTP role / install a font) → verify via <strong>Bastion RDP</strong>.</li>
+<li>Generate an <strong>OpenAPI spec</strong> for an existing REST API and use <strong>built-in MCP</strong> to expose it, then call it from <strong>GitHub Copilot</strong> via <code>mcp.json</code>.</li>
+<li>Wire <strong>App Insights</strong> to an agent app and confirm the <strong>agent observability</strong> dashboard populates.</li>
+<li>Read <strong>Gaurav's agentic-migration blog</strong> and try the <strong>PowerShell-script agents</strong> from GitHub.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What are the <strong>GA timelines</strong> for Managed Instance, built-in MCP, and agent observability? (All preview here.)</li>
+<li>Which <strong>regions</strong> currently support Managed Instance, and what's the rollout cadence?</li>
+<li>Cost: how does <strong>Pv4 Managed Instance</strong> (incl. the child Hyper-V VM model) price vs. standard App Service Premium and vs. VMs/AKS?</li>
+<li>For built-in MCP, what <strong>auth options/limits</strong> apply, and how is <strong>tool schema</strong> derived/customized from OpenAPI?</li>
+<li>Any <strong>per-plan instance ceiling</strong> (the talk cited "~30") and limits on <strong>VNET-joined plans</strong>?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li><strong>Azure migration / app-modernization labs</strong> (lift-and-modernize of Windows/.NET Framework workloads).</li>
+<li><strong>Agent/MCP architecture</strong> work — exposing existing enterprise APIs as agent tools.</li>
+<li>Customers blocked by <strong>registry/MSI/third-party dependencies</strong> on classic App Service.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li>App Service at Build 2026 blog (announcements hub)</li>
+<li>Managed Instance on Azure App Service — docs/overview</li>
+<li>Built-in MCP for Azure App Service (preview)</li>
+<li>Agent observability in Azure App Service (preview)</li>
+<li>GitHub Copilot app modernization tooling (Visual Studio)</li>
+<li>Agentic app development with .NET on App Service — 3-article series</li>
+<li>Gaurav's blog: agentic migration pathway to Managed Instance (+ GitHub pilot source)</li>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Build 2026">Microsoft Build 2026</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="OD800.html"><span class="pager-dir">← Previous</span><span class="pager-code">OD800</span><span class="pager-title">Using autonomous SRE to move from alerts to action</span></a>
+    <a class="pager pager-next" href="OD802.html"><span class="pager-dir">Next →</span><span class="pager-code">OD802</span><span class="pager-title">Building for the agentic web with .NET 11</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

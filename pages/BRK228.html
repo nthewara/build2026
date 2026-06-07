@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRK228 — Modern resiliency from build to recovery through Agentic AI</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">BRK228</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=nzDPYlNXRf0" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Modern resiliency from build to recovery through Agentic AI</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Abi Manu, Aditi, Shobit</span>
+      <span class="meta-item">⏱️ 45m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="resiliency">Resiliency</span><span class="chip" data-tag="azure">Azure</span><span class="chip" data-tag="devops">DevOps</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Abi Manu, Aditi &amp; Shobit (Azure resiliency / reliability product team)<br>
+<strong>Duration:</strong> ~45 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=nzDPYlNXRf0">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>This session walks through Microsoft's reimagined <strong>Azure resiliency</strong> story, centred on a three-phase journey — <strong>Start resilient → Get resilient → Stay resilient</strong> — and the new <strong>agentic AI</strong> capabilities that help users discover and close resiliency gaps. The headline launch is the <strong>public preview of Azure Infrastructure Resiliency Manager</strong>, unifying infrastructure, data, and cyber resiliency in one place with <strong>goals</strong>, advisor-powered <strong>recommendations</strong>, <strong>resiliency drills</strong> (Chaos Studio), and <strong>recovery plans</strong>. Live demos show the <strong>Resiliency Agent in Azure Copilot</strong> generating zonally resilient Bicep from natural language, the <strong>Azure MCP server + Azure Advisor tools</strong> scanning and auto-fixing IaC drift in VS Code/GitHub Copilot, <strong>service groups</strong> making brownfield apps zonally resilient, vaulted backups for ransomware protection, and the new <strong>Azure Advisor AI-powered prioritization</strong> that collapses hundreds of recommendations into a ranked top-5 action plan. It closes by announcing <strong>Azure Chaos Studio workspaces</strong> in public preview (June 11).</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li>Resiliency = designing systems that keep operating when things go wrong; in the real world <strong>failures are expected, not exceptions</strong> (zone outages, regional outages, data loss).</li>
+<li>Azure resiliency rests on <strong>three pillars</strong>: <strong>Infrastructure</strong> (hardware/datacentre failures + planned retirements), <strong>Data</strong> (integrity, availability, recoverability — RPO/RTO via Azure Backup), and <strong>Cyber</strong> (immutable backups + isolated recovery environments to survive ransomware).</li>
+<li>The resiliency <strong>lifecycle</strong> has three phases: <strong>Start resilient</strong> (day-zero), <strong>Get resilient</strong> (close gaps in existing/brownfield apps), and <strong>Stay resilient</strong> (ongoing drills, recovery plans, monitoring) — resiliency is continuous, not a one-time setup.</li>
+<li><strong>Public preview launch: Azure Infrastructure Resiliency Manager</strong> — manage zonal resiliency via <strong>goals</strong>, <strong>recommendations</strong> (Advisor), <strong>resiliency drills</strong> (Chaos Studio), and <strong>recovery plans</strong> (ordered recovery workflows respecting interdependencies).</li>
+<li>Planning is <strong>shifting from resource-level to application-level</strong> using <strong>service groups</strong> — the whole application must be resilient, not just individual resources. (Foundation laid at Ignite, expanding Azure Business Continuity Center into unified "Azure resiliency".)</li>
+<li><strong>Resiliency Agent in Azure Copilot</strong> turns natural-language architecture intent into <strong>zonally resilient, modular Bicep templates</strong> — no need to be a resiliency expert or leave the Azure portal.</li>
+<li>The agent surfaces <strong>per-resource zonal-resiliency guidance</strong> (e.g. VMSS needs instances + disks spread across zones; PostgreSQL flexible server needs General/Memory-Optimized tier; Key Vault needs an AZ-supported region) plus a detailed report with top + alternate recommendations.</li>
+<li>End-to-end developer flow stays in-tool: generate Bicep → download to VS Code Web → <strong>create a GitHub pull request</strong> directly from the Resiliency Agent in Azure Copilot.</li>
+<li><strong>Azure MCP server + Azure Advisor tools</strong> let any AI coding agent (GitHub Copilot, Cursor, Claude, etc.) <strong>scan Terraform/ARM IaC against the Advisor recommendation catalog in one pass</strong> — catching zonal gaps, <strong>retiring SKUs</strong>, and monitoring gaps — then <strong>auto-fix inline</strong> for review/accept so "nothing broken ever ships."</li>
+<li><strong>Service groups</strong> let you make <strong>brownfield apps zonally resilient</strong>: discover resources (by tag/RG/subscription/resource IDs via ARG), assign a <strong>zonal resiliency goal</strong>, check <strong>posture</strong>, run a <strong>prerequisite check</strong>, then have the agent <strong>enable HA</strong> (demo: HA on a PostgreSQL flexible server, done in minutes).</li>
+<li>Data + cyber resiliency via <strong>Azure MCP server in VS Code</strong>: find unprotected PostgreSQL flexible servers and <strong>configure vaulted backups</strong> (existing vault + policy) for <strong>ransomware protection</strong> and <strong>long-term retention up to 10 years</strong>.</li>
+<li><strong>Azure Advisor AI-powered experience</strong> intelligently ranks recommendations using real signals — <strong>blast radius, criticality, upcoming deadlines, cost</strong> — to produce a <strong>personalized top-5 action plan</strong> with completion-progress tracking and short/mid/long-term breakdown (next 30 days vs 3 months vs later).</li>
+<li>Export the prioritized plan as <strong>Word or PDF</strong>; <strong>coming soon</strong>: generate work items directly in <strong>Jira / ServiceNow</strong> and assign to teammates.</li>
+<li><strong>Landing soon: AI-powered resource-level prioritization</strong> — ranks <em>which specific resources</em> to fix first within a recommendation, using live signals (HA goals, active service health events, prod vs non-prod).</li>
+<li><strong>Announced: Azure Chaos Studio workspaces</strong> — public preview <strong>June 11</strong>, a complete reimagining with <strong>application-centric workspaces, new scenarios, and a new agentic service</strong> to rehearse the outages you actually fear.</li>
+<li>The <strong>Azure Advisor AI-powered prioritization experience</strong> is in <strong>limited preview starting today</strong> (sign up by meeting the team after the session — limited spots).</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="what-resiliency-means-why-it-matters">What resiliency means &amp; why it matters</h3>
+<p>Resiliency is about <strong>designing systems that continue to operate even when things go wrong</strong>. In the real world, failures are <strong>expected, not an exception</strong>, and they occur at multiple levels: an <strong>availability zone</strong> can go down, a <strong>regional outage</strong> can occur, or there can be <strong>data loss</strong>. Azure provides primitives to handle these — <strong>availability zones, region repair, region pairing, geo-replication, and backup</strong>. Combining capabilities across zones, region pairs, disaster recovery, and strong backup delivers true <strong>end-to-end resiliency</strong>. The simple goal: <strong>minimize downtime, prevent data loss, and recover quickly</strong> when failures happen.</p>
+<h3 id="the-three-pillars-of-resiliency">The three pillars of resiliency</h3>
+<ol>
+<li><strong>Infrastructure resiliency</strong> — withstanding <strong>hardware failures, issues, or datacentre outages</strong>, and accounting for <strong>planned retirements</strong> (e.g. a SKU being retired in a month). It's about designing systems to handle these failures.</li>
+<li><strong>Data resiliency</strong> — maintaining <strong>data integrity, availability, and recoverability</strong> at all times; ensuring critical data has a defined <strong>RPO and RTO</strong> so you can recover from failures. <strong>Azure Backup</strong> is the example primitive.</li>
+<li><strong>Cyber resiliency</strong> — even with the best IT defenses, <strong>ransomware and cyber attacks happen</strong>. The goal is <strong>immutable backups, isolated recovery environments</strong>, and the ability to recover when attackers strike your data systems and environments.</li>
+</ol>
+<h3 id="the-resiliency-lifecycle-start-get-stay">The resiliency lifecycle (Start → Get → Stay)</h3>
+<ul>
+<li><strong>Start resilient</strong> — build resiliency <strong>from day one/day zero</strong>. Azure offers availability zones, region pairs, architecture best practices, and tooling like the <strong>Resiliency Agent in Azure Copilot</strong> and <strong>Advisor tools via Azure MCP</strong> to build resilient apps from the start.</li>
+<li><strong>Get resilient</strong> — workloads evolve; <strong>brownfield apps</strong> accumulate new services, databases, and systems. The aim is to <strong>know the gaps</strong> and close them. <strong>Resiliency Agent + backup tools via Azure MCP</strong> let you proactively <strong>assign resiliency goals, find gaps, and mitigate</strong>. With real apps producing tons of recommendations, <strong>Azure Advisor AI-powered experiences</strong> help <strong>prioritize</strong> what matters.</li>
+<li><strong>Stay resilient</strong> — resiliency is an <strong>ongoing exercise</strong>, not a one-time setup. Capabilities like <strong>resiliency drills, recovery plans, service health, and Azure Advisor</strong> help <strong>detect, monitor, and stay resilient</strong>.</li>
+</ul>
+<p>Overall framing: resiliency isn't just <strong>surviving failures</strong> — it's building systems that <strong>continuously adapt, learn, and improve over time</strong>.</p>
+<h3 id="context-from-ignite-unified-azure-resiliency">Context from Ignite → unified "Azure resiliency"</h3>
+<p>At <strong>Ignite last year</strong>, Microsoft significantly <strong>expanded the scope of the Azure Business Continuity Center</strong>, introducing <strong>"resiliency in Azure"</strong> — a <strong>unified solution</strong> bringing infra/data/cyber capabilities into a <strong>single place</strong> that surfaces <strong>high-impact risks</strong>, simplifies <strong>remediation</strong>, and enables <strong>proactive planning</strong>. A key concept introduced then: stop looking at <strong>individual resources alone</strong> and instead evaluate the <strong>sum</strong> — i.e. <strong>the whole application</strong> (e.g. an "Ask HR" app) is either resilient or not. This is the shift from <strong>resource-level to application-level</strong> business-continuity planning, implemented via <strong>service groups</strong>. These resiliency experiences can be managed via <strong>Azure portal, PowerShell, CLI, and Azure Copilot</strong> — with intelligent guidance/remediation pushed into developer workflows including <strong>GitHub Copilot</strong>.</p>
+<h3 id="launch-azure-infrastructure-resiliency-manager-public-preview">Launch: Azure Infrastructure Resiliency Manager (public preview)</h3>
+<p>The first concrete step bringing this vision together. It lets customers manage <strong>zonal resiliency</strong> through several capabilities:
+- <strong>Goals</strong> — declare an intent (e.g. "my entire application must be zonally resilient") and drive toward it.
+- <strong>Recommendations</strong> — powered by <strong>Advisor</strong>, to help you get resilient.
+- <strong>Resiliency drills</strong> — <strong>simulate failures</strong> (e.g. a zone going down), powered by <strong>Chaos Studio</strong>, to test your app's resiliency posture in a controlled way rather than discovering gaps during a real outage.
+- <strong>Recovery plans</strong> — for real outages where many resources must be recovered in order (fail over a DB, fail over a VM, etc.) with interdependencies. Recovery plans let you create a <strong>workflow defining the order</strong> in which resources are recovered.</p>
+<blockquote>
+<p>The presenters repeatedly encourage trying the <strong>public preview</strong> experience.</p>
+</blockquote>
+<h3 id="phase-1-start-resilient-resiliency-agent-in-azure-copilot">Phase 1 — Start resilient (Resiliency Agent in Azure Copilot)</h3>
+<p>Traditionally, building resilient apps required <strong>deep expertise</strong> — knowing which properties/resources to enable and what they do, and resiliency often became an <strong>afterthought</strong> (build first, then realize you need to be resilient). The Resiliency Agent changes this by bringing <strong>intelligence and a guided, natural-language experience</strong>: whether an app is a web app, VM, or PostgreSQL database, you <strong>express your architecture intent</strong> and the agent converts it into <strong>zonally resilient templates</strong>.</p>
+<p><strong>Demo 1 — "Start green" with new IaC (Zava Payroll):</strong> Persona = cloud DevOps engineer tasked with creating a new "Zava Payroll" app (compute via VMSS + a PostgreSQL database) and making it zonally resilient.
+- In <strong>Azure portal → Resiliency → Copilot</strong>, the chat opens on the right and is expanded to full screen.
+- Prompt: <em>create zonally resilient templates with the app in </em><em>East US</em><em> in resource group </em><em>Zava apps</em><em>, a </em><em>VMSS with 5 instances</em><em>, a </em><em>PostgreSQL flexible server</em><em>, all </em><em>connection strings/passwords sourced from a Key Vault</em><em>, and a </em><em>modular structure of Bicep templates</em><em>.</em>
+- The agent maps the intent to Azure services and explains what makes each <strong>zonally resilient</strong> via a <strong>zonal resiliency support column</strong>:
+  - <strong>VMSS</strong> — guidance on how to make it zonally resilient.
+  - <strong>PostgreSQL flexible server</strong> — tier must be <strong>General Purpose or Memory Optimized</strong>.
+  - <strong>Key Vault</strong> — must be in an <strong>availability-zone-supported region</strong>.
+  - Confirms <strong>East US supports zone redundancy / availability zones</strong> (matching the stated region requirement).
+- The agent generates a <strong>detailed report</strong>: an overview of <em>why</em> zonal resiliency matters and its impact, plus <strong>per-resource-type recommendations</strong>. For <strong>VMSS</strong>: spread instances across AZs <strong>and</strong> make disks zonally resilient; also <strong>alternate recommendations via ASR</strong>. Similar recommendation sets for <strong>PostgreSQL</strong> and <strong>Key Vault</strong>, plus <strong>cross-cutting considerations</strong> and a <strong>summary checklist</strong> at the bottom.
+- A suggested prompt <strong>generates the Bicep templates</strong>: a <strong><code>main.bicep</code></strong> entry point plus <strong>modular Bicep files per resource type</strong> (identity, network, key vault, etc.), a <strong><code>parameters.json</code></strong>, and <strong>deployment instructions</strong>.
+- Outputs are attachable/expandable in the chat (tabs per Bicep file). You can <strong>download into VS Code Web</strong> and interact directly.
+- The demo finishes by <strong>creating a GitHub pull request</strong> straight from the Resiliency Agent in Azure Copilot: log into GitHub, choose the repo and branch, <strong>update pull request</strong>, then <strong>review pull request</strong> in GitHub. Whole flow: <strong>intent → resilient IaC → PR</strong>, never leaving Azure Copilot.</p>
+<p><strong>Demo 2 — "Start green" with existing IaC drift (Zava Commerce, Azure MCP + Advisor in VS Code):</strong> Many developers live in code editors and aren't starting from scratch — existing IaC accumulates <strong>drift</strong> over time. The <strong>Azure Advisor tool in Azure MCP</strong> addresses this. Configure <strong>Azure MCP</strong> in your AI coding agent of choice; then with a <strong>single prompt</strong> you can scan your <strong>entire IaC (Terraform or ARM)</strong> against the <strong>Advisor recommendation catalog</strong> in <strong>one pass</strong> — surfacing not just zonal-resiliency risks but also <strong>retiring SKUs, monitoring gaps</strong>, and other reliability risks. It <strong>auto-fixes</strong> issues with changes presented <strong>inline</strong> for review/accept, so <strong>nothing broken ever ships</strong> and your infra is resilient <strong>before it touches Azure</strong> ("start green, don't fix it later").
+- Persona = developer on the <strong>Zava Commerce</strong> app (VMs + container registries) with pre-authored <strong>ARM templates</strong> that have gone stale (drift, behind-on SKUs, hard-to-catch gaps).
+- In <strong>VS Code</strong> with <strong>Azure MCP server</strong> configured, open the ARM templates (one VM, one container registry), open <strong>GitHub Copilot</strong>, and ask it to <strong>check for reliability issues and fix them</strong>.
+- Behind the scenes it calls <strong>Azure Advisor tools</strong>, scans the files, and finds <strong>two issues</strong>:
+  1. <strong>Container registry on Basic SKU</strong> → recommends upgrading to <strong>Premium</strong> to unlock <strong>geo-replication, availability zones, and private endpoints</strong>.
+  2. <strong>VM using an F-series SKU that is retiring soon</strong> → flagged as costly/hard to fix later if shipped as-is.
+- The flow <strong>auto-fixes both</strong> in a <strong>single pass</strong> (upgrades registry Basic→Premium; recommends a replacement VM SKU). All changes are reviewable <strong>inline</strong> so you keep only what makes sense. Result: scan + fix all issues without leaving the editor, in minutes.</p>
+<h3 id="phase-2-get-resilient-brownfield-apps-via-service-groups">Phase 2 — Get resilient (brownfield apps via service groups)</h3>
+<p>Goal: make <strong>already-deployed (brownfield) apps zonally resilient</strong>. Doing this manually is <strong>complex and time-consuming</strong>. Approach: put an application's resources into a <strong>service group</strong>, analyze the <strong>posture</strong>, then use the <strong>Resiliency Agent</strong> to make it zonally resilient.</p>
+<p><strong>Demo 3 — Zava Ask HR (VM + PostgreSQL flexible server):</strong>
+- In <strong>Azure portal → Resiliency blade</strong>, the starting point is <strong>creating a service group</strong> via <strong>Azure Copilot</strong>.
+- To populate it you can supply <strong>resource IDs</strong> or use <strong>criteria</strong> (resource group, subscription, or <strong>tag</strong>). Demo uses the <strong>tag</strong> <code>Zava ask HR</code> and names the service group <strong>Zava ask HR</strong>.
+- Copilot runs an <strong>ARG query</strong>, <strong>discovers two resources</strong> (a <strong>VM</strong> and a <strong>PostgreSQL flexible server</strong>), and creates the service group. (Note: equally works for other stacks, e.g. an <strong>AKS cluster + Cosmos DB</strong>.)
+- Verify membership via <strong>Service group blade → Members</strong> (confirms 1 VM + 1 PostgreSQL).
+- Back in chat, <strong>assign a zonal resiliency goal</strong> to the service group (request submitted; takes a few minutes). After confirming the goal is assigned, <strong>check posture</strong> — both resources are reported <strong>not zonally resilient</strong> (a <strong>posture report</strong> can be downloaded as <strong>PDF</strong>).
+- Run a <strong>prerequisite check</strong> to see whether resources can be made zonally resilient and surface blockers — it reports it <strong>can enable HA</strong> for both the VM and the PostgreSQL flexible server.
+- Demo enables HA on the <strong>PostgreSQL flexible server</strong>: the <strong>agent configures HA</strong>, and it becomes <strong>zonally resilient</strong> — brownfield app made resilient in <strong>minutes with a few clicks</strong>.</p>
+<p><strong>Demo 4 — Data + cyber pillars (vaulted backups via Azure MCP in VS Code):</strong> Once zonally resilient, is the app also <strong>data- and cyber-resilient</strong>? Use the <strong>Azure MCP server in VS Code</strong> to configure <strong>vaulted backups</strong> and protection for the PostgreSQL flexible server — guarding against <strong>ransomware</strong> and meeting compliance via <strong>long-term retention up to 10 years</strong>.
+- Verify the <strong>Azure MCP server extension</strong> is installed and <code>mcp.json</code> is configured correctly; <strong>start the Azure MCP server</strong>; initiate chat.
+- Prompt: check whether the <strong>Zava Ask HR</strong> app has an <strong>unprotected PostgreSQL flexible server</strong> (not protected by Azure Backup). An <strong>ARG query</strong> returns <strong><code>Zava ask HRDB</code></strong> as unprotected, with its <strong>resource group and location</strong>.
+- Prompt to <strong>configure protection</strong> for <code>Zava ask HRDB</code>. Backups need a <strong>backup vault + backup policy in the same region</strong>; it finds an existing <strong>Zava vault</strong> and a <strong>"PostgreSQL daily" backup policy</strong> in-region and creates a <strong>protected item</strong> (named on screen).
+- Verify via another <strong>ARG query</strong> — confirms the <strong>protected item was created</strong> and the PostgreSQL flexible server is now <strong>protected</strong>.</p>
+<h3 id="azure-advisor-ai-powered-prioritization">Azure Advisor AI-powered prioritization</h3>
+<p>Real apps can have <strong>hundreds of reliability gaps</strong> (zonal gaps, <strong>retiring SKUs</strong>, monitoring gaps). The hard part isn't only knowing something must change — it's knowing <strong>what to prioritize first</strong> to reduce risk. <strong>Azure Advisor's AI-powered experience</strong> builds a <strong>personalized, prioritized action plan</strong> you can run with immediately, <strong>ranking recommendations using real signals</strong>: <strong>blast radius, criticality, upcoming deadlines, and cost implications</strong>. For each action item you get <strong>completion-progress tracking</strong> (what's done vs still exposed) and a downloadable <strong>custom action plan</strong> broken into <strong>next-30-days vs later</strong>.</p>
+<p><strong>Landing soon — AI-powered resource-level prioritization:</strong> for each recommendation, Advisor will rank <strong>which specific resources</strong> to fix first (since apps have hundreds of resources), using <strong>live signals</strong>: whether an <strong>HA goal</strong> is set, whether a resource is hit by an <strong>active service health event</strong>, and <strong>prod vs non-prod</strong> distinctions. So you'll know not only <strong>which issue types</strong> to prioritize but also <strong>which resources</strong> within them to start with.</p>
+<p><strong>Demo 5 — Zava Ask HR grown into an internal HR chatbot:</strong> The app has grown from VM+PostgreSQL into an <strong>internal HR chatbot</strong> on <strong>App Services</strong> with <strong>Storage accounts, Cosmos DB, Redis cache</strong>, plus a dependency on another app, <strong>Zava People</strong> (people/org data). Opening <strong>Advisor</strong> floods the developer with <strong>hundreds of recommendations across two subscriptions</strong>.
+- A new <strong>Azure Advisor AI-powered widget</strong> lights up in the <strong>Overview</strong> blade. Click it → <strong>select a subscription</strong> (Zava Ask HR app) → <strong>continue</strong>.
+- Provide intent via prompt: <strong>"improve the reliability."</strong> Optionally add <strong>additional subscriptions/resource groups</strong> — here, the dependent <strong>People app</strong> is selected — then ask it to <strong>fetch all reliability recommendations</strong>.
+- Advisor scans both subscriptions and returns <strong>just five recommendations</strong> to start with. For each it shows the <strong>active resources to address, completion-progress rate, potential benefits</strong>, and crucially the <strong>"why"</strong> behind its ranking:
+  - <strong>#1 — Service retirement</strong> for a <strong>Storage account</strong>, losing support in the <strong>next 30 days</strong> → biggest gap; the <strong>hard deadline</strong> puts it at the top.
+  - <strong>#2 &amp; #3 — Zonal resiliency</strong> recommendations. <strong>Cosmos DB has no zone redundancy</strong>, ranked above another zonal recommendation because a Cosmos DB failure takes out the <strong>entire primary data tier</strong> (<strong>wider blast radius</strong> than losing a <strong>cache layer</strong>). This shows ranking is <strong>environment-specific</strong>, based on the user's own data/context.
+- Clicking a recommendation opens a <strong>details page</strong>: what it's about, when support ends, <strong>remediation steps</strong>, and exactly <strong>which resources are impacted</strong> — everything needed to act in one place.
+- An <strong>action plan</strong> at the bottom is split into <strong>short / mid / long term</strong> (next 30 days, next 3 months, later). The list can be <strong>exported as Word or PDF</strong> to coordinate remediation offline.
+- <strong>Coming soon:</strong> generate these action items as <strong>work items in Jira or ServiceNow</strong> and assign them to teammates.
+- Drilling into the <strong>Cosmos DB</strong> recommendation shows the <strong>specific affected resources</strong>; <strong>landing soon</strong> this list will be <strong>individually ranked by priority</strong> using live environment signals.
+- Wrap-up: in under two minutes, <strong>hundreds of recommendations → top 5 + environment-specific action plan</strong>. Microsoft will keep refining and will bring <strong>resiliency flows and Advisor flows closer together</strong> for one seamless end-to-end resiliency experience. This experience is in <strong>limited preview starting today</strong> (limited spots; sign up after the session).</p>
+<h3 id="phase-3-stay-resilient-azure-chaos-studio-workspaces">Phase 3 — Stay resilient (Azure Chaos Studio workspaces)</h3>
+<p>A critical part of staying resilient is <strong>validating</strong> that your resilience is what you <em>think</em> it is. Every Azure customer <strong>believes they're resilient until</strong> an AZ goes down, <strong>AI workloads silently degrade</strong>, or <strong>throttling cascades</strong> to take out <strong>checkout during Black Friday</strong>. This is where <strong>Azure Chaos Studio workspaces</strong> come in.</p>
+<p><strong>Announcement:</strong> launch of <strong>Chaos Studio workspaces in public preview on June 11</strong> — a <strong>complete reimagining</strong> with <strong>application-centric workspaces, new scenarios, and a new agentic service</strong>, letting you <strong>rehearse the outages you actually fear</strong>. The session closes and opens to <strong>Q&amp;A</strong>.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Azure Infrastructure Resiliency Manager</strong> — newly launched (public preview) solution to manage zonal resiliency via goals, recommendations, drills, and recovery plans.</li>
+<li><strong>Azure resiliency (unified)</strong> — single place bringing infra/data/cyber resiliency together; evolution of the Azure Business Continuity Center (expanded at Ignite).</li>
+<li><strong>Azure Business Continuity Center</strong> — prior home for backup/DR; scope expanded into unified Azure resiliency.</li>
+<li><strong>Resiliency Agent (in Azure Copilot)</strong> — agentic, natural-language experience that turns architecture intent into zonally resilient templates and remediates gaps.</li>
+<li><strong>Azure Copilot</strong> — AI assistant in the Azure portal hosting the Resiliency Agent / resiliency chat.</li>
+<li><strong>Service groups</strong> — group an application's resources so resiliency is assessed/managed at the application level (assign goals, check posture).</li>
+<li><strong>Resiliency goals</strong> — declarative intent (e.g. zonal resiliency / HA) applied to a service group.</li>
+<li><strong>Posture (report)</strong> — assessment of whether resources meet the assigned resiliency goal; downloadable as PDF.</li>
+<li><strong>Prerequisite check</strong> — checks whether resources can be made zonally resilient and surfaces blockers before remediation.</li>
+<li><strong>Resiliency drills</strong> — simulate failures (e.g. a zone going down) to test resiliency posture; powered by Chaos Studio.</li>
+<li><strong>Recovery plans</strong> — ordered recovery workflows that respect resource interdependencies during a real outage.</li>
+<li><strong>Azure Advisor</strong> — recommendation engine for reliability (and other categories); source catalog for IaC scans.</li>
+<li><strong>Azure Advisor AI-powered experience / widget</strong> — AI prioritization that ranks recommendations into a personalized top action plan.</li>
+<li><strong>Azure Advisor tool (in Azure MCP)</strong> — scans IaC against the Advisor catalog and auto-fixes issues from the coding agent.</li>
+<li><strong>Azure MCP server</strong> — Model Context Protocol server exposing Azure tools (Advisor, backup, ARG, etc.) to AI coding agents.</li>
+<li><strong>GitHub Copilot</strong> — AI coding agent used in VS Code to invoke Azure MCP/Advisor tools and apply inline fixes.</li>
+<li><strong>VS Code / VS Code Web</strong> — code editors used for IaC editing, MCP integration, and downloading generated Bicep.</li>
+<li><strong>Bicep</strong> — IaC language; agent generates modular Bicep (<code>main.bicep</code> + per-resource modules + <code>parameters.json</code>).</li>
+<li><strong>ARM templates</strong> — existing IaC scanned for drift/SKU/reliability issues.</li>
+<li><strong>Terraform</strong> — supported IaC format for Advisor-via-MCP scanning.</li>
+<li><strong>Azure Resource Graph (ARG)</strong> — queried to discover resources, build service groups, and verify protection state.</li>
+<li><strong>Availability zones / zone redundancy</strong> — core zonal-resiliency primitive (e.g. East US AZ support).</li>
+<li><strong>Region pairs / region repair / region pairing</strong> — regional resiliency primitives.</li>
+<li><strong>Geo-replication</strong> — data redundancy primitive (e.g. unlocked by ACR Premium).</li>
+<li><strong>Azure Backup</strong> — managed backup for RPO/RTO and data resiliency.</li>
+<li><strong>Vaulted backups</strong> — isolated, immutable-style backups for ransomware protection and long-term retention (up to 10 years).</li>
+<li><strong>Backup vault &amp; backup policy</strong> — required (same-region) constructs to protect a resource (e.g. "PostgreSQL daily" policy).</li>
+<li><strong>Azure Site Recovery (ASR)</strong> — alternate path for making resources (e.g. VMSS) zonally resilient.</li>
+<li><strong>Azure Chaos Studio / Chaos Studio workspaces</strong> — fault-injection/chaos engineering; powers drills; workspaces launching in public preview.</li>
+<li><strong>Virtual Machine Scale Sets (VMSS)</strong> — compute resource; resilient by spreading instances + disks across zones.</li>
+<li><strong>Azure PostgreSQL flexible server</strong> — database; zonally resilient via HA + General/Memory-Optimized tier.</li>
+<li><strong>Azure Key Vault</strong> — secrets store for connection strings/passwords; needs AZ-supported region.</li>
+<li><strong>Azure Container Registry (ACR)</strong> — registry; Premium SKU unlocks geo-replication, AZs, private endpoints.</li>
+<li><strong>Azure Cosmos DB</strong> — database; flagged for missing zone redundancy (primary data-tier blast radius).</li>
+<li><strong>Azure Redis cache</strong> — cache layer (lower blast radius than the primary data tier).</li>
+<li><strong>Azure App Service</strong> — hosting for the evolved HR chatbot app.</li>
+<li><strong>Azure Storage account</strong> — flagged for an impending service-retirement (support ending in 30 days).</li>
+<li><strong>Azure Kubernetes Service (AKS)</strong> — cited as an alternative service-group stack (with Cosmos DB).</li>
+<li><strong>Azure Service Health</strong> — active service-health events used as a live prioritization signal.</li>
+<li><strong>Jira / ServiceNow</strong> — external work-item systems; future target for generating/assigning remediation work items.</li>
+<li><strong>Zava (Payroll / Commerce / Ask HR / People)</strong> — fictional demo applications used throughout.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Azure Infrastructure Resiliency Manager — public preview</strong> (available now): manage zonal resiliency via goals, Advisor-powered recommendations, resiliency drills (Chaos Studio), and recovery plans. Presenters invite trial.</li>
+<li><strong>Resiliency Agent in Azure Copilot</strong> — generate zonally resilient Bicep from natural-language intent and remediate brownfield gaps (shown live; part of the resiliency preview experience).</li>
+<li><strong>Azure Advisor tool in Azure MCP server</strong> — single-prompt IaC scanning (Terraform/ARM) against the Advisor catalog with inline auto-fix across reliability categories (zonal, retiring SKUs, monitoring).</li>
+<li><strong>Azure MCP server backup tooling</strong> — configure vaulted backups / ransomware protection for PostgreSQL flexible server from VS Code.</li>
+<li><strong>Azure Advisor AI-powered prioritization</strong> — <strong>limited preview starting today</strong> (limited spots; sign up by meeting the team after the session). Ranks recommendations into a personalized top-5 action plan with short/mid/long-term breakdown and Word/PDF export.</li>
+<li><strong>AI-powered resource-level prioritization (Advisor)</strong> — <strong>landing soon</strong>: ranks which specific resources to fix first using live signals (HA goals, active service health events, prod/non-prod).</li>
+<li><strong>Jira / ServiceNow work-item generation (Advisor)</strong> — <strong>coming soon</strong>: create and assign remediation work items directly in external systems.</li>
+<li><strong>Azure Chaos Studio workspaces — public preview on June 11</strong>: complete reimagining with application-centric workspaces, new scenarios, and a new agentic service.</li>
+<li><strong>Roadmap intent:</strong> bring the resiliency flows and Advisor flows closer together for a single, seamless end-to-end resiliency experience.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ol>
+<li><strong>Start green — new IaC (Zava Payroll):</strong> In Azure portal → Resiliency → Copilot, a natural-language prompt produced per-resource zonal-resiliency guidance (VMSS, PostgreSQL, Key Vault) + a detailed report, then generated modular Bicep (<code>main.bicep</code> + modules + <code>parameters.json</code>) and created a <strong>GitHub PR</strong> directly from the Resiliency Agent. <em>Proves:</em> you can go from intent → resilient IaC → PR without leaving Azure Copilot or being a resiliency expert.</li>
+<li><strong>Start green — existing IaC drift (Zava Commerce):</strong> In VS Code with Azure MCP configured, GitHub Copilot called Azure Advisor tools to scan ARM templates, found a <strong>Basic-SKU ACR</strong> (recommend Premium for geo-replication/AZs/private endpoints) and a <strong>retiring F-series VM</strong>, then <strong>auto-fixed both in one pass</strong> with inline review. <em>Proves:</em> a single prompt catches and fixes multiple reliability risk types pre-deployment, so nothing broken ships.</li>
+<li><strong>Get resilient — brownfield service group (Zava Ask HR):</strong> Created a service group by tag via Azure Copilot (ARG discovered VM + PostgreSQL), assigned a zonal goal, checked posture (both not resilient), ran a prerequisite check, and the agent <strong>enabled HA on the PostgreSQL flexible server</strong> to make it zonally resilient. <em>Proves:</em> brownfield apps can be made zonally resilient at the application level in minutes.</li>
+<li><strong>Data/cyber — vaulted backups (Zava Ask HR DB):</strong> In VS Code via Azure MCP, found an <strong>unprotected PostgreSQL flexible server</strong> (ARG), then configured a <strong>protected item</strong> using an existing in-region vault + "PostgreSQL daily" policy and verified success. <em>Proves:</em> ransomware protection / long-term retention can be configured agentically from the editor.</li>
+<li><strong>Advisor AI prioritization (Zava Ask HR chatbot + Zava People):</strong> The Advisor AI widget scanned <strong>two subscriptions</strong> and collapsed <strong>hundreds of recommendations into a top 5</strong>, each with the "why" (e.g. <strong>storage-account service retirement in 30 days</strong> #1; <strong>Cosmos DB no zone redundancy</strong> ranked above a cache-layer gap due to <strong>blast radius</strong>), plus a short/mid/long-term action plan exportable to Word/PDF. <em>Proves:</em> environment-aware ranking turns recommendation overload into an actionable plan.</li>
+</ol>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>3 pillars</strong> of resiliency: infrastructure, data, cyber.</li>
+<li><strong>3 lifecycle phases:</strong> start resilient, get resilient, stay resilient.</li>
+<li><strong>VMSS demo:</strong> <strong>5 instances</strong> requested.</li>
+<li><strong>Vaulted backup retention:</strong> <strong>up to 10 years</strong> for compliance/long-term retention.</li>
+<li><strong>Advisor prioritization:</strong> <strong>hundreds of recommendations → top 5</strong> to start with; action plan split into <strong>next 30 days / 3 months / later</strong>.</li>
+<li><strong>#1 prioritized risk in demo:</strong> storage-account <strong>service retirement with support ending in 30 days</strong>.</li>
+<li><strong>Chaos Studio workspaces public preview:</strong> <strong>June 11</strong>.</li>
+<li><em>"In the real world failures are not an exception. They are expected."</em></li>
+<li><em>"Resiliency is not a one-time setup. It's an ongoing exercise."</em> — systems should <em>"continuously adapt, learn, and improve over time."</em></li>
+<li><em>"Nothing broken ever ships"</em> — IaC made <em>"resilient even before it touches Azure"</em> ("start green").</li>
+<li><em>"Every Azure customer believes that they are resilient until... an availability zone goes down, your AI workloads silently degrade, or a throttling cascades down to take out checkout during Black Friday."</em></li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Spin up the <strong>Azure Infrastructure Resiliency Manager</strong> public preview and create a <strong>service group</strong> for a real app; assign a <strong>zonal goal</strong> and check posture.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Configure <strong>Azure MCP server</strong> in VS Code + GitHub Copilot and run a single-prompt <strong>Advisor scan</strong> over existing ARM/Terraform IaC; review inline fixes.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Use the <strong>Resiliency Agent in Azure Copilot</strong> to generate <strong>zonally resilient Bicep</strong> for a sample stack (VMSS + PostgreSQL flexible server + Key Vault) and open a PR.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Configure <strong>vaulted backups</strong> for a PostgreSQL flexible server (ransomware protection / long-term retention) via Azure MCP.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Sign up for the <strong>Azure Advisor AI-powered prioritization</strong> limited preview; mark <strong>June 11</strong> to check out <strong>Chaos Studio workspaces</strong> public preview.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: Which Azure resource types are covered by service-group <strong>zonal goals / auto-HA</strong> today vs roadmap (AKS, Cosmos DB, App Service)?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: How does Advisor's <strong>blast-radius / criticality</strong> ranking weight signals, and can the prioritization logic be tuned per org?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: What are the exact prerequisites/limits for <strong>Azure MCP server</strong> backup operations and Advisor IaC auto-fix (auth, scopes, supported file types)?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: For <strong>recovery plans</strong>, how are interdependency ordering and failover steps defined/tested?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: Azure landing-zone / WAF Reliability pillar guidance; DR runbooks; resiliency drills program; IaC CI gates ("start green"); ransomware/backup compliance posture.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+<li>Microsoft Build 2026 — Azure resiliency / reliability sessions</li>
+<li>Azure Well-Architected Framework — Reliability pillar</li>
+<li>Azure Chaos Studio / chaos engineering notes</li>
+<li>Azure Backup &amp; vaulted backups / ransomware protection</li>
+<li>Azure MCP server &amp; GitHub Copilot agentic IaC workflows</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="BRK227.html"><span class="pager-dir">← Previous</span><span class="pager-code">BRK227</span><span class="pager-title">Distributed systems to AI platforms with Mark Russinovich &amp; Ion Stoica</span></a>
+    <a class="pager pager-next" href="BRK229.html"><span class="pager-dir">Next →</span><span class="pager-code">BRK229</span><span class="pager-title">From Skeptic to Superpower: Real-World AI Coding Workflows That Scale</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

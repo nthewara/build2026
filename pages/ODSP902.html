@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ODSP902 — Build AI-driven UIs in .NET MAUI with design systems</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">ODSP902</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=htZlWar7dkM" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Build AI-driven UIs in .NET MAUI with design systems</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Vishnu Menon (Senior Product Manager, Syncfusion)</span>
+      <span class="meta-item">⏱️ 10m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="dotnet-maui">Dotnet Maui</span><span class="chip" data-tag="design-systems">Design Systems</span><span class="chip" data-tag="ai">AI</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Vishnu Menon — Senior Product Manager, Syncfusion<br>
+<strong>Duration:</strong> ~10 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=htZlWar7dkM">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>This Syncfusion-led lightning session tackles a common pain: AI can scaffold a .NET MAUI UI in seconds, but the result is unpolished, inconsistent, and not production-ready because the AI has no knowledge of <em>your</em> application's design context. Vishnu Menon argues the fix is two complementary pieces — a <strong>design system</strong> (the source of truth for what good UI looks like: colors, typography, spacing, reusable components) and <strong>AI skills</strong> (structured Markdown instruction files that constrain <em>how</em> the AI makes UI decisions). By feeding the agent both a design system and control-specific skills (e.g. Syncfusion's <code>.NET MAUI</code> control skills plus a custom <code>design-system</code> skill), the same prompt that previously produced a sloppy dashboard instead generates a consistent, design-system-compliant employee dashboard. The thesis: <em>"We are not asking AI to design UI. We are teaching it how we design UI."</em></p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li>AI generates UIs fast, but those UIs are typically <strong>not polished or production-ready</strong> — they need manual rework.</li>
+<li>The root cause is missing context: AI <strong>lacks the design system and design context</strong> of your specific application (its spacing rules, component patterns, design standards).</li>
+<li>AI also has <strong>limited/imperfect knowledge of UI controls</strong> — it mixes and matches controls and APIs that don't belong together, producing a <strong>guess-based implementation</strong>.</li>
+<li>"AI is powerful, but without the right inputs and constraints, it can only guess, not design with intention."</li>
+<li>The solution rests on <strong>two key ideas: a design system + skills.</strong></li>
+<li>A <strong>design system</strong> keeps the UI consistent across the whole app: colors, typography, spacing, reusable components, layout patterns, and guidelines.</li>
+<li>In .NET MAUI, a basic design system already exists in <code>Resources/Styles/Styles.xaml</code> (per-control styles) and <code>Colors.xaml</code> (shared color tokens like a primary color) — define a button's <code>FontFamily</code> once (e.g. Open Sans Regular) and it applies everywhere across platforms.</li>
+<li>A design system <strong>reduces repeated hard-coding of values</strong> and <strong>eliminates repeated UI decisions</strong>, enabling faster development — especially in enterprise apps where the UX team designs new features to match the existing system.</li>
+<li>A <strong>skill</strong> is a way to guide the AI to perform a task using <strong>structured instructions and rules</strong>; skills aren't limited to UI/design — they're a general mechanism.</li>
+<li>Skills live in an <strong><code>.agent/skills/</code></strong> folder as a <code>skill.md</code> (a.k.a. <code>skills.md</code>) file describing the control, its use case, <em>when to use the skill</em>, getting-started steps, and references (e.g. a linked <code>troubleshooting.md</code>) the agent can read on demand.</li>
+<li>Crucially: <strong>skills do not render UI — they constrain the decisions.</strong> "A skill defines <em>how</em> the AI should behave; a design system defines <em>what</em> good UI looks like; design-system skills guide the AI to follow it."</li>
+<li><strong>Without skills</strong>, the AI guesses what to generate; <strong>with skills</strong>, it has design tokens and layout rules, so it produces a more consistent UI.</li>
+<li>Syncfusion ships installable per-control skills for its .NET MAUI controls (copy a one-line command into the terminal to drop the skill files into <code>.agent/skills/</code>).</li>
+<li>The closing principle: <strong>don't ask AI to design your UI — teach it how you design UI</strong>, then let it apply that.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="session-agenda">Session agenda</h3>
+<p>Vishnu Menon (Senior Product Manager, Syncfusion) frames the talk around building AI-driven UIs in .NET MAUI "not just faster, but in a more consistent and intelligent way" using a design system. The agenda he lays out:
+1. Problems in UI building / why AI struggles with UI building.
+2. The "golden standards" — the design system.
+3. AI skills.
+4. The AI-driven UI workflow.
+5. A concluding demo.</p>
+<h3 id="the-problem-ai-generated-uis-look-fine-but-arent-production-ready">The problem — AI-generated UIs look fine but aren't production-ready</h3>
+<p>He opens in the IDE with a deliberately naïve baseline: he prompts the AI directly — <em>"Create a simple employee dashboard mobile application using .NET MAUI"</em> — with no extra guidance. The AI produces a working, colorful employee dashboard with a variety of controls. Functionally it works. But on closer inspection the cracks show:
+- <strong>Color issues on the "View Dashboard" button.</strong>
+- <strong>Color issues in the card-like controls.</strong>
+- <strong>Misaligned icons in the CollectionView.</strong></p>
+<p>These are small but real defects that a developer would have to <strong>manually rework</strong>. The takeaway: AI can generate UIs very quickly, but they are <strong>not polished, not production-ready</strong> out of the box.</p>
+<h3 id="why-this-happens-no-design-context-shaky-control-knowledge">Why this happens — no design context + shaky control knowledge</h3>
+<p>Two reinforcing reasons:
+1. <strong>No design context / design system.</strong> The AI doesn't know your application's spacing rules, component patterns, or design standards. It has no notion of what "consistent" means <em>for your app</em>.
+2. <strong>Limited knowledge of UI controls.</strong> The AI <strong>mixes and matches controls</strong> and <strong>mixes and matches APIs</strong> that aren't meant to go together.</p>
+<p>The combined result is that, given only a prompt, the AI produces a <strong>guess-based implementation</strong> rather than an intentional design. Menon's framing of the core issue: <em>"AI is powerful, but without the right inputs and constraints, it can only guess, not design with intention."</em></p>
+<h3 id="the-solution-at-a-high-level-design-system-skills">The solution at a high level — design system + skills</h3>
+<p>Two key ideas solve it:
+- <strong>A design system</strong> — the source of truth for what good UI looks like.
+- <strong>Skills</strong> — the mechanism that makes the AI actually follow that source of truth.</p>
+<h3 id="what-a-design-system-is">What a design system is</h3>
+<p>A design system is "a system that keeps your UI consistent throughout your application." It includes <strong>colors, typography, spacing, reusable components, layout patterns, and guidelines.</strong></p>
+<p>He grounds it in something every .NET MAUI developer already has. When you create a new .NET MAUI project, inside the <strong><code>Resources/Styles/</code> folder</strong> there's a <strong><code>Styles.xaml</code></strong> file containing styles for the different controls — that's a basic, concrete example of a design system. For instance, a <code>Button</code> style can specify a <code>FontFamily</code> of <strong>Open Sans Regular</strong>; from then on, <strong>wherever</strong> you use a <code>Button</code> in the app, across different platforms, it picks up Open Sans Regular automatically. This is what keeps the UI looking standard across platforms and controls.</p>
+<p><strong><code>Colors.xaml</code></strong> serves the same purpose for color — e.g. define a <strong>primary color</strong> once and have it be consistent across all platforms.</p>
+<p>Benefits he calls out:
+- <strong>Reduces repeated hard-coding</strong> of values — define once, reuse everywhere.
+- <strong>Eliminates repeated UI decisions</strong> — in an enterprise app with a proper design system, when you add a new feature the UI/UX team delivers designs that <em>match</em> the existing system; without one, every feature re-litigates the same UI choices.
+- Net effect: <strong>faster development.</strong></p>
+<h3 id="what-a-skill-is">What a skill is</h3>
+<p>A <strong>skill</strong> is "a way to guide the AI to perform a task using structured instructions and rules." Importantly, skills are <strong>general-purpose</strong> — this talk is about <em>design-system</em> skills, but skills can be used for many other use cases too.</p>
+<p>He opens a sample project and shows a skill living under <strong><code>.agent/skills/</code></strong> — specifically a <strong>"Syncfusion Mobile Button"</strong> skill for the Syncfusion <code>.NET MAUI</code> Button control. The key file is <strong><code>skill.md</code></strong> (he refers to it as the <code>skills.md</code>/<code>skill.md</code> file), and it contains:
+- <strong>What the implementation / use case is.</strong>
+- <strong>When to use the skill.</strong>
+- <strong>Getting started</strong> steps — the agent follows these when adding the control.
+- <strong>References</strong> to additional files — e.g. a <strong><code>troubleshooting.md</code></strong> the agent can open if it hits a problem.</p>
+<p>The mental model: the agent <strong>reads <code>skill.md</code></strong> to learn how things work; if it runs into trouble while adding the control, it follows the references (e.g. into <code>troubleshooting.md</code>) for help.</p>
+<h3 id="the-key-distinction-skills-constrain-decisions-they-dont-render-ui">The key distinction — skills constrain decisions, they don't render UI</h3>
+<p>Menon's crisp summary of how the pieces relate:
+- <strong>Skills do NOT render UI — they constrain the decisions.</strong>
+- <strong>A skill defines <em>how</em> the AI should behave.</strong>
+- <strong>A design system defines <em>what</em> good UI looks like.</strong>
+- <strong>Design-system skills guide the AI to follow the design system.</strong></p>
+<h3 id="what-skills-change-in-practice-guessing-vs-constrained-generation">What skills change in practice — guessing vs. constrained generation</h3>
+<p>He contrasts the two paths explicitly:
+- <strong>Without a skill:</strong> when you prompt, the AI <strong>guesses</strong> what to generate and returns a <strong>guess-based UI</strong>.
+- <strong>With a skill:</strong> the AI has <strong>design tokens, layout rules, and more understanding</strong>, so it produces a <strong>more consistent UI</strong>.</p>
+<h3 id="the-demo-installing-skills-and-regenerating-the-dashboard">The demo — installing skills and regenerating the dashboard</h3>
+<p>For the demo, Menon uses <strong>Syncfusion <code>.NET MAUI</code> controls</strong> and their published skills:
+1. <strong>Install a control skill.</strong> Syncfusion provides skills for its controls; you <strong>copy a single line of code</strong> (from a Syncfusion skills source/URL) into your <strong>terminal</strong>, and it copies all the skill files into the <strong><code>.agent/skills/</code></strong> folder. (He notes pressing a confirm key — heard as "slash Y" / <code>Y</code> — to accept the copy.) He installs skills for several controls for demo purposes, including the <strong>Syncfusion Mobile Button</strong> shown earlier.
+2. <strong>Add a design-system skill.</strong> He reveals the skill folder in <strong>Finder</strong> and pastes in an additional <strong><code>design-system</code></strong> skill he prepared for the demo. This tells the AI <strong>which design system to follow</strong> for the generated UI.
+3. <strong>Run the prompt.</strong> He pastes the prompt and lets the AI work, this time <strong>with the skills present.</strong></p>
+<p><strong>What the AI produced (with skills):</strong>
+- An <strong>employee model</strong>.
+- <strong>Design tokens</strong> — created exactly as instructed by the <strong>design-system skill</strong>.
+- An <strong>employee dashboard page</strong> (and associated page code).</p>
+<p>When run, the result <strong>looks very good</strong>: the <strong>design system is clearly followed</strong> and <strong>everything looks consistent</strong> — a direct contrast to the unpolished baseline from the start of the talk.</p>
+<h3 id="conclusion-teach-the-ai-how-you-design">Conclusion — teach the AI how you design</h3>
+<p>Menon closes on the central principle: <em>"We are not asking AI to design UI. We are teaching it how we design UI."</em> Given the right design system and skills, the AI can design the UI for you to a consistent, production-quality standard. He points to a <strong>QR code containing the GitHub link</strong> for the demo sample and signs off with "Happy coding with AI."</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>.NET MAUI</strong> — Microsoft's cross-platform .NET framework for building native mobile/desktop UIs; the target platform for the whole talk.</li>
+<li><strong>Syncfusion .NET MAUI controls</strong> — Syncfusion's commercial UI component library for .NET MAUI; used to build the polished demo dashboard (e.g. the Syncfusion Mobile Button).</li>
+<li><strong>AI skills (<code>.agent/skills/</code> + <code>skill.md</code>)</strong> — structured Markdown instruction files (with use case, "when to use," getting-started, and references like <code>troubleshooting.md</code>) that an AI agent reads to constrain how it implements a task/control.</li>
+<li><strong>Syncfusion control skills</strong> — installable, per-control skill packs Syncfusion ships for its .NET MAUI controls; dropped into <code>.agent/skills/</code> via a one-line terminal command.</li>
+<li><strong>Custom <code>design-system</code> skill</strong> — an author-prepared skill that tells the agent which design system (tokens, rules) to follow when generating UI.</li>
+<li><strong>.NET MAUI design system files</strong> — <code>Resources/Styles/Styles.xaml</code> (per-control styles, e.g. Button <code>FontFamily</code> = Open Sans Regular) and <code>Colors.xaml</code> (shared color tokens, e.g. a primary color) — the built-in, basic example of a design system.</li>
+<li><strong>Design tokens</strong> — named, reusable style values (colors, spacing, typography) the AI generated as directed by the design-system skill.</li>
+<li><strong>CollectionView / card controls / Button</strong> — .NET MAUI UI controls referenced where the naïve AI output showed alignment and color defects.</li>
+<li><strong>AI coding agent + IDE terminal</strong> — the agentic dev tooling driving generation; skills are installed and prompts are run from here.</li>
+<li><strong>GitHub</strong> — hosts the demo sample (shared via a QR code at the end).</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p>None explicitly announced. This is an educational/best-practices session demonstrating an existing pattern (design systems + AI skills with Syncfusion .NET MAUI controls), not a product-launch talk. No previews, GA dates, or roadmap items were stated.</p>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Baseline (no skills) demo.</strong> Prompt: <em>"Create a simple employee dashboard mobile application using .NET MAUI."</em> Result: a functional, colorful dashboard that on inspection has color issues on the "View Dashboard" button and card controls, plus misaligned icons in the CollectionView. <strong>Point proved:</strong> AI generates UI fast but unpolished/not production-ready because it lacks design context.</li>
+<li><strong>Installing Syncfusion control skills.</strong> Copies a single Syncfusion-provided line into the terminal, which drops the control skill files into <code>.agent/skills/</code>. <strong>Point proved:</strong> skills are easy to add and give the agent real control knowledge.</li>
+<li><strong>Adding a <code>design-system</code> skill via Finder.</strong> Pastes a prepared <code>design-system</code> skill alongside the control skills. <strong>Point proved:</strong> you can hand the agent an explicit design system to follow.</li>
+<li><strong>Regenerating the dashboard (with skills).</strong> Re-runs the prompt; the AI produces an employee model, <strong>design tokens (per the design-system skill)</strong>, and a consistent employee dashboard page. When run, it looks good and the design system is clearly followed. <strong>Point proved:</strong> with a design system + skills, the <em>same</em> task yields a consistent, polished, production-grade UI.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><em>"AI is powerful, but without the right inputs and constraints, it can only guess, not design with intention."</em></li>
+<li><em>"Skills do not render UI. They constrain the decisions."</em></li>
+<li><em>"A skill defines how the AI should behave. A design system defines what good UI looks like, and design-system skills guide the AI to follow it."</em></li>
+<li><em>"We are not asking AI to design UI. We are teaching it how we design UI."</em></li>
+<li><em>"Happy coding with AI."</em></li>
+<li>(No numeric benchmarks or stats were presented — this was a short, qualitative session.)</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Stand up a small .NET MAUI app, define a real design system in <code>Styles.xaml</code>/<code>Colors.xaml</code>, then add a <code>.agent/skills/design-system/skill.md</code> + Syncfusion control skills and compare "no-skill" vs "with-skill" generations on the same prompt.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Write a reusable <code>design-system</code> skill (design tokens + layout rules + "when to use") that any agent in the repo can read; test whether it survives across different prompts/agents.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Locate the Syncfusion demo GitHub repo (QR/link in the talk) and inspect their <code>skill.md</code> + <code>troubleshooting.md</code> structure as a template.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: What exactly does the one-line Syncfusion skill installer copy, and where does it pull from (a Syncfusion skills feed/URL)? Is it free/open or licence-gated?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: How do <code>.agent/skills/</code> skills here relate to OpenClaw/Anthropic-style skills and to the broader Agent Skills format — is <code>.agent/skills/skill.md</code> a Syncfusion convention or a shared standard?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: How well does this generalise beyond Syncfusion (e.g. to plain .NET MAUI controls, Telerik, or Toolkit controls)?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: building consistent AI-assisted UIs, design-system governance, agentic coding workflows, and our own skill-authoring practices.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title=".NET MAUI">.NET MAUI</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Design systems">Design systems</span></li>
+<li><span class="wikilink wikilink--unresolved" title="AI skills">AI skills</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Syncfusion">Syncfusion</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Design tokens">Design tokens</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Agentic coding workflows">Agentic coding workflows</span></li>
+<li><span class="wikilink wikilink--unresolved" title="AI-assisted UI development">AI-assisted UI development</span></li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="ODSP901.html"><span class="pager-dir">← Previous</span><span class="pager-code">ODSP901</span><span class="pager-title">Discover, govern, and scale Azure resources with HashiCorp Terraform</span></a>
+    <a class="pager pager-next" href="ODSP906.html"><span class="pager-dir">Next →</span><span class="pager-code">ODSP906</span><span class="pager-title">Apply orchestration patterns for production AI agents</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

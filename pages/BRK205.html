@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRK205 — Aspire for agents: Transform how you build and deploy distributed apps</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">BRK205</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=ge5PM7pX49k" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Aspire for agents: Transform how you build and deploy distributed apps</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Mattie Monola (PM, .NET Aspire); David Fowler (Distinguished Engineer / &quot;Fowler&quot;)</span>
+      <span class="meta-item">⏱️ 46m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="dotnet-aspire">Dotnet Aspire</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="distributed-apps">Distributed Apps</span><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="azure">Azure</span><span class="chip" data-tag="dotnet">.NET</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Mattie Monola (PM on the .NET Aspire team) &amp; David Fowler ("Fowler", Distinguished Engineer / Aspire architect). Beth and Glenn supported from the Aspire booth.<br>
+<strong>Duration:</strong> ~46 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=ge5PM7pX49k">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Aspire is positioned as an <strong>"agent-ready, code-first tool to compose, debug, and deploy any distributed app."</strong> The session reframes Aspire away from a .NET-only orchestrator: in 2026 you can author the <strong>app host in TypeScript, C#, Python, Java</strong> (Go/Rust coming), and it orchestrates any-language apps. The core idea is that one file — the <strong>app host</strong> — becomes the single source of truth for both local dev and deployment, eliminating config drift. The talk is mostly live demo: a mini "book a meeting + agent goes off and reasons" app spanning a Vite front end, an API, a background worker, a Postgres container, Microsoft Foundry, and a sandboxed agent container. Heavy emphasis on the new <strong>agent story</strong>: everything visible in the Aspire dashboard is now exposed via API/CLI so coding agents (Copilot, Claude, etc.) get the <em>same</em> observability humans do — traces, logs, browser F12 console output — letting them close the loop (profile → analyze → edit → re-run). Aspire also manages ports across git work trees, provisions per-developer Azure sandboxes with role-based security, and deploys to Azure Container Apps + Foundry hosted agents via <code>aspire deploy</code>, generating Bicep you can fully customize.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Aspire one-liner:</strong> "an agent-ready, code-first tool to compose, debug, and deploy any distributed app." If you have a website + a database, you already have a distributed app.</li>
+<li><strong>Big 2026 change:</strong> the <strong>app host can now be authored in C# <em>or</em> TypeScript</strong> (and Python/Java; Go coming soon), even though the orchestrated apps can be any language. This is the headline shift from Aspire's .NET roots.</li>
+<li><strong>One file = single source of truth</strong> for dev <em>and</em> deploy. The same app host generates deployment manifests/assets, so there is <strong>no config drift</strong> between local and cloud.</li>
+<li><strong>Aspire is not a runtime</strong> — "it's literally a process starter and stopper" (plus dependency restore, container pulls, health checks, config wiring). No magic; it just puts the right environment variables in the right place.</li>
+<li><strong>New <code>aspire start</code> (non-blocking) vs <code>aspire run</code> (blocking):</strong> <code>start</code> launches the app host in the background and returns, because coding agents choke on long-running/blocking terminal commands. <code>aspire ps</code> / stop manage running instances.</li>
+<li><strong>Everything in the dashboard is now exposed to agents</strong> (big change landed in build 13.0; matured by 13.4). The dashboard is "just UI over an API," and that API is available to both the CLI and the dashboard — so agents can do anything a human can: pull traces, search logs, analyze, edit code, re-run.</li>
+<li><strong>Integrations encapsulate the "right way" to run/debug/deploy a thing</strong> (Vite, Node, Python, Redis, Postgres, etc.) — including injecting dev certs for HTTPS, OpenTelemetry config, and language-specific env vars. ~100+ hosting integrations; all built on the <strong>same public primitives</strong> you can use yourself.</li>
+<li><strong>Port management across work trees:</strong> Aspire randomizes/overrides ports (e.g. overriding Vite's port) so multiple agents/sessions in parallel git work trees don't collide on 3000/8080.</li>
+<li><strong>Reference-based wiring, no hardcoded ports/URLs:</strong> you pass endpoint <em>references</em> (e.g. backend URL into the front end) and Aspire resolves the real value per environment — solving the "works locally, breaks on deploy" HTTPS/port problem.</li>
+<li><strong>Per-developer Azure sandboxes:</strong> if you're authenticated (Azure CLI / VS Code / azd), the dashboard prompts to provision real Azure resources for you — each dev gets their own subscription/sandbox, including the <strong>resource group, Foundry project, deployed model, and RBAC roles</strong> so only the right app component can reach the resource.</li>
+<li><strong>Secrets/parameters are stored in your user profile, not the repo</strong> — unique per work tree, and impossible to accidentally commit (a real pain point with AI coding agents pushing tokens).</li>
+<li><strong>Browser logs integration (new):</strong> <code>WithBrowserLogs</code> (<code>Aspire.Hosting.Browser</code>) launches a tracked/debuggable browser so F12 <strong>console + network logs flow back into the dashboard and to the agent</strong> — no more screenshotting DevTools.</li>
+<li><strong>Agent "skills" instead of (or alongside) MCP:</strong> <code>aspire agent init</code> installs Aspire skills (monitor the app, use custom commands/resources, "wait for healthy/successful"). A Postgres MCP can also be auto-wired (<code>WithMcp</code>/MCP server) from the app host.</li>
+<li><strong>Dashboard as a Trojan horse:</strong> can run standalone as an OpenTelemetry viewer — even to watch what your Copilot is doing (tokens, tool calls, turns). Recommended onboarding path for teams.</li>
+<li><strong>Deployment is multi-target &amp; not vendor-locked:</strong> integrations exist for Azure Container Apps, vanilla Kubernetes, vanilla Docker Compose, and AWS. <code>aspire deploy</code> generates the right asset (Bicep/YAML/Helm) and <strong>exposes the full Bicep object model in your language</strong> for customization — with escape hatches (<code>aspire publish</code>) for advanced DevOps teams.</li>
+<li><strong>Cadence:</strong> Aspire ships roughly <strong>every ~4 weeks</strong> with big changes; docs auto-update via PRs on every change. Current build at talk time was <strong>13.4</strong> (with 13.42 patches already out). Get it at <strong>aspire.dev</strong>.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="what-aspire-is-and-isnt">What Aspire is (and isn't)</h3>
+<p>Aspire is pitched as the answer to distributed-app complexity. The moment your dev loop grows from a single <code>npm run</code> to <code>npm run</code> + <code>docker compose up</code> + <code>dotnet run</code> — getting ports right, keeping processes from tripping over each other — apps get complicated, and <strong>what works in the dev loop doesn't translate cleanly to deployment</strong>. Something that runs fine in isolation on your box often behaves differently in a containerized environment, App Service, or a vanilla Kubernetes cluster.</p>
+<p>Aspire's original premise was twofold:
+1. <strong>Turn on things you should turn on</strong> in an app (this matters less now because Copilot/your agent does it for you).
+2. <strong>"Glue-stick" the individual pieces of your stack together</strong> so running locally feels as close to real life as possible, and you can compose and debug the whole thing meaningfully instead of piece-by-piece in isolation.</p>
+<p>The canonical one-liner (delivered as a deliberate, grammatically-correct, Oxford-comma'd run-on): <strong>"Aspire is an agent-ready, code-first tool to compose, debug, and deploy any distributed app."</strong> The speakers describe it informally as "kind of like a bootstrapper… kind of like a Docker Compose replacement with better types," but stress you have to use it to <em>get</em> it.</p>
+<p><strong>Crucial framing — Aspire is not a runtime.</strong> "It is literally a process starter and stopper." It does not host your threads. Everything ultimately runs on a thread somewhere (in Docker or not); Aspire starts/stops those processes and wires them together.</p>
+<h3 id="the-pieces-of-aspire-each-usable-on-its-own">The pieces of Aspire (each usable on its own)</h3>
+<p>Aspire is several composable parts, and <strong>every piece can be wielded independently</strong>:
+- <strong>The CLI</strong> — the thing that actually runs everything and ties the other pieces together. Install from <strong>aspire.dev</strong>.
+- <strong>The app host file</strong> — where you build out a custom developer experience for your app (the app <em>model</em>). This is where most of the session's time is spent.
+- <strong>Integrations</strong> — Aspire's packaged <em>opinions</em> on the right way to turn on, run, and connect to resources locally and in the cloud. ~100+ hosting integrations; fully overridable.
+- <strong>The dashboard</strong> — runs completely standalone (you don't need a fully "Aspirified" app). Can be used purely as an <strong>OpenTelemetry viewer</strong> — e.g. there's a VS Code YouTube demo using it to watch a Copilot's emitted telemetry (tokens, tool calls, turns). The recommended team-onboarding move: use the dashboard as a viewer first — the <strong>"Trojan horse"</strong> for adopting more of Aspire.</p>
+<p><strong>Same primitives everywhere:</strong> all integrations are built on the <em>same primitives</em> exposed to users. The opinionated experiences for Redis, Azure Container Apps, ElastiCache, etc. use the exact building blocks you can use yourself. An app host can be as trivial as "run <code>ls</code>, run <code>gp</code>" — it's all just code (you can comment lines out, wrap them in <code>if</code> statements, use launch profiles). Anecdote: on an "Aspire Fridays" stream, the Codespaces team turned a random repo script into an app host and it became "super nice and organized."</p>
+<p><strong>Aspire vs Pulumi / cloud IaC:</strong> Aspire is about the <strong>developer experience first</strong>, then translating that DX into something ops-appropriate. It was never meant to replace deployment manifests — but the app host has matured enough that the same file can generate manifests/assets for whatever runtime you target. (Fowler runs apps hit by a couple hundred people/month where "my CI is <code>aspire deploy</code>.")</p>
+<h3 id="opentelemetry-hotel-as-a-foundation">OpenTelemetry ("hotel") as a foundation</h3>
+<p>"Hotel" = OpenTelemetry (OTel), referred to that way throughout. It's the eminent standard for <strong>tracing, logs, and metrics</strong>, and works across container resources, backends, and front ends. The dashboard surfaces all of this. If you ask your coding agent to add Aspire to your app, "it will do it in one shot" today.</p>
+<h3 id="the-agent-story-why-aspire-is-agent-ready">The agent story (why Aspire is "agent-ready")</h3>
+<p>Over the last ~7–9 months the team built features specifically to optimize coding-agent interaction:
+- <strong>Deterministic harness:</strong> Aspire gives the agent a deterministic description of how the app runs and how parts connect. On a new session the agent doesn't have to grep files, parse a (possibly stale) README, and fall over itself starting things — there's a <strong>single source of truth</strong> it can inspect with one CLI command.
+- <strong>Port management:</strong> Aspire manages ports so multiple agents across multiple work trees don't all conflict on 3000/8080.
+- <strong>Getting info back to the agent:</strong> integrations pull more information back out to the agent — e.g. browser F12 developer logs into the coding agent <strong>without screenshot-and-paste</strong>.
+- <strong>Philosophy:</strong> Aspire is <strong>dev-first / human-first</strong> (a person typing or prompting), and then brings that <em>same</em> experience to coding agents and to new teammates onboarding.</p>
+<p>A landmark change in <strong>build 13.0</strong>: "everything in the dashboard must be visible to agents." Because the dashboard is just UI over an API, and that API is exposed to both the CLI and the dashboard, by <strong>13.4 and beyond the agent can do the same things humans can.</strong> Tell Copilot/Claude "tell me when the app is slow" and it will run <code>aspire &lt;hotel/logs/traces&gt;</code>, export traces, analyze, edit code, re-run, and loop to optimize. Fowler's real story: to find why <code>aspire start</code> was slow for non-app cases, he instrumented the CLI, dashboard, orchestrator, and RPC, added a command that booted the dashboard and collected traces, and the agent "read it in a loop and optimized four parts of it." They call this <strong>"giving the agent eyes / senses."</strong></p>
+<h3 id="the-demo-app-book-a-meeting-agent-reasons-about-it">The demo app — "book a meeting, agent reasons about it"</h3>
+<p>The scenario: you book an appointment in your calendar, and a background <strong>agent</strong> goes off and does smart things — tells you whether to wear long or short pants that day, flags scheduling conflicts, suggests where to prep earlier in the day, and (if there's an agenda) what to prep. Think a mini version of what Google/Office might do.</p>
+<p>Building this is "never one thing": a <strong>web front end</strong>, a <strong>back end (API)</strong>, an <strong>agent that runs in the background</strong>, which must be <strong>secure</strong> and run in a <strong>sandbox/container</strong>. The mental model the speakers use: <strong>Lego bricks</strong>, and Aspire is the <strong>Lego base plate</strong> that lets you snap front end + back end + agent together. The whole app host was "slopped together perfectly" in ~3 days (48 hours).</p>
+<p>The visible demo: drag to book a meeting → hit <strong>Book</strong> → the agent runs a background process and returns prep time (e.g. "book your prep 10:30–10:45"), a weather note ("it's wet in Seattle, wear a rain coat"), travel time, and a build checklist. Simple UX, but a lot has to happen behind the scenes end-to-end.</p>
+<h3 id="running-it-aspire-start-vs-aspire-run">Running it: <code>aspire start</code> vs <code>aspire run</code></h3>
+<ul>
+<li>Install the CLI from <strong>aspire.dev</strong> (the download button on the site — "no one can figure out what it means," per the running joke about Glenn). As of the day before the talk it's in <strong>WinGet</strong> (<code>winget install aspire...</code>); <strong>Homebrew</strong> and <strong>npm</strong> distribution coming "pretty soon."</li>
+<li><code>aspire --help</code> lists all commands ("so many commands, Maddie").</li>
+<li><strong><code>aspire start</code></strong> runs the app host <strong>in the background</strong> and dumps info, then returns — this is <strong>new</strong> and exists <em>because coding agents hate blocking processes</em> in the terminal (they watch for the command to end to know it's done; many can't background reliably).</li>
+<li><strong><code>aspire run</code></strong> is the <strong>blocking</strong> version (the team even made "aspire run" shirts before realizing they'd want <code>start</code> too — both exist).</li>
+<li><strong><code>aspire ps</code></strong> lists running Aspire instances on the machine; you can control them, stop them, and see versions.</li>
+</ul>
+<p>The app host shown is an <strong><code>.mts</code> (TypeScript)</strong> file — underscoring that you can now author the app host in C# <em>or</em> TypeScript in 2026 (apps themselves can be any language).</p>
+<h3 id="what-aspire-start-actually-did">What <code>aspire start</code> actually did</h3>
+<p>Reading the app host, on start Aspire:
+1. Ran a couple of <strong><code>npm install</code>s</strong> — it found <code>package.json</code>s, saw dependencies, and restored them.
+2. Ran <strong><code>npm run dev</code> with a custom port</strong> for the web front end (its port-management mechanism so work trees don't conflict).
+3. <strong>Pulled and started the container image</strong> (Postgres). If the Postgres container weren't present it would go to <strong>Docker / Podman / Rancher</strong>, pull the image, open it, and ensure connection values/strings are correct. (They pre-pulled to avoid making the audience watch a Docker pull.)
+4. <strong>Health-checked</strong> everything — each resource signals health differently, or Aspire takes its "educated guess" — then reports healthy.</p>
+<h3 id="custom-commands-resources-in-the-dashboard">Custom commands &amp; resources in the dashboard</h3>
+<p>A recurring real-world need: admin/utility actions that aren't really part of the app (e.g. "clear the calendar to start over," seed random data). Normally you'd build an auth-gated admin UI, or hit raw endpoints via Swagger/Scalar. Instead, the <strong>Aspire dashboard lets you author commands</strong> that appear on individual resources (each row — container, process, etc., is a resource). In the demo they added two commands: <strong>"make a random calendar"</strong> and <strong>"clear the calendar"</strong> (with a confirmation prompt). Clicking clears all events in the app; another generates a calendar from build data or randomly — essentially <strong>database seeding</strong> driven from the app host.</p>
+<p>The point: <strong>express behavior for individual apps/projects in the app host</strong> so it's always working — instead of the classic stale <code>run-this-giant-bash-file</code> script that breaks for every new dev because the README is out of date. This UI is <strong>driven entirely by code in the app host</strong>.</p>
+<h3 id="the-dashboard-as-a-command-center">The dashboard as a command center</h3>
+<p>The Aspire dashboard is "a really good command center for your app," all driven from the one app host file:
+- <strong>Resource detail:</strong> click a resource row to see the thread it runs on, where it runs from, and which process it is.
+- <strong>Config / environment variables:</strong> scroll and you can see and manage <strong>all the config injected</strong> to a resource — mostly via environment variables. Example: a front end's #1 need is its <strong>backend URL</strong>; instead of hardcoding "backend runs on :8080," Aspire overrides common config with env vars so work trees don't break. "It's really not magic… we just have really smart people who know which environment variables need to be set and when."
+- <strong>HTTPS / dev certs:</strong> the demo runs on HTTPS using <strong>dev certs</strong> (<code>dotnet dev-certs</code>-style). Injecting certificates differs per language (Node vs C# etc.); each integration encapsulates build/debug/dev/deploy behaviors for its thing (Next, "unicorn"/uvicorn-style Python servers, etc.). So a single <code>AddNodeJsApp</code> line has to inject the OTel config, dev certs, and <code>NODE_ENV</code> for <em>that</em> language — Aspire understands each language/integration and translates Aspire's behaviors into it.
+- <strong>Traces tab:</strong> the app is instrumented with OpenTelemetry and polls roughly every second (you can hit <strong>pause</strong> to stop collecting traces). Clicking a trace gives a <strong>full end-to-end trace</strong> — e.g. a click → DB pull → "did the agent see any changes?" The example trace shows a <strong>204 from the worker (where the agent runs) into the API, which then hits the Postgres database.</strong> Useful both to debug flows <em>and</em> to <strong>profile performance</strong> ("why is this call slow? oh, it's calling the database 17 times").
+- <strong>Console log viewer:</strong> consolidates all console logs that would otherwise be scattered across 7 terminals or 7 agent background tasks. Filter by resource; <strong>download/export</strong> logs (and traces/metrics) to hand the whole stream to your team.
+- <strong>Resource graph:</strong> a draggable visual graph of the app showing connections between front end, client app, browser, back end, and database — making complex apps much easier to debug. (If your app is a single static file + an on-disk DB, you may not need Aspire; the value kicks in the moment you add a database, cache, or front-end/back-end split.)</p>
+<h3 id="browser-logs-integration-new">Browser logs integration (new)</h3>
+<p>A new integration — <strong><code>Aspire.Hosting.Browser</code></strong>, used via a <strong><code>WithBrowserLogs</code></strong> method on a web front-end resource — opens a <strong>tracked browser with a debug port</strong> and scrapes the console + network requests. You launch this "tracked browser" (it looks normal), open a log panel, and see <strong>network traffic and console debug logs</strong> (e.g. Vite output + all client requests) right in the dashboard. The killer property: <strong>the agent has the same information</strong> — <code>aspire logs</code> dumps the same data, and the agent can <code>aspire logs search &lt;...&gt;</code> to search logs, traces, and all info. This debugs the <em>entire</em> stack — client → backend → database — and solves CORS-debugging-in-a-cramped-F12-pane pain.</p>
+<h3 id="microsoft-foundry-integration-per-dev-azure-provisioning">Microsoft Foundry integration &amp; per-dev Azure provisioning</h3>
+<p>Setting an env var in the dashboard (e.g. enabling inference with the Copilot SDK) turned on a <strong>new resource: Microsoft Foundry</strong> — Microsoft's <strong>agent platform</strong>. Aspire reads strongly-typed/"strongly-resourced" env vars (built-in <strong>Aspire parameters</strong>) you define in the app host, and you can set/unset/change them from the dashboard or CLI at will.</p>
+<p><strong>Provisioning flow:</strong> at dev time, if you're authenticated anywhere on your machine with Azure (<strong>Azure CLI, VS Code, or azd</strong>), the <strong>Foundry integration</strong> has the dashboard pop a dialog: "We see you have an Azure account — would you like us to provision a resource for you to develop against?" (This dialog/UI capability isn't in Aspire core — it's in the <strong>Azure base libraries</strong>; it queries the Azure CLI on your machine, finds your application, and prompts an Azure login. The same pattern works for <strong>any Azure resource</strong>, not just Foundry, and you can build it for anything.)</p>
+<p>This replaces the painful manual ritual (out-of-date README → find the dev sub → copy/paste subscription ID → tenant ID → decide on a resource group → maybe use the az CLI by hand — "terrifying"). The demo picked <strong>Sweden Central</strong> because the model is likely to deploy/run there ("the Swedes are asleep," so capacity is free). What provisioning does:
+- <strong>Each dev gets their own subscription/sandbox</strong> — no sharing resources, no conflicts on the same Azure object. (You could imagine sharing a subscription with different resource names, but the common pain is teams colliding on the same Azure thing, so per-dev play spaces win.)
+- Provisions the <strong>resource group, the Foundry project, and deploys a model</strong> — and crucially provisions <strong>RBAC roles</strong> so only the correct components inside the app host can talk to the resource (e.g. the front end is what "knows about" Foundry, so that role is assigned to that resource). This is real security expressed from the app host — "I can't have some random person hit this from the internet." (Funny story: it was so locked down the presenter couldn't reach his own agent — only the app could.)</p>
+<p><strong>Secrets/parameters:</strong> Aspire does <strong>not</strong> save parameters in your environment or a file — it puts them in your <strong>user profile</strong>, so they're <strong>unique per work tree</strong> (test against different subs in different trees) and <strong>can't be accidentally committed</strong> to source. This directly addresses AI agents pushing tokens to repos (it's improved, "but they still do"). The agent can also set parameters/secrets itself.</p>
+<p>Net: with Aspire you can <strong>clone and run an app with provisioned resources</strong> (Azure or external endpoints) with <strong>no portals and no click-ops</strong> beyond clicking in the dashboard (or letting the agent do it).</p>
+<p>Aspire deliberately worked with the Azure teams on its integrations, and it's <strong>not vendor-locked to Azure</strong> — there's an <strong>AWS</strong> integration, <strong>vanilla Kubernetes</strong>, and <strong>vanilla Docker Compose</strong>.</p>
+<h3 id="agent-skills-work-trees-the-github-app">Agent skills, work trees &amp; the GitHub app</h3>
+<ul>
+<li><strong><code>aspire agent init</code></strong> (for existing Aspire users) adds/updates Aspire <strong>skills</strong> — and you "don't even need an MCP." (There is an MCP, but the CLI + skills suffice.) There's a whole repo of skills, including: the right way for the agent to <strong>monitor the app</strong>, how to <strong>wield custom commands/resources</strong> (e.g. the agent discovers available custom commands and uses them to inspect the database), and a <strong>"wait for X to be healthy/successful"</strong> skill so the agent doesn't blindly <code>sleep 120</code>.</li>
+<li>In the demo the agent was told to check logs; it found the "monitor the app" skill and started running <code>aspire logs</code> and related commands to diagnose. The agent can even launch a browser from the terminal to "see" the browser.</li>
+<li><strong>GitHub app</strong> (brand new — released ~the week before, became available the day of the talk): a left-hand <strong>sessions</strong> panel where each session is a unique <strong>git work tree</strong>. You can configure a <strong>run script</strong> so that <strong>on workspace start it runs the app host isolated</strong> (<code>aspire start --isolated</code>-style): take all the app's ports and <strong>randomize them</strong> to avoid conflicts, and make a <strong>unique copy of any dev secrets per work tree</strong>. On stop it deletes the work tree and tears down the app host. This lets you <strong>preview multiple app hosts in parallel</strong> while working in the same source tree.</li>
+</ul>
+<h3 id="deployment-from-app-host-to-the-cloud">Deployment: from app host to the cloud</h3>
+<p>Deployment reuses the <strong>same building blocks</strong> as dev. The demo app was deployed to an <strong>Azure Container Apps environment</strong> by pulling in <code>AddAzureContainerAppEnvironment</code> (an integration — same primitive, but deployment-specific). The flow:
+- <strong>Each resource knows how to generate its own deployable asset</strong> (a Dockerfile or whatever makes sense for it).
+- The <strong>Azure Container Apps environment integration</strong> knows how to take those resources and translate them into <strong>Bicep</strong> (or YAML, Helm charts — "name your integration here"), and how to override properties — so you <strong>never hand-edit Bicep</strong>.
+- <strong><code>aspire deploy</code></strong> generates the assets, uses the correct mechanism for the runtime (per integration), deploys to the cloud (e.g. a Container Apps environment), connects things together, and seeds everything correctly. <strong><code>aspire publish</code></strong> is an <strong>escape hatch</strong> — it generates the assets without deploying, for teams that need to inspect/own what happens.</p>
+<p><strong>Why escape hatches matter:</strong> it depends on the app. A green-field app or a small team can do the entire end-to-end with <code>aspire deploy</code>. But an advanced DevOps team does <strong>not</strong> want a black-box single <code>aspire deploy</code> with no visibility — especially in production. For <strong>ephemeral dev environments</strong> it's great to spin up and see the whole thing working; when you <strong>promote</strong> you want more lockdown, more rules. Aspire serves both stages.</p>
+<p><strong>Customizing the generated infra:</strong> Aspire <strong>exposes the full Bicep object model in your language</strong> (C# / TypeScript). This object model is built by the <strong>Azure SDK team</strong> (not the Aspire team). Aspire gives sensible defaults, then your job is to mutate any property you want — nothing is locked down. Example shown: setting the <strong>capacity SKU</strong> for a Foundry resource — adding a Foundry project/deployment adds a <strong>GPT-5 mini</strong> chat model, and on deploy the <strong>capacity is set to 10</strong> ("~10× something"). You can literally <code>await chat.&lt;...&gt;</code> and scroll through every property available on your Container App / App Service / Helm resource, then produce the correct Bicep for your use case.</p>
+<h3 id="multi-platform-topology-the-deployed-app">Multi-platform topology (the deployed app)</h3>
+<p>The deployed version spans <strong>multiple compute environments</strong>:
+- <strong>Azure Container Apps</strong> hosts the <strong>front-end website</strong> and the <strong>back-end worker process</strong>.
+- <strong>Foundry hosted agents</strong> host the <strong>agent container sandbox</strong> (two agents were visible "hanging out").</p>
+<p>Doing this by hand is non-trivial — you'd have to span ACA <em>and</em> the Foundry hosted-agent service. Aspire makes it declarative: you say <em>which</em> compute environment each resource targets via <code>WithComputeEnvironment</code>. "Take my API resource, the worker, and the front end → put them in <strong>ACA</strong>. But put the <strong>sandboxes</strong> in the <strong>hosted agent service</strong> because it's secure — I can spin one up on the fly and have it go away." That isolation lets a coding agent "crap on disk" in a throwaway sandbox without touching other customers' data. So you design the topology in Aspire and it becomes "pretty trivial."</p>
+<h3 id="closing-community">Closing &amp; community</h3>
+<ul>
+<li><strong>aspire.dev</strong> is the home for everything (CLI download, docs). Docs auto-update via PRs on every Aspire change (AI-drafted, human-reviewed) so they stay current with the product — a big improvement over early days.</li>
+<li><strong>Cadence:</strong> ships every ~4 weeks with substantial changes; check aspire.dev / "what's new" to keep up. At talk time: <strong>13.4</strong> shipped Monday ~3pm, with <strong>13.42</strong> patches already out.</li>
+<li>Join the <strong>Discord</strong>; the team <strong>live-streams to YouTube most Fridays</strong> ("Aspire Fridays"). Fill out the session evaluation. <strong>Sample code for the demo app</strong> to be uploaded that night.</li>
+<li><strong>Adoption anecdote:</strong> Chris Reington, who set up the machines for the dev-tools-and-frameworks area, first used Aspire only ~2 weeks before the event (forced to install it on everything) and "since then he has not been able to create a project without it." The team's thesis: "once you use it, you're never going to be able to go back" — so they're arming fans and contributors with tools to explain and demo it, since the hardest part is explaining what Aspire <em>is</em> without showing it.</li>
+</ul>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>.NET Aspire</strong> — agent-ready, code-first tool to compose, debug, and deploy any distributed app (a process orchestrator + integrations + dashboard + CLI, not a runtime).</li>
+<li><strong>Aspire CLI</strong> — runs everything; <code>aspire start</code> (background, non-blocking), <code>aspire run</code> (blocking), <code>aspire ps</code> (list/manage running instances), <code>aspire deploy</code>, <code>aspire publish</code>, <code>aspire logs</code> (+ <code>search</code>), <code>aspire hotel</code> (telemetry), <code>aspire agent init</code> (install skills). Install via aspire.dev / WinGet (Homebrew &amp; npm coming).</li>
+<li><strong>Aspire app host</strong> — the single-file app model; authorable in <strong>C#, TypeScript</strong> (<code>.mts</code>), <strong>Python, Java</strong> (Go/Rust coming); orchestrates apps in any language.</li>
+<li><strong>Aspire dashboard</strong> — command center: resource detail, env/config management, traces, console logs, resource graph, custom commands. Runs <strong>standalone</strong> as an OpenTelemetry viewer.</li>
+<li><strong>Aspire integrations</strong> (~100+ hosting) — opinionated packaging of run/debug/deploy for a tech; all built on the same public primitives. Named: <code>AddPostgres</code>, <code>AddNodeJsApp</code>, <code>AddViteApp</code> (a Vite/"VIT" front end), <code>AddAzureContainerAppEnvironment</code>, <code>Aspire.Hosting.Browser</code> (<code>WithBrowserLogs</code>), <code>WithComputeEnvironment</code>, plus Redis support.</li>
+<li><strong>Aspire parameters</strong> — strongly-typed/"strongly-resourced" env vars/secrets defined in the app host; stored in the <strong>user profile</strong> (per work tree; not committed).</li>
+<li><strong>Aspire skills</strong> (<code>aspire agent init</code>) — agent skills repo: monitor the app, wield custom commands/resources, "wait for healthy/successful." Reduce need for an MCP.</li>
+<li><strong>Aspire MCP</strong> — exists but optional given skills.</li>
+<li><strong>OpenTelemetry (OTel / "hotel")</strong> — tracing, metrics, structured logs standard underpinning the dashboard.</li>
+<li><strong>Microsoft Foundry</strong> — Microsoft's agent platform; Aspire integration provisions a Foundry project, deploys a model, assigns RBAC roles, and hosts agent sandboxes ("Foundry hosted agents").</li>
+<li><strong>GPT-5 mini</strong> — chat model deployed by the Foundry integration in the demo (capacity set to 10 on deploy).</li>
+<li><strong>Copilot SDK</strong> — referenced for enabling inference in the app ("enable inference with the Copilot SDK").</li>
+<li><strong>Azure Container Apps (ACA)</strong> — deployment target for front end + back-end worker.</li>
+<li><strong>Azure SDK / base libraries</strong> — provide the Azure auth/provisioning dialogs and the <strong>Bicep object model</strong> exposed in C#/TypeScript.</li>
+<li><strong>Bicep</strong> — generated IaC for Azure deploys; fully customizable via the object model.</li>
+<li><strong>Container engines:</strong> Docker, Podman, Rancher — used to pull/run container images (e.g. Postgres).</li>
+<li><strong>PostgreSQL</strong> — database container; optional add-ons: <strong>PgWeb</strong> (web viewer) and <strong>Postgres MCP</strong> (auto-wired MCP server).</li>
+<li><strong>dev-certs</strong> — dev HTTPS certificate injection per language.</li>
+<li><strong>Vite</strong> — front-end build tool/dev server (port overridden by Aspire).</li>
+<li><strong>npm / pnpm</strong> — package managers (pnpm switchable; "yes it works").</li>
+<li><strong>GitHub app</strong> (new) — sessions UI mapping to git work trees; configurable run scripts to start the app host isolated with randomized ports + per-tree secrets, torn down on stop.</li>
+<li><strong>Cross-cloud/runtime integrations:</strong> <strong>AWS</strong>, <strong>vanilla Kubernetes</strong>, <strong>vanilla Docker Compose</strong> (Helm/YAML deploy targets).</li>
+<li><strong>azd (Azure Developer CLI), Azure CLI, VS Code</strong> — auth sources Aspire detects to offer provisioning.</li>
+<li><strong>Coding agents:</strong> Copilot, Claude ("cla") — consume Aspire's CLI/skills/telemetry to close the dev loop.</li>
+<li><strong>Observability tools (interop):</strong> Grafana, Prometheus, Honeycomb — Aspire can export OTel to these alongside its own dashboard.</li>
+<li><strong>aspire.dev</strong>, <strong>Aspire Discord</strong>, <strong>Aspire Fridays</strong> YouTube live streams — community/resources.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>App host authoring in TypeScript (and Python/Java) alongside C#</strong> — the major 2026 shift; app host shown as an <code>.mts</code> file. <strong>Go coming soon</strong> (Rust floated jokingly).</li>
+<li><strong><code>aspire start</code></strong> — new <strong>non-blocking</strong> background run command (complements blocking <code>aspire run</code>), built for coding agents that hate blocking terminal processes.</li>
+<li><strong>Full agent visibility (build 13.0 → matured 13.4+):</strong> "everything in the dashboard must be visible to agents" — dashboard is UI over an API exposed to both CLI and dashboard, so agents get the same traces/logs/observability and can close the loop. Current build <strong>13.4</strong> (with <strong>13.42</strong> patches) shipped during Build week.</li>
+<li><strong><code>Aspire.Hosting.Browser</code> / <code>WithBrowserLogs</code></strong> — new integration that opens a tracked, debuggable browser and pipes F12 console + network logs into the dashboard and to the agent.</li>
+<li><strong>Aspire skills + <code>aspire agent init</code></strong> — installable agent skills (monitor, custom commands, wait-for-healthy) reducing reliance on MCP.</li>
+<li><strong>Postgres MCP auto-wiring</strong> (<code>WithMcp</code> / MCP server) and <strong>PgWeb</strong> add-ons defined directly in the app host.</li>
+<li><strong>Per-developer Azure provisioning</strong> via the Foundry/Azure integration — dashboard-driven provisioning of resource group, Foundry project, deployed model, and RBAC roles per dev sandbox; secrets stored in user profile (per work tree, non-committable).</li>
+<li><strong>WinGet distribution</strong> of the CLI — available as of the day before the talk (<code>winget install aspire...</code>); <strong>Homebrew and npm coming soon</strong>.</li>
+<li><strong>GitHub app</strong> — brand new (released ~a week prior, available the day of the talk): work-tree sessions with configurable isolated app-host runs (randomized ports, per-tree secrets, auto teardown), enabling parallel app-host previews.</li>
+<li><strong>Auto-generated docs</strong> — every Aspire change opens a PR to the docs repo (AI-drafted, human-reviewed), keeping docs in sync.</li>
+<li><strong>Multi-compute deployment topology</strong> via <code>WithComputeEnvironment</code> — mix ACA (front end/worker) and Foundry hosted agents (sandboxes) from one app host.</li>
+<li><strong>Roughly 4-week release cadence</strong> with large changes each release.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>"Book a meeting" agentic app (main demo):</strong> Drag-and-book a calendar meeting → background agent returns prep time, weather/clothing advice, travel time, and a build checklist. Proves Aspire composing a real multi-component agentic app (Vite front end + API + background worker + Postgres + Foundry agent sandbox) from one app host.</li>
+<li><strong><code>aspire start</code> + <code>aspire ps</code>:</strong> Launching the app host in the background and inspecting running instances — proving the non-blocking, agent-friendly run model and what Aspire restores/pulls/health-checks on start.</li>
+<li><strong>Custom dashboard commands:</strong> "Clear the calendar" (with confirmation) and "make a random/build-based calendar" appearing on a resource — proving app-host-authored commands replace stale seed scripts/admin UIs.</li>
+<li><strong>Dashboard tour:</strong> Resource config/env-var management, an end-to-end <strong>trace</strong> (204 worker → API → Postgres), console log consolidation/export, and the draggable resource graph — proving the dashboard as a single command center over one file.</li>
+<li><strong>Live env-var toggle → Foundry resource:</strong> Setting an Aspire parameter in the dashboard turned on the Microsoft Foundry resource and kicked off Azure provisioning (resource group + Foundry project + model + roles), in Sweden Central — proving dashboard/CLI-driven, no-portal, secure per-dev provisioning. (Took ~5–7 min over conference Wi-Fi; pre-deployed for the agent demo.)</li>
+<li><strong>Browser logs integration:</strong> Launching the tracked browser and viewing Vite console + network logs in the dashboard, then <code>aspire logs (search)</code> giving the agent the same data — proving full-stack client→DB debugging shared between humans and agents.</li>
+<li><strong>Agent + skills + work trees:</strong> Telling a coding agent to check logs; it found the "monitor the app" skill and ran <code>aspire logs</code>/commands to diagnose; GitHub app showed multiple work-tree sessions with isolated app hosts — proving parallel agent sessions without port/secret conflicts.</li>
+<li><strong>Deployment:</strong> Pre-deployed app on <strong>Azure Container Apps</strong> (front end + worker) and <strong>Foundry hosted agents</strong> (two agent sandboxes), shown alongside <code>aspire deploy</code>/<code>publish</code> and the Bicep object model (GPT-5 mini capacity = 10) — proving multi-platform deploy from the same model with full IaC customization. (Live <code>aspire deploy</code> hit flakiness mid-demo — a candid "it should be fine… no, it failed before" moment.)</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>"Aspire is an agent-ready, code-first tool to compose, debug, and deploy any distributed app."</strong> — the canonical one-liner.</li>
+<li><strong>"Aspire is not a runtime… It is literally a process starter and stopper."</strong></li>
+<li><strong>"We're not [using a magic runtime]. We're just sticking environment variables in the right place. We just have really smart people who know which environment variables need to be set and when."</strong></li>
+<li><strong>"Everything in the dashboard must be visible to agents"</strong> — the principle behind the 13.0 change; dashboard = "just UI over an API."</li>
+<li><strong>"Giving the agent eyes / senses"</strong> — how they describe feeding agents Aspire's observability so they can close the loop.</li>
+<li><strong>~100+ hosting integrations</strong>, all on the same public primitives.</li>
+<li><strong>Ships every ~4 weeks</strong>; at talk time <strong>13.4</strong> (with <strong>13.42</strong> patches) shipped during Build week.</li>
+<li><strong>Capacity 10</strong> for the deployed <strong>GPT-5 mini</strong> Foundry model; provisioning region <strong>Sweden Central</strong> (chosen for likely model availability).</li>
+<li>Demo app built in <strong>~3 days (48 hours)</strong>; Foundry provisioning <strong>~5–7 minutes</strong> over conference Wi-Fi.</li>
+<li><strong>Chris Reington</strong> went from first use <strong>~2 weeks ago</strong> to <strong>unable to create a project without Aspire</strong>: "since then he has not been able to create a project without it… once you use it, you're never going to be able to go back."</li>
+<li>If you ask your coding agent to add Aspire to your app, <strong>"it will do it in one shot."</strong></li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Stand up the <strong>standalone Aspire dashboard as an OTel viewer</strong> to watch a Copilot session's tokens/tool calls/turns (the VS Code YouTube demo).</li>
+<li>Spin up a TypeScript (<code>.mts</code>) app host for a Node/Vite + API + Postgres app and use <strong>reference-based wiring</strong> (no hardcoded ports) end to end.</li>
+<li>Run <strong><code>aspire agent init</code></strong> on an existing project and have Copilot/Claude use the monitor/wait/custom-command skills to profile a slow endpoint.</li>
+<li>Add <strong><code>WithBrowserLogs</code></strong> to a front end and confirm F12 console/network logs flow into both the dashboard and <code>aspire logs search</code>.</li>
+<li>Try <strong>per-dev Foundry provisioning</strong> + RBAC and a multi-compute deploy (<code>WithComputeEnvironment</code>: ACA for web/worker, Foundry hosted agents for the sandbox).</li>
+<li>Test the <strong>GitHub app</strong> work-tree isolation (randomized ports + per-tree secrets) to run multiple app-host previews in parallel.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>When do <strong>Homebrew / npm</strong> CLI distribution and <strong>Go</strong> app-host authoring actually land?</li>
+<li>For enterprises: recommended split between <code>aspire deploy</code> (ephemeral/dev) and <code>aspire publish</code> + owned pipelines (prod) — governance pattern?</li>
+<li>How does per-dev subscription provisioning scale cost-wise across a large team, and can it be pointed at a shared sub with unique resource names instead?</li>
+<li>Maturity/coverage of the <strong>AWS</strong> and <strong>vanilla Kubernetes/Helm</strong> deploy integrations vs Azure?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Building agentic/distributed apps (front end + API + worker + DB + agent sandbox) with one source of truth for dev <em>and</em> deploy.</li>
+<li>Improving coding-agent workflows (giving agents real observability + skills to close the loop).</li>
+<li>Azure-first teams using Foundry, ACA, Bicep — and anyone wanting no-click-ops per-dev sandboxes.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+<li>Topic: .NET Aspire · distributed apps · agentic apps · OpenTelemetry · Microsoft Foundry · Azure Container Apps</li>
+<li>aspire.dev · Aspire Discord · "Aspire Fridays" (YouTube)</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="BRK203.html"><span class="pager-dir">← Previous</span><span class="pager-code">BRK203</span><span class="pager-title">From CLI to PR: Automating the path to merged code</span></a>
+    <a class="pager pager-next" href="BRK207.html"><span class="pager-dir">Next →</span><span class="pager-code">BRK207</span><span class="pager-title">GitHub Copilot in Visual Studio: Agents That Debug, Profile, and Test</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEM310 — Ship code faster with AI-powered NoSQL schema design</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEM310</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=9D9Npc-7VoQ" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Ship code faster with AI-powered NoSQL schema design</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Marco, Sergey</span>
+      <span class="meta-item">⏱️ 26m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="cosmos-db">Cosmos Db</span><span class="chip" data-tag="nosql">Nosql</span><span class="chip" data-tag="schema-design">Schema Design</span><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="azure">Azure</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Marco (Azure Cosmos DB) &amp; Sergey (Azure Cosmos DB) — demo-led session<br>
+<strong>Duration:</strong> ~26 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=9D9Npc-7VoQ">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>This demo session shows how to use the <strong>Azure Cosmos DB Agent Kit</strong> — a set of NoSQL best-practice "skills" packaged for Copilot agents — to design optimal Cosmos DB schemas with AI guidance instead of lazily lifting-and-shifting relational tables into containers. Sergey walks through an e-commerce data model and demonstrates two common NoSQL anti-patterns (one-container-per-table, and over-embedding arrays that cause write amplification), then has Copilot read documented <strong>access patterns + volumetrics</strong> and propose an optimized container design, partition keys, indexing, and embedding strategy. The whole loop — design → emulator deploy → seed/validate → app code → measure Request Units (RU) — runs locally on the Cosmos DB emulator and is validated by measuring real RU cost before vs after. The punchline: optimizing the schema this way projected <strong>~$980,000/month in savings</strong> for the production workload. Key message: use AI to apply NoSQL best practices early <em>and</em> use the database's own RU metrics as an API to validate and measure every design decision.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Don't lift-and-shift relational schemas.</strong> Mapping each table → its own container "works but is not optimal." NoSQL rewards modeling for <strong>access patterns</strong>, not just entities.</li>
+<li>The <strong>Azure Cosmos DB Agent Kit</strong> is a public repo of <strong>100+ indexed best-practice rules/skills</strong> for Cosmos DB, installable into any Copilot/agent that supports skills (demoed in the VS Code extension).</li>
+<li>Install with one command: <code>npx skills@azure-cosmos-db/cosmos-agent-kit</code> (deploys agent skills + Cosmos DB best-practice rules locally).</li>
+<li><strong>Document access patterns in structured context</strong> so the agent can reason about them — Sergey defined 4 patterns (P1–P4) plus extended post-launch patterns.</li>
+<li><strong>Document volumetrics / production targets</strong>, not just demo seed sizes. Test with 10 customers in dev but state "10 million in production" so the agent can project whether the design scales — <em>"every mistake you do early actually going to penalize you later"</em> in a distributed NoSQL DB.</li>
+<li><strong>Anti-pattern #1:</strong> one container per table (naive) → measurably high RU even on small datasets.</li>
+<li><strong>Anti-pattern #2:</strong> over-embedding into ever-growing arrays (e.g. embedding all orders in a customer doc) → <strong>write amplification</strong>: doc grew from ~60 KB / 26 RU to 300 KB+ / 130 RU over 50 iterations because every order update rewrites the whole growing array.</li>
+<li><strong>The optimized AI-guided design</strong> collapsed domains: customer+orders together (partition by <code>customerId</code>, type discriminator, line items embedded in order doc) and products+categories together (partition by <code>categoryId</code>, since they're always accessed by category and don't justify separation).</li>
+<li>The <strong>Cosmos DB emulator runs locally</strong> (now with a <strong>Linux v-next version GA as of the session day</strong>, plus existing Mac/Windows support) — fast, free iteration before touching the cloud.</li>
+<li><strong>RU (Request Units) is Cosmos DB's compute charge per request</strong> — use it as a built-in measurement API to compare designs objectively.</li>
+<li>Measured optimization wins: <strong>P1 &gt;50% RU saved, P2 ~75%, P3 ~40%</strong>; P4 was a "red herring" (~0.09% — just overhead noise).</li>
+<li><strong>JSON has only primitive types</strong> — convert decimals carefully and store all dates/timestamps as <strong>ISO 8601 strings</strong> to enable proper range queries, sorts, and comparisons in Cosmos DB.</li>
+<li><strong>It's an iterative loop:</strong> if you don't understand a recommendation, ask Copilot to "explain why / rationalize it"; feed new requirements back in and ask what needs to change.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="why-nosql-azure-cosmos-db-for-modern-ai-apps-marco">Why NoSQL &amp; Azure Cosmos DB for modern + AI apps (Marco)</h3>
+<ul>
+<li>Developers love NoSQL like Azure Cosmos DB because the <strong>JSON schema is easy to evolve and iterate</strong> on.</li>
+<li>Cosmos DB is optimized for <strong>low-latency, highly scalable</strong> applications — both traditional apps and increasingly <strong>AI / agent</strong> workloads.</li>
+<li>It's positioned as a single store for <strong>operational data, vector data, and AI-native applications</strong>: keep everything in one place, keep <strong>embeddings up to date</strong> as new operational data arrives, with <strong>no data movement</strong>.</li>
+<li>Built-in intelligent features: <strong>integrated vector search, full-text search, and hybrid search with semantic reranking.</strong></li>
+<li>Integrates with tooling like <strong>Microsoft Foundry</strong> (host your LLMs), AI SDKs, etc. Built for <strong>low-latency, globally distributed AI workloads.</strong></li>
+<li>Marquee proof point: <strong>OpenAI uses Azure Cosmos DB very heavily for ChatGPT.</strong></li>
+</ul>
+<h3 id="ai-assisted-development-for-nosql-marco">AI-assisted development for NoSQL (Marco)</h3>
+<ul>
+<li>Beyond GitHub Copilot for general coding, there are tools to build on NoSQL even faster.</li>
+<li>AI can <strong>generate queries and code from natural language.</strong></li>
+<li><strong>MCP (Model Context Protocol)</strong> is framed as "USB-C for apps and agents" — a standard, secure way to connect agents to databases and services.</li>
+<li>This sets up the session's centerpiece: the <strong>Azure Cosmos DB Agent Kit</strong>, handed over to Sergey for the demo.</li>
+</ul>
+<h3 id="demo-scenario-the-core-problem-sergey">Demo scenario &amp; the core problem (Sergey)</h3>
+<ul>
+<li>Scenario: a <strong>classic e-commerce data model</strong> — customer domain, products domain, sales order domain — as a starting point.</li>
+<li>The common (bad) modernization pattern: take the relational schema and mechanically <strong>convert each table → a container</strong>. It works, but it's <strong>not optimal</strong>.</li>
+<li>Goal of the demo: optimize this classic pattern using <strong>NoSQL design knowledge + best practices</strong> to iterate faster and avoid costly mistakes.</li>
+</ul>
+<h3 id="what-the-azure-cosmos-db-agent-kit-is">What the Azure Cosmos DB Agent Kit is</h3>
+<ul>
+<li><strong>"Nothing less than a set of best practices packaged as Copilot skills"</strong> that you can deploy anywhere.</li>
+<li>Demoed inside the <strong>VS Code extension</strong>, but works in <strong>any Copilot/agent that can consume skills.</strong></li>
+<li><strong>Public repo</strong> — anyone can download/install: <code>npx skills@azure-cosmos-db/cosmos-agent-kit</code>.</li>
+<li>Deploys <strong>agent skills + Cosmos DB best-practice rules</strong> locally — <strong>over 100 rules, indexed</strong>, so when you ask Copilot to do something with NoSQL/Cosmos DB it pulls the <strong>relevant subset</strong> of skills depending on the task (evaluating a model vs writing SDK code, etc.).</li>
+<li>The whole demo is packaged into a <strong>take-away repo</strong> users can clone and follow along.</li>
+</ul>
+<h3 id="adding-the-right-context-access-patterns">Adding the right context: access patterns</h3>
+<ul>
+<li>Crucial NoSQL principle: optimize <strong>not just for the data model, but for access patterns.</strong></li>
+<li>Sergey starts from a relational-style model (tables + relationships) but <strong>documents access patterns in structured context</strong> so the agent can use them.</li>
+<li><strong>Four access patterns defined:</strong></li>
+<li><strong>P1</strong> — Get a customer and their <strong>5 most recent orders</strong> (with relative volume).</li>
+<li><strong>P2</strong> — Get <strong>one order with its line items.</strong></li>
+<li><strong>P3</strong> — <strong>CRUD</strong> operation: placing an order.</li>
+<li><strong>P4</strong> — List all products in a category, <strong>sorted by price ascending</strong> (products domain).</li>
+<li>Plus <strong>extended order patterns</strong> for post-launch.</li>
+</ul>
+<h3 id="adding-the-right-context-volumetrics">Adding the right context: volumetrics</h3>
+<ul>
+<li>Developers often don't know how much data they'll have — but you must reason about the <strong>order-of-magnitude</strong> difference.</li>
+<li>Simplification: document both the <strong>demo seed size and the production target.</strong></li>
+<li>Demo: only <strong>10 customers</strong> (you don't test with a million in dev).</li>
+<li>Production target: <strong>10 million</strong> customers — do this for every entity.</li>
+<li>This gives the agent a <strong>range to project</strong>: "whatever works for 10 — will it work for 10 million?"</li>
+<li>Critical in a distributed NoSQL DB because <strong>early mistakes penalize you later at scale.</strong></li>
+</ul>
+<h3 id="iteration-a-the-naive-anti-pattern-baselines">Iteration A — the naive / anti-pattern baselines</h3>
+<p><strong>Anti-pattern #1: one container per table</strong>
+- Each table becomes a container; pick a partition key; run all the documented access patterns via a simple API and measure <strong>RU (Request Units)</strong> — Cosmos DB's per-request compute charge.
+- Result: <strong>some RU values are surprisingly high even for a small dataset.</strong></p>
+<p><strong>Anti-pattern #2: over-embedding growing arrays (write amplification)</strong>
+- NoSQL's flexibility tempts people to combine everything; taken to the extreme it creates <strong>massive write amplification.</strong>
+- Demo: pre-seed the emulator with a <strong>customer document that embeds an <code>orders</code> array</strong> — every order is appended to the array on the customer doc.
+- Simulating order creation = repeatedly updating (patching) the array. Observed over <strong>50 iterations</strong>:
+  - Document grew to <strong>300 KB+</strong>.
+  - RU to process the doc rose to <strong>~130 RU</strong>.
+  - vs the start (iteration ~10): only <strong>~60 KB and ~26 RU</strong>.
+- Lesson: because NoSQL <em>lets</em> you keep patching arrays, people do so <strong>without understanding the compute penalty</strong> — an anti-pattern to avoid.</p>
+<h3 id="iteration-b-optimized-agent-guided-design">Iteration B — optimized, agent-guided design</h3>
+<ul>
+<li>Sergey moves everything into a <strong>Copilot prompt</strong>, feeding in the <strong>naive-run summary + access patterns + volumetrics as context</strong>, and asks Copilot to:<blockquote>
+<p>"Propose optimal Cosmos NoSQL container design, partition key strategy, indexing — accounting for access patterns and volumes — and write full recommendations to an MD file."</p>
+</blockquote>
+</li>
+<li>Under the hood Copilot reads: the access patterns, the volumetrics, the <strong>agent-kit Cosmos DB best-practice skills</strong>, parses what the naive iteration did, and checks the initial container-per-table setup.</li>
+<li><strong>Recommended model</strong> (collapsing domains instead of one-container-per-table):</li>
+<li><strong>Customer + Orders combined</strong>, <strong>partitioned by <code>customerId</code></strong> → customer docs + order docs in the same partition, distinguished by a <strong>type discriminator</strong>; <strong>line items embedded</strong> in the order document.</li>
+<li><strong>Products + Categories combined</strong>, <strong>partitioned by <code>categoryId</code></strong> — because they're always accessed by category and the access patterns don't justify separating them; products kept as product docs with category normalized.</li>
+<li>This is an <strong>iterative loop</strong>: ask Copilot to <strong>"explain why / rationalize it"</strong> if unsure, or feed in <strong>additional requirements</strong> to refine. Sergey accepts the model and moves on.</li>
+</ul>
+<h3 id="deploy-to-the-local-emulator">Deploy to the local emulator</h3>
+<ul>
+<li>Next prompt: <strong>create a local emulator instance with the partition keys and index policies</strong> defined in the recommendation MD.</li>
+<li><strong>Beauty of Cosmos DB:</strong> although the cloud service is Azure-only, the <strong>emulator installs and runs locally</strong> (here in a VM) — iteration is <strong>fast and easy.</strong></li>
+<li>Initial DB had customers/orders/product-categories/products as <strong>separate containers</strong>; the emulator lets you do <strong>point look-ups</strong> (key/value) or <strong>queries</strong> (<code>SELECT * FROM c WHERE customerId = 'C...'</code>).</li>
+<li>Copilot creates the new database + containers (<strong>customer-orders</strong>, etc.) and an <strong>updated index policy</strong> including all properties used in the access patterns.</li>
+</ul>
+<h3 id="seed-validate-data-shapes">Seed &amp; validate data shapes</h3>
+<ul>
+<li>Next prompt: <strong>seed and validate data shapes</strong> — take sample CSV data for the entities and convert into the <strong>combined document shapes</strong>, matching data types, then validate <strong>shapes and counts.</strong></li>
+<li>Copilot builds a <strong>data migration/conversion tool</strong>; it calls out a key subtlety:</li>
+<li>CSVs have a <strong>special decimal parser</strong>; JSON only has <strong>primitive data types</strong>, so decimals must be converted properly.</li>
+<li><strong>Cosmos DB has no native date type</strong> — convert all timestamps/dates to <strong>ISO format strings</strong>, which enables proper <strong>date ranges, sorts, and comparisons.</strong></li>
+<li>After running the script and sampling/validating, the combined docs are visible:</li>
+<li><strong>Customer document:</strong> <code>type: customer</code>, <code>customerId</code> = partition key, <code>id</code> = unique partition-key + Cosmos-generated identifier, with <strong>embedded order summaries.</strong></li>
+<li><strong>Order document:</strong> same partition key, <code>type: order</code>, with <strong>order line items built in.</strong></li>
+</ul>
+<h3 id="build-the-application-code-measure">Build the application code &amp; measure</h3>
+<ul>
+<li>Next prompt: <strong>build the app code to exercise all access patterns</strong> — a simple structure of models, repository, service, and main, in Python — explicitly instructing <strong>"use Cosmos DB best practices."</strong></li>
+<li>Output is instructed to <strong>summarize results for P1–P4</strong> so they can be compared against the naive pre-run to <strong>measure RU before vs after.</strong></li>
+<li>Copilot <strong>re-reads the Cosmos DB best-practice skills — but a different section</strong> this time: the <strong>SDK best practices</strong> (retries, <strong>singleton client</strong>, etc.) rather than the data-modeling ones. (A minor hiccup: it got confused by an example <code>.env</code> entry.)</li>
+<li>Reinforced reusable workflow: whenever you have <strong>new requirements</strong>, feed Copilot your <strong>existing app structure + new requirements</strong> and ask <strong>what needs to change and what needs to be fed in.</strong></li>
+</ul>
+<h3 id="results-measuring-the-win">Results — measuring the win</h3>
+<ul>
+<li>Comparison table: <strong>Iteration A (naive) vs Iteration B (optimized)</strong> across P1–P4, showing <strong>delta %</strong> and <strong>RU saved per request.</strong></li>
+<li><strong>P1 (B1): &gt;50% RU saved.</strong></li>
+<li><strong>P2 (B2): ~75% RU saved</strong> — also demonstrates <strong>point read vs query</strong> (single-doc retrieval via point read is cheaper than a query).</li>
+<li><strong>P3: ~40% RU saved.</strong></li>
+<li><strong>P4: ~0.09% — a "red herring,"</strong> essentially just overhead noise.</li>
+<li><strong>Production cost projection</strong> (applying savings to the documented volumetrics):</li>
+<li><strong>~3,000 reads/sec saved</strong> for P1 and P2 combined.</li>
+<li><strong>~500 writes/sec saved</strong> for P3.</li>
+<li>Converting those savings to <strong>Cosmos DB list price → ~$980,000 per month saved</strong> by optimizing the schema.</li>
+<li>Closing message: customers <strong>leave huge money on the table</strong> by doing <strong>lazy conversions</strong>. The biggest value of NoSQL is taking <strong>full advantage of its flexibility while using the database's own RU API to validate and measure</strong> that your design is optimal — quickly, without building complex synthetic test harnesses.</li>
+</ul>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Azure Cosmos DB</strong> — Microsoft's globally distributed, low-latency NoSQL database; the focus of the session.</li>
+<li><strong>Azure Cosmos DB Agent Kit</strong> — public repo of 100+ indexed NoSQL/Cosmos DB best-practice rules packaged as <strong>Copilot skills</strong>, installable into any skill-aware agent.</li>
+<li><strong>Azure Cosmos DB Emulator</strong> — local emulator for fast, free iteration; <strong>Linux v-next version GA as of the session day</strong>, alongside existing Mac/Windows support.</li>
+<li><strong>Request Units (RU)</strong> — Cosmos DB's per-request compute charge; used as the measurement metric for design optimization.</li>
+<li><strong>Integrated vector search / full-text search / hybrid search with semantic reranking</strong> — Cosmos DB's built-in intelligent query features.</li>
+<li><strong>Microsoft Foundry</strong> — platform for hosting LLMs; integrates with Cosmos DB for AI workloads.</li>
+<li><strong>MCP (Model Context Protocol)</strong> — "USB-C for apps and agents"; standard, secure way to connect agents to databases/services.</li>
+<li><strong>GitHub Copilot</strong> — AI coding assistant; the demo runs the Agent Kit skills through Copilot in the VS Code extension.</li>
+<li><strong>VS Code extension</strong> — host used to demo the Agent Kit (works in any skill-capable Copilot/agent).</li>
+<li><strong><code>npx skills@azure-cosmos-db/cosmos-agent-kit</code></strong> — one-line install command for the Agent Kit.</li>
+<li><strong>Python + Cosmos DB SDK</strong> — used to build the app code; SDK best practices include retries and a <strong>singleton client.</strong></li>
+<li><strong>JSON / ISO 8601 date strings</strong> — document format; dates stored as ISO strings since Cosmos DB has no native date type.</li>
+<li><strong>MongoDB / DynamoDB</strong> — other NoSQL databases referenced when polling the audience.</li>
+<li><strong>OpenAI / ChatGPT</strong> — cited as a heavy production user of Azure Cosmos DB.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Azure Cosmos DB Emulator — Linux v-next version GA "as of today"</strong> (session day). An existing emulator already shipped; this is the newer "v-ex"/v-next Linux build for Mac/Windows/Linux laptops. (Stated as generally available that day.)</li>
+<li><strong>Azure Cosmos DB Agent Kit</strong> highlighted as publicly available (public repo, <code>npx</code> install) — presented as the session's key tool. (Promoted as available; exact GA/preview wording not specified beyond "public repo anybody can download and install.")</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>End-to-end AI-guided NoSQL schema optimization</strong> (Sergey), all on the local Cosmos DB emulator:
+  1. <strong>Naive baseline (Anti-pattern #1):</strong> one-container-per-table, ran P1–P4, measured RU → some high even on small data. <em>Proves lift-and-shift is suboptimal.</em>
+  2. <strong>Over-embedding baseline (Anti-pattern #2):</strong> customer doc with an embedded growing <code>orders</code> array; 50 update iterations grew the doc to <strong>300 KB+ / ~130 RU</strong> (from ~60 KB / ~26 RU). <em>Proves write amplification from unbounded array embedding.</em>
+  3. <strong>Optimized design via Copilot:</strong> fed access patterns + volumetrics + agent-kit skills → Copilot wrote a recommendations MD collapsing domains (customer+orders by <code>customerId</code>; products+categories by <code>categoryId</code>; embedded line items). <em>Proves AI can apply NoSQL best practices to produce an optimal model.</em>
+  4. <strong>Emulator deploy:</strong> Copilot created the new DB/containers + index policies from the MD.
+  5. <strong>Seed &amp; validate:</strong> Copilot built a CSV→JSON conversion tool, handled decimal parsing + ISO date conversion, validated shapes/counts; combined docs (customer with embedded order summaries, order with embedded line items) shown live.
+  6. <strong>App code + measurement:</strong> Copilot generated Python (models/repository/service/main) using SDK best practices, re-ran P1–P4.
+  7. <strong>Results table:</strong> A vs B comparison → <strong>P1 &gt;50%, P2 ~75%, P3 ~40% RU saved</strong>, P4 negligible. <em>Proves measurable optimization → projected </em><em>~$980k/month</em><em> production savings.</em></li>
+<li>(Minor live hiccups: a momentary lost-connection on the shared screen, and Copilot briefly confused by an example <code>.env</code> entry — both recovered.)</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>~$980,000 per month</strong> projected savings from schema optimization at production scale.</li>
+<li><strong>~3,000 reads/sec</strong> saved (P1 + P2) and <strong>~500 writes/sec</strong> saved (P3) at production volume.</li>
+<li>Over-embedding anti-pattern: doc grew to <strong>300 KB+</strong> and <strong>~130 RU</strong> after 50 iterations, up from <strong>~60 KB / ~26 RU</strong>.</li>
+<li>RU savings: <strong>P1 &gt;50%, P2 ~75%, P3 ~40%, P4 ~0.09%</strong> (red herring).</li>
+<li>Demo vs production volumetrics: <strong>10 customers</strong> (dev) → <strong>10 million</strong> (production target).</li>
+<li><strong>100+ indexed rules</strong> in the Azure Cosmos DB Agent Kit.</li>
+<li><strong>OpenAI uses Azure Cosmos DB very heavily for ChatGPT.</strong></li>
+<li><em>"Every mistake you do early actually going to penalize you later"</em> — on the cost of bad early NoSQL modeling at scale.</li>
+<li><em>"USB-C for apps and agents"</em> — on MCP.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Install the Azure Cosmos DB Agent Kit (<code>npx skills@azure-cosmos-db/cosmos-agent-kit</code>) into VS Code Copilot and try it against a sample relational schema.</li>
+<li>Spin up the new <strong>Linux Cosmos DB emulator</strong> locally and run the naive-vs-optimized RU comparison loop.</li>
+<li>Practice documenting <strong>access patterns (P1…Pn) + volumetrics (dev seed vs prod target)</strong> as structured context for the agent.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What's the exact public repo URL / org for the Agent Kit, and how often are the 100+ rules updated?</li>
+<li>How does the RU projection map demo numbers to the ~$980k figure (which list price / region assumptions)?</li>
+<li>Does the Agent Kit support APIs beyond Cosmos DB NoSQL (e.g. MongoDB API), and other languages beyond Python?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Any Cosmos DB / NoSQL data-modeling or modernization work.</li>
+<li>AI-app backends needing operational + vector data co-located.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Azure Cosmos DB">Azure Cosmos DB</span> — the NoSQL database whose data-modeling best practices this session packages into an AI agent kit.</li>
+<li><a class="wikilink wikilink--resolved" href="OD820.html">OD820 - Designing Reliable Multi-Agent Apps with Azure Cosmos DB</a> — sibling Cosmos DB session; agentic apps + memory on the same platform.</li>
+<li><a class="wikilink wikilink--resolved" href="OD821.html">OD821 - Building Azure DocumentDB on Open-Source Foundations</a> — the open-source document-database engine underpinning Cosmos DB for NoSQL.</li>
+<li><span class="wikilink wikilink--unresolved" title="Model Context Protocol (MCP)">Model Context Protocol (MCP)</span> — the protocol that surfaces the Cosmos DB Agent Kit's rules as Copilot-callable skills.</li>
+<li><span class="wikilink wikilink--unresolved" title="Request Units (RU) and Cosmos DB cost optimization">Request Units (RU) and Cosmos DB cost optimization</span> — the RU/write-amplification economics the demo optimizes against.</li>
+<li><span class="wikilink wikilink--unresolved" title="NoSQL data modeling — embedding vs referencing">NoSQL data modeling — embedding vs referencing</span> — the core schema-design tradeoff (over-embedding growing arrays) the AI guidance corrects.</li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEM305.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEM305</span><span class="pager-title">GitHub Copilot Anywhere: From Remote Control CLIs to Cloud Sandboxes</span></a>
+    <a class="pager pager-next" href="DEM311.html"><span class="pager-dir">Next →</span><span class="pager-code">DEM311</span><span class="pager-title">Scale cloud-native workloads with Azure Linux</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

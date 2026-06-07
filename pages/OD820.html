@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OD820 — Designing Reliable Multi-Agent Apps with Azure Cosmos DB</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">OD820</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=2mZNsC58S64" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Designing Reliable Multi-Agent Apps with Azure Cosmos DB</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Justine Kouchi (PM, Azure Cosmos DB), Ayush Kataria (Software Engineer, Azure Cosmos DB)</span>
+      <span class="meta-item">⏱️ 46m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="cosmos-db">Cosmos Db</span><span class="chip" data-tag="multi-agent">Multi Agent</span><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="reliability">Reliability</span><span class="chip" data-tag="azure">Azure</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Justine Kouchi (Program Manager, Azure Cosmos DB) · Ayush Kataria (Software Engineer, Azure Cosmos DB)<br>
+<strong>Duration:</strong> ~46 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=2mZNsC58S64">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>This session walks through building a <strong>production-grade multi-agent AI application</strong> — a personalized travel assistant — on top of <strong>Azure Cosmos DB</strong>, using it as the durable backbone for agent state, memory, and search. The first half is about <strong>agentic memory</strong>: why it beats RAG, the three memory layers (state, short-term, long-term), and the four long-term memory types (facts, procedural, episodic, user summary) managed automatically by the new <strong>Cosmos DB Agent Memory Toolkit</strong> (public preview). The second half is about <strong>reliability and scale</strong>: the new <strong>Cosmos DB Agent Kit</strong> that bakes best-practice instincts into your coding agent (GA), plus platform features that remove brittle app-side error handling — <strong>per-partition automatic failover</strong> (GA), <strong>cross-container distributed transactions</strong> (preview), <strong>integrated embeddings</strong> via Microsoft Foundry, and <strong>global secondary indexes</strong> (GA). The thesis: let the Cosmos DB platform do the heavy lifting so your agents stay simple and your app stays reliable.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Multi-agent beats single-agent</strong> for non-trivial domains: smaller focused contexts per agent reason better, agents can be developed/updated independently, and the system is composable — vs one monolithic system prompt that confuses the model and hits context-window limits.</li>
+<li>An <strong>orchestrator agent is the "front door"</strong> — its only job is to read intent and route to the right specialist (hotel, dining, activity). Specialists each own a single domain with their own prompt and tools.</li>
+<li><strong>Agents never touch the database directly</strong> — they go through an <strong>MCP server</strong> (tools like recall memories, discover places, transfer between agents). MCP decouples tools from agent code so tools can be reused and updated independently.</li>
+<li><strong>Agentic memory &gt; RAG</strong> for agent apps: RAG is static, shared, similarity-only, and stateless; agentic memory is <strong>dynamic, user-specific, salience-scored (importance + confidence + recency), learns from every interaction, and is time-aware with TTL</strong>.</li>
+<li>Three precise memory concepts: <strong>State</strong> (full app snapshot to restore an exact point), <strong>short-term memory</strong> (within-session conversation history), and <strong>long-term memory</strong> (cross-session, enables personalization and "building a relationship").</li>
+<li><strong>Four long-term memory types</strong>, each with a different lifetime: <strong>Facts/semantic</strong> (durable, never expire), <strong>Procedural</strong> (inferred behavioral patterns, never expire by default), <strong>Episodic</strong> (time/place-bound, expire after ~90 days default), and <strong>User Summary</strong> (rolling synthesis regenerated every few turns, fed into the orchestrator's system prompt).</li>
+<li>The <strong>Agent Memory Toolkit</strong> runs as a <strong>background runtime</strong> hanging off the same Cosmos DB account, with its own <code>memories</code> container; the agent never calls it directly. It automates extraction, conflict resolution, summarization, and recall on the right cadence.</li>
+<li><strong>Memory extraction is threshold-driven &amp; asynchronous</strong>: a background pipeline runs every Nth turn, asks the LLM "anything new worth remembering?", classifies it (fact/procedural/episodic), and writes it back to Cosmos DB without blocking the agent loop. Greetings (hi/hello) are deliberately <em>not</em> extracted.</li>
+<li><strong>Conflict resolution preserves an audit trail</strong>: when facts contradict (e.g. "I'm vegan" → later "I love steak"), the toolkit doesn't delete the old fact — it marks it <strong><code>superseded by</code></strong> the winner, so you can debug <em>why</em> the system changed its mind months later.</li>
+<li><strong>Memory-conditioned search is the payoff</strong>: before any specialist searches, it recalls relevant memories and encodes them as <strong>explicit filters</strong> — so "show me hotels in Tokyo" silently becomes "show me <em>luxury</em> hotels in Tokyo." Personalization is baked into the query, not bolted on.</li>
+<li>The <strong>Cosmos DB Agent Kit</strong> is a <em>repo of skills</em> (not a service) that any skills-compatible coding agent (GitHub Copilot, Claude Code, Gemini CLI) can pull in — giving it years of Cosmos DB instincts on partitioning, indexing, and RU economics. Drop it into CI/PR reviews for a free expert opinion on every change.</li>
+<li>For <strong>five-nines availability</strong>, use the <strong>active-active</strong> pattern: either <strong>multi-writer</strong> (leaderless, all regions accept reads+writes, RTO ≈ 0 / RPO ≈ 0) or <strong>single-writer + per-partition automatic failover</strong> (fail over individual partitions, not whole regions — "brownout vs blackout").</li>
+<li><strong>Per-partition automatic failover (GA)</strong> gives zero downtime, zero data loss, zero touch — the SDK does the heavy lifting; no app-side coordination or expensive whole-region failover decisions.</li>
+<li><strong>Cross-container distributed transactions (preview)</strong> give atomic execution across partitions/containers (e.g. book-trip = update status + store memory + emit event, all succeed-or-fail together), removing brittle multi-write error handling from app code.</li>
+<li><strong>Integrated embeddings</strong> let you write the raw message to Cosmos DB and have embeddings generated <strong>asynchronously via Microsoft Foundry</strong> at write time — eliminating the synchronous external OpenAI call that caused rate-limiting (Ayush saw 30–40s waits while testing).</li>
+<li><strong>Global secondary indexes (GA)</strong> create an auto-synced copy container partitioned for a <em>different</em> access pattern, turning heavy cross-partition dashboard queries into single-partition lookups — demoed at <strong>~90% RU savings</strong> (30 RU → 3 RU).</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="the-scenario-a-multi-agent-travel-assistant">The scenario: a multi-agent travel assistant</h3>
+<p>The running example throughout the talk is a <strong>travel assistant</strong> — a multi-agent AI application that helps users plan personalized trips. Its core surface is a <strong>chat feature</strong>: a user types something like <em>"plan a trip to Paris,"</em> and that single message kicks off a rich back-end flow.</p>
+<p>A single conversational <strong>turn</strong> looks like this:
+1. The message lands in the <strong>orchestrator agent</strong>.
+2. The orchestrator routes it to specialist agents (e.g. the <strong>hotel agent</strong>).
+3. The system <strong>looks up existing memories</strong> about the user in Azure Cosmos DB.
+4. The initial query is <strong>embedded with Azure OpenAI</strong> into a vector, so it can be searched against existing metadata (places, restaurants, hotels in Paris).
+5. The response is sent back with the data found, helping the user plan.
+6. Eventually, when the trip is created, the system <strong>extracts memories</strong> so it remembers the interaction next time the user logs in.</p>
+<h3 id="designing-around-the-user-journey-where-latency-vs-reliability-matters">Designing around the user journey: where latency vs reliability matters</h3>
+<p>A key framing: <strong>different parts of the user flow have different priorities.</strong></p>
+<ul>
+<li><strong>Front half (early in the conversation):</strong> <strong>latency and personalization</strong> matter most. Agents must remember key things about users and respond fast — otherwise the user gets frustrated and defects to a competitor travel site.</li>
+<li><strong>Back half (creating/booking the trip):</strong> <strong>consistency and reliability</strong> matter most. You must not double-book a trip or forget something already discussed.</li>
+</ul>
+<p>Keeping the user's perspective in mind across the flow is what ultimately drives the architecture decisions in the rest of the talk.</p>
+<h3 id="why-multi-agent-the-single-agent-failure-modes">Why multi-agent? The single-agent failure modes</h3>
+<p>Ayush frames multi-agent by first showing <strong>what goes wrong with a single agent</strong>:
+- One agent handling <strong>every domain in a single system prompt</strong> → the model gets <strong>confused</strong>; it doesn't know which capability to invoke or when.
+- <strong>No separation of concerns</strong> → every change risks breaking something else; you can't improve one area of expertise without touching everything.
+- As conversations grow, you <strong>hit context-window limits</strong> → the model forgets earlier parts of the conversation, producing inconsistent behavior.</p>
+<p><strong>The multi-agent solution</strong> replaces the monolith with <strong>specialized agents</strong>, each with a focused prompt and a specific tool set, with an <strong>orchestrator on top</strong> routing by intent. The big wins:
+1. <strong>Smaller, more focused context per agent → better reasoning.</strong>
+2. <strong>Independent development/updates</strong> — adding a new specialist doesn't require touching existing ones.
+3. <strong>Composability</strong> — plug in new capabilities without rewriting the whole system.</p>
+<h3 id="agentic-memory-vs-rag-the-most-important-idea-in-the-talk">Agentic memory vs RAG (the most important idea in the talk)</h3>
+<p>Ayush calls this the most interesting part. Most people know <strong>RAG</strong> (retrieval-augmented generation): a fixed knowledge base, embedded documents, retrieve relevant chunks on a question and feed them to the model. It works for what it does, but has fundamental limits for <strong>agent-based</strong> apps. The comparison:</p>
+<table>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Traditional RAG</th>
+<th>Agentic Memory</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Freshness</td>
+<td><strong>Static</strong> — fixed until you explicitly update it</td>
+<td><strong>Dynamic</strong> — grows automatically with every interaction</td>
+</tr>
+<tr>
+<td>Scope</td>
+<td>Same results for everyone (shared corpus)</td>
+<td><strong>User-specific</strong> — stores individual preferences/history; two users get completely different experiences</td>
+</tr>
+<tr>
+<td>Retrieval</td>
+<td>By <strong>similarity alone</strong> (nearest in embedding space)</td>
+<td><strong>Salience scoring</strong> — factors in <strong>importance, confidence, and recency</strong></td>
+</tr>
+<tr>
+<td>Learning</td>
+<td>Doesn't learn — pure lookup</td>
+<td><strong>Actively learns and adapts</strong> — every conversation extracts new knowledge</td>
+</tr>
+<tr>
+<td>Time</td>
+<td>No concept of time</td>
+<td><strong>Cross-session persistence with TTL policies</strong></td>
+</tr>
+</tbody>
+</table>
+<p>This distinction motivates the whole memory architecture: agents need memory that is personal, evolving, and time-aware — not just a static retrieval index.</p>
+<h3 id="full-system-architecture">Full system architecture</h3>
+<p>Zooming out, the end-to-end architecture of the travel app:</p>
+<ul>
+<li><strong>Orchestrator agent</strong> — the <strong>front door</strong>. Every conversation comes through it first; its only job is to understand intent and decide which specialist handles it.</li>
+<li><strong>Specialized agents</strong> — <strong>hotel, dining, activity</strong>. Each owns a single domain, has its own system prompt, and pulls from a focused set of tools.</li>
+<li><strong>MCP server</strong> — <em>none of the agents talk to the database directly.</em> They go through the <strong>Model Context Protocol (MCP) server</strong>, which exposes tools like <strong>recall memories, discover places, transfer between agents</strong>, and more. The point of MCP is <strong>decoupling</strong>: you can update or add tools without touching agent code, and one tool can be reused across every agent.</li>
+<li><strong>Azure Cosmos DB</strong> — sits under the MCP layer and stores everything the app needs: <strong>sessions, messages, places, trips, API events</strong>, and more. Places are searched using <strong>hybrid search</strong>. <strong>Every container uses a hierarchical partition key</strong>, so the system is <strong>multi-tenant from day one</strong>.</li>
+<li><strong>Agent Memory Toolkit</strong> — a <strong>new Cosmos DB offering</strong> that hosts the memory layer. It's a <strong>separate background runtime</strong> that hangs off the <em>same</em> Cosmos DB account, owning its own container called <strong><code>memories</code></strong> where conversation turns, extracted facts, user summaries, and thread summaries are all stored. <strong>The agent never calls it directly.</strong></li>
+<li><strong>Azure OpenAI</strong> — provides the <strong>LLM reasoning and embedding</strong> capabilities; a shared utility feeding both the agent runtime and the toolkit pipeline.</li>
+</ul>
+<h3 id="memory-vocabulary-state-vs-short-term-vs-long-term">Memory vocabulary: state vs short-term vs long-term</h3>
+<p>Before going deeper, the speakers insist on precise terms, because "memory" is used loosely. Three distinct concepts:</p>
+<ul>
+<li><strong>State</strong> — a <strong>snapshot of the entire application</strong> at a given moment. Contains everything needed to restore the app to that exact point: what the user said, what the agent decided, what tools were called.</li>
+<li><strong>Short-term memory</strong> — what happens <strong>within a single session</strong>: the conversation history, messages going back and forth. This is what lets an agent refer back to something said three messages ago and stay coherent.</li>
+<li><strong>Long-term memory</strong> — <strong>persists across sessions</strong>. When a user returns days or weeks later, the agent recalls what it learned previously (preferences, past decisions, feedback). This is what enables personalization and learning over time — <em>the difference between an agent that starts fresh every conversation and one that builds a relationship with the user.</em></li>
+</ul>
+<p><strong>How they're implemented in the travel app:</strong> all three are used. <strong>State</strong> via <strong>LangGraph's Cosmos DB checkpointer</strong> integration; <strong>short-term and long-term memory</strong> via the dedicated <strong>Agent Memory Toolkit</strong> backed by Cosmos DB.</p>
+<h3 id="the-four-long-term-memory-types">The four long-term memory types</h3>
+<p>Not all long-term memories are the same — the toolkit models <strong>four types</strong>, each with a different lifetime, creation method, and usage:</p>
+<ol>
+<li><strong>Facts (semantic memory)</strong> — simple, durable statements about the user: <em>"user is vegetarian," "travels with a wheelchair," "lives in Seattle."</em> Objectively true, change rarely, and <strong>should never expire</strong>.</li>
+<li><strong>Procedural memory</strong> — <strong>behavioral patterns / preferences inferred from how the user actually behaves</strong> over multiple conversations: <em>"tends to book boutique hotels over chains," "prefers late dinners."</em> Softer than facts — the user may never say them out loud; they <strong>emerge from repetition</strong> and <strong>never expire by default</strong> (behavioral patterns are usually stable).</li>
+<li><strong>Episodic memory</strong> — tied to a <strong>specific time and place</strong>: <em>"visited New York City last spring," "loved seafood on my Barcelona trip."</em> Lets the system reference a past trip when planning a new one. <strong>These expire — default 90 days</strong> — because episodic memory gets noisy fast (a recommender doesn't need to remember a coffee shop you visited 4 years ago).</li>
+<li><strong>User summary</strong> — different from the other three. <strong>Not extracted from a single message</strong>; it's a <strong>rolling synthesis of who the user is</strong>, regenerated automatically every few turns: <em>"frequent solo traveler, vegetarian, prefers cultural over outdoor, mid-range budget hotels."</em> The <strong>orchestrator pulls this into its system prompt at the start of every conversation</strong>, so even on day one of a brand-new session the agent already "knows" the user.</li>
+</ol>
+<h3 id="making-memory-intelligent-the-four-toolkit-apis">Making memory intelligent: the four toolkit APIs</h3>
+<p>Storing memories is only half the challenge — the real value is the system <strong>actively managing its own knowledge</strong>. The toolkit class exposes public-facing APIs: <strong>extract memories, generate thread summary, generate user summary, and reconcile memories</strong> (conflict resolution). Four mechanisms:</p>
+<p><strong>1. Threshold-driven extraction (<code>extract memories</code>)</strong> — the user never has to say "remember this." As the conversation unfolds, a <strong>background pipeline runs every Nth turn</strong> and asks the LLM <em>"is there anything new about this user worth remembering?"</em> If yes, it pulls out the fact, <strong>classifies it</strong> as fact / procedural / episodic, and writes it back to Cosmos DB. <strong>The agent loop doesn't wait</strong> — it's fully asynchronous. (Greetings like "hi / good morning" are deliberately excluded by prompt rules.)</p>
+<p><strong>2. Conflict resolution (<code>reconcile memories</code>)</strong> — real conversations contradict themselves ("I'm vegan" on Monday → three weeks later raves about a steakhouse). On a <strong>separate cadence</strong>, the toolkit sweeps the user's facts and asks the LLM to classify pairs of related memories as <strong>duplicates or updates</strong>. When it finds one, it <strong>doesn't delete</strong> the old memory — it marks it <strong><code>superseded by</code></strong> the winner, <strong>preserving an audit trail</strong>. The user never sees a contradiction, but a developer debugging six months later can see exactly when and why the system changed its mind.</p>
+<p><strong>3. Rolling summaries</strong> — conversations get long and token budgets are finite, so the toolkit generates <strong>two kinds of summaries on a cadence</strong>: a <strong>thread summary</strong> (the current conversation/session) and a <strong>user summary</strong> (who the user is across all conversations). For the demo, both regenerate <strong>every 5 turns</strong>; in production the cadence is a <strong>tunable default</strong>. The orchestrator pulls these into context at the start of every turn, so <strong>even after 100 messages the agent doesn't lose the plot</strong>.</p>
+<p><strong>4. Memory-conditioned search (the payoff)</strong> — everything else is "plumbing"; this is where memory shapes what the user actually sees. <strong>Before any specialist searches</strong> for a hotel or restaurant, it <strong>recalls memories first</strong> — asking the toolkit what's known about this user relevant to the query. The recall returns relevant facts/preferences, and the agent <strong>encodes them as explicit filters</strong> on the search call. That's how <em>"show me hotels in Tokyo"</em> silently becomes <em>"show me </em><em>luxury</em><em> hotels in Tokyo."</em> Personalization is <strong>baked into the query itself</strong>, not bolted on at the end.</p>
+<p>Crucially, the toolkit runs <strong>all of these automatically in the background on the right cadence</strong>, with no coordination required from application code — so the agent stays simple.</p>
+<h3 id="prompts-are-code">Prompts are code</h3>
+<p>The LLM prompts driving extraction/classification are <strong>scripts checked into the codebase</strong> (e.g. an <code>extract memories</code> prompt file). They give the LLM detailed instructions on the four memory types — the required structure, plus <strong>rules and examples</strong> defining what counts as a fact vs procedural vs episodic — and rules on which turns to extract (e.g. greeting-only turns are skipped). Treating prompts as versioned code is part of what makes the behavior reliable and tunable.</p>
+<h3 id="reliability-availability-slo-rpo-rto">Reliability &amp; availability: SLO, RPO, RTO</h3>
+<p>The second half pivots from "it works in a demo" to "it runs at scale without setting money on fire." Justine grounds reliability in <strong>three user-facing metrics</strong>:</p>
+<ul>
+<li><strong>SLO (Service Level Objective)</strong> — the <strong>target level of service availability</strong>. For a global app serving users worldwide at any hour, the goal is essentially <strong>no downtime</strong>.</li>
+<li><strong>RPO (Recovery Point Objective)</strong> — <em>how much data could you lose</em> in the window before a disaster strikes. For distributed cloud apps, disaster is "<strong>not if, but when</strong>."</li>
+<li><strong>RTO (Recovery Time Objective)</strong> — <em>how long is it acceptable to be down</em> after a disaster.</li>
+</ul>
+<p>The target for this app: <strong>five nines (99.999%) of availability</strong>, always-up, globally available.</p>
+<h3 id="the-active-active-pattern-two-flavors">The active-active pattern (two flavors)</h3>
+<p>To hit five nines, Cosmos DB offers the <strong>active-active</strong> pattern, achievable two ways:</p>
+<ul>
+<li><strong>Multi-writer</strong> — <strong>multiple Cosmos DB regions all simultaneously accepting reads <em>and</em> writes</strong>. It's <strong>leaderless</strong>: writes can land in any region and are <strong>conflict-resolved across all regions</strong>. <strong>RTO ≈ 0</strong> (all regions already online) and <strong>RPO ≈ 0</strong> (just conflict-resolution + cross-region replication time).</li>
+<li><strong>Single-writer + per-partition automatic failover</strong> — a <strong>new feature</strong> that fails over at the <strong>individual partition level</strong> instead of waiting for an entire region to go unavailable. This is the <strong>"brownout vs blackout"</strong> insight: it's far more common for an individual partition to fail than for a whole region to go down. Healthy regions/partitions keep reading and writing from the primary write region; any partition with issues <strong>fails over seamlessly</strong>. The application handles none of it — <strong>no app-side failure coordination and no expensive whole-region-failover decision</strong>. Result: the active-active pattern with five-nines availability <strong>without</strong> running multiple writers.</li>
+</ul>
+<p><strong>Per-partition automatic failover</strong> delivers <strong>zero downtime, zero data loss, and zero touch</strong> — the SDK does the heavy lifting.</p>
+<h3 id="consistency-across-containers-distributed-transactions">Consistency across containers: distributed transactions</h3>
+<p>Availability guarantees writes <em>can</em> land, but you still need <strong>consistency</strong>. Example: when a user clicks <strong>"book it,"</strong> three independent writes happen — (1) update the trip's status to <strong>booked</strong> in the trips container, (2) <strong>store a memory</strong> so the agent remembers the booking, and (3) <strong>emit a booking event</strong> in the events container for downstream/logging systems. If one fails, it's a terrible experience (the agent "forgets" the booking).</p>
+<p><strong>Cross-container distributed transactions (public preview)</strong> give <strong>atomic execution of multiple requests</strong>. Previously a transaction was limited to a single partition key; now you get <strong>atomic transactions across partitions or even across containers</strong>. All three operations <strong>succeed or fail together</strong> — consistency at the container level, with the platform doing the heavy lifting so you delete a pile of brittle app-side error handling.</p>
+<h3 id="integrated-embeddings-let-the-platform-embed">Integrated embeddings (let the platform embed)</h3>
+<p>Another chance to offload coordination. <strong>Today's flow:</strong> user prompt → app must <strong>call Azure OpenAI to generate embeddings</strong> <em>before</em> it can do anything with Cosmos DB. That synchronous external call is a <strong>rate-limiting / error-handling risk</strong> — you can see write-loss or availability problems even when Cosmos DB itself is fine, purely from the developer's coordination/error handling. (Ayush notes he was <strong>rate-limited repeatedly while testing</strong>, sometimes waiting <strong>30–40 seconds</strong> for an LLM response.)</p>
+<p><strong>With integrated embeddings</strong>, you <strong>write the raw message straight to Cosmos DB</strong>, and embeddings are <strong>generated asynchronously</strong>, <strong>automatically integrated with Microsoft Foundry</strong>. You define the <strong>Foundry integration</strong> plus the <strong>source and target properties</strong> to embed on, getting full control without an external pipeline. The app focuses on business logic instead of plumbing external embedding calls.</p>
+<h3 id="global-secondary-indexes-scaling-new-query-patterns">Global secondary indexes (scaling new query patterns)</h3>
+<p>As the app grows, new <strong>cross-tenant dashboard</strong> needs appear: <em>"how many trips next month?", "what's the top destination?"</em> The trips container uses a <strong>hierarchical partition key (tenant → user → trip ID)</strong>, which makes <strong>per-user</strong> queries fast — but a broad "how many trips to Paris across all tenants?" query is a <strong>cross-partition query</strong>, routed to <strong>every physical partition</strong> to count and aggregate. That's expensive.</p>
+<p><strong>Global secondary indexes (GSIs, now GA)</strong> solve this by creating a <strong>copy of the data partitioned on a different key</strong> (e.g. <strong>destination</strong>). Finding all Paris trips then hits <strong>one partition instead of all of them</strong>. GSIs <strong>automatically sync</strong> from the source container into a copy container better suited to the new query pattern, <strong>increase query efficiency</strong>, transform heavy cross-partition queries into single-partition lookups, and <strong>isolate heavy workloads</strong> into the secondary container so they don't impact the primary.</p>
+<p>You can also <strong>project only the properties you need</strong> into the GSI — in the demo, the heavy <code>days</code> array (per-day activity details) is filtered out, so the secondary schema matches how it's queried. GSIs can be added <strong>later in the app's lifecycle</strong> as requirements evolve — you don't need to predict the dashboard on day one.</p>
+<h3 id="closing-bringing-it-together">Closing: bringing it together</h3>
+<p>Justine's wrap-up takeaways: (1) give agentic apps <strong>durable memory that's scalable by design</strong>, and remember the <strong>different memory types</strong>; (2) <strong>ship faster with an AI-native dev experience</strong> (the Cosmos DB Agent Kit) to enforce best practices; (3) think about <strong>reliability and availability</strong> and <strong>use platform features to avoid brittle error handling in app code</strong>; (4) aim for <strong>mission-critical, ready-to-ship AI applications</strong>. Resources include the <strong>Cosmos DB travel multi-agent</strong> demo code (with a <strong>workshop</strong> to build it yourself) plus links for the day's announcements.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Azure Cosmos DB</strong> — the distributed database serving as the durable backbone for all agent state, memory, and search in the app.</li>
+<li><strong>Agent Memory Toolkit for Azure Cosmos DB</strong> — new offering; a background runtime hosting the memory layer with its own <code>memories</code> container; automates extraction, conflict resolution, summarization, and recall. <em>(Public preview.)</em></li>
+<li><strong>Cosmos DB Agent Kit</strong> — a repo of best-practice <em>skills</em> (one-line install) that a coding agent pulls in to get Cosmos DB instincts (partitioning, indexing, RU economics, modeling). <em>(GA.)</em></li>
+<li><strong>LangChain × Azure Cosmos DB integration</strong> — integration package with all Cosmos DB integrations for LangChain/LangGraph used to build the app; includes a vector store integration. <em>(GA.)</em></li>
+<li><strong>LangGraph Cosmos DB checkpointer / checkpoint store</strong> — used for <strong>state</strong> management (state checkpointing) in the multi-agent app.</li>
+<li><strong>Azure OpenAI</strong> — provides LLM reasoning + embedding generation; shared by the agent runtime and the toolkit pipeline.</li>
+<li><strong>Microsoft Foundry</strong> — the integration target for <strong>integrated embeddings</strong> (async embedding generation at write time).</li>
+<li><strong>Model Context Protocol (MCP) server</strong> — decoupling layer between agents and the database; exposes reusable tools (recall memories, discover places, transfer between agents).</li>
+<li><strong>Hierarchical partition keys</strong> — used on every container (e.g. tenant → user → trip ID) for multi-tenancy from day one.</li>
+<li><strong>Hybrid search</strong> — used for searching "places" in Cosmos DB.</li>
+<li><strong>Per-partition automatic failover</strong> — fails over at partition granularity for active-active single-writer setups. <em>(GA.)</em></li>
+<li><strong>Cross-container distributed transactions</strong> — atomic execution across partitions/containers. <em>(Public preview.)</em></li>
+<li><strong>Integrated embeddings</strong> — write raw text to Cosmos DB; embeddings generated asynchronously via Foundry; define source/target properties. </li>
+<li><strong>Global secondary indexes (GSIs)</strong> — auto-synced copy container partitioned on a different key, with property projection, for new query patterns. <em>(GA.)</em></li>
+<li><strong>Salience scoring</strong> — memory-retrieval ranking factoring importance, confidence, and recency (vs RAG similarity-only).</li>
+<li><strong>TTL (time-to-live) policies</strong> — enable time-aware, expiring memories (e.g. episodic default 90 days).</li>
+<li><strong>Coding agents named as Agent Kit consumers:</strong> GitHub Copilot, Claude Code, Gemini CLI ("and others").</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Agent Memory Toolkit for Azure Cosmos DB — Public Preview.</strong> Provides fact extraction, auto-summarization, and packaged instructions/prompts for conflict resolution, extracting the different memory types, and user/thread summarization.</li>
+<li><strong>Cosmos DB Agent Kit — Generally Available.</strong> One-line install; a repo of skills any skills-compatible coding agent can use; works in CI/PR reviews to give every change a "Cosmos DB expert opinion" at no extra cost.</li>
+<li><strong>LangChain × Azure Cosmos DB integration — Generally Available.</strong> Full Cosmos DB integration package for LangChain/LangGraph, including vector store and LangGraph checkpoint store.</li>
+<li><strong>Per-partition automatic failover — Generally Available.</strong> Zero downtime, zero data loss, zero touch; enables active-active with five-nines availability without multiple writers.</li>
+<li><strong>Cross-container distributed transactions — Public Preview.</strong> Atomic transactions across partitions and containers (previously limited to a single partition key).</li>
+<li><strong>Global secondary indexes — Generally Available.</strong> Auto-synced, differently-partitioned copy containers with property projection to optimize new/evolving query patterns.</li>
+<li><strong>Integrated embeddings (with Microsoft Foundry)</strong> — presented as a current capability to generate embeddings asynchronously at write time (preview/GA status not explicitly stated in the talk).</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Demo 1 — Existing user "Tony" (preloaded preferences).</strong> Signs in as Tony and chats <em>"Hi, I am planning a trip to Tokyo."</em> The API server logs show the request hitting the <strong>orchestrator</strong>, which infers intent and picks tools. Asking <em>"what are my hotel preferences"</em> returns personalized answers (prioritizes reliable Wi-Fi over price for business trips; enjoys rooftop bars and quiet evenings on work travel). In the Azure portal <code>memories</code> container, a query shows the stored <strong>facts</strong>: "Tony prefers luxury five-star hotels," "loves art museums and contemporary galleries." <strong>Proves:</strong> the toolkit extracts memories, stores preferences in Cosmos DB, and the agent leverages them back into the conversation.</li>
+<li><strong>Demo 2 — New user "Peter" (no memories) + conflict resolution.</strong> Confirms in the portal that Peter has nothing stored. Starts a session, <em>"I'm planning a trip to Paris"</em> → stored as a <strong>turn</strong>. Says <em>"I am vegan"</em> → portal shows it extracted as a <strong>fact</strong>. Then deliberately contradicts: <em>"I have started eating meat."</em> Filtering for <strong>facts</strong> shows a <strong>new fact</strong> ("started eating meat, changing from vegan") and the <strong>old "vegan" fact marked <code>superseded by</code> the new fact's ID</strong> — the audit trail in action. <strong>Proves:</strong> asynchronous extraction + conflict resolution with audit preservation.</li>
+<li><strong>Demo 3 — Memory-conditioned recommendations.</strong> Asks Peter's assistant to <strong>recommend restaurants</strong>; the orchestrator routes to the <strong>dining agent</strong>, and the results say <em>"based on your updated dietary preference"</em> — automatically picking up the <strong>resolved</strong> current fact (omnivore, not vegan). <strong>Proves:</strong> recall + filter injection respects conflict-resolved state.</li>
+<li><strong>Demo 4 — Auto-summarization at 5 turns.</strong> After enough turns (demo cadence = 5), asks <em>"create an itinerary for Paris for 3 days."</em> The portal shows a <strong>user summary</strong> was extracted ("planning a trip to Paris; changed dietary preference from vegan to omnivore") alongside a <strong>thread summary</strong>, and the <strong>itinerary agent</strong> generates the full itinerary. <strong>Proves:</strong> rolling summaries + multi-agent itinerary generation.</li>
+<li><strong>Demo 5 — Cosmos DB Agent Kit.</strong> One-line install adds best-practice skills. Prompts <em>"can you provide recommendations on best practices for my data model?"</em> and gets a <strong>report ranked by impact (highest ROI first)</strong> with critical and high-importance recommendations; the developer can <strong>push back interactively</strong> and ask why a recommendation was made. <strong>Proves:</strong> AI-native, interactive best-practice review usable in CI/PR.</li>
+<li><strong>Demo 6 — Global secondary index in the portal.</strong> Pulls up the <strong>trips</strong> container (id, user ID, trip; heavy <code>days</code> array). Defines a GSI <strong>"trips by destination,"</strong> <strong>projecting out</strong> the <code>days</code> array. Runs <em>"all trips to Paris, France"</em> on the <strong>primary</strong> container: 500 results, <strong>~30 RUs</strong>. Runs the <strong>same query against the GSI</strong>: same answer, <strong>~3 RUs</strong> — <strong>~90% savings</strong>. <strong>Proves:</strong> GSIs turn cross-partition scans into cheap single-partition lookups.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>Five nines (99.999%) availability</strong> — the app's reliability target.</li>
+<li><strong>~90% RU savings</strong> on the dashboard query via GSI: <strong>~30 RUs → ~3 RUs</strong> (savings vary by query and physical partition layout).</li>
+<li><strong>Episodic memory default TTL: 90 days.</strong> Summaries regenerate <strong>every 5 turns</strong> in the demo (tunable in production). Extraction runs <strong>every Nth turn</strong> asynchronously.</li>
+<li><strong>"Even after 100 messages, the agent doesn't lose the actual plot."</strong> — on rolling summaries.</li>
+<li><strong>"There's a gap between <em>it runs</em> and <em>it runs at scale without setting money on fire</em>."</strong> — Ayush, on the Agent Kit's reason for existing.</li>
+<li><strong>"In Cosmos DB, that gap is paved with decisions that you make on day one and pay for on day 90."</strong> — Ayush, on partition keys/indexing/document shape.</li>
+<li><strong>"Brownout vs blackout"</strong> — the framing for per-partition vs whole-region failover.</li>
+<li><strong>"Show me hotels in Tokyo silently becomes show me luxury hotels in Tokyo"</strong> — memory-conditioned search.</li>
+<li>Ayush was <strong>rate-limited repeatedly while testing, sometimes waiting 30–40 seconds</strong> for an LLM response — motivating integrated embeddings.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Clone the <strong>Cosmos DB travel multi-agent</strong> demo + workshop and build the app end-to-end; install the <strong>Cosmos DB Agent Kit</strong> in a repo and run it against an existing Cosmos service in CI/PR; spin up the <strong>Agent Memory Toolkit (preview)</strong> and watch facts/conflict-resolution/summaries in the <code>memories</code> container; test <strong>GSIs</strong> for a real cross-partition dashboard query and measure RU savings; try <strong>integrated embeddings</strong> with Microsoft Foundry to remove a synchronous OpenAI call.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: What are the production <strong>default cadences</strong> for extraction/summarization (vs the demo's every-5-turns)? How are <strong>multi-writer conflicts</strong> resolved by default (LWW vs custom) and how does that interact with the memory <code>superseded by</code> model? What's the <strong>pricing/RU overhead</strong> of the Agent Memory Toolkit background runtime and GSI sync? Is <strong>integrated embeddings</strong> GA or preview, and which Foundry embedding models are supported? How does <strong>per-partition automatic failover</strong> interact with <strong>distributed transactions</strong> mid-flight?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: Any multi-agent app needing durable, personalized memory; Azure reliability/DR design (RPO/RTO, five-nines); cost optimization on Cosmos DB (RU economics, GSIs); replacing hand-rolled RAG with agentic memory; lab work in <span class="wikilink wikilink--unresolved" title="labs.db">labs.db</span> / Azure deployments.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Azure Cosmos DB">Azure Cosmos DB</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Multi-agent AI applications">Multi-agent AI applications</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Agentic memory vs RAG">Agentic memory vs RAG</span></li>
+<li><span class="wikilink wikilink--unresolved" title="MCP (Model Context Protocol)">MCP (Model Context Protocol)</span></li>
+<li><span class="wikilink wikilink--unresolved" title="LangChain &amp; LangGraph">LangChain &amp; LangGraph</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Azure reliability &amp; availability (RPO RTO SLO)">Azure reliability &amp; availability (RPO RTO SLO)</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Foundry">Microsoft Foundry</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Build 2026">Microsoft Build 2026</span></li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="OD819.html"><span class="pager-dir">← Previous</span><span class="pager-code">OD819</span><span class="pager-title">Real-Time Intelligence: Building event-driven AI apps and agents</span></a>
+    <a class="pager pager-next" href="OD821.html"><span class="pager-dir">Next →</span><span class="pager-code">OD821</span><span class="pager-title">Building Azure DocumentDB on Open-Source Foundations</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

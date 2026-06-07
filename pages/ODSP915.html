@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ODSP915 — Resolve support cases with multi-agent workflows</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">ODSP915</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=ofGlquMeYKw" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Resolve support cases with multi-agent workflows</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Carlos (Red Hat), Sharon (Red Hat)</span>
+      <span class="meta-item">⏱️ 6m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="multi-agent">Multi Agent</span><span class="chip" data-tag="support">Support</span><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="mcp">MCP</span><span class="chip" data-tag="redhat">Redhat</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Carlos &amp; Sharon (both Red Hat)<br>
+<strong>Duration:</strong> ~6 min (a ~5-minute all-live lightning demo)<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=ofGlquMeYKw">YouTube</a></p>
+  </div>
+</div>
+
+<div class="callout callout-note">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">📝</span><span class="callout-title-text">Caption note</span></div>
+  <div class="callout-body">
+<p>This is a short, fast, all-live partner demo and the auto-captions garble a couple of product names. Best-effort corrections used below: the communication/agent-to-agent layer captioned <strong>"8way"</strong> is read as <strong>A2A (Agent2Agent)</strong>, and <strong>"ADK"</strong> is the <strong>Agent Development Kit</strong> used to build the agents. The catalog is referred to both as the <strong>Red Hat AI "secure MCP catalog"</strong> and the <strong>OpenShift AI MCP catalog</strong> — treated here as the same Red Hat catalog. Where a term is genuinely uncertain it is flagged as <em>caption-uncertain</em> rather than invented.</p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Carlos and Sharon from <strong>Red Hat</strong> give a fast, fully-live (~5 min) demo of an <strong>open-source multi-agent support-resolution system</strong> that diagnoses and resolves customer support cases <strong>across different partner ecosystems</strong>. The headline technical move: they deploy an <strong>Azure MCP server</strong> straight from the <strong>Red Hat OpenShift AI MCP catalog</strong> onto a <strong>Red Hat OpenShift</strong> cluster — <strong>no glue code, no custom integration</strong> — and then consume it as a regular workload inside a multi-agent app. The app is layered: a chat <strong>web front-end</strong> (their "quick start"), an <strong>orchestration &amp; security layer</strong> (authentication, authorization, audit), a <strong>routing agent</strong> that detects user intent and delegates to the right specialist, and specialist agents like an <strong>auto support agent</strong> that wraps the Azure MCP server. <strong>Identity-based access control</strong> governs which agents a user can reach, and <strong>OpenTelemetry</strong> captures a full <strong>audit trail</strong> of every request (accepted or denied). The demo proves the routing + MCP-tool execution end-to-end, then shows a user with <em>no</em> agent access being correctly denied — with both the success and denial visible in the audit log.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Goal:</strong> facilitate <strong>support-case resolution across different partners within the same ecosystem</strong> using a multi-agent AI workflow.</li>
+<li>The system is a <strong>simple-yet-powerful open-source multi-identity system</strong> purpose-built so <strong>identity-aware workflows</strong> can diagnose and resolve problems.</li>
+<li>Two key building blocks are leveraged: the <strong>Azure MCP server</strong> and the <strong>Red Hat AI secure MCP catalog</strong> (OpenShift AI MCP catalog).</li>
+<li><strong>MCP catalog = browse → pick → deploy.</strong> The OpenShift AI MCP catalog offers <strong>pre-built MCP servers</strong> you can deploy to your cluster; here the <strong>Azure MCP server</strong> is deployed onto a <strong>Red Hat OpenShift</strong> cluster.</li>
+<li><strong>No glue code, no custom integration</strong> — you only set the deployment name, project, and connection config; the catalog handles the <strong>container image, configuration, and authentication via managed identity</strong>, and you consume the MCP server as a normal workload.</li>
+<li><strong>Layered architecture:</strong> (1) user access layer (chat web app), (2) orchestration &amp; security layer (authn/authz/audit), (3) a <strong>routing agent</strong>, and (4) <strong>specialist support agents</strong>.</li>
+<li><strong>Routing agent</strong> detects the <strong>intent</strong> of each request and <strong>delegates</strong> execution to the right specialist agent (e.g. the <strong>auto support agent</strong>).</li>
+<li>The <strong>auto support agent wraps the Azure MCP server</strong>; tool calls are visible in the output — typically one MCP tool resolves the <strong>intent</strong> and a second performs the <strong>actual execution</strong> that returns the answer.</li>
+<li><strong>Identity-based access control:</strong> each user can reach only the agents their identity/department permits (demo user has <strong>3 of 4</strong> agents); a user with <strong>no department</strong> (Josh) is <strong>denied</strong> by the routing agent.</li>
+<li><strong>Full auditability via OpenTelemetry:</strong> every security event is stored, giving an <strong>audit trail / audit log</strong> showing user-to-group access and whether each request was <strong>accepted or denied</strong>.</li>
+<li>Agents were built with <strong>A2A</strong> (Agent2Agent, captioned "8way") as the communication layer and the <strong>ADK (Agent Development Kit)</strong> as the development framework.</li>
+<li><strong>Everything was live</strong> — the team explicitly framed the ~5-minute session as all real, no slideware.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="who-what-this-is">Who &amp; what this is</h3>
+<p><strong>Carlos and Sharon, both from Red Hat</strong>, present a lightning demo (ODSP = on-demand / partner-style short session). Their stated objective: show how to <strong>deploy an MCP server from the MCP catalog</strong> and then <strong>use it in a multi-agent application</strong> that <strong>diagnoses and resolves support cases across different partner ecosystems</strong> — "only 5 minutes, all live." The business problem they target is <strong>support resolution across different partners within the same ecosystem</strong>: when an issue spans multiple vendors/partners, you want agents that can route to the right expertise and act on it.</p>
+<h3 id="the-core-idea-an-open-source-multi-identity-multi-agent-system">The core idea: an open-source multi-identity multi-agent system</h3>
+<p>They built a <strong>simple yet powerful open-source multi-identity system</strong> designed so that <strong>identity workflows can diagnose and resolve problems</strong>. "Multi-identity" is the key framing — access and behaviour are driven by <strong>who the requesting user is</strong> (their identity and group/department membership), not just by what they ask. The two technologies they explicitly lean on:
+- <strong>Azure MCP server</strong> — the tool/capability surface the agents call into.
+- <strong>Red Hat AI secure MCP catalog</strong> (a.k.a. the <strong>OpenShift AI MCP catalog</strong>) — the catalog from which that MCP server is deployed.</p>
+<h3 id="the-layered-architecture">The layered architecture</h3>
+<p>The solution is organised into distinct layers:</p>
+<ol>
+<li><strong>User access layer</strong> — a <strong>web application</strong> ("a butterfly web application" in the captions; <em>caption-uncertain</em> descriptor) that gives users a <strong>chat interface</strong> to interact with routing and support agents.</li>
+<li><strong>Orchestration &amp; security layer</strong> — handles all <strong>authentication, authorization, and audit</strong>. This is the control plane that decides who is allowed to do what and records it.</li>
+<li><strong>Routing agent</strong> — responsible for <strong>routing requests from users to the specific agent</strong> that can help with their issue. It inspects the request, <strong>detects intent</strong>, and <strong>delegates</strong> accordingly.</li>
+<li><strong>Specialist support agents</strong> — the agents that actually troubleshoot, e.g. the <strong>auto support agent</strong>, which <strong>wraps the Azure MCP server</strong> and executes MCP tools to answer.</li>
+</ol>
+<p>For the plumbing between agents, they used <strong>A2A</strong> (Agent2Agent protocol — captioned "8way") as the <strong>communication layer</strong>, and built <strong>all the agents in the demo with the ADK (Agent Development Kit)</strong>.</p>
+<h3 id="step-1-deploy-the-azure-mcp-server-from-the-mcp-catalog">Step 1 — Deploy the Azure MCP server from the MCP catalog</h3>
+<p>The <strong>OpenShift AI MCP catalog</strong> gives you <strong>pre-built MCP servers</strong> that you can <strong>browse, pick, and deploy</strong> to your cluster. In this demo they deploy the <strong>Azure MCP server</strong> to their <strong>Red Hat OpenShift</strong> cluster. The deployment UX is deliberately minimal:
+- Choose the <strong>deployment name</strong> and the <strong>project</strong>.
+- Set up the <strong>configuration details</strong> needed to <strong>connect to your Azure tenant</strong>.
+- The catalog then <strong>handles the container image, the configuration, and all authentication through managed identity</strong>.</p>
+<p>The repeated emphasis: <strong>"we will not be writing any glue code… we won't be building any custom integration."</strong> You simply <strong>deploy from the catalog</strong> and then <strong>consume the MCP server as a regular workload</strong>. After filling in the details you click <strong>Deploy the Azure MCP server</strong>, wait for the <strong>operator</strong> to run the deployment, and it comes up <strong>ready to use</strong>. (This operator-driven, catalog-based deploy is the heart of the "no integration code" value proposition.)</p>
+<h3 id="step-2-use-it-routing-agent-auto-support-agent-mcp-tools">Step 2 — Use it: routing agent → auto support agent → MCP tools</h3>
+<p>With the MCP server live, they log into the <strong>quick start</strong> as a user who has access to the <strong>auto support agent</strong>. Observations:
+- This user can see <strong>three out of four agents</strong>, including the <strong>auto support agent</strong>, and can <strong>ask questions out of the box</strong>.
+- <strong>Example query 1:</strong> <em>"the well-architected framework for Azure."</em> The <strong>routing agent detects the intent</strong> of the request and <strong>delegates execution to the auto support agent</strong>, which <strong>wraps the Azure MCP server</strong>. The output shows the answer <strong>plus all the MCP tools that were executed</strong> — typically the <strong>first tool resolves the intent</strong> of the request and the <strong>second tool performs the actual execution</strong> that returns the correct answer.
+- <strong>Example query 2:</strong> <em>"best practices for developing Azure web applications."</em> Same flow — the routing agent detects intent, routes the request, and the <strong>specific MCP tools are executed</strong>. Here the <strong>output is a Markdown file</strong> containing the requested best practices. Again you can see the routing agent <strong>delegated to the auto support agent</strong>, the <strong>output</strong>, and then the <strong>MCP tools that were called</strong> (first = intent, second = actual output shown in chat).</p>
+<p>This makes the <strong>observability of tool calls</strong> explicit to the user: you don't just get an answer, you see <strong>which MCP tools ran and in what order</strong>.</p>
+<h3 id="step-3-audit-trail-via-opentelemetry">Step 3 — Audit trail via OpenTelemetry</h3>
+<p>Because the app <strong>stores all events using OpenTelemetry</strong>, there's a full <strong>audit log / audit trail</strong> of the application's <strong>security events</strong>. From it you can see, for example, <strong>which users have access to which specific groups</strong>, and <strong>whether each request was accepted or denied</strong>. This ties the multi-agent behaviour back to the <strong>orchestration &amp; security layer</strong> — every action is attributable and reviewable.</p>
+<h3 id="step-4-access-control-demonstrated-the-denial-case">Step 4 — Access control demonstrated (the denial case)</h3>
+<p>To prove the identity model works, they <strong>re-run the quick start as a different user, "Josh," who has no access to any of the agents</strong>:
+- Josh <strong>doesn't belong to any department</strong>, so <strong>none of the agents are able to answer his requests</strong>.
+- When Josh asks a question, the <strong>routing agent denies the request</strong>.
+- That <strong>denial event is also visible in the audit log / audit trail</strong>, just like the successful requests.</p>
+<p>The point: access is <strong>identity- and department-driven</strong>, the <strong>routing agent enforces it</strong>, and <strong>both grants and denials are auditable</strong>. They close with "and this is all — thank you."</p>
+<h3 id="why-this-matters">Why this matters</h3>
+<p>The demo packs three reusable ideas into ~5 minutes: (1) <strong>MCP servers as catalog-deployed workloads</strong> — turning an integration project into a pick-and-deploy operation with managed-identity auth and zero glue code; (2) <strong>multi-agent routing</strong> — a router that classifies intent and delegates to specialist agents that wrap MCP tools; and (3) <strong>identity-governed, fully-audited agent access</strong> — a multi-identity model where what an agent will do for you depends on who you are, with OpenTelemetry capturing every accepted/denied event. Together they sketch a pattern for <strong>cross-partner support resolution</strong> that is both <strong>secure</strong> and <strong>operationally simple</strong> on Red Hat OpenShift.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Azure MCP server</strong> — Microsoft's MCP server exposing Azure capabilities as MCP tools; deployed from the catalog and wrapped by the auto support agent.</li>
+<li><strong>Red Hat AI secure MCP catalog / OpenShift AI MCP catalog</strong> — Red Hat's catalog of <strong>pre-built MCP servers</strong> you can browse, pick, and deploy to an OpenShift cluster (handles image, config, and managed-identity auth).</li>
+<li><strong>Red Hat OpenShift</strong> — the Kubernetes platform/cluster the Azure MCP server is deployed onto; an <strong>operator</strong> runs the deployment.</li>
+<li><strong>Managed identity</strong> — used by the catalog deployment to authenticate the MCP server to the Azure tenant (no manual credential glue).</li>
+<li><strong>Multi-agent application (the "quick start")</strong> — the web app demoed; chat front-end over routing + specialist agents.</li>
+<li><strong>Routing agent</strong> — detects request intent and routes/delegates to the correct specialist agent.</li>
+<li><strong>Auto support agent</strong> — specialist agent that wraps the Azure MCP server and executes MCP tools to answer support questions.</li>
+<li><strong>Orchestration &amp; security layer</strong> — handles authentication, authorization, and audit for the whole system.</li>
+<li><strong>A2A (Agent2Agent)</strong> — the <strong>communication layer</strong> between agents (captioned "8way"; <em>best-effort correction</em>).</li>
+<li><strong>ADK (Agent Development Kit)</strong> — the framework used to <strong>build all the agents</strong> in the demo.</li>
+<li><strong>OpenTelemetry</strong> — used to store all events and produce the <strong>audit log / audit trail</strong> of security events.</li>
+<li><strong>Azure Well-Architected Framework</strong> — referenced as a sample query answered via the Azure MCP server.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p>None explicitly announced. This was a live demo/showcase of an existing open-source multi-agent pattern built on the Azure MCP server and the Red Hat OpenShift AI MCP catalog, not a product launch. (No previews, GA dates, or roadmap items were stated.)</p>
+<h2 id="demos">💡 Demos</h2>
+<p><strong>Single end-to-end live demo (~5 min, "all live"):</strong>
+1. <strong>Catalog deploy</strong> — from the <strong>OpenShift AI MCP catalog</strong>, pick the <strong>Azure MCP server</strong>, set deployment name + project + Azure-tenant connection config, click <strong>Deploy</strong>, wait for the <strong>operator</strong>; comes up ready — <strong>no glue code / no custom integration</strong>.
+2. <strong>Authorized user flow</strong> — log into the <strong>quick start</strong> as a user with access to the <strong>auto support agent</strong> (sees <strong>3 of 4 agents</strong>). Ask <em>"well-architected framework for Azure"</em> → <strong>routing agent detects intent → delegates to auto support agent (wraps Azure MCP server)</strong> → output plus the <strong>MCP tools executed</strong> (1st = intent, 2nd = execution). Ask <em>"best practices for developing Azure web applications"</em> → same routing flow → output is a <strong>Markdown file</strong> of best practices.
+3. <strong>Audit trail</strong> — open the <strong>OpenTelemetry-backed audit log</strong>: see <strong>user→group access</strong> and <strong>accepted/denied</strong> requests.
+4. <strong>Denied user flow</strong> — log in as <strong>"Josh"</strong> (no department, no agent access) → ask a question → <strong>routing agent denies</strong> the request → denial also appears in the <strong>audit log / audit trail</strong>. <em>Proves the identity-based access control end-to-end.</em></p>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>"Only 5 minutes, all live. Let's go."</strong> — the demo's framing; everything shown was real, not slideware (Build catalog lists ~6 min).</li>
+<li><strong>"We will not be writing any glue code… we won't be building any custom integration."</strong> — the core value proposition of catalog-based MCP deployment.</li>
+<li><strong>3 of 4 agents</strong> — number of agents the authorized demo user could access (vs <strong>0</strong> for Josh, who belongs to no department).</li>
+<li><strong>Two MCP tool calls per request</strong> — pattern observed: the <strong>first</strong> resolves the request's <strong>intent</strong>, the <strong>second</strong> performs the <strong>actual execution</strong> returning the answer.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Browse the <strong>OpenShift AI MCP catalog</strong> and deploy the <strong>Azure MCP server</strong> to a test OpenShift cluster end-to-end — confirm the <strong>no-glue-code / managed-identity</strong> claim and time how long the operator deploy takes.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Build a minimal <strong>routing-agent → specialist-agent</strong> pattern with <strong>ADK + A2A</strong> where the specialist wraps an MCP server, and wire <strong>OpenTelemetry</strong> to capture accepted/denied events.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: What exactly is the <strong>"multi-identity"</strong> model backing the routing agent's allow/deny — is it Entra ID groups, OpenShift RBAC, the app's own department mapping, or a combination? How are agent permissions mapped to user departments?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: Is the <strong>"butterfly" web app</strong> and this whole demo published as an open-source repo/quick start? (They called it "open source" and a "quick start" — find the link.)</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: Confirm the captioned <strong>"8way"</strong> is indeed <strong>A2A</strong>, and whether <strong>ADK</strong> here is Google's Agent Development Kit or a Red Hat/MS variant.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: Designing <strong>secure, auditable multi-agent support systems</strong> across partner ecosystems; MCP-server deployment strategy on OpenShift; identity-governed agent access patterns.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><a class="wikilink wikilink--resolved" href="BRKSP94.html">BRKSP94 - Orchestrate specialist agents with NVIDIA Nemotron on Foundry</a> — another partner multi-agent talk: orchestrating specialist agents + governing them via identity, with a Foundry managed toolbox of MCP tools.</li>
+<li><a class="wikilink wikilink--resolved" href="BRK242.html">BRK242 - Turn your agents into action Connect tools APIs documents</a> — connecting agents to tools/APIs/MCP, the same "agent wraps tools" pattern shown here.</li>
+<li><a class="wikilink wikilink--resolved" href="BRK246.html">BRK246 - Foundry IQ Fuel agents with enterprise knowledge</a> — grounding/feeding agents, complementary to routing + specialist support agents.</li>
+<li><a class="wikilink wikilink--resolved" href="BRK240.html">BRK240 - Build context-aware agents</a> — building agents that route on intent and act, the architecture this demo embodies.</li>
+<li><a class="wikilink wikilink--resolved" href="BRK251.html">BRK251 - Build secure and enterprise-ready agents with Agent 365</a> — the security/identity/audit angle (authn/authz/audit) that this demo's orchestration layer implements.</li>
+<li><a class="wikilink wikilink--resolved" href="BRK252.html">BRK252 - From observability to ROI for AI agents on any framework</a> — observability/audit-trail theme (here via OpenTelemetry) for agent workflows.</li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="ODSP914.html"><span class="pager-dir">← Previous</span><span class="pager-code">ODSP914</span><span class="pager-title">Run AI at scale with Ray + Kubernetes using Anyscale on Azure</span></a>
+    <a class="pager pager-next" href="ODSP916.html"><span class="pager-dir">Next →</span><span class="pager-code">ODSP916</span><span class="pager-title">Design systems for every user including people and LLMs</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

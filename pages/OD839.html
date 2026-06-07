@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OD839 — AI solutions built to power industrial innovation and sovereign control</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">OD839</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=8Y7IIw6jlSM" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">AI solutions built to power industrial innovation and sovereign control</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Inbal Segev (Principal Product Manager, Microsoft)</span>
+      <span class="meta-item">⏱️ 27m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="sovereign-ai">Sovereign Ai</span><span class="chip" data-tag="industrial">Industrial</span><span class="chip" data-tag="edge">Edge</span><span class="chip" data-tag="ai">AI</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Inbal Segev — Principal Product Manager, Microsoft (focused on AI that runs locally)<br>
+<strong>Duration:</strong> ~27 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=8Y7IIw6jlSM">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>This session introduces <strong>Foundry Local running on Azure Local</strong> — Microsoft's stack for bringing the full Foundry agentic AI capability (models, inferencing, RAG, tools, agents) into customer-owned, on-premises, and <strong>fully disconnected / air-gapped</strong> environments. The driver is <em>sovereign AI</em> — control over data, models, and operations, not merely data location — for customers facing geopolitical, regulatory, and resilience constraints (public safety command centres, energy/utilities, critical infrastructure) where AI must keep running even when the network goes down. The headline is a <strong>public preview</strong> spanning three pillars: (1) <strong>models</strong> — Foundry Local model catalog + inferencing now scaling from single-node to <strong>multi-node</strong> with two consumption modes (model-as-a-platform vs Microsoft-managed model-as-a-service for frontier/partner models); (2) <strong>knowledge</strong> — a refreshed <strong>local agentic RAG</strong> offering that can now take action; and (3) <strong>tools/agents</strong> — custom and out-of-the-box MCPs, solution templates for a local chat UI and a <strong>video agent</strong>, all running on Arc-enabled Kubernetes across Azure Local form factors. Everything runs locally with no cloud calls, secured with the same Entra ID / TLS governance customers already use.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li>We are in a <strong>once-in-a-generation platform shift from applications to agentic AI as the operating layer</strong>; cited analyst data: <strong>1.3 billion AI agents by 2028</strong> and <strong>82% of organizations adopting agents within three years</strong>, moving from pilots to core workforce.</li>
+<li>Customer requirements here are <strong>hard constraints, not design preferences</strong>: geopolitical risk, regulatory control, operating through outages, and adopting AI <em>without giving up sovereignty</em>. "AI strategy has to work when things break" — not just on a healthy cloud.</li>
+<li><strong>Sovereign AI = control, not just location.</strong> A <em>sovereign private cloud</em> keeps data, models, and operations within a defined regulatory/geographic boundary under full customer or national control, combining cloud capabilities with isolated, compliant infrastructure (Azure Local).</li>
+<li><strong>Azure Local is the foundation</strong> — an AI-optimized, purpose-built infrastructure platform (not just a server) that runs the full Foundry Local stack. It is <strong>GA</strong> for both connected and fully-disconnected sovereign use cases.</li>
+<li>Azure Local ships <strong>pre-validated, certified hardware spanning CPU, NPU, and GPU</strong> — from single-node inferencing/lightweight models to multi-node GPU clusters for high-performance generative AI — removing lengthy qualification cycles.</li>
+<li>Operations are <strong>Kubernetes-native via Arc-enabled Kubernetes</strong>; Foundry Local installs as an <strong>Arc extension</strong>. "If your team knows Kubernetes, they already know how to operate this" — no proprietary orchestration.</li>
+<li><strong>Connectivity spectrum is first-class:</strong> connected mode syncs model catalog + management policies from cloud via Azure Arc; <strong>air-gapped mode caches models locally and runs inference with zero cloud dependency.</strong></li>
+<li>Security/governance is the <strong>same layer extended to on-prem</strong>: identity via <strong>Microsoft Entra ID with JWT validation</strong>, inference endpoints secured with <strong>TLS + API key / token-based auth</strong>.</li>
+<li><strong>Today's preview announcement has three pillars</strong> — Models (single → multi-node catalog + inferencing), Knowledge (local agentic RAG that can now take action), and Tools (custom MCPs + out-of-the-box MCPs + agents/chat).</li>
+<li><strong>Two model consumption modes:</strong> <em>model-as-a-platform</em> (customer fully manages the stack, open-source/community models) and <em>model-as-a-service</em> (Microsoft-managed access to <strong>frontier/partner proprietary models</strong> like Mistral and OpenAI, gated by eligibility criteria for the most sensitive disconnected workloads).</li>
+<li><strong>Inference layer:</strong> ONNX Runtime for single-node (generative <em>and</em> predictive AI) + <strong>vLLM for multi-node high-performance serving</strong>, all exposed through one consistent <strong>OpenAI-compatible REST endpoint</strong>.</li>
+<li>Catalog breadth matters: <strong>71 models</strong> in the catalog spanning proprietary, open-weight, and specialized/domain-tuned — customers are <strong>not locked into a single model strategy</strong> and pick the right model for the use case, performance need, and regulatory constraint.</li>
+<li><strong>Agentic RAG runs fully locally</strong> with an iterative plan→search→merge loop that rewrites queries and re-retrieves until it hits high-confidence evidence or a configured effort limit; <strong>every response is traceable to the source document</strong>, no cloud calls.</li>
+<li><strong>Local data connectors:</strong> RAG can ground on <strong>SharePoint and Exchange Server via Microsoft 365 Local</strong> running on Azure Local (currently POC — register to try).</li>
+<li>A <strong>video agent</strong> solution template (using <strong>Video Indexer on Azure Local</strong>) enables live video analysis, e.g. analyzing CCTV camera content fully on-prem.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="context-the-agentic-platform-shift-and-why-it-forces-a-sovereignedge-story">Context — the agentic platform shift and why it forces a sovereign/edge story</h3>
+<p>The talk frames a <strong>once-in-a-generation shift from applications to agentic AI as the operating layer</strong> — agents become the way the next decade of software is built and run. Supporting analyst data on the slide: <strong>1.3 billion AI agents by 2028</strong> automating end-to-end ("A to N") business processes, and <strong>82% of organizations adopting agents within the next three years</strong>, moving from pilots to <em>core workforce</em>. The takeaway: organizations already operating with some AI agents now need to define how software runs going forward — "everything is about agents and agentic capabilities."</p>
+<p>Microsoft grounds the product in <strong>real customer scenarios that impose hard constraints</strong>, explicitly <em>not</em> optional design choices:
+- <strong>Geopolitical risk</strong>
+- <strong>Regulatory control</strong>
+- <strong>The need to operate through outages</strong>
+- <strong>Pressure to adopt AI without giving up sovereignty</strong></p>
+<p>The defining principle: a customer's <strong>AI strategy has to keep working when things break</strong> — not only when everything runs smoothly on cloud.</p>
+<p>Two anchor scenarios are called out:
+- <strong>Public safety</strong> — running a command center or responding to a crisis allows <strong>no tolerance for latency, dependency, or outages</strong>. AI must operate <strong>fully disconnected</strong> while still delivering real-time situational awareness and decision support. No external calls, no data sent to the cloud: <em>if the network goes down, the system cannot go down.</em>
+- <strong>Critical infrastructure (energy &amp; utilities)</strong> — distributed, often remote environments where <strong>connectivity is not guaranteed</strong>, yet they depend on AI for real-time monitoring, diagnostics, and incident response. If a substation or rail system loses connectivity, operations must not — the AI must keep running locally, safely, and in compliance.</p>
+<p>The reframing: <strong>AI is no longer just about performance or scale — it's about resilience, control, and the ability to operate under constraint.</strong> The organizations solving for this now will be the ones able to deploy AI <em>everywhere it matters</em>.</p>
+<h3 id="sovereign-ai-portfolio-control-not-just-location">Sovereign AI portfolio — control, not just location</h3>
+<p>Microsoft's sovereign cloud portfolio gives customers freedom to choose the right balance of <strong>control, capability, and autonomy</strong>. The key conceptual point repeated throughout: <strong>sovereign AI is about control, not location itself.</strong></p>
+<p>In the middle of the portfolio sits the <strong>sovereign private cloud</strong> — a cloud environment operated under <strong>full customer or national control</strong>, where <strong>data, models, and operations remain within a defined regulatory or geographic boundary</strong>. It combines cloud capabilities with isolated, compliant infrastructure (Azure Local) that can operate independently, ensuring <strong>continuity, control, and resilience even without external cloud connectivity.</strong></p>
+<h3 id="what-is-azure-local-and-why-foundry-runs-on-it">What is Azure Local, and why Foundry runs on it</h3>
+<p>Before diving into the AI offering, the speaker establishes the foundation. <strong>Azure Local is not new</strong> and is <strong>GA on both connected and fully-disconnected sovereign use cases.</strong> It is the foundation that makes sovereign and enterprise AI possible on-premises.</p>
+<p>Crucially, <strong>it's not just a server</strong> — it's a <strong>purpose-built, AI-optimized infrastructure platform designed to run the full Foundry Local stack.</strong> "Foundry Local" here means everything <em>from models to inferencing to agentic workflows</em>, entirely within the customer-owned environment.</p>
+<p><strong>Hardware layer:</strong>
+- Delivers <strong>AI-optimized hardware configurations spanning CPU, NPU, and GPU.</strong>
+- <strong>Validated and certified</strong> to run a set of Foundry workloads <strong>out of the box.</strong>
+- Covers the range from <strong>single-node inferencing / lightweight models</strong> to <strong>multi-node GPU clusters</strong> for high-performance generative AI.
+- Hardware is <strong>pre-validated</strong>, so customers deploy with confidence and <strong>without lengthy qualification cycles.</strong></p>
+<p><strong>Operations layer — Kubernetes-native:</strong>
+- Everything runs on <strong>Arc-enabled Kubernetes</strong>, meaning AI workloads are deployed, scaled, and managed with the <strong>same declarative, operator-based approach</strong> IT teams already use for containerized apps.
+- <strong>Foundry Local is installed as an Arc extension</strong> — no custom orchestration or proprietary tooling.
+- Stated plainly: <em>"If your team knows Kubernetes, they already know how to operate this."</em></p>
+<p><strong>Connectivity spectrum (a core differentiator):</strong>
+- <strong>Connected mode:</strong> syncs the <strong>model catalog and management policies</strong> from the cloud through <strong>Azure Arc.</strong>
+- <strong>Fully disconnected / air-gapped mode:</strong> the <strong>same infrastructure continues to operate autonomously</strong> — <strong>models are cached locally</strong> and <strong>inference runs without any cloud dependency.</strong> Operations teams <strong>retain full control.</strong></p>
+<p><strong>Security &amp; governance (the same layer, extended on-prem):</strong>
+- Identity handled through <strong>Microsoft Entra ID with JWT validation.</strong>
+- Inference endpoints secured with <strong>TLS and API key / token-based authentication.</strong>
+- This is the <strong>same identity and governance layer customers use across their cloud estate</strong>, simply extended to on-premises AI <strong>without compromises.</strong></p>
+<p>Summary: Azure Local is the <strong>AI-ready platform</strong> that brings Foundry capabilities from cloud to the <strong>enterprise edge</strong> — pre-validated hardware + Kubernetes-native ops + the same security model.</p>
+<h3 id="the-foundry-family-situating-todays-announcement">The Foundry family — situating today's announcement</h3>
+<p>Microsoft positions three points on the Foundry spectrum:
+1. <strong>Microsoft Foundry</strong> — the out-of-the-box offering to <strong>build agents on the public cloud</strong> (already known/available).
+2. <strong>On-device inferencing SDK</strong> — an SDK <strong>optimized for Windows, macOS, and Android</strong> for on-device inference.
+3. <strong>(NEW — public preview) Foundry Local on Azure Local</strong> — Foundry Local running on the on-prem infrastructure above, for <strong>both connected and disconnected</strong> scenarios, <strong>single-node and multi-node</strong>, across the different <strong>form factors of Azure Local.</strong> This is what the session announces.</p>
+<h3 id="the-three-pillars-of-the-foundry-local-announcement">The three pillars of the Foundry Local announcement</h3>
+<p>When Microsoft says "Foundry Local," today's preview delivers <strong>three capabilities</strong>:</p>
+<ol>
+<li><strong>Models</strong> — In <strong>February this year</strong>, Microsoft already announced the Foundry Local <strong>model catalog on single-node deployment</strong> (good for customers whose needs are met by <strong>ONNX inferencing</strong> on a single node). Now, customers who need to <strong>scale across multi-node</strong> can use the Foundry Local <strong>model catalog <em>and</em> inferencing</strong> at multi-node scale.</li>
+<li><strong>Knowledge</strong> — A <strong>refreshed local RAG offering</strong> that helps you manage organizational knowledge locally (demoed later).</li>
+<li><strong>Tools</strong> — Connect a <strong>custom MCP</strong> to your local sources, mixing the <strong>right model + RAG + custom MCPs + other local tools.</strong> The combination runs on an <strong>Arc-enabled Kubernetes</strong> environment across Azure Local form factors, <strong>single-node to multi-node.</strong></li>
+</ol>
+<h3 id="models-in-depth-discover-deploy-and-bring-your-own">Models in depth — discover, deploy, and bring-your-own</h3>
+<p>The model experience (left → right) covers:
+- <strong>Discover &amp; deploy</strong> from a <strong>curated catalog</strong> of models tuned for these scenarios.
+- <strong>Bring your own model (BYOM):</strong> if you have a container with models chosen from <strong>Hugging Face</strong> (the example given is a predictive/generative model — caption rendered "Yellow 10," likely a <strong>YOLO</strong>-style vision model), you can <strong>package it and merge it with your own OCI registry.</strong>
+- <strong>Serving options:</strong> Microsoft provides serving via either <strong>vLLM</strong> or <strong>ONNX Runtime.</strong></p>
+<p>On the <strong>agent/tool side</strong>, you can connect to local data via the MCPs mentioned, get a <strong>reference application</strong> to build a local chat experience, and <strong>build agents that run locally</strong> and connect with the entire platform offering.</p>
+<h3 id="two-model-consumption-modes-model-as-a-platform-vs-model-as-a-service">Two model consumption modes — model-as-a-platform vs model-as-a-service</h3>
+<p>The model offering ships in <strong>two distinct modes</strong>:</p>
+<p><strong>1. Model-as-a-platform (customer-managed):</strong>
+- The <strong>entire stack is managed by the customer.</strong>
+- Brings the <strong>complete Foundry Local community / open-source models</strong>, runnable across Azure Local form factors from <strong>single-node to multi-node.</strong>
+- <strong>Pre-built inferencing:</strong> <strong>ONNX Runtime for single-node</strong>, <strong>vLLM for multi-node.</strong>
+- Works for <strong>both connected and fully disconnected</strong> scenarios.</p>
+<p><strong>2. Model-as-a-service (Microsoft-managed):</strong>
+- The approach for customers to <strong>access frontier models.</strong>
+- Microsoft is <strong>working with partners</strong> to bring their <strong>proprietary IP models</strong> — e.g. <strong>Mistral, OpenAI, and others</strong> — to customers with the <strong>most sensitive workloads</strong> who <strong>cannot access the cloud.</strong>
+- <strong>Gated:</strong> there are <strong>specific eligibility criteria</strong>; <em>not available to everyone.</em> Microsoft is still partnering with some of these vendors.
+- Targeted at customers with <strong>geopolitical / sovereign-driven model restrictions</strong> — e.g. requirements for <strong>EU-only LLMs</strong>, geopolitical tension, regulatory pressure, concerns about <strong>foreign jurisdiction / external access</strong>, and a preference for <strong>long-term strategic autonomy, fully disconnected.</strong></p>
+<p>Both modes are <strong>valid</strong>; there's a <strong>link/form</strong> to request access and support from the product groups for either model-as-a-platform or model-as-a-service.</p>
+<h3 id="how-the-stack-layers-together-models">How the stack layers together (models)</h3>
+<p>From bottom to top:
+- <strong>Infra:</strong> Azure Local
+- <strong>Orchestration:</strong> Kubernetes clusters
+- <strong>Inference model:</strong> <strong>ONNX</strong> (single-node) or <strong>vLLM</strong> (multi-node — announced today)
+- <strong>Models:</strong> community models on top — a <strong>partial list of 71 models</strong> is shown in the catalog</p>
+<p>The customer chooses whether to manage models <strong>through the platform itself</strong> or via <strong>model-as-a-service</strong> (which also unlocks the <strong>frontier models</strong> meeting eligibility criteria). From the Azure Local UI, <strong>IT can choose to deploy Foundry Local</strong> and make it available to developers.</p>
+<h3 id="inference-layer-one-consistent-runtime-openai-compatible">Inference layer — one consistent runtime, OpenAI-compatible</h3>
+<p>The preview's inference support is explicitly:
+- <strong>Generative AI via ONNX Runtime</strong> for single-node deployment, <strong>plus</strong>
+- <strong>vLLM</strong> for multi-node high-performance serving, <strong>plus</strong>
+- <strong>Predictive AI workloads via ONNX Runtime.</strong></p>
+<p>The unifying value: <strong>all models — Foundry catalog, partner-provided, or customer BYOM — run through one consistent runtime exposing OpenAI-compatible REST endpoints.</strong></p>
+<h3 id="model-breadth-flexibility-without-compromise">Model breadth = flexibility without compromise</h3>
+<p>A key enabling point: customers are <strong>not locked into a single model strategy.</strong> They can choose across <strong>proprietary, open-weight, and specialized models</strong> depending on use case, performance need, and regulatory constraint. That means <strong>frontier models for reasoning</strong> <em>or</em> <strong>smaller efficient models for edge/disconnected</strong> environments, plus <strong>domain-tuned models for specific workloads</strong> — <strong>all within the same platform.</strong> Result: <em>the right model in the right place under full customer control, without compromise.</em></p>
+<h3 id="agents-tools-with-foundry-local-building-the-application">Agents &amp; tools with Foundry Local — building the application</h3>
+<p>The second part enables developers to <strong>build their own AI application</strong> on the deployed models, via <strong>solution templates</strong> (code samples) available in <strong>Microsoft Foundry solution templates.</strong> Two offerings:
+- <strong>Chat UI</strong> — a standard end-to-end chat experience, connectable to an <strong>agent</strong> the developer creates; that agent uses the <strong>deployed model on the cluster.</strong>
+- <strong>Video agent</strong> — another use case where, e.g., <strong>CCTV camera content can be analyzed</strong> through <strong>Video Indexer running on Azure Local.</strong></p>
+<p>On the <strong>knowledge side</strong>, the extension enables <strong>agentic RAG</strong> — manage local knowledge with a <strong>local chat UI</strong> wired to <strong>local RAG logic</strong> that, <strong>for the first time, can take action</strong> (called out as one of today's preview announcements). For tools, you can <strong>build your own custom MCP</strong> or use an <strong>out-of-the-box MCP from the catalog.</strong> Microsoft will <strong>expand the MCP catalog based on customer requests</strong> for the local sources they need to connect.</p>
+<h3 id="agentic-rag-how-the-local-knowledge-pipeline-works">Agentic RAG — how the local knowledge pipeline works</h3>
+<p>The knowledge pipeline operates as follows:
+1. A user asks a question.
+2. The agent <strong>plans the query</strong> — decides what to search for.
+3. It <strong>selects which knowledge sources</strong> to hit.
+4. It <strong>merges results into a grounded answer.</strong></p>
+<p>The <strong>key property is that it's iterative:</strong> if the agent inspects the results and decides it doesn't have enough, it <strong>loops back — rewrites the queries, expands the scope, and retrieves again.</strong> That iterative loop is what makes it <strong>agentic RAG.</strong> It keeps going <strong>until it has high-confidence evidence or hits the configured effort limit.</strong></p>
+<p>Critical guarantees:
+- <strong>All of this runs locally — no cloud calls.</strong>
+- <strong>Every response is traceable back to the source document.</strong></p>
+<p><strong>Source types (two):</strong> <strong>indexed</strong> or <strong>remote.</strong> An explicit call-out is made for <strong>SharePoint and Exchange Server</strong>, both part of <strong>Microsoft 365 Local</strong> that runs on Azure Local. Microsoft is <strong>partnering and testing a POC</strong> specifically for reading this local data — interested customers are invited to <strong>register and try the POC.</strong></p>
+<h3 id="putting-it-together-the-local-chat-agent-demo-flow">Putting it together — the local chat + agent demo flow</h3>
+<p>In the middle sits the <strong>local chat experience.</strong> The developer <strong>builds a local agent</strong> that works with the <strong>deployed model</strong>, the <strong>Azure RAG (agentic RAG)</strong>, and the <strong>tools.</strong> In the example, the agent runs on <strong>Mistral</strong>; a question is asked and the agent (connected to that implementation) returns an answer <strong>with its sources shown.</strong> <strong>SharePoint and Exchange are toggled on</strong> because the template ships with <strong>pre-configured connectivity to local data.</strong> Every response <strong>shows where the information was fetched from.</strong> The model is selectable via a <strong>drop-down menu</strong> (as in other local chat experiences) — and the speaker notes you <strong>don't necessarily need a strong model</strong> for that particular scenario.</p>
+<h3 id="video-analysis-the-video-agent-template">Video analysis — the video agent template</h3>
+<p>The final offering is <strong>video analysis.</strong> From the <strong>Foundry solution templates</strong>, customers can — <strong>for the first time</strong> — download the <strong>code sample for video analysis</strong> and try it themselves, analogous to the local chat experience. The <strong>video agent</strong> serves multiple scenarios, <strong>mainly live video analysis.</strong></p>
+<h3 id="getting-started">Getting started</h3>
+<ul>
+<li>There's a <strong>registration link</strong> to join the <strong>preview</strong> covering everything shown; customers can choose to try <strong>only the model offering</strong>, or <strong>expand to RAG + local chat experience.</strong> Available for customers running <strong>Kubernetes on Azure Local.</strong></li>
+<li>A <strong>blog post</strong> explains both the technicalities and code samples.</li>
+<li><strong>Documentation</strong> is available covering the different models offered and which scenarios to use each in.</li>
+<li>Microsoft is <strong>actively seeking customer/developer feedback</strong> on the newly announced preview.</li>
+</ul>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Foundry Local (on Azure Local)</strong> — the full Foundry stack (models, inferencing, agentic workflows) running on-prem in customer-owned, connected or disconnected environments. <em>Announced in public preview.</em></li>
+<li><strong>Azure Local</strong> — purpose-built, AI-optimized on-prem infrastructure platform (CPU/NPU/GPU); foundation for sovereign/enterprise AI. <strong>GA</strong> for connected and disconnected use cases.</li>
+<li><strong>Microsoft Foundry</strong> — the public-cloud offering for building agents (the cloud counterpart).</li>
+<li><strong>Foundry on-device inferencing SDK</strong> — SDK optimized for <strong>Windows, macOS, and Android</strong> for on-device inference.</li>
+<li><strong>Azure Arc / Arc-enabled Kubernetes</strong> — declarative, operator-based ops layer; Foundry Local installs as an <strong>Arc extension</strong>; syncs catalog/policies in connected mode.</li>
+<li><strong>ONNX Runtime</strong> — inference runtime for single-node deployments; supports generative <em>and</em> predictive AI.</li>
+<li><strong>vLLM</strong> — high-performance inference engine for multi-node serving (announced for multi-node today).</li>
+<li><strong>Microsoft Entra ID</strong> — identity with <strong>JWT validation</strong> securing the platform.</li>
+<li><strong>Model-as-a-platform</strong> — customer-managed mode with community/open-source models.</li>
+<li><strong>Model-as-a-service</strong> — Microsoft-managed mode for frontier/partner proprietary models (eligibility-gated).</li>
+<li><strong>Hugging Face</strong> — source for bring-your-own models packaged into the customer's OCI registry.</li>
+<li><strong>OCI registry</strong> — where customers store/merge their own packaged model containers.</li>
+<li><strong>MCP (Model Context Protocol) — custom + out-of-the-box</strong> — connects agents/RAG to local tools and data sources; catalog to expand by customer demand.</li>
+<li><strong>Agentic RAG (local)</strong> — iterative plan→retrieve→merge knowledge pipeline that runs locally, cites sources, and can now take action.</li>
+<li><strong>Microsoft Foundry solution templates</strong> — code samples for a <strong>chat UI</strong> and a <strong>video agent</strong>.</li>
+<li><strong>Video Indexer (on Azure Local)</strong> — powers the video agent for live/CCTV video analysis on-prem.</li>
+<li><strong>Microsoft 365 Local</strong> — brings <strong>SharePoint</strong> and <strong>Exchange Server</strong> on-prem as local RAG data sources (POC).</li>
+<li><strong>OpenAI-compatible REST endpoints</strong> — the consistent API surface for all served models.</li>
+<li><strong>Partner/frontier models</strong> — <strong>Mistral</strong>, <strong>OpenAI</strong>, and others offered via model-as-a-service (e.g. GPT-OSS-20B and Mistral 3B used in demo).</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Foundry Local on Azure Local — public preview</strong>, supporting <strong>both connected and fully-disconnected</strong> scenarios and <strong>single-node + multi-node</strong> across Azure Local form factors.</li>
+<li><strong>Models pillar:</strong> Foundry Local <strong>model catalog + inferencing now scale to multi-node</strong> (building on the <strong>single-node catalog announced February this year</strong>). Catalog <strong>expanded</strong> to include more community and proprietary models, validated to run on Azure Local connected/disconnected.</li>
+<li><strong>Two model consumption modes:</strong> <strong>model-as-a-platform</strong> (customer-managed, open-source/community) and <strong>model-as-a-service</strong> (Microsoft-managed access to frontier/partner models — eligibility-gated, for the most sensitive disconnected workloads).</li>
+<li><strong>Knowledge pillar:</strong> refreshed <strong>local agentic RAG</strong> offering — and <strong>for the first time, local RAG can take action</strong> (explicitly called out as a preview announcement today).</li>
+<li><strong>Tools/agents pillar:</strong> support for <strong>custom MCPs</strong> and <strong>out-of-the-box MCPs</strong> from a catalog; <strong>solution templates</strong> for a <strong>local chat UI</strong> and a <strong>video agent</strong>, all running on Arc-enabled Kubernetes.</li>
+<li><strong>Video analysis code sample</strong> available <strong>for the first time</strong> in Foundry solution templates (video agent built on <strong>Video Indexer on Azure Local</strong>).</li>
+<li><strong>Microsoft 365 Local (SharePoint + Exchange Server) RAG connectors</strong> — currently a <strong>POC</strong> open for registration.</li>
+<li><strong>Inference support stated for preview:</strong> generative AI via ONNX Runtime (single-node) + vLLM (multi-node) + predictive AI via ONNX Runtime, all behind OpenAI-compatible REST endpoints.</li>
+<li><em>Status note:</em> <strong>Azure Local itself is GA</strong> (connected + disconnected); the <strong>Foundry Local model/RAG/tools offering on top is in public preview</strong>, with model-as-a-service partner availability still being finalized and eligibility-restricted.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>IT deployment of the Foundry Local extension (Azure portal):</strong> From <strong>Settings → Extensions</strong>, click <strong>+</strong>, choose the new <strong>"Foundry Local on Azure Local"</strong> option, fill in configuration parameters, then <strong>review &amp; create</strong>. Point proven: standing up Foundry Local on Azure Local is a simple, IT-driven extension install — no bespoke setup.</li>
+<li><strong>Model deployment via PowerShell / CLI:</strong> Showed that everything is available via <strong>SDK, CLI, or API</strong> (not just UI). Steps: <strong>fetch an access token</strong>, run a command that <strong>lists all available models</strong>, then <strong>deploy a selected model</strong> with a <code>POST</code> request — naming it (e.g. <strong>"GPT-OSS-VLLM"</strong>), specifying the model in the body (<strong>GPT open-source 20B</strong>), and choosing the inferencing engine. Response confirmed <strong>"being deployed."</strong> Repeated for a second model by switching the body to <strong>Mistral 3B</strong>, deploying both selected models via command line. Point proven: developers can script real multi-model deployments to the cluster.</li>
+<li><strong>Local chat + agentic RAG (Mistral):</strong> A local agent wired to the deployed <strong>Mistral</strong> model, <strong>Azure agentic RAG</strong>, and tools. A question is asked; the agent returns an answer with <strong>SharePoint and Exchange toggled on</strong> (pre-configured local-data connectivity) and <strong>shows the source</strong> of each response. Model is switchable via a <strong>drop-down</strong>. Point proven: grounded, source-cited local chat over on-prem M365 data with no cloud calls.</li>
+<li><strong>Video agent template:</strong> Downloadable code sample for <strong>live video analysis</strong> (e.g. CCTV) via <strong>Video Indexer on Azure Local</strong> — demonstrated as a second solution-template use case alongside chat.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>1.3 billion AI agents by 2028</strong> automating end-to-end business processes (analyst data on slide).</li>
+<li><strong>82% of organizations</strong> adopting agents within the next <strong>three years</strong>, moving from pilots to core workforce.</li>
+<li><strong>71 models</strong> shown in the Foundry Local catalog (a partial list).</li>
+<li>Demo models: <strong>GPT open-source 20B (GPT-OSS-20B)</strong> and <strong>Mistral 3B</strong>.</li>
+<li>Single-node Foundry Local catalog originally announced <strong>February this year</strong>.</li>
+<li><em>"Sovereign AI is about control, not just about the location itself."</em></li>
+<li><em>"AI strategy has to work when actually things break"</em> — not just when everything runs smoothly on cloud.</li>
+<li><em>"If the network goes down, the system cannot go down."</em> (public-safety command center framing)</li>
+<li><em>"If your team knows Kubernetes, they already know how to operate this one."</em></li>
+<li><em>"Every response is traceable back to the source document. All of these run locally. No cloud calls."</em> (on agentic RAG)</li>
+<li>Platform-shift framing: <em>"once in a generation platform shift from applications to agentic AI as the operating layer."</em></li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Register for the <strong>Foundry Local on Azure Local preview</strong> (model offering first, then expand to RAG + local chat).</li>
+<li>Stand up an <strong>Arc-enabled Kubernetes</strong> Azure Local node and install <strong>Foundry Local as an Arc extension</strong>; deploy a model via the <strong>PowerShell/CLI</strong> flow (token → list → <code>POST</code> deploy) using <strong>GPT-OSS-20B</strong> and <strong>Mistral 3B</strong>.</li>
+<li>Test the <strong>agentic RAG</strong> loop against local docs and verify <strong>source traceability</strong> + the <strong>configured effort limit</strong> behaviour.</li>
+<li>Try the <strong>SharePoint + Exchange (Microsoft 365 Local)</strong> RAG POC — register for it.</li>
+<li>Pull the <strong>video agent</strong> solution-template code sample and run <strong>live video analysis</strong> via <strong>Video Indexer on Azure Local</strong>.</li>
+<li>Experiment with <strong>BYOM</strong>: package a Hugging Face model into an <strong>OCI registry</strong> and serve via <strong>vLLM</strong> / <strong>ONNX Runtime</strong>.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What are the exact <strong>eligibility criteria</strong> for <strong>model-as-a-service</strong> frontier/partner models (Mistral, OpenAI)?</li>
+<li>Which <strong>MCPs</strong> ship <strong>out-of-the-box</strong> in the catalog today, and how is the catalog roadmap prioritized?</li>
+<li>What are the <strong>hardware SKUs / minimums</strong> (CPU/NPU/GPU) for single-node vs multi-node Foundry workloads on Azure Local?</li>
+<li>For <strong>air-gapped</strong> updates, how are model catalog + security patches delivered without cloud sync?</li>
+<li>What's the <strong>GA timeline</strong> for the Foundry Local model/RAG/tools preview, and for the M365 Local RAG POC?</li>
+<li>What "can now take action" means concretely for <strong>agentic RAG</strong> — which action/tool types are supported?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Sovereign / regulated workloads (gov, defense, public safety, EU-data-residency).</li>
+<li>Edge &amp; <strong>disconnected/air-gapped</strong> industrial scenarios (energy, utilities, rail, substations).</li>
+<li>Teams standardizing on <strong>Azure Arc + Kubernetes</strong> wanting on-prem agentic AI without proprietary tooling.</li>
+<li>Anyone evaluating <strong>on-prem RAG over SharePoint/Exchange</strong> with full data sovereignty.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="OD837.html"><span class="pager-dir">← Previous</span><span class="pager-code">OD837</span><span class="pager-title">Build and deploy AI at the edge for real-world impact</span></a>
+    <a class="pager pager-next" href="OD840.html"><span class="pager-dir">Next →</span><span class="pager-code">OD840</span><span class="pager-title">Enable agents for enterprises using Agent 365 SDK</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

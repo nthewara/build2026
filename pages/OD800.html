@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OD800 — Using autonomous SRE to move from alerts to action</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">OD800</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=sf3y8TRcBDI" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Using autonomous SRE to move from alerts to action</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Vom Nagrani, Deepti Jalupati</span>
+      <span class="meta-item">⏱️ 44m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="sre">Sre</span><span class="chip" data-tag="observability">Observability</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="devops">DevOps</span><span class="chip" data-tag="azure">Azure</span><span class="chip" data-tag="incident-management">Incident Management</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Vom Nagrani (Product Manager, Azure SRE Agent team) &amp; Deepti Jalupati (Product Manager, Azure SRE Agent team)<br>
+<strong>Duration:</strong> ~44 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=sf3y8TRcBDI">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>This session explores what happens when AI agents don't just <em>observe</em> incidents but actually <em>act</em> on them, using <strong>Azure SRE Agent</strong> — an AI-powered agent for incident management and resource optimization in production environments. The presenters frame the AI-agent era as a shift not in <em>what</em> developers are responsible for, but in the <strong>scale, speed, and how much of that responsibility can now be offloaded, orchestrated, and automated</strong>. Through two live demos they show the agent (1) preventing bad code from reaching production by automatically canary-testing pull requests, and (2) autonomously diagnosing, root-causing, and remediating a production incident end-to-end in minutes. The agent is fully customizable (your runbooks, connectors, skills, sub-agents), secretless by design (managed identity + on-behalf-of elevation), and governed with human-in-the-loop review or fully autonomous run modes. The closing pitch: it's an always-on SRE teammate that never sleeps, built natively on Azure, extensible to your environment, and integrated with the DevOps/observability tools you already use.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Azure SRE Agent</strong> is an AI-powered agent for <strong>incident management and resource optimization</strong> in production, positioned as an "always-on SRE teammate" that learns your environment and acts the way you configure it.</li>
+<li>Three core value props: <strong>(1)</strong> automates operational tasks to keep apps running and protect revenue, <strong>(2)</strong> accelerates root-cause analysis (RCA) to improve reliability/availability, <strong>(3)</strong> is <strong>fully customizable</strong> to your operational standards.</li>
+<li>The agent attacks two big problem spaces: <strong>preventing issues / reducing operational toil at scale</strong> (fewer incidents, less repetitive work) and <strong>reducing downtime / speeding recovery</strong> (faster resolution, fewer handoffs and context switches).</li>
+<li><strong>You don't need the Azure portal</strong> — the entire lifecycle (create, configure, manage, interact with the agent) can be driven from developer tools like the <strong>terminal and GitHub Copilot CLI</strong>, because the SRE Agent endpoint is exposed as an <strong>MCP server</strong>.</li>
+<li>Agents are created from <strong>recipes</strong> hosted in Microsoft's SRE Agent repo — pre-packaged bundles of connectors, tools, and skills so you don't configure from scratch. Config lives in a folder of simple <strong>YAML + markdown</strong> files (connectors, skills, custom agents, knowledge, invocation triggers).</li>
+<li>The agent can be invoked three ways at config time: an <strong>HTTP trigger</strong> (e.g. wired to a GitHub Actions workflow on each PR), an <strong>incident platform</strong> (ServiceNow / PagerDuty / Azure Monitor alerts), or a <strong>scheduled task</strong> (cron).</li>
+<li><strong>Demo 1 (outer-loop / PR gating):</strong> on each new PR a GitHub Action fires the agent via HTTP trigger; the agent deploys the change to staging, runs a <strong>5-minute synthetic/canary test</strong>, detects that staging mock responses differ from production behavior, flags the PR <strong>high-risk</strong>, and comments on it automatically.</li>
+<li><strong>Demo 2 (reactive incident response):</strong> a ServiceNow incident (simulated by rotating a backend DB password without updating the app) triggers the agent, which consults its <strong>knowledge base + memory of past incidents</strong>, correlates logs and Azure activity logs, identifies a <strong>"credential desync" recurring pattern</strong>, confirms root cause, opens a GitHub issue, and <strong>autonomously remediates</strong> then verifies the new revision is healthy.</li>
+<li>Three reliability pillars: <strong>multi-path transparent RCA</strong> (evaluates multiple hypotheses against telemetry), <strong>automated mitigation</strong> (safe, reversible actions like restarts/scale/rollback with guardrails + human-in-the-loop), and <strong>enhanced incident response</strong> (head start for on-call with synthesized cause + next steps).</li>
+<li><strong>Extensibility is the headline differentiator:</strong> the agent adapts to <em>your</em> org — custom logic, your data sources, proprietary troubleshooting steps, domain checks, and remediation workflows — and deeply integrates with <strong>GitHub Copilot</strong>, logging actions as GitHub issues for traceability and a detect→diagnose→fix→improve feedback loop.</li>
+<li><strong>Trust &amp; control are built into every layer:</strong> three RBAC roles (reader / standard user / administrator), per-agent <strong>user-assigned managed identity</strong> (no secrets/API keys), <strong>on-behalf-of (OBO)</strong> flow for temporary elevation, <strong>review vs autonomous</strong> run modes, command-validation hooks, and a <strong>full KQL-queryable audit trail</strong> in Application Insights.</li>
+<li><strong>Secretless, sandboxed architecture:</strong> credentials never enter the reasoning context; an isolated <strong>identity sidecar</strong> issues short-lived per-call tokens; each agent run gets its own <strong>microVM sandbox</strong> (Azure dedicated compute) so no cross-agent data leaks; all egress goes through a validating proxy (BYO VNet supported).</li>
+<li>Three usage modes across the operational lifecycle: <strong>interactive</strong> (chat/co-pilot in the portal), <strong>reactive</strong> (alert-driven — the primary way most customers use it), and <strong>proactive</strong> (scheduled autonomous health/compliance/security/optimization scans).</li>
+<li>Built-in observability of the agent itself: <strong>session insights</strong>, an <strong>incident metrics dashboard</strong> (mitigation rates, hours saved), <strong>agent consumption</strong> (Azure AI units/day), and inbuilt <strong>evals</strong> (e.g. an "intent met" quality score on a 1–5 scale, auto-calculated per completed thread).</li>
+<li><strong>Customer proof points:</strong> AstraZeneca +40% developer velocity (GitHub Copilot), Ford up to +70% modernization efficiency (GitHub Copilot app modernization), and a lab/customer cut SRE daily alerts from <strong>30–40/day down to under 10/day</strong> using Azure SRE Agent. Gartner: <strong>90% of enterprise software engineers</strong> will use some form of AI coding/ops assistance by <strong>2028</strong>.</li>
+<li><strong>Get started in 3 steps</strong> — <em>teach it</em> (upload runbooks/docs, connect repos, share team knowledge), <em>connect it</em> (Azure Monitor, App Insights, PagerDuty, ServiceNow, Datadog, anything via MCP), and <em>let it work</em> (round-the-clock investigation, scheduled compliance scans, auto-filed issues, proposed fixes) at <strong>sre.azure.com</strong>.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-from-observing-incidents-to-acting-on-them">Framing: from observing incidents to acting on them</h3>
+<p>The session opens with a provocative question: <em>what happens when AI agents don't just observe incidents but actually act on them?</em> The thesis is <strong>autonomous SRE</strong> — moving teams from <strong>noisy alerts to automated, intelligent action</strong>. The presenters (Vom Nagrani and Deepti Jalupati, both PMs on the Azure SRE Agent team) set the macro context: generative AI is transforming how we work, and AI agents are a major driver of adoption — especially in software development, where <strong>Gartner estimates 90% of enterprise software engineers will use some form of AI coding or ops assistance by 2028</strong>.</p>
+<p>The key insight on the developer role: the fundamentals haven't changed (writing code, fixing bugs, designing features, moving the product forward), but the ground <em>is</em> shifting. Developers now:
+- Don't just build apps — they <strong>migrate and modernize entire systems</strong>, increasingly <em>with agents</em> doing part of the work.
+- Own far more of the lifecycle — <strong>incidents, security, releases, documentation</strong> — often running continuously, with agents working alongside them and sometimes ahead of them.</p>
+<p>So the real change in the AI-agent era <strong>isn't what you're responsible for — it's the scale, the speed, and how much of that responsibility you can now offload, orchestrate, and automate</strong> with agents.</p>
+<h3 id="what-is-azure-sre-agent">What is Azure SRE Agent?</h3>
+<p><strong>Azure SRE Agent is an AI-powered agent for incident management and resource optimization in production environments.</strong> Three core value propositions:
+1. <strong>Automates operational tasks</strong> to keep applications running and protect revenue.
+2. <strong>Accelerates root-cause analysis</strong> to improve reliability and availability.
+3. <strong>Fully customizable</strong> — you manage and configure the agent to meet your unique operational needs and the standards your enterprise/company follows.</p>
+<p>Mental model: <strong>an always-on SRE teammate that learns how your environment works and acts according to how you want it to.</strong></p>
+<h3 id="the-problem-it-solves">The problem it solves</h3>
+<p>Developers and SRE teams are buried in <strong>repetitive operational toil</strong> across both the <strong>inner loop and outer loop</strong> of software development. They spend time:
+- Detecting issues <em>before</em> they roll out to production.
+- Verifying that Azure best practices are followed.
+- Doing this across <strong>hundreds or thousands of resources</strong> spanning multiple stacks.</p>
+<p>This work is <strong>repetitive, well-defined, error-prone, and slow when done manually</strong> — exactly the profile that suits automation. Azure SRE Agent is designed to take this burden off teams so they can <strong>focus on building, not firefighting</strong>.</p>
+<h3 id="two-scenarios-covered">Two scenarios covered</h3>
+<ol>
+<li><strong>Preventing issues &amp; reducing operational toil at scale</strong> — the agent automates and customizes workflows → outcome: fewer incidents, less repetitive work.</li>
+<li><strong>Reducing downtime &amp; speeding up recovery</strong> — the agent accelerates RCA and triggers mitigation → outcome: faster resolution with fewer handoffs between teams and less churn across windows/tools.</li>
+</ol>
+<p>Each scenario is presented as capabilities + a live demo.</p>
+<h3 id="scenario-1-preventing-production-regressions-the-outer-loop">Scenario 1 — Preventing production regressions (the "outer loop")</h3>
+<p><strong>The developer pain (Deepti):</strong> Shipping many deployments week over week, you want to ensure nothing breaks in production, but today it's manual — get other developers to review the code, test in staging to check for regressions, and rely on however much test coverage you happen to have. Things slip through to production. The goal is that <strong>nothing slips into production</strong>.</p>
+<p><strong>How the agent helps:</strong>
+- Connect the agent to <strong>code repositories</strong> (GitHub or Azure DevOps).
+- Set it up with an <strong>event/webhook trigger</strong> so it can run <strong>asynchronously</strong> — developers push PRs, and the agent acts on them to verify the code is good.
+- In the demo, the agent is connected to all telemetry data sources: <strong>Dynatrace, Log Analytics workspace</strong>, and <strong>Azure activity logs</strong>, and scoped to the <strong>resource groups</strong> to monitor (the team has a <strong>production</strong> RG and a <strong>staging</strong> RG).
+- The developer <strong>never leaves the CLI/IDE</strong> — the whole workflow runs without opening the Azure portal.</p>
+<h3 id="demo-1-walkthrough-pr-canary-gating-from-the-cli">Demo 1 walkthrough — PR canary gating from the CLI</h3>
+<p><strong>Creating the agent from a recipe:</strong>
+- Instead of the portal, the agent is created/configured/operated entirely from <strong>developer tools</strong> — the <strong>terminal</strong> and <strong>GitHub Copilot CLI</strong>.
+- Use a <strong>recipe</strong> from Microsoft's SRE Agent repo: a recipe ships a ready-made set of <strong>connectors, tools, and skills</strong> out of the box, so you don't build from scratch.
+- A <strong>script</strong> first generates the agent <strong>configuration</strong>, then you <strong>deploy</strong> it. The chosen recipe connects to <strong>GitHub + Dynatrace</strong> and is customized to understand the app architecture (e.g. <strong>App Service + PostgreSQL</strong>). The presenter supplies just the few connector-specific values; the rest comes from the recipe. This produces a <code>contoso-demo-5</code> folder containing the entire agent configuration.</p>
+<p><strong>Anatomy of the agent configuration folder (shown in VS Code while deployment runs):</strong>
+- <strong>Hosting:</strong> when you create an SRE Agent in an Azure subscription you give it a <strong>resource group</strong> to host the agent; you can change name / RG / subscription / <strong>region</strong> (three regions supported at the time).
+- <strong>Target scope:</strong> optionally set <strong>target resource groups/subscriptions</strong> to monitor (here: production + staging).
+- <strong>Connectors:</strong> recipe ships <strong>Dynatrace + Log Analytics workspace</strong>; you can add your own connectors and their config details.
+- <strong>Skills &amp; custom agents:</strong> configure the agent with <strong>skills or custom agents</strong>; you can bring skills authored in other tools because the format is a <strong>markdown file for instructions</strong> plus a <strong>simple YAML file</strong> for the prompt/spec.
+- <strong>Invocation:</strong> choose how to invoke — <strong>HTTP trigger</strong>, an <strong>incident platform</strong>, or a <strong>scheduled task</strong>. Here an <strong>HTTP trigger</strong> is wired to a <strong>GitHub Actions workflow</strong>, so the SRE Agent is invoked on every new PR to run <strong>canary testing</strong> and judge whether the change is safe for production.
+- <strong>Knowledge:</strong> teach the agent about your environment/systems (a knowledge folder); anything that should go into the agent's <strong>core memory</strong> (extracted from an existing agent or seeded) goes under <strong>system-synthesized knowledge</strong> — all simple <strong>markdown files</strong>.</p>
+<p><strong>Post-deploy:</strong>
+- Deployment succeeds, then runs a <strong>post-hook configuration</strong> (notably to connect GitHub), returning an <strong>OAuth URL</strong> the user visits to authorize.
+- To keep one consistent interface, the presenter uses <strong>Copilot CLI</strong> to connect to and manage the agent: the <strong>SRE Agent endpoint is accessed as an MCP server</strong> (available for a while now). They edit the local MCP JSON config to point at the <strong>new agent's URL</strong> from the deployment, confirm it's connected, and then interact via Copilot CLI.</p>
+<p><strong>Verifying &amp; teaching the agent via Copilot CLI:</strong>
+- Ask the agent what it's connected to → it returns the <strong>production + staging resource groups</strong> and connected <strong>Log Analytics workspaces</strong>.
+- Confirm <strong>GitHub</strong> is connected and which repo.
+- Define the desired behavior: on a new PR, take the change, <strong>deploy it to staging, run synthetic traffic, and determine whether the change risks production</strong> so risky changes get prevented/reviewed carefully.
+- Use Copilot CLI to <strong>create a skill</strong> (it uses the SRE MCP server to do so), then create a <strong>sub-agent</strong> connected to that skill. Now there's a <strong>skill + custom agent + GitHub Actions workflow wired to the HTTP trigger</strong> — all set up.</p>
+<p><strong>Triggering it with a real code change:</strong>
+- Switch to the coding workspace, change a <strong>URL</strong>, create a <strong>new branch</strong>, and open a <strong>new PR</strong>.
+- The PR creation fires the GitHub Action → invokes the agent via the <strong>HTTP trigger</strong> → the agent fetches PR details, deploys the image to <strong>staging</strong>, and sends traffic to judge whether it's a good deployment.
+- While the fresh run proceeds, an <strong>earlier run from that morning</strong> is shown: a similar case where the <strong>database URL was switched</strong>. The agent deployed to staging, identified exactly which files changed, ran a <strong>5-minute synthetic/canary test</strong>, and found that <strong>staging mock responses differed from production</strong> (the backend database would return different results). It correctly judged this <strong>should not go to production</strong>, <strong>flagged it high-risk</strong>, and <strong>added a comment on the PR</strong>.
+- Payoff: a fast-moving team gets automatic low-risk/high-risk verdicts on PRs, keeping production safe — the agent watches PRs at the velocity teams ship today.</p>
+<h3 id="reliability-performance-the-three-pillars-vom">Reliability &amp; performance — the three pillars (Vom)</h3>
+<ol>
+<li><strong>Root-cause analysis (RCA):</strong> instead of engineers manually correlating logs/metrics/alerts across multiple dashboards, the agent performs a <strong>multi-path, transparent RCA automatically</strong> — it <strong>evaluates multiple hypotheses, tests them against telemetry</strong>, and produces a <strong>clear, explainable result + diagnostic summary</strong>. This cuts time-to-insight <strong>from hours to minutes</strong>.</li>
+<li><strong>Automated mitigation:</strong> resolves common issues proactively using <strong>your guardrails and human-in-the-loop workflows</strong>, executing <strong>safe, reversible actions</strong> (restarts, scale adjustments, rollbacks) to eliminate repetitive toil while <strong>keeping humans in control</strong>.</li>
+<li><strong>Enhanced incident response:</strong> the moment an alert fires the agent activates — <strong>ingests signals from Azure Monitor or third-party tools</strong>, performs initial analysis, and gives the on-call engineer a <strong>head start</strong>: a synthesized explanation, a <strong>probable cause</strong>, and <strong>actionable next steps</strong>. Net effect: drastically reduced downtime and improved operational consistency.</li>
+</ol>
+<h3 id="extensibility-the-key-differentiator">Extensibility — the key differentiator</h3>
+<p>Every org has unique standards, processes, and compliance requirements, and <strong>Azure SRE Agent adapts to yours, not the other way around</strong>:
+- Integrate <strong>custom logic, your own data sources, your own custom knowledge</strong> into the agent's reasoning.
+- Encode <strong>proprietary troubleshooting steps, domain-specific checks, and specific remediation workflows</strong> so the agent behaves consistently with internal standards.
+- <strong>Intelligent multi-source insights:</strong> correlates across <strong>logs, metrics, configurations, and historical patterns</strong> to detect anomalies hard to spot manually.
+- <strong>Deep GitHub Copilot integration:</strong> any action the agent performs (diagnosing, mitigating, recommending) can be <strong>logged automatically as GitHub issues</strong> for traceability and follow-up, creating a continuous <strong>detect → diagnose → fix → improve</strong> feedback loop.
+- Bottom line: extensibility makes the agent your <strong>operational expert, shaped by your environment and aligned to how your teams already work</strong>.</p>
+<h3 id="scenario-2-autonomous-incident-response-the-inner-loop-production-reality">Scenario 2 — Autonomous incident response (the "inner loop" / production reality)</h3>
+<p>Even with PR gating, <strong>issues still happen in production</strong>, and IT operations need a <strong>very small mean-time-to-resolution (MTTR)</strong> to keep apps healthy and quickly available. Today's workflow is painful: jump between tools (e.g. Dynatrace), check Azure, look across multiple log sources (especially with a multi-source Azure telemetry strategy), piece it all together, find where things went wrong, then mitigate.</p>
+<p>The same agent that developers use for the outer loop can be reused by <strong>DevOps / IT operations</strong>, hooked up to <strong>ServiceNow, PagerDuty, or Azure Monitor alerts</strong> (whatever incident platform you use). You define a <strong>response plan</strong> for which incident types the agent should handle and feed it <strong>knowledge sources / runbooks</strong> for contextual understanding. When an incident pops up, <strong>the agent starts handling it right away with no human intervention</strong> and — depending on configuration — performs diagnosis + RCA, then either <strong>creates a dev ticket</strong> or goes further to <strong>fix the code and open a PR</strong>.</p>
+<h3 id="demo-2-walkthrough-servicenow-incident-diagnosis-autonomous-remediation">Demo 2 walkthrough — ServiceNow incident → diagnosis → autonomous remediation</h3>
+<p><strong>Setup:</strong> A second recipe is deployed that connects to <strong>ServiceNow</strong> (could equally be PagerDuty/Azure Monitor). It ships the <strong>skills</strong> to handle app-related-error incidents plus a <strong>custom agent</strong> that performs the investigation. Workflow: ServiceNow incident → custom agent → connected tools + skills.</p>
+<p><strong>Simulating the failure:</strong> The presenter mimics a real-world case — an <strong>IT person/team rotates a backend database password</strong> (because it expired) but the <strong>applications aren't updated</strong> with the new credentials, breaking the app. A <strong>ServiceNow incident is sent</strong> to simulate it.</p>
+<p><strong>The agent's autonomous investigation:</strong>
+- <strong>Incident #3</strong> appears; the agent <strong>picks it up immediately</strong> and starts investigating. Because the password was rotated, the <strong>order service</strong> is failing with errors.
+- <strong>Starts with the knowledge base:</strong> since app-architecture knowledge was uploaded, the agent first reads the knowledge base — <em>like a team member who builds context before jumping into investigation</em>.
+- <strong>Uses memory of past incidents:</strong> it recalls prior investigations to spot patterns — noticing that <strong>someone has been rotating passwords frequently</strong>.
+- <strong>Correlates telemetry sequentially</strong> (via Dynatrace + Azure tools): first checks <strong>logs</strong> to identify which <strong>app and revision</strong> is failing, then examines <strong>activity logs</strong> and finds that <strong>~3 minutes ago the password was rotated</strong> (true). It matches this against the symptoms the user is experiencing.
+- <strong>Root cause confirmed:</strong> <em>"the database password is rotated, but the container app hasn't been updated"</em> — that's the cause of the failure. It cross-references <strong>past issues</strong> and recognizes this as a <strong>recurring "credential desync" pattern</strong>.
+- <strong>Tracking:</strong> creates a <strong>new GitHub issue</strong> to track the incident and the remediation.
+- The narrator emphasizes the agent behaves like an <strong>expert engineer</strong>: tapping past knowledge/incidents to find patterns and <strong>using data to validate/support its hypotheses</strong> throughout — all <strong>within minutes</strong> vs. the <strong>multiple hours and tool/context-switching</strong> this would normally take. You don't have to watch it finish; the incident is picked up automatically and results can be routed to <strong>GitHub issues, Outlook, or Teams</strong>.</p>
+<p><strong>Autonomous remediation:</strong>
+- The agent was <strong>configured to perform actions/mitigations autonomously</strong>, so — recognizing the recurring pattern — it <strong>proceeds with remediation</strong>: update the credentials and ensure they <strong>flow down to the apps</strong>.
+- It then <strong>verifies the new revision is healthy</strong> and creates the <strong>GitHub issue</strong> with the full analysis.
+- Important caveat: <em>in theory you can configure the agent to only provide analysis and take </em><em>no automated actions</em><em> on your behalf</em> — autonomy is opt-in.
+- <strong>Final summary:</strong> the agent reconstructs the <strong>sequence of events</strong> leading to the password change as root cause, applies the fix, confirms health, and leaves a <strong>trackable GitHub issue</strong> with the full incident summary — turning manual incident handling into automated diagnosis + mitigation + documentation.</p>
+<h3 id="trust-control-built-into-every-layer">Trust &amp; control — built into every layer</h3>
+<p><strong>Permissions / RBAC:</strong>
+- Three built-in roles — <strong>reader, standard user, administrator</strong> — each scoped to what that persona needs.
+- At creation you choose <strong>reader vs. privileged</strong> permission level for the agent's <strong>managed identity</strong>.
+- <strong>Every agent gets its own user-assigned managed identity</strong> → <strong>no secrets or API keys to manage</strong>.
+- When the agent needs to act beyond its standing permission, it uses the <strong>on-behalf-of (OBO) flow</strong> to <strong>temporarily elevate using your credentials</strong> — <strong>no standing write access required</strong>.</p>
+<p><strong>Governance / run modes:</strong>
+- <strong>Review mode:</strong> the agent <strong>proposes</strong> an action and <strong>waits for an administrator to approve</strong>.
+- <strong>Autonomous mode:</strong> the agent <strong>executes directly</strong> — ideal for non-production or trusted recurring tasks.
+- <strong>Command-validation hooks</strong> inspect and validate <strong>every command before execution</strong> (and every tool call before it's returned).
+- <strong>Every single action</strong> (tool calls, model invocations, approval decisions) is <strong>logged to Application Insights as a full audit trail</strong> queryable with <strong>KQL</strong>.</p>
+<p><strong>Security (secretless by design):</strong>
+- <strong>Credentials never enter the reasoning context.</strong>
+- An <strong>isolated identity sidecar</strong> issues <strong>short-lived, per-call tokens</strong> — that's where the permissions live.
+- <strong>Each agent run gets its own dedicated sandbox</strong> powered by <strong>microVM</strong> (an Azure dedicated compute environment), as do your <strong>Python tools</strong> → <strong>no cross-agent data is leaked</strong>.
+- Connectors to external systems (<strong>GitHub, Datadog, ServiceNow</strong>) all use <strong>OAuth-based authentication flows</strong>.
+- <strong>All outbound network access goes through an egress proxy</strong> that validates requests and controls what each agent can reach — or you can <strong>bring your own VNet</strong>.</p>
+<p><strong>Monitoring / observability of the agent itself:</strong>
+- <strong>Session insights:</strong> a structured summary of any conversation — what was found, what was recommended, etc.
+- <strong>Incident metrics dashboard:</strong> shows <strong>mitigation rates, hours saved</strong>, and per-response-plan plus summary-level views.
+- <strong>Agent consumption:</strong> tracks how many <strong>Azure AI units</strong> the agent used on a day-to-day basis.
+- <strong>Inbuilt evals:</strong> e.g. an <strong>"intent met" quality score</strong>, automatically calculated on <strong>every completed thread</strong> and <strong>rated on a 1–5 scale</strong>, so you can measure effectiveness over time.
+- <strong>Bottom line:</strong> you get the <strong>full autonomous power</strong> of Azure SRE Agent <strong>with full enterprise controls</strong>.</p>
+<h3 id="three-ways-to-use-the-agent-across-the-operational-lifecycle">Three ways to use the agent (across the operational lifecycle)</h3>
+<ol>
+<li><strong>Interactive mode (co-pilot):</strong> chat directly with the agent <strong>in the Azure portal</strong> — ask questions, run diagnostics, perform natural-language operations, even <strong>upload task files / HAR files</strong> for traces or analysis. Assumes a <strong>human is driving</strong> the flow. Caveat: <em>if this is the only way you use the agent, you're probably missing ~90% of the value</em> an agent can unlock beyond a co-pilot.</li>
+<li><strong>Reactive mode (alert-driven) — the primary way most customers use it:</strong> the agent responds <strong>automatically to Azure Monitor alerts</strong> and integrates with <strong>PagerDuty and ServiceNow</strong>. It performs <strong>automated triage, initial RCA</strong>, and can <strong>trigger mitigation with your approval</strong>, tracking incident metrics/insights over time (as shown in Demo 2).</li>
+<li><strong>Proactive mode (scheduled / autonomous):</strong> the agent operates autonomously on a schedule via <strong>cron expressions</strong> — running <strong>continuous health and compliance checks</strong>, <strong>detecting anomalies</strong> across resources, <strong>assessing security posture</strong>, and providing <strong>resource-optimization recommendations</strong>.</li>
+</ol>
+<p>Together these three modes give <strong>full coverage from ad-hoc troubleshooting to always-on autonomous operation</strong> running in the background.</p>
+<h3 id="why-choose-azure-sre-agent">Why choose Azure SRE Agent</h3>
+<ul>
+<li><strong>Built natively on Azure</strong> → understands your infrastructure deeply: your <strong>resource graph, Monitor signals, and entity model</strong>.</li>
+<li><strong>Extensible</strong> → adapts to your environment instead of forcing you into a rigid workflow.</li>
+<li><strong>Secure by design</strong> → managed identity, <strong>RBAC</strong>, full audit trails.</li>
+<li><strong>Integrates with the tools you already use</strong> → <strong>GitHub, PagerDuty, ServiceNow, Datadog, Dynatrace</strong>, and more.</li>
+<li><strong>Scales to any team size</strong> → from a single SRE, to a team of five ops managers, to an org supporting <strong>thousands of services</strong> — it meets you where you are.</li>
+</ul>
+<h3 id="getting-started-a-simple-three-step-process">Getting started — a simple three-step process</h3>
+<ol>
+<li><strong>Teach it:</strong> upload your <strong>runbooks and documentation</strong>, connect your <strong>code repositories</strong>, and share <strong>team knowledge</strong> — the agent learns from every session, just like a human SRE would.</li>
+<li><strong>It connects:</strong> the agent integrates with <strong>Azure Monitor, Application Insights, PagerDuty, ServiceNow, Datadog</strong> — basically anything connectable via <strong>MCP</strong>.</li>
+<li><strong>It works for you:</strong> investigates incidents <strong>around the clock</strong>, runs <strong>scheduled compliance scans</strong>, <strong>triggers issues automatically</strong>, and <strong>proposes fixes</strong>. You give it context; it connects to your tools and starts working — <em>a teammate that never sleeps</em>.</li>
+</ol>
+<p>Get started at <strong>sre.azure.com</strong> — the Azure SRE Agent portal, with documentation, blog posts, walkthroughs, <strong>DIY hands-on labs</strong>, and links to support / file feedback.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Azure SRE Agent</strong> — the AI-powered agent for incident management and resource optimization in production; the entire focus of the session.</li>
+<li><strong>GitHub Copilot</strong> — AI coding assistant cited in customer velocity/modernization stats and deeply integrated with the SRE Agent (actions logged as GitHub issues).</li>
+<li><strong>GitHub Copilot CLI</strong> — terminal-based Copilot used to create, configure, and interact with the SRE Agent without the portal.</li>
+<li><strong>GitHub Copilot app modernization</strong> — capability credited with Ford's up to 70% modernization efficiency boost.</li>
+<li><strong>GitHub</strong> — code repository + GitHub <strong>Actions</strong> workflows (HTTP trigger) and <strong>GitHub Issues</strong> for incident tracking/remediation.</li>
+<li><strong>Azure DevOps</strong> — alternative supported code repository for connecting the agent.</li>
+<li><strong>MCP (Model Context Protocol) server</strong> — the SRE Agent endpoint is exposed as an MCP server so tools like Copilot CLI can connect; "anything connectable via MCP" can integrate.</li>
+<li><strong>Recipes (Microsoft SRE Agent repo)</strong> — pre-packaged bundles of connectors, tools, and skills to bootstrap an agent without configuring from scratch.</li>
+<li><strong>Skills &amp; custom agents / sub-agents</strong> — natural-language instructions (markdown) + YAML prompt/spec that teach the agent to perform specific workflows.</li>
+<li><strong>Dynatrace</strong> — observability/telemetry connector used in both demos.</li>
+<li><strong>Datadog</strong> — supported third-party observability connector (OAuth-based).</li>
+<li><strong>Azure Monitor</strong> — first-party alerting/telemetry source for reactive incident response.</li>
+<li><strong>Log Analytics workspace</strong> — Azure telemetry source connected to the agent.</li>
+<li><strong>Azure activity logs</strong> — used by the agent to detect the password-rotation event in Demo 2.</li>
+<li><strong>Application Insights</strong> — stores the full KQL-queryable audit trail; also a connectable telemetry source.</li>
+<li><strong>ServiceNow</strong> — incident platform connected in Demo 2 (triggers the agent on incidents).</li>
+<li><strong>PagerDuty</strong> — supported incident platform alternative.</li>
+<li><strong>Azure App Service</strong> — example app-hosting service the recipe was customized to understand.</li>
+<li><strong>Azure PostgreSQL</strong> — example backend database in the demo app architecture.</li>
+<li><strong>Azure Container Apps</strong> — the "container app" whose revision needed updating after the password rotation (and was verified healthy post-remediation).</li>
+<li><strong>User-assigned managed identity</strong> — per-agent identity; eliminates secrets/API keys.</li>
+<li><strong>On-behalf-of (OBO) flow</strong> — temporary credential elevation for actions beyond standing permissions.</li>
+<li><strong>microVM sandbox</strong> — Azure dedicated compute environment isolating each agent run and its Python tools.</li>
+<li><strong>Egress proxy / Bring-your-own VNet</strong> — validates and controls all outbound agent network access.</li>
+<li><strong>Command-validation hooks</strong> — inspect/validate every command and tool call before execution/return.</li>
+<li><strong>KQL (Kusto Query Language)</strong> — used to query the agent's audit trail in Application Insights.</li>
+<li><strong>Cron expressions</strong> — schedule proactive autonomous runs (health/compliance/security scans).</li>
+<li><strong>Microsoft Teams / Outlook</strong> — optional channels to receive the agent's incident outputs.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p>None explicitly announced. The session is a capabilities walkthrough and live demonstration of Azure SRE Agent (incident-prevention PR gating, autonomous incident response, governance/security model, and the three usage modes). No release/preview/GA milestones or roadmap dates were called out. The presenters note MCP-server access to the SRE Agent endpoint "has been available for a while now," and direct viewers to <strong>sre.azure.com</strong> to get started.</p>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Demo 1 — PR canary gating from the CLI (outer loop):</strong> Created an SRE Agent entirely from the terminal/Copilot CLI using a recipe (GitHub + Dynatrace, customized for App Service + PostgreSQL), wired it to a GitHub Actions HTTP trigger, authored a skill + sub-agent, then opened a real PR (changing a URL). The agent auto-deployed the change to <strong>staging</strong>, ran a <strong>5-minute synthetic/canary test</strong>, detected that <strong>staging mock responses differed from production</strong>, <strong>flagged the PR high-risk</strong>, and <strong>commented on it</strong> — proving the agent can automatically prevent risky code from reaching production at team velocity, without leaving the developer's tools.</li>
+<li><strong>Demo 2 — Autonomous ServiceNow incident response (inner loop):</strong> Reused the same agent connected to <strong>ServiceNow</strong>, then simulated a real failure by <strong>rotating a backend DB password without updating the app</strong> (breaking the order service). On <strong>incident #3</strong>, the agent autonomously read its <strong>knowledge base</strong>, leveraged <strong>memory of past incidents</strong>, correlated <strong>logs + Azure activity logs</strong>, found the <strong>~3-minute-old password rotation</strong>, confirmed the <strong>"credential desync" root cause</strong>, opened a <strong>GitHub issue</strong>, <strong>autonomously remediated</strong> (updated credentials, flowed them to the app), and <strong>verified the new revision was healthy</strong> — all in minutes, proving end-to-end autonomous diagnosis → RCA → mitigation → documentation. (Noted: autonomy is configurable; the agent can be set to analysis-only with no automated actions.)</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>Gartner:</strong> ~<strong>90% of enterprise software engineers</strong> will use some form of AI coding or ops assistance by <strong>2028</strong>.</li>
+<li><strong>AstraZeneca:</strong> <strong>+40% developer velocity</strong> when adopting GitHub Copilot for writing code.</li>
+<li><strong>Ford:</strong> up to <strong>+70% modernization efficiency</strong> boost using GitHub Copilot app modernization.</li>
+<li><strong>Alert reduction:</strong> a customer/lab cut SRE daily alerts from <strong>30–40/day to under 10/day</strong> using Azure SRE Agent.</li>
+<li><strong>Time-to-insight:</strong> RCA reduced <strong>from hours to minutes</strong> (multi-path transparent RCA).</li>
+<li><strong>Evals:</strong> "intent met" quality score auto-calculated per completed thread, rated on a <strong>1–5 scale</strong>.</li>
+<li><strong>Regions:</strong> <strong>3 Azure regions</strong> supported for hosting the agent (at time of recording).</li>
+<li>
+<blockquote>
+<p><em>"What happens when AI agents don't just observe incidents but actually act on them?"</em> — the framing question for the whole session.</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p><em>"The real change in the AI-agent era isn't what you're responsible for. It's the scale, it's the speed, and it's how much of that responsibility you can now offload, orchestrate, and automate with agents."</em></p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p><em>"If this is the only thing you use the agent for [interactive co-pilot mode], you're probably missing 90% of the value."</em></p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p><em>"Imagine a teammate that never sleeps."</em></p>
+</blockquote>
+</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Deploy an Azure SRE Agent from a <strong>recipe</strong> in the Microsoft SRE Agent repo entirely via <strong>Copilot CLI</strong> (MCP), targeting a test prod + staging RG pair.</li>
+<li>Wire an <strong>HTTP trigger</strong> to a GitHub Actions workflow to <strong>canary-test PRs</strong> in staging and auto-comment risk verdicts.</li>
+<li>Stand up the <strong>reactive</strong> flow against <strong>Azure Monitor alerts</strong> (or ServiceNow) and test a <strong>credential-desync</strong> style incident end-to-end.</li>
+<li>Try <strong>review mode</strong> vs <strong>autonomous mode</strong> and inspect the <strong>KQL audit trail</strong> in Application Insights.</li>
+<li>Explore the <strong>DIY hands-on labs</strong> at <strong>sre.azure.com</strong>.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>Which <strong>3 regions</strong> are currently supported, and what's the GA/preview status of the SRE Agent and its recipes?</li>
+<li>What exactly counts as an <strong>"Azure AI unit"</strong> for agent-consumption billing, and how is it priced?</li>
+<li>How are <strong>microVM sandboxes</strong> isolated/limited (runtime, resource caps, network), and what Python tooling is preinstalled?</li>
+<li>What are the precise scopes of the <strong>reader/standard/administrator</strong> roles and the <strong>reader vs privileged</strong> managed-identity levels?</li>
+<li>How robust is the <strong>memory of past incidents</strong> — is it per-agent, shareable, and how is it seeded vs. learned?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Azure production reliability / SRE &amp; DevOps incident-response automation.</li>
+<li>Reducing operational toil and MTTR for teams already on GitHub + Azure Monitor/Dynatrace/Datadog/ServiceNow.</li>
+<li>Agentic AI governance patterns (managed identity, OBO, human-in-the-loop, audit trails).</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEMSP395.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEMSP395</span><span class="pager-title">Teach AI agents to manage context with Elastic Agent Builder</span></a>
+    <a class="pager pager-next" href="OD801.html"><span class="pager-dir">Next →</span><span class="pager-code">OD801</span><span class="pager-title">Modernize intelligent apps and agents with .NET that scale as you grow</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEM300 — Supercharged profiling: Finding performance bugs with agents</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEM300</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=VF0M8QwIRIs" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Supercharged profiling: Finding performance bugs with agents</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Nick Karpinski (Software Engineer, Microsoft — Visual Studio Profiler)</span>
+      <span class="meta-item">⏱️ 23m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="performance">Performance</span><span class="chip" data-tag="profiling">Profiling</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="dotnet">.NET</span><span class="chip" data-tag="visual-studio">Visual Studio</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speaker:</strong> Nick Karpinski — Software Engineer, Microsoft (≈12.5 years at Microsoft, entire career on Visual Studio, most of it on the Visual Studio Profiler)<br>
+<strong>Duration:</strong> ~23 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=VF0M8QwIRIs">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Nick Karpinski demos the new <strong>Visual Studio Profiler agent</strong> in GitHub Copilot (<code>@profiler</code>), which automates the real-world performance-optimization workflow: understand the issue → write a benchmark → enter the measure/change/measure optimization loop → confirm improvement. Using the popular open-source <strong>CsvHelper</strong> NuGet package (51M downloads, #16 most downloaded) as a realistic target, he shows Copilot autonomously writing a BenchmarkDotNet benchmark, installing the VS profiler diagnoser, running the benchmark to capture a profiling trace, and using actual profiling data (not just grep) to guide source-level optimizations. The core message: <strong>measuring with data is what turns refactoring into optimization</strong> — and Copilot can not only invoke these tools but teach you <em>why</em> optimizations work, helping you grow as an engineer.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li>The <strong>profiler agent</strong> is invoked in Copilot chat via <code>@profiler</code> — it knows how to write benchmarks, run the profiler, and analyze traces.</li>
+<li>Optimization is a <strong>loop, not a one-shot</strong>: understand → benchmark → measure → change → measure → improve? If yes, done ("cake"); if no, try another optimization or pick a different hotspot.</li>
+<li><strong>"A benchmark is a unit test for performance."</strong> Unit tests pair with the debugger; benchmarks pair with the profiler.</li>
+<li><strong>"Measure twice, optimize once"</strong> — always re-measure after a change. <em>If you're not measuring with data, you're not optimizing — you're just refactoring.</em> Data is what makes it an optimization.</li>
+<li>The agent reads <strong>existing benchmarks</strong> in the project unprompted and writes new ones in a matching style, avoiding duplicate coverage.</li>
+<li>BenchmarkDotNet <strong>diagnosers</strong> let external tools pull diagnostic data during a benchmark run; Microsoft publishes a VS diagnoser package (<code>*.Diagnostics.Hub</code> / BenchmarkDotNet diagnosers) that lets the profiler hook in and collect traces.</li>
+<li>The agent uses the profiler's <strong>go-to-source</strong> functionality and line-level profiling data to guide investigation — not just text search through the codebase.</li>
+<li>You can <strong>steer</strong> the agent: if it targets a hotspot you don't want (e.g. <code>expression compile</code>), redirect it to the next-biggest item (e.g. <code>ShouldQuote</code> logic).</li>
+<li>Real wins are usually <strong>small "paper cuts"</strong> across the codebase, not magical 10x single-line fixes. A 25% improvement (1.1ms → 0.8ms) on one method is a meaningful result.</li>
+<li>The benchmark becomes a <strong>reusable, durable artifact</strong> committed with the repo — usable for future profiling and as a learning tool.</li>
+<li>You can ask Copilot <strong>"why is this not faster?"</strong> to learn JIT quirks and deepen your performance knowledge (e.g. the JIT stops inlining after a certain number of IL instructions).</li>
+<li><strong>Functionality safety:</strong> tell Copilot which tests to run after each optimization so it uses them as a validation layer (you optimize for speed but must not break behavior).</li>
+<li>The profiler's <strong>"Analyze" / Top Insights</strong> feature flags known bad .NET/C++ patterns (e.g. <code>IndexOf</code> on a linked list, <code>Contains</code> on a list → suggest a set); <strong>"Generate Top Insights"</strong> has Copilot read the trace and propose ideas when none auto-fire.</li>
+<li>⚠️ Caveat: when analyzing a trace, the agent doesn't always recognize it ran inside a benchmark and may try to optimize the surrounding benchmark harness — steer it back to user code.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="speaker-framing">Speaker &amp; Framing</h3>
+<p>Nick Karpinski is a Microsoft software engineer of ~12.5 years, having spent his entire career on Visual Studio and most of it specifically on the <strong>Visual Studio Profiler</strong>. He opened by polling the room: a good number were .NET developers, many had used the VS profiler, a couple had used <strong>BenchmarkDotNet</strong>, but only one person had used the <strong>Visual Studio integration with BenchmarkDotNet</strong> — the feature he was there to showcase. The session is deliberately demo-heavy with a single supporting slide.</p>
+<h3 id="the-optimization-flowchart-the-one-slide">The Optimization Flowchart (the one slide)</h3>
+<p>Nick's mental model for how you optimize code in the real world. You move left → right; succeed and "you get cake."</p>
+<ol>
+<li><strong>Understand your issue.</strong> Not vague ("I think serialization is slow"), but concrete: know <em>specifically</em> where time is spent, so you invest effort where it yields the most improvement. If you don't know the issue, just <strong>run the profiler in Visual Studio</strong> — it shows where time is actually being spent, and you decide where to dig.</li>
+<li><strong>Create a benchmark.</strong> Taking general traces makes optimization hard. A benchmark gives a <strong>reusable, durable test harness</strong> to test performance against. <em>"I like to think of a benchmark as a unit test for performance."</em> Unit tests ↔ debugger; benchmarks ↔ profiler.</li>
+<li><strong>The optimization loop</strong> (his favorite, "the fun part"): <strong>measure → change code → measure again → see the delta.</strong> "Measure twice, optimize once."</li>
+<li><strong>Improve block — did you actually improve?</strong> If yes: success/cake. If no: fall back into the loop and try a <em>different</em> optimization (it's experimental, not one-and-done). If you've maxed out one benchmark, return to step 1 and pick a different issue from the original trace.</li>
+</ol>
+<h3 id="choosing-a-realistic-target-csvhelper">Choosing a Realistic Target — CsvHelper</h3>
+<p>Nick dislikes demos where someone puts an obvious bug in a console app and the tool "finds" it — that's not realistic software engineering. Instead he goes to a popular real repository. His method: browse <strong>nuget.org</strong>, scroll the most popular packages, and pick one to try to optimize. For this talk: <strong>CsvHelper</strong> — the <strong>16th most downloaded</strong> NuGet package at <strong>51 million downloads</strong>. Optimizing something that popular has the potential to help many people.</p>
+<p>He cloned it and opened the solution in Visual Studio. It already contained:
+- The <strong>CsvHelper</strong> project
+- A <strong>CsvHelper Benchmarks</strong> project (added by Nick himself in a previous talk — he's reused this repo several times)
+- <strong>Tests</strong> — useful for the optimization loop so you can confirm you didn't break functionality
+- The <strong>website</strong></p>
+<h3 id="anatomy-of-the-existing-benchmark-reading-records">Anatomy of the Existing Benchmark (reading records)</h3>
+<p>For those new to BenchmarkDotNet, he walked the existing benchmark, which resembles a unit test:
+- It has a <strong><code>[GlobalSetup]</code></strong> that runs initialization <em>before</em> the benchmark, so you can extract the parts you're <strong>not</strong> trying to measure.
+- The benchmark measures <strong>enumerating records</strong> — i.e. how fast CsvHelper can read a CSV file. It needs test data, so <code>GlobalSetup</code> builds a CSV file into a <strong><code>MemoryStream</code></strong> — meaning the benchmark measures the library, not the test-data setup.
+- Inside the benchmark, it sets the <strong>stream position to 0</strong> at the start. Because the CSV was written into an in-memory stream during setup, resetting the position (and keeping it in memory) avoids paying the cost of constantly expanding buffers / flushing to disk, isolating the actual enumeration code.</p>
+<h3 id="demo-1-copilot-writes-a-new-benchmark-writing-records">Demo 1 — Copilot Writes a New Benchmark (writing records)</h3>
+<p>Goal: add a counterpart benchmark for <strong>writing</strong> a CSV (he already had reading). Steps shown:
+1. In <strong>Copilot chat</strong>, type <strong><code>@profiler</code></strong> to address the profiler agent ("knows about benchmarking, knows how to run the profiler, knows how to write benchmarks"), then: <strong>"Write me a benchmark for writing a CSV file."</strong>
+2. The agent <strong>reads the existing benchmark unprompted</strong> — Nick didn't tell it about it. It reasoned: "I'm writing benchmarks; I should look at the others in this project and write similar code."
+3. It noted <strong>no existing benchmark covers CSV writing</strong> (so no duplication needed), searched the project, and wrote a new benchmark.
+4. It then needed to <strong>install the VS profiler diagnoser package</strong> (BenchmarkDotNet diagnosers / Diagnostics Hub). Nick clicked <strong>Confirm</strong>. This is the VS↔BenchmarkDotNet integration: BenchmarkDotNet's <strong>diagnoser</strong> concept lets tools pull diagnostic info while a benchmark runs, and Microsoft's published NuGet diagnoser lets the profiler interact and pull data.
+5. The benchmark <strong>compiled cleanly</strong> and was written in a matching style: a simple class, a <code>[GlobalSetup]</code>, a <code>WriteRecords</code> method, and it set the <strong>position</strong> (not the length) of the stream — he wanted to reset position each iteration but not reset the whole stream.</p>
+<h3 id="iterating-on-the-benchmark-with-inline-copilot">Iterating on the Benchmark with Inline Copilot</h3>
+<p>Nick refined the generated benchmark's test data. The record being serialized had a <code>Name</code> field of random characters. He selected it, hit <strong>Alt + /</strong> (inline Copilot), and asked it to <strong>update so half the records contain a comma delimiter</strong> — making the data more interesting/realistic (commas inside fields force quoting logic). Copilot took a simple approach: <strong>mod by 2</strong> and drop a comma in. This showed you can iterate conversationally on the benchmark itself.</p>
+<h3 id="demo-2-entering-the-optimization-loop">Demo 2 — Entering the Optimization Loop</h3>
+<p>With the benchmark ready, Nick moved into optimization:
+1. The profiler agent proactively asked whether to <strong>run it to establish a baseline.</strong> Nick used a <strong><code>#</code> slash-context menu</strong> to provide additional context, instructing: <strong>"Run the WriteRecords benchmark and optimize the code that it calls."</strong> Better context → more likely the agent does what you want.
+2. The agent read his files (e.g. <code>benchmark.main</code>) and noticed that previously there was only a <strong>single</strong> benchmark (so the project ran it directly). Now that there are multiple, it <strong>switched to BenchmarkDotNet's <code>BenchmarkSwitcher</code></strong> so it can select which benchmark to run at runtime.
+3. Behind the scenes it <strong>ran BenchmarkDotNet.</strong> Normally a terminal window pops up spewing per-iteration timings (he noted ~<strong>1.4–1.5 ms</strong> per iteration); the agent <strong>captures all that output</strong>, collects it, and at the end produces a <strong>profiling trace</strong>, saves it to a directory, and <strong>automatically opens it in Visual Studio</strong> to begin optimization.
+4. At this point you have: the reusable benchmark (test harness) <strong>and</strong> a trace showing where time is spent.</p>
+<h3 id="demo-2-cont-steering-the-agent-the-shouldquote-optimization">Demo 2 (cont.) — Steering the Agent &amp; the ShouldQuote Optimization</h3>
+<p>Nick hit <strong>stop</strong> because "sometimes the agent gets a little excited" and tries to fix the problem immediately even though they've tried to tell it not to. The agent's analysis identified the biggest hotspots:
+- <strong><code>Expression.Compile</code></strong> (top hotspot)
+- <strong><code>ShouldQuote</code></strong>
+- a <strong>dynamic multicast delegate</strong></p>
+<p>The agent wanted to optimize the topmost item (most CPU). But Nick has tried optimizing <code>Expression.Compile</code> before and always failed, so — per his pipeline's "if you can't improve it, pick the next biggest thing" rule — he instructed: <strong>"Optimize the ShouldQuote logic."</strong> The agent acknowledged ("user wants me to investigate this other thing") and pivoted.</p>
+<p>Key insight on <em>how</em> it investigates: it does <strong>not</strong> just grep the source — it uses the profiler's <strong>go-to-source</strong> functionality and the <strong>profiling data</strong> to see exactly which lines take the most time, then uses that to guide the investigation.</p>
+<p>Its conclusion: the best optimization is to <strong>combine the character checks into a single pass.</strong> The <code>ShouldQuote</code> method had a tidy Boolean-logic block doing many operations in few lines; Copilot reasoned it may be <strong>iterating too many times</strong> and proposed a <strong>single pass</strong> to avoid multiple iterations.</p>
+<p>Crucially, as soon as it applied the change, it stated <strong>"I need to rerun the benchmark to measure the improvement."</strong> This is the heart of the loop: establish baseline → change code → re-measure to see impact. <em>"If you're not actually measuring with data, you're not optimizing — you're just refactoring code. The data is what turns it from a refactoring into an optimization."</em></p>
+<h3 id="result-a-non-win-and-why-thats-fine">Result — A Non-Win (and why that's fine)</h3>
+<p>The re-run result:
+- Baseline: <strong>1.4 ms</strong> → after: <strong>1.4 ms</strong> — <strong>no meaningful overall improvement.</strong>
+- However, <strong><code>ShouldQuote</code> dropped from 13% → 7%</strong> of time, and other code began taking up more of the time (the bottleneck shifted).</p>
+<p>Nick treated this as a normal, expected outcome — the loop allows you to try the next thing. Possible follow-ups he listed: optimize the <strong>CreateWriteDelegate</strong>, run a <strong>memory profile</strong> to inspect allocations, or view the create-write-delegate implementation.</p>
+<h3 id="the-pre-recorded-real-win-philosophy-on-improvements">The Pre-recorded Real Win + Philosophy on Improvements</h3>
+<p>He admitted he'd run this <strong>before the talk</strong> and they actually <strong>created a PR</strong> because Copilot meaningfully improved it — though it didn't reproduce live (he'd need to dig into the logic to learn why). That earlier win moved metrics from <strong>~1.1 ms → ~0.8 ms</strong>, a <strong>25% improvement.</strong> His lesson: software wins are rarely a magical "one line, 10x faster." They're usually <strong>small paper cuts all over the codebase</strong> that add up and hurt you. With the Copilot agent, you can have it run through and optimize these as you have time.</p>
+<h3 id="copilot-as-a-learning-tool">Copilot as a Learning Tool</h3>
+<p>Beyond invoking tools, you can use the agent to <strong>learn and grow as an engineer.</strong> Example: ask "since we did a single pass instead of multiple passes, why is this not faster?" Nick recounted Copilot finding interesting optimizations he didn't understand and, when asked, explaining JIT quirks — e.g. the <strong>JIT stops inlining a method after a certain number of IL instructions.</strong> He learned something new. The reusable benchmark artifact (committed with the repo) supports both future profiling and this kind of learning.</p>
+<h3 id="next-steps-resources-from-the-closing-slide">Next Steps / Resources (from the closing slide)</h3>
+<ul>
+<li>Try to <strong>reproduce the same</strong> — ideally reproducing a <em>win</em>, not the non-win he got live.</li>
+<li><strong>CsvHelper library</strong> — a resource; uploaded in the session's <strong>GitHub repo.</strong> Its author is "a super nice guy" who will work with you.</li>
+<li>The <strong>CsvHelper optimization PR</strong>.</li>
+<li>The <strong>profiler agent documentation</strong>.</li>
+<li><strong>Related session:</strong> later that day, <strong>Mads</strong> and Nick present <strong>Breakout Session 207</strong> on the main stage (at <strong>4:00 PM</strong>), showing not just the profiler agent but also the <strong>debugging agent</strong> and <strong>creating unit tests</strong>, and how they used these to improve the <strong>performance and reliability of Visual Studio itself</strong>.</li>
+</ul>
+<h3 id="qa">Q&amp;A</h3>
+<ul>
+<li><strong>Q: When is the breakout session?</strong> → 4:00 (PM).</li>
+<li><strong>Q: How do you inject functional testing into the loop if Copilot broke functionality?</strong> → Tell Copilot which tests you have and to run them after any optimization; it uses them as a <strong>validation layer.</strong> In Session 207 they use the profiler's ability to <strong>profile a unit test</strong> — improving the optimization while the unit test simultaneously validates functionality.</li>
+<li><strong>Q: Can the profiler help you interpret the results in a trace?</strong> → Yes. Use the <strong>Analyze</strong> button → "suggest optimizations for this trace." It looks at top functions, call path / hot path, and caller-callee to digest ideas. The main trace surfaces <strong>Top Insights</strong> that fire on known bad .NET/C++ patterns. Example CPU insight: calling <strong><code>IndexOf</code> on a linked list</strong> or <strong><code>Contains</code> on a regular list</strong> → suggestion to use a <strong>set</strong> (hashed, direct access) instead of iterating. If no insights fire, click <strong>Generate Top Insights</strong> and Copilot reads the trace to propose ideas — e.g. removing repeated null checks, avoiding an <code>IEnumerable</code> with a concrete type to <strong>remove the boxed enumerator</strong>, or constructing the <strong><code>StreamWriter</code> with a large buffer</strong> to save on buffer costs. ⚠️ Caveat: when you run Analyze on a benchmark trace, it doesn't always realize it ran in a benchmark and may try to optimize the <strong>surrounding benchmark code</strong> — be careful and steer it to optimize <strong>user code</strong> instead.</li>
+</ul>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Visual Studio Profiler</strong> — Microsoft's performance profiling tooling inside Visual Studio; shows where time is spent in an app.</li>
+<li><strong>Profiler agent (<code>@profiler</code> in Copilot chat)</strong> — Copilot agent that writes benchmarks, runs the profiler, captures traces, and drives optimization.</li>
+<li><strong>GitHub Copilot (chat + inline)</strong> — AI assistant; chat agents via <code>@</code>, inline edits via <strong>Alt + /</strong>, context via the <strong><code>#</code></strong> menu.</li>
+<li><strong>BenchmarkDotNet</strong> — the .NET benchmarking framework; concepts used: <code>[GlobalSetup]</code>, <code>BenchmarkSwitcher</code>, and <strong>diagnosers</strong>.</li>
+<li><strong>BenchmarkDotNet diagnosers / VS Diagnostics Hub diagnoser package</strong> — NuGet package (BenchmarkDotNet diagnosers) that lets the VS profiler hook into a running benchmark and pull diagnostic/trace data.</li>
+<li><strong>CsvHelper</strong> — popular open-source .NET CSV read/write library; the optimization target (#16 most downloaded NuGet package, 51M downloads).</li>
+<li><strong>NuGet / nuget.org</strong> — package registry; used to find a popular, realistic optimization target.</li>
+<li><strong>.NET / C#</strong> — the platform and language throughout.</li>
+<li><strong>Memory profiler</strong> — VS profiling mode for inspecting allocations (mentioned as a follow-up path).</li>
+<li><strong>Trace "Analyze" / Top Insights / Generate Top Insights</strong> — VS profiler features that surface known-bad-pattern insights and Copilot-generated optimization suggestions from a trace.</li>
+<li><strong>Profiler go-to-source</strong> — feature the agent uses to map line-level profiling data back to source for guided investigation.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Visual Studio Profiler agent in GitHub Copilot</strong> — showcased as a new capability: <code>@profiler</code> writes benchmarks, runs BenchmarkDotNet, captures profiling traces, opens them in VS, and drives source-level optimizations. (Presented as a new/featured workflow rather than an explicit GA/preview status call-out.)</li>
+<li><strong>Generate Top Insights</strong> — Copilot-powered trace analysis that reads a profiling trace and proposes optimizations when no built-in insight fires.</li>
+<li><strong>Roadmap / related:</strong> Breakout Session 207 (same day, 4:00 PM, with Mads) to demo the <strong>profiler agent + debugging agent + unit-test creation</strong> used internally to improve Visual Studio's own performance and reliability.</li>
+<li><strong>Note:</strong> No explicit version numbers, GA dates, or preview/GA labels were stated in this demo.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Demo 1 — Generate a writing benchmark:</strong> <code>@profiler</code> "Write me a benchmark for writing a CSV file." The agent read the existing reading benchmark unprompted, confirmed no write-benchmark existed, wrote a style-matched benchmark, installed the VS diagnoser package, and compiled cleanly. <em>Proves:</em> the agent has project awareness and produces idiomatic, integration-ready benchmarks with minimal prompting.</li>
+<li><strong>Demo 1b — Inline iteration:</strong> Selected the <code>Name</code> field, <strong>Alt + /</strong>, asked to add commas to half the records (Copilot used <code>% 2</code>). <em>Proves:</em> you can conversationally refine benchmark data to make it realistic (commas trigger quoting logic).</li>
+<li><strong>Demo 2 — Baseline + optimization loop:</strong> <code>#</code>-context "Run the WriteRecords benchmark and optimize the code it calls." Agent switched to <code>BenchmarkSwitcher</code>, ran BenchmarkDotNet (~1.4–1.5 ms/iteration), captured the trace, and auto-opened it in VS. <em>Proves:</em> end-to-end automation of measure → trace → open.</li>
+<li><strong>Demo 2b — Steering + ShouldQuote single-pass optimization:</strong> Redirected the agent off <code>Expression.Compile</code> to <code>ShouldQuote</code>; it used profiling data + go-to-source to find hot lines and combined character checks into a single pass, then auto-re-measured. Result: overall 1.4 ms → 1.4 ms (no net win) but <code>ShouldQuote</code> 13% → 7%. <em>Proves:</em> the agent uses real profiling data (not grep), can be steered, and always re-measures — and that non-wins are a normal part of the loop.</li>
+<li><strong>Pre-recorded win (shown via conversation history):</strong> an earlier run optimized <code>CreateWriteDelegate</code>, improving ~1.1 ms → ~0.8 ms (<strong>25%</strong>) and producing a real PR. <em>Proves:</em> meaningful, mergeable wins are achievable even if any single live run may not reproduce.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>51 million downloads</strong> — CsvHelper, the <strong>16th most downloaded</strong> NuGet package.</li>
+<li><strong>~1.4–1.5 ms</strong> — per-iteration time of the WriteRecords benchmark; baseline and post-change both <strong>1.4 ms</strong> (the live non-win).</li>
+<li><strong>13% → 7%</strong> — <code>ShouldQuote</code> share of time after the single-pass optimization (bottleneck shifted elsewhere).</li>
+<li><strong>~1.1 ms → ~0.8 ms = 25% win</strong> — the pre-recorded <code>CreateWriteDelegate</code> improvement that produced a PR.</li>
+<li><strong>~12.5 years</strong> — Nick's tenure at Microsoft, all on Visual Studio.</li>
+<li><strong>4:00 PM</strong> — Breakout Session 207 (with Mads).</li>
+<li>💬 <em>"I like to think of a benchmark as a unit test for performance. Unit tests work with the debugger; benchmarks work with the profiler."</em></li>
+<li>💬 <em>"Measure twice, optimize once."</em></li>
+<li>💬 <em>"If you're not actually measuring with data, you're not optimizing — you're just refactoring code. The data is really what turns it from a refactoring into an optimization."</em></li>
+<li>💬 <em>"It's these small little paper cuts all over your code base that are really tripping you up... With the Copilot agent, you can just have it go through and optimize as you have time."</em></li>
+<li>💬 <em>"You can use Copilot to not only achieve the results you're looking for, but also to learn and grow as a software engineer."</em> (e.g. learning the JIT stops inlining after a certain number of IL instructions.)</li>
+<li>💬 <em>"If you're successful, you get cake."</em></li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> <strong>Things to try:</strong></li>
+<li class="task-list-item"><input type="checkbox" disabled> Try <code>@profiler</code> in Copilot chat on a real repo — have it write a BenchmarkDotNet benchmark from an existing one and capture a trace.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Reproduce the CsvHelper exercise and aim for an <em>actual</em> win (e.g. <code>CreateWriteDelegate</code> 25% improvement); compare against the live <code>ShouldQuote</code> non-win.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Use the trace <strong>Analyze → Generate Top Insights</strong> on an existing app trace and see which known-bad patterns fire.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Run a <strong>memory profile</strong> path on the write benchmark to inspect allocations (the follow-up Nick listed but didn't demo).</li>
+<li class="task-list-item"><input type="checkbox" disabled> Practice the <code>#</code>-context menu to give the agent a precise "run this benchmark and optimize what it calls" instruction.</li>
+<li class="task-list-item"><input type="checkbox" disabled> <strong>Questions:</strong></li>
+<li class="task-list-item"><input type="checkbox" disabled> What's the exact diagnoser NuGet package name to add for the VS↔BenchmarkDotNet integration?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Is the profiler agent GA, preview, or insiders-only — and which VS version is required?</li>
+<li class="task-list-item"><input type="checkbox" disabled> How does the agent decide when to switch a project to <code>BenchmarkSwitcher</code> automatically?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Can the validation-layer (run-my-tests-after-each-change) be made a standing rule per repo rather than per prompt?</li>
+<li class="task-list-item"><input type="checkbox" disabled> <strong>Relevant to:</strong></li>
+<li class="task-list-item"><input type="checkbox" disabled> Any .NET performance work / perf reviews where benchmarks + profiling traces are needed.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Demos showing Copilot agents driving real tooling (not toy bugs).</li>
+<li class="task-list-item"><input type="checkbox" disabled> Follow-up: watch <strong>Breakout Session 207</strong> (profiler + debugging agents + unit-test creation, used on VS itself).</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><strong>Breakout Session 207 (Build 2026)</strong> — Mads + Nick Karpinski: profiler agent + debugging agent + unit-test creation, used to improve Visual Studio's own performance &amp; reliability.</li>
+<li><a href="https://github.com/JoshClose/CsvHelper">CsvHelper</a> — the optimization target library (session GitHub repo also hosts the resource + optimization PR).</li>
+<li><a href="https://benchmarkdotnet.org/">BenchmarkDotNet</a> — the .NET benchmarking framework used throughout.</li>
+<li>Visual Studio Profiler agent documentation (linked from the session's closing slide / GitHub repo).</li>
+<li><span class="wikilink wikilink--unresolved" title="Build2026">Build2026</span> — Microsoft Build 2026 session notes index.</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="BRKSP94.html"><span class="pager-dir">← Previous</span><span class="pager-code">BRKSP94</span><span class="pager-title">Orchestrate specialist agents with NVIDIA Nemotron models on Foundry</span></a>
+    <a class="pager pager-next" href="DEM301.html"><span class="pager-dir">Next →</span><span class="pager-code">DEM301</span><span class="pager-title">Rethinking CI: Actions, AI Agents, and the End of Commit-Fail-Commit</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

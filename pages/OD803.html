@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OD803 — Taking your AI to the edge with .NET MAUI</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">OD803</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=YSr1W-d4GVw" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Taking your AI to the edge with .NET MAUI</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Gerald Versluis (Microsoft, .NET MAUI team)</span>
+      <span class="meta-item">⏱️ 46m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="dotnet-maui">Dotnet Maui</span><span class="chip" data-tag="edge-ai">Edge Ai</span><span class="chip" data-tag="mobile">Mobile</span><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="dotnet">.NET</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Gerald Versluis — Senior Software Engineer, Microsoft (.NET / .NET MAUI team)<br>
+<strong>Duration:</strong> ~46 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=YSr1W-d4GVw">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>A state-of-the-union for .NET MAUI covering three threads: (1) what shipped in <strong>.NET MAUI 10</strong> (Nov 2025) under the banners <em>stable, fast, simple, modern</em> — big XAML investments, safe-area APIs, Android Material 3, and steady monthly service releases; (2) how the MAUI team re-tooled its <strong>entire engineering pipeline around GitHub Copilot / agentic engineering</strong>, taking Copilot-authored merged PRs from <strong>7% to 62% in under a year</strong>; and (3) where MAUI is going with <strong>.NET 11</strong> (Nov 2026) — CoreCLR as the default runtime, <code>dotnet run</code>/<code>dotnet watch</code> CLI support, map improvements, and a heavy <strong>on-device AI</strong> push. The AI story centers on <strong>Maui Labs</strong> experiments: <strong>Essentials.AI</strong> (unified on-device AI across Apple Intelligence, Gemini Nano, Windows Copilot Runtime/Phi Silica), <strong>AI Extensions</strong> (intent-driven navigation), <strong>DevFlow</strong> (lets Copilot see/drive a running app for autonomous testing), and <strong>Maui Sherpa</strong> (a MAUI-built dev tool). Recurring message: ship native AI apps everywhere, build them with agents, and lean on CLI-first tooling because it's "agent-friendly."</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>.NET MAUI</strong> = .NET Multi-platform App UI: single project / single C# codebase targeting <strong>iOS, Android, Windows, macOS</strong>, mapping to <strong>native controls and native styling</strong> with built-in device APIs (geolocation, flashlight, file system, etc.).</li>
+<li>Three UI strategies coexist: <strong>fully native MAUI</strong>, <strong>Blazor Hybrid</strong> (wrap an existing Blazor app/control in a WebView and ship to stores), and the <strong>HybridWebView</strong> for React Native / Angular / other JS apps — mix-and-match seamlessly within one app.</li>
+<li>The MAUI team went <strong>fully agentic end-to-end</strong>: Copilot now does repro, testing (smart selection of relevant UI tests), fixing, <strong>MAUI-aware code review</strong>, post-merge learning, and even auto-drafting docs/blog PRs.</li>
+<li><strong>Copilot-authored merged PRs jumped from 7% → 62% in under a year</strong> (inflection point ~November); transparency dashboard at <strong>agenticengineers.net</strong>.</li>
+<li><strong>.NET MAUI 10</strong> (released <strong>Nov 2025</strong>) focused on <strong>quality, performance, simplicity, modern APIs</strong>; subsequent <strong>monthly service releases</strong> add fixes/features non-breakingly (SR6 = 242 commits, the biggest yet; SR7 continued the momentum).</li>
+<li><strong>XAML overhaul:</strong> global XMLNS/implicit namespaces to kill boilerplate, plus <strong>XAML Source Generation</strong> (Roslyn → readable, debuggable C#) — opt-in in .NET 10, <strong>default in .NET 11</strong>.</li>
+<li><strong>XAML Source Gen perf claims:</strong> ~<strong>1,000% faster inflation</strong>, <strong>99% less debug memory</strong>, faster release, smaller app memory; eliminates debug-vs-release trimming surprises so release == debug behavior.</li>
+<li>New <strong>unified Safe Area Edges API</strong> (<code>SafeAreaEdges</code>, e.g. <code>None</code>/<code>SoftInput</code>) settable per page/layout to handle notches, Dynamic Island, camera holes, and bottom gesture areas on iOS + Android (works nicely with iOS <em>liquid glass</em>).</li>
+<li><strong>Android Material 3</strong> is rolling in via service releases (opt-in <code>UseMaterial3</code>); full experience lands in <strong>.NET 11</strong>.</li>
+<li><strong>.NET 11 headline:</strong> <strong>CoreCLR becomes the default runtime</strong> on iOS/Android/Mac Catalyst (replacing <strong>Mono</strong>), unifying the runtime with ASP.NET/Azure and unlocking <strong>.NET Trace / .NET Counters</strong> profiling; opt-out is a one-liner; small app-size increase expected.</li>
+<li><strong>CLI-first tooling:</strong> <code>dotnet run</code> (with interactive target/device picker) and <code>dotnet watch</code> (terminal hot reload) for MAUI — explicitly designed to be <strong>agent-friendly</strong> (easy for Copilot to invoke and parse).</li>
+<li><strong>Maps control</strong> gains <strong>pin clustering, custom pins via ImageSource, richer interactions</strong> (long-press, tappable map elements/polylines/clusters), visibility/Z-index control, and Android style JSON.</li>
+<li><strong>On-device AI via Essentials.AI</strong> (<code>Microsoft.Maui.Essentials.AI</code>, built on <code>Microsoft.Extensions.AI</code>): one API over <strong>Apple Intelligence, Gemini Nano, Windows Copilot Runtime (Phi Silica)</strong>, plus local (ONNX) and cloud (Azure OpenAI / Foundry) — swap providers with no code change.</li>
+<li><strong>AI Extensions</strong> enable <strong>intent-driven</strong> apps: tag a C# method as an AI tool (e.g. <code>LogShot</code>) and the LLM routes user intent to the right action instead of manual button navigation.</li>
+<li><strong>DevFlow</strong> injects a debug-time HTTP/agent server into the running MAUI app so Copilot can read the visual tree, screenshot, read sensors, and interact with controls to <strong>test apps autonomously</strong> (wrapped in an <strong>MCP server</strong> powering the MAUI VS Code extension).</li>
+<li><strong>Maui Sherpa</strong> is a new all-in-one MAUI dev tool (visual tree inspector, live property inspector, network/profiling/logs, iOS certificate/device setup management) — itself <strong>built with .NET MAUI</strong> using the experimental macOS AppKit + Linux backends ("Maui everywhere").</li>
+<li>Strong <strong>partner ecosystem momentum:</strong> Syncfusion (free MAUI Toolkit, 30+ controls), Uno (SkiaSharp investment), Avalonia (embeds MAUI to reach <strong>Linux and browser</strong>).</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="what-net-maui-is-refresher">What .NET MAUI is (refresher)</h3>
+<p>.NET MAUI = <strong>.NET Multi-platform App UI</strong>, Microsoft's offering for building cross-platform, native-looking apps on <strong>iOS, Android, Windows, and macOS</strong> from <strong>C# and .NET</strong>. The value proposition:
+- <strong>Single project, single codebase</strong> launches all four platforms.
+- Everything <strong>maps to native controls and native styling</strong>, so the app looks and feels correct for the OS/device it runs on.
+- A <strong>unified C#/.NET device-API layer</strong> exposes geolocation, flashlight, file system, and many more capabilities, plus a large set of built-in controls.</p>
+<h3 id="the-choice-spectrum-native-blazor-hybrid-hybridwebview">The choice spectrum: native, Blazor Hybrid, HybridWebView</h3>
+<p>The .NET ecosystem deliberately offers a range so any developer/audience is covered:
+- <strong>Fully native MAUI</strong> — maximum native power on real devices.
+- <strong>Blazor Hybrid</strong> — take an existing Blazor app (or even a single Blazor control) and host it in a Blazor Hybrid WebView, package it as a mobile app, and put it in the stores. You can make the <strong>whole</strong> app a Blazor Hybrid app <em>or</em> embed just a small Blazor part inside an otherwise-native app — the integration is seamless and indistinguishable.
+- <strong>HybridWebView</strong> — for existing <strong>React Native, Angular, or other JavaScript</strong> apps, reuse them via the hybrid web view.
+- Rule of thumb: <strong>for reach → Blazor (web)</strong>; <strong>for full native power → MAUI</strong>; and the <strong>Blazor + MAUI combination</strong> sits powerfully in between, reusing existing web-dev experience.</p>
+<p>A highlighted customer story: <strong>Motime</strong> (UK) makes <strong>pediatric physiotherapy devices</strong> with a <strong>.NET MAUI companion app</strong> — cited as the kind of real-world, medical-space use of MAUI the speaker loves (full customer stories on the MAUI website).</p>
+<h3 id="agentic-engineering-how-the-maui-team-re-tooled-itself">Agentic engineering: how the MAUI team re-tooled itself</h3>
+<p>The biggest narrative shift: over the past months the .NET / .NET MAUI team <strong>incorporated Copilot and AI fully end-to-end</strong> in their SDLC. It is <strong>not just code generation</strong>. Across the open-source MAUI repo, Copilot is used for:
+- <strong>Reproduction</strong> — ask Copilot to try to reproduce a customer-reported GitHub issue (repro is often the hard part).
+- <strong>Testing</strong> — the repo has <strong>thousands of UI tests</strong> that take a long time to run. Copilot is told to figure out which UI tests are <strong>relevant</strong> to a given PR/bug and run only those, returning results — saving the human the triage/wait.
+- <strong>Fixing</strong> — assign a bug to Copilot ("assign to Copilot") and it goes off and produces fixes.
+- <strong>MAUI-aware code review</strong> — MAUI is a <strong>very complex codebase</strong> (lots of non-.NET-native iOS/Android APIs), so the team built a <strong>custom MAUI-aware reviewer</strong> baked into their pipelines. It carries MAUI-specific expertise beyond the vanilla GitHub Copilot reviewer and flags "look out for this/that." Humans remain in the loop, but it's been a big help.
+- <strong>Verification &amp; learning</strong> — when something good or bad happens to a PR, a <strong>custom Copilot agent</strong> is pointed at it to answer "what can we learn from this PR?", and that learning is carried into future PRs to prevent recurrence.
+- <strong>Post-merge automation</strong> — on merge, an <strong>agentic workflow</strong> decides whether the change needs a <strong>docs update</strong> or a <strong>blog post</strong>, and if so it <strong>opens an issue and even drafts the PR</strong> for the doc/blog change.</p>
+<p><strong>Transparency &amp; numbers:</strong> As an open-source project they publish this openly at <strong>agenticengineers.net</strong>, showing per-PR whether code was Copilot-generated, the PR was Copilot-authored, and whether the Copilot reviewer was used — across the MAUI repos plus supporting products (Android, iOS) and tooling. Momentum picked up in <strong>November</strong>, climbing through Dec–April (<strong>April</strong> the high point so far): <strong>7% → 62% Copilot-authored merged PRs in under a year.</strong> This velocity lets the team ship bug fixes and previously-deprioritized functionality much faster.</p>
+<h3 id="community">Community</h3>
+<p>MAUI is positioned as community-driven. Key threads:
+- <strong>Contributors</strong> thanked for issues, PRs, samples, docs, and feedback (online + in-person). Team members out at conferences: the speaker (Gerald), <strong>David Ortinau</strong>, <strong>Stefan</strong>, and now <strong>Jacob</strong>.
+- <strong>Community Stand-up</strong> — first Thursday of every month on YouTube (the .NET channel), usually with a guest / community highlights / new things the team built.
+- <strong>Maui Days</strong> — dedicated community-run MAUI events (a continuation of the old Xamarin days). Held in Cologne, two in London, with <strong>Krakow, Poland</strong> coming up and more; the team will help bring one to your area.
+- <strong>MauiVerse</strong> (mauiverse.net) — a community hub with a <strong>Discord server</strong> to talk to the team and community, sharing tools, samples, libraries, blog posts, and projects.
+- <strong>Partners / component vendors</strong> build controls and ecosystems on top of MAUI (check them out for pre-built UI).</p>
+<h3 id="partner-collaborations-announced">Partner collaborations announced</h3>
+<ul>
+<li><strong>Syncfusion</strong> — working directly on the MAUI codebase (code fixes, testing across the suite). They created a <strong>.NET MAUI Toolkit</strong>, now <strong>v1.0.10 with 30+ UI controls</strong> (some previously from the paid Syncfusion suite) now <strong>free</strong>, built for performance, customization, and accessibility. Syncfusion also published numbers on their own Copilot/AI velocity gains: <strong>50–70% time reduction</strong> on repro/fix work, <strong>2–3× more issues handled per week</strong>, more PRs and a higher first-time fix rate.</li>
+<li><strong>Uno Platform</strong> — partnered on <strong>SkiaSharp</strong> (maintained at Microsoft); Uno stepped up and invested in taking it to the next major version.</li>
+<li><strong>Avalonia</strong> — proposed <strong>embedding .NET MAUI apps in an Avalonia backend</strong>, which brings <strong>MAUI to Linux and the browser</strong>; they published a getting-started blog post.</li>
+</ul>
+<h3 id="net-maui-10-released-november-2025-stable-fast-simple-modern">.NET MAUI 10 (released November 2025): stable, fast, simple, modern</h3>
+<p>The four investment areas:
+- <strong>Quality</strong> — upgrades must not break you; fixing more bugs than ever.
+- <strong>Performance</strong> — mobile end-users are the most critical (slow startup / sluggishness gets noticed instantly), so perf is always top of mind.
+- <strong>Simplicity</strong> — APIs should be simple to use so new features are easy to implement.
+- <strong>Modern</strong> — keep up with new Android/iOS versions so modern platform behavior shows up in MAUI apps automatically.</p>
+<h4 id="xaml-investments">XAML investments</h4>
+<p>XAML is "here to stay" and got major improvements:
+- <strong>Global namespaces (global XMLNS)</strong> — reduce or completely eliminate XML namespace declarations, making even small XAML docs far less verbose by removing boilerplate.
+- <strong>Implicit namespaces</strong> — in <strong>preview in .NET 10</strong>; the editor/language-service support promised at .NET Conf (November) is now available, so it can be tried with editor support today.
+- <strong>XAML Source Generation</strong> — all XAML is taken through <strong>Roslyn</strong> and source-generated into <strong>actual, readable, debuggable C#</strong> (vs the current XamlC path that compiles to intermediate language). Big perf benefits and easier to build further tooling on. <strong>Opt-in in .NET 10, default in .NET 11</strong> — the team urges testing now and sending feedback so it's rock-solid by .NET 11.
+  - <strong>Enable it:</strong> set <code>MauiXamlInflator</code> to <code>SourceGen</code> (one MSBuild property). Optionally set <code>EmitCompilerGeneratedFiles=true</code> to inspect the generated C# in your IDE (e.g. VS Code) and debug through it.
+  - <strong>Claimed gains (described as conservative/old numbers):</strong> ~<strong>1,000% faster inflation</strong>, <strong>99% less debug memory</strong>, faster on release, less app memory — <strong>biggest gain in debug builds</strong> (which tend to be jittery, e.g. Android CollectionView scrolling).
+  - <strong>Bonus:</strong> removes debug-vs-release <strong>trimming differences</strong> — release builds behave the same as debug, so nothing "suddenly breaks at runtime" because an API got trimmed out during optimization.
+  - A comparison shown on a <strong>Pixel 5 / Android 14</strong>: XamlC takes noticeably longer than Source Gen across the same navigation operations.</p>
+<h4 id="safe-areas-unified-api">Safe Areas (unified API)</h4>
+<p>The cross-platform problem: iOS introduced the <strong>notch / Dynamic Island</strong> and bottom <strong>swipe-gesture</strong> areas; Android has <strong>camera holes / islands</strong>. These zones are hard to use well — white/black boxes look bad, and you shouldn't place tappable buttons behind a Dynamic Island.
+- New <strong>unified Safe Area Edges API</strong>: set <code>SafeAreaEdges</code> to values like <strong><code>None</code></strong> or <strong><code>SoftInput</code></strong> to control whether content draws under these regions or reserves space. Settable <strong>per ContentPage or per layout</strong> (Grid, ScrollView, etc.).
+- Works on <strong>Android and iOS</strong> (the platforms with these form factors); other platforms get implementations if/when needed.
+- Examples shown: setting <code>SafeAreaEdges="None"</code> lets content draw under the iOS region and pair nicely with <strong>liquid glass</strong>; on Android it draws under the top status-bar area while <strong>preserving reachable navigation-bar buttons</strong> at the bottom.</p>
+<h4 id="android-material-3">Android Material 3</h4>
+<p>Work is underway to implement <strong>Material 3</strong> on Android. The <strong>first controls</strong> already shipped in .NET MAUI 10 via service releases. Opt in with one line (<code>UseMaterial3</code>) in the <code>.csproj</code> and Android controls update to Material 3 where available. Bigger layout changes are still coming; the <strong>full Material 3 experience lands in .NET 11</strong>. Strong encouragement to try it today and send feedback.</p>
+<h4 id="service-releases">Service releases</h4>
+<p>After the initial .NET MAUI 10 GA in November, <strong>roughly monthly service releases</strong> add fixes/features non-breakingly:
+- <strong>SR6</strong> — biggest yet at <strong>242 commits</strong>.
+- <strong>SR7</strong> — kept the momentum.
+- Content across releases: <strong>quality</strong> (CollectionView/CarouselView handler fixes, Shell polish, accessibility test coverage), <strong>modern APIs</strong> (the <strong>MediaPicker</strong> modernized for new iOS/Android image/video-picking APIs), <strong>safe areas</strong> and <strong>Material 3</strong> enablement, <strong>hybrid</strong> improvements (JavaScript interop / message-passing over the JS↔C# bridge), and <strong>tooling</strong> (Android <code>dotnet run</code> support, design-time build speedups, better VS / VS Code loops).
+- Reminder to try the <strong>live property inspector</strong> and <strong>live XAML preview</strong> in Visual Studio — launch via hot reload / XAML live preview and see changes in real time without stopping the app.</p>
+<h3 id="net-11-the-next-wave-ga-november-2026">.NET 11: the next wave (GA November 2026)</h3>
+<h4 id="coreclr-becomes-the-default-runtime">CoreCLR becomes the default runtime</h4>
+<p>The headline (and "not very glamorous but very visible") change: until now iOS/Android/macOS still ran on <strong>Mono</strong>. In .NET 11, <strong>CoreCLR becomes the default runtime</strong> on <strong>iOS, Android, and Mac Catalyst</strong> for MAUI (and the other platforms used directly), giving <strong>one runtime</strong> shared with ASP.NET, Azure services, and other .NET workloads.
+- Automatically inherits .NET's performance upgrades.
+- Unlocks diagnostics tooling: <strong>.NET Trace</strong> and <strong>.NET Counters</strong> now (great time to start profiling); more tools under consideration.
+- <strong>Opt-out</strong> is a one-liner if anything goes wrong, but a smooth transition is expected with mostly upside.
+- Tradeoff noted (still in preview): <strong>app size increases a little</strong>, balanced by the other gains; the team will keep optimizing.</p>
+<h4 id="cli-first-tooling-agent-friendly">CLI-first tooling (agent-friendly)</h4>
+<ul>
+<li><strong><code>dotnet run</code> support</strong> — replaces verbose <code>dotnet build -t:run -f net10.0-android …</code>. Just <code>dotnet run</code>; if no target framework is specified it shows an <strong>interactive prompt</strong> to pick Android/iOS and the specific <strong>emulator/simulator/device</strong>, then launches.</li>
+<li><strong><code>dotnet watch</code> support</strong> — <strong>terminal hot reload</strong>: <code>dotnet watch</code> starts on the Android/iOS emulator and live-applies code changes to the running debug session.</li>
+<li>Rationale: CLI tools are <strong>easy for Copilot to invoke and to parse output from</strong> — "very agent-friendly" — while also pleasing terminal fans and human pilots. Expect more CLI tooling across .NET generally.</li>
+</ul>
+<h4 id="maps-control-improvements-more-pins-on-the-map">Maps control improvements ("more pins on the map")</h4>
+<p>The MAUI <code>Map</code> control (Google Maps on Android, Apple Maps on iOS) gains:
+- <strong>Pin clustering</strong> — group nearby pins (e.g. a "7" cluster = Copilot Lab + six more) that expand on zoom-in; steerable grouping (group by name, etc.).
+- <strong>Custom pins</strong> — just specify an <strong>ImageSource</strong> (no custom handlers needed), with callouts (e.g. "Microsoft Commons").
+- <strong>Richer interactions</strong> — map long-press, tappable <strong>map elements</strong> (polylines, circles, shapes) that run code on click, and tappable clusters.
+- <strong>More control</strong> — toggle element visibility, set <strong>Z-index/order</strong>, and on <strong>Android</strong> customize styling via <strong>style JSON</strong>.</p>
+<h4 id="other-net-11-previews-try-now">Other .NET 11 previews (try now)</h4>
+<p>Less XAML ceremony (resource generation by default, implicit namespaces by default), <strong>better compiled-bindings diagnostics</strong>, <strong>C# in XAML / code-in-XAML support</strong> (long-requested), built-in <strong>long-press gesture recognizer</strong>, <strong>badges on Shell tabs and ToolbarItems</strong> (like app-icon notification badges), <strong>Android themed (monochrome) icons</strong>, more permissions, <strong>trimmable CSS</strong> (smaller app size), and more.</p>
+<h3 id="putting-the-ai-in-maui-maui-labs">Putting the AI in MAUI — Maui Labs</h3>
+<p>"MAUI has always been 50% AI — the letters are right there." To move faster, the team created <strong>Maui Labs</strong>: a vehicle to ship <strong>experiments</strong> quickly (most may stick, some may not), with the community welcome to try, suggest ideas, or collaborate. Key Maui Labs items:</p>
+<h4 id="essentialsai">Essentials.AI</h4>
+<p><code>Microsoft.Maui.Essentials.AI</code>, built on top of <strong><code>Microsoft.Extensions.AI</code></strong> (the unified library/API to work with any AI model, local or remote, with no code change). Essentials.AI adds <strong>on-device / platform-native</strong> providers:
+- <strong>Apple Intelligence</strong> (iOS/macOS)
+- <strong>Gemini Nano</strong> (Android)
+- <strong>Windows Copilot Runtime via Phi Silica</strong> (Windows)
+- Plus <strong>local models (ONNX)</strong> and <strong>cloud</strong> (Azure OpenAI / Foundry).
+- Same paradigm as MAUI: use the abstractions (<code>IChatClient</code>, embedding generator, etc.) and <strong>swap between cloud / local / platform-native with zero code change</strong>, "zero config, OS-managed, tight integration."
+- A platform-support matrix was shown: <strong>Apple</strong> supports nearly everything (single-turn chat, multi-turn conversation, system prompts, …); <strong>Android</strong> and <strong>Windows</strong> each miss one or two features for now — a normal cross-platform reality to plan around.</p>
+<h4 id="ai-extensions-intent-driven-apps">AI Extensions (intent-driven apps)</h4>
+<p>Today's apps are <strong>reactive</strong> (you click to act). With LLMs, apps can be <strong>intent-driven</strong>: the user states what they want and the app figures out how to get there — no manual menu/button hunting.
+- Mechanism: put an <strong>attribute on a C# method</strong> declaring it an <strong>AI tool</strong> (example: <code>LogShot</code>). The LLM can then route a spoken/typed intent ("log this coffee shot") to that exact C# method and invoke the code — the model determines the path inside your app.</p>
+<h4 id="more-backends-via-copilot-capacity">More backends (via Copilot capacity)</h4>
+<p>With Copilot freeing up time, the team added <strong>new backends</strong>:
+- <strong>Linux</strong> (natively where <strong>GTK4</strong> runs)
+- <strong>macOS via AppKit</strong> (a true macOS backend, distinct from Mac Catalyst)
+- <strong>WPF</strong>, with possibly more to come.</p>
+<h4 id="devflow">DevFlow</h4>
+<p><code>aka.ms/mauidevflow</code> — a companion that lets Copilot <strong>see and drive a running app</strong> to verify itself. Built on the new <strong>.NET MAUI CLI</strong>:
+- The CLI can <strong>check your environment</strong> (emulators present, Android SDK set up, Xcode installed correctly).
+- It can <strong>steer DevFlow</strong> by connecting to a small <strong>agent app injected into your MAUI app at debug time only</strong> (a debug-time <strong>HTTP server</strong> inside the app — never shipped to production).
+- Through that, you (or Copilot) can read the <strong>visual tree</strong> of the current screen, take a <strong>screenshot</strong>, read <strong>sensor values</strong>, and <strong>interact with elements/buttons</strong> to programmatically walk the app. This makes autonomous testing possible: tell Copilot to build an app, derive edge cases/test scenarios, and "run through this autonomously" — and it does.
+- It is also <strong>wrapped in an MCP server</strong>, which in turn powers the <strong>.NET MAUI VS Code extension</strong>, combining these tools with built-in ones to deliver a "best-in-class" agentic engineering experience for MAUI apps.</p>
+<h4 id="maui-sherpa">Maui Sherpa</h4>
+<p>A new tool that brings much of this together for the <strong>best MAUI dev experience</strong>. Shown against the Barista Notes app, it offers:
+- <strong>Visual-tree inspector</strong> (like browser dev tools)
+- <strong>Live property inspector</strong> (edit properties and see them live-update in the running app)
+- <strong>Network traffic inspection, profiling, and logs</strong> — all in one place
+- <strong>iOS certificate managers</strong> and broader <strong>device/developer-setup inspection</strong> for releasing.
+- Likely works beyond MAUI for some of this. Notably, <strong>Maui Sherpa is itself built with .NET MAUI</strong>, using the <strong>experimental backends</strong> — a beautiful <strong>macOS AppKit</strong> UI that also runs on <strong>Linux</strong> via the new Maui Labs Linux backends. "Full circle… Maui everywhere: with Maui, by Maui, through Maui."</p>
+<h3 id="release-schedule-reminder">Release schedule reminder</h3>
+<p>.NET MAUI's support lifecycle differs from .NET generally (because it depends on third-party tools/SDKs): <strong>each major .NET MAUI version is supported for 18 months</strong>. New major versions ship <strong>12 months apart</strong>, so when a new major releases there are <strong>6 months</strong> of overlap before the previous major goes out of support. <strong>.NET 11 ships November 2026</strong> with everything shown in this session.</p>
+<h3 id="closing-message">Closing message</h3>
+<p>"Build with agents, ship AI on device, native apps everywhere with .NET MAUI."</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>.NET MAUI</strong> — .NET Multi-platform App UI; cross-platform native apps (iOS/Android/Windows/macOS) from one C# codebase.</li>
+<li><strong>Blazor Hybrid</strong> — host an existing Blazor app/control in a WebView and ship as a native/store app; mix with native MAUI.</li>
+<li><strong>HybridWebView</strong> — embed existing JS apps (React Native, Angular, etc.) inside a MAUI app.</li>
+<li><strong>GitHub Copilot</strong> — used end-to-end for repro, testing, fixing, review, learning, and docs/blog automation in the MAUI pipeline.</li>
+<li><strong>MAUI-aware code reviewer</strong> — a custom Copilot reviewer in the team's pipelines with MAUI-specific expertise.</li>
+<li><strong>agenticengineers.net</strong> — public dashboard showing per-PR Copilot generation/authoring/review across MAUI repos and tooling.</li>
+<li><strong>Global XMLNS / implicit namespaces</strong> — XAML features to reduce/eliminate namespace boilerplate (implicit ns in preview).</li>
+<li><strong>XAML Source Generation</strong> — Roslyn-based generation of readable, debuggable C# from XAML (<code>MauiXamlInflator=SourceGen</code>); opt-in .NET 10, default .NET 11.</li>
+<li><strong>Safe Area Edges API</strong> (<code>SafeAreaEdges</code>, e.g. <code>None</code>/<code>SoftInput</code>) — unified handling of notch/Dynamic Island/camera holes/gesture areas, per page/layout.</li>
+<li><strong>Android Material 3</strong> — opt-in (<code>UseMaterial3</code>) Material 3 styling for Android controls; full experience in .NET 11.</li>
+<li><strong>MediaPicker</strong> — modernized image/video picking APIs for iOS/Android.</li>
+<li><strong>CoreCLR</strong> — becomes the default MAUI runtime on iOS/Android/Mac Catalyst in .NET 11 (replacing <strong>Mono</strong>).</li>
+<li><strong>.NET Trace / .NET Counters</strong> — diagnostics/profiling tools usable with the CoreCLR move.</li>
+<li><strong><code>dotnet run</code> / <code>dotnet watch</code></strong> — CLI run (with interactive device picker) and terminal hot reload for MAUI; agent-friendly.</li>
+<li><strong>Maps control</strong> — native maps (Google Maps/Apple Maps) with new pin clustering, custom pins, richer interactions, Android style JSON.</li>
+<li><strong>Live property inspector / live XAML preview</strong> — real-time inspection/preview in Visual Studio via hot reload.</li>
+<li><strong>Maui Labs</strong> — initiative for fast-shipping experimental MAUI features (DevFlow, Essentials.AI, AI Extensions, new backends).</li>
+<li><strong><code>Microsoft.Extensions.AI</code></strong> — unified .NET AI abstraction (<code>IChatClient</code>, embedding generators) across providers.</li>
+<li><strong>Essentials.AI</strong> (<code>Microsoft.Maui.Essentials.AI</code>) — on-device AI over Apple Intelligence, Gemini Nano, Windows Copilot Runtime (Phi Silica), plus ONNX local and Azure OpenAI/Foundry cloud.</li>
+<li><strong>Apple Intelligence / Gemini Nano / Windows Copilot Runtime (Phi Silica)</strong> — platform-native on-device AI providers.</li>
+<li><strong>ONNX (Onyx)</strong> — local on-device model runtime option.</li>
+<li><strong>Azure OpenAI / Azure AI Foundry</strong> — cloud AI model providers behind the same abstraction.</li>
+<li><strong>AI Extensions</strong> — attribute-based exposure of C# methods as AI tools for intent-driven app navigation.</li>
+<li><strong>New backends</strong> — Linux (GTK4), macOS AppKit (distinct from Mac Catalyst), WPF (experimental, via Maui Labs).</li>
+<li><strong>DevFlow</strong> (<code>aka.ms/mauidevflow</code>) — new .NET MAUI CLI + debug-time in-app agent (HTTP server) + MCP server letting Copilot see/drive a running app; powers the MAUI VS Code extension.</li>
+<li><strong>.NET MAUI VS Code extension</strong> — consumes DevFlow/MCP tools for agentic MAUI development.</li>
+<li><strong>Maui Sherpa</strong> — all-in-one MAUI dev tool (visual tree, live properties, network/profiling/logs, iOS certs/device setup); built with MAUI on AppKit + Linux backends.</li>
+<li><strong>Syncfusion .NET MAUI Toolkit</strong> — free, v1.0.10, 30+ UI controls (some ex-paid), perf/customization/accessibility-focused.</li>
+<li><strong>Uno Platform</strong> — partnered on <strong>SkiaSharp</strong> (next major version investment).</li>
+<li><strong>SkiaSharp</strong> — Microsoft-maintained 2D graphics library; advanced by Uno.</li>
+<li><strong>Avalonia</strong> — embeds MAUI apps in its backend to reach <strong>Linux and browser</strong>.</li>
+<li><strong>MauiVerse</strong> (mauiverse.net) — community hub + Discord.</li>
+<li><strong>Motime</strong> — UK customer: pediatric physiotherapy devices with a .NET MAUI companion app.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>.NET MAUI 10</strong> GA in <strong>November 2025</strong> (stable/fast/simple/modern), with monthly <strong>service releases</strong> (SR6 = 242 commits, SR7 momentum).</li>
+<li><strong>XAML Source Generation</strong> — opt-in in .NET 10, <strong>becomes default in .NET 11</strong>.</li>
+<li><strong>Implicit namespaces</strong> — <strong>preview</strong> in .NET 10 with new editor/language-service support now available.</li>
+<li><strong>Unified Safe Area Edges API</strong> — shipped for Android + iOS.</li>
+<li><strong>Android Material 3</strong> — first controls shipped via .NET 10 service releases (opt-in); full experience targeted for <strong>.NET 11</strong>.</li>
+<li><strong>CoreCLR as default runtime</strong> on iOS/Android/Mac Catalyst — <strong>coming in .NET 11</strong> (currently in previews; opt-out one-liner; small app-size increase).</li>
+<li><strong><code>dotnet run</code> and <code>dotnet watch</code></strong> support for MAUI (Android <code>dotnet run</code> already in .NET 10 service releases).</li>
+<li><strong>Maps control</strong> enhancements (pin clustering, custom pins, richer interactions, Android style JSON) — for <strong>.NET MAUI 11</strong>, <strong>first previews out now</strong>.</li>
+<li><strong>.NET 11 preview features</strong> (try now): resource generation by default, implicit namespaces by default, better compiled-bindings diagnostics, C#-in-XAML, built-in long-press gesture recognizer, Shell tab + ToolbarItem badges, Android themed/monochrome icons, more permissions, trimmable CSS.</li>
+<li><strong>Maui Labs</strong> initiative launched, including <strong>Essentials.AI</strong>, <strong>AI Extensions</strong>, <strong>DevFlow</strong>, and new <strong>Linux / macOS AppKit / WPF backends</strong> (experimental/preview).</li>
+<li><strong>Maui Sherpa</strong> tool announced (download via session link).</li>
+<li><strong>Partner announcements:</strong> Syncfusion free <strong>MAUI Toolkit v1.0.10</strong> (30+ controls); <strong>Uno</strong> SkiaSharp investment; <strong>Avalonia</strong> MAUI-embedding for Linux/browser.</li>
+<li><strong>.NET 11 GA targeted for November 2026.</strong></li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>XAML Source Gen vs XamlC comparison</strong> — side-by-side on a <strong>Pixel 5 / Android 14</strong> showing Source Gen completing the same navigation operations much faster than XamlC.</li>
+<li><strong>Safe Area Edges</strong> — before/after screenshots on iOS (content drawing under the region with liquid glass) and Android (drawing under the top bar while preserving tappable nav-bar buttons) via <code>SafeAreaEdges="None"</code>.</li>
+<li><strong><code>dotnet run</code> interactive picker</strong> — menu to choose target framework and emulator/simulator/device, then launch.</li>
+<li><strong>Autonomous app build + test (Copilot CLI + DevFlow)</strong> — a (sped-up) <strong>Copilot CLI</strong> session building a to-do app (a <strong>Blazor Hybrid</strong> app) and <strong>autonomously driving the iOS simulator</strong>: deciding where to click, what to test, and verifying results, with several tests passing — the mouse moves but Copilot, not a human, is interacting.</li>
+<li><strong>Barista Notes app (David Ortinau)</strong> — tracks espresso shots and gives AI-powered advice using <code>Microsoft.Extensions.AI</code> + Essentials.AI. Voice intent demo: asked "How many cups of coffee do I need to make for the people in this room?", the app auto-opens the <strong>camera</strong>, takes a picture, counts the people, and answers (<strong>18</strong> for the shown photo). Also shows the <strong><code>LogShot</code> AI tool</strong> attribute routing a "log this coffee shot" intent to a C# method.</li>
+<li><strong>Maui Sherpa</strong> — live demo against Barista Notes: visual-tree inspection, live property editing that updates the running app, network/profiling/logs, and iOS certificate/device setup.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>7% → 62%</strong> Copilot-authored merged PRs <strong>in under a year</strong> (inflection ~November).</li>
+<li><strong>XAML Source Gen:</strong> ~<strong>1,000% faster inflation</strong>, <strong>99% less debug memory</strong>, faster release, less app memory ("these numbers are not inflated — pun intended").</li>
+<li><strong>Service Release 6 = 242 commits</strong> (biggest service release yet).</li>
+<li><strong>Syncfusion:</strong> <strong>50–70% time reduction</strong> on repro/fix work; <strong>2–3× more issues</strong> handled per week with AI/Copilot.</li>
+<li><strong>Syncfusion .NET MAUI Toolkit:</strong> <strong>v1.0.10</strong>, <strong>30+ UI controls</strong>, free.</li>
+<li><strong>Maps:</strong> a single cluster shown representing <strong>7 pins</strong> (Copilot Lab + 6 more); Barista demo counted <strong>18 people</strong>.</li>
+<li><strong>Support lifecycle:</strong> <strong>18-month</strong> support per major MAUI version; new majors <strong>12 months</strong> apart with <strong>6 months</strong> overlap.</li>
+<li><strong>"MAUI has always been 50% AI — the letters are right there."</strong></li>
+<li><strong>"Build with agents, ship AI on device, native apps everywhere with .NET MAUI."</strong></li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Flip <code>MauiXamlInflator=SourceGen</code> (+ <code>EmitCompilerGeneratedFiles=true</code>) on a real MAUI project and measure debug startup/scroll perf before .NET 11 makes it default.</li>
+<li>Apply the new <code>SafeAreaEdges</code> API (e.g. <code>None</code>) to clean up notch/status-bar/gesture-area layouts on iOS + Android.</li>
+<li>Opt into Android <strong>Material 3</strong> (<code>UseMaterial3</code>) and report rough edges.</li>
+<li>Test the <strong>CoreCLR</strong> preview on iOS/Android/Mac Catalyst; wire up <strong>.NET Trace / .NET Counters</strong> profiling and note app-size delta.</li>
+<li>Use <code>dotnet run</code> / <code>dotnet watch</code> for the MAUI inner loop (and from a Copilot/agent workflow).</li>
+<li>Prototype <strong>Essentials.AI</strong> with a provider swap (Azure OpenAI ↔ ONNX local ↔ Apple Intelligence/Gemini Nano/Phi Silica) and confirm zero code change.</li>
+<li>Try <strong>AI Extensions</strong> intent navigation: tag a C# method as an AI tool and drive it by voice/text.</li>
+<li>Install <strong>Maui Sherpa</strong> and <strong>DevFlow</strong> (<code>aka.ms/mauidevflow</code>); have Copilot autonomously test a sample app via the MCP server + VS Code extension.</li>
+<li>Evaluate the free <strong>Syncfusion .NET MAUI Toolkit</strong> controls in a project.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What's the concrete app-size increase from CoreCLR in practice, and does it net out after trimming/optimization?</li>
+<li>Which Essentials.AI features are still missing on Android vs Windows (the matrix showed gaps) and what's the timeline?</li>
+<li>Is DevFlow's in-app debug agent fully isolated from release builds, and what's the security model for the injected HTTP server?</li>
+<li>Does Maui Sherpa support non-MAUI (other .NET UI) projects, as hinted?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>On-device / edge AI mobile apps (privacy-sensitive, offline, low-latency inference).</li>
+<li>Cross-platform .NET app teams modernizing XAML and upgrading to .NET 11.</li>
+<li>Anyone standardizing an <strong>agentic engineering</strong> pipeline (Copilot for repro/test/review/docs) on an OSS or internal repo.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Build 2026">Microsoft Build 2026</span></li>
+<li><code>Microsoft.Extensions.AI</code> / on-device AI (Apple Intelligence, Gemini Nano, Phi Silica, ONNX)</li>
+<li>agenticengineers.net — agentic engineering metrics</li>
+<li>mauiverse.net — MAUI community hub</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="OD802.html"><span class="pager-dir">← Previous</span><span class="pager-code">OD802</span><span class="pager-title">Building for the agentic web with .NET 11</span></a>
+    <a class="pager pager-next" href="OD804.html"><span class="pager-dir">Next →</span><span class="pager-code">OD804</span><span class="pager-title">Simplifying .NET Installs with dotnetup</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OD812 — Fabric IQ: Bringing enterprise intelligence into the developer workflow</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">OD812</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=ZUbLJDM82EQ" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Fabric IQ: Bringing enterprise intelligence into the developer workflow</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Yitzhak Kesselman, Tessa Kloster</span>
+      <span class="meta-item">⏱️ 52m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="fabric">Fabric</span><span class="chip" data-tag="fabric-iq">Fabric Iq</span><span class="chip" data-tag="ontology">Ontology</span><span class="chip" data-tag="real-time-intelligence">Real Time Intelligence</span><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="agents">Agents</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Yitzhak Kesselman (Microsoft Fabric — data/IQ leadership) &amp; Tessa Kloster (Microsoft Fabric — Real-Time Intelligence / product). Guest: Dr. Werner, Siemens Healthineers (caption-uncertain surname).<br>
+<strong>Duration:</strong> ~52 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=ZUbLJDM82EQ">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>This session lays out Microsoft Fabric's vision for moving organizations from <strong>reactive, dashboard-driven</strong> operations to <strong>proactive, autonomous</strong> operations where humans and AI agents work as one team. It frames Fabric as a three-layer "operational foundation": <strong>OneLake</strong> (unified data estate across cloud/on-prem, batch/streaming), <strong>Real-Time Intelligence (RTI)</strong> (reason about and act on streaming/event data at planet scale), and <strong>Fabric IQ</strong> (a semantic layer of ontologies — the "virtual brain of the business" — built over analytical, operational, geospatial, and real-time data). The core argument is that AI agents are only as good as the <strong>context</strong> they're grounded in, so Fabric IQ gives agents the same business meaning, relationships, rules, and actions that a trusted human employee has. Big announcements: <strong>Fabric IQ graph is now GA</strong>, <strong>operations agents are GA</strong>, <strong>data agent is GA</strong>, <strong>anomaly detector is in public preview</strong>, plus a strategic <strong>NVIDIA partnership</strong> bringing physical AI / digital twins (Omniverse) into Fabric (in preview). Demos run a single end-to-end <strong>stadium operations</strong> scenario, with customer proof from <strong>Siemens Healthineers</strong> (real-time medical-device service) and <strong>Vanderlande</strong> (airport digital twins).</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>The shift is reactive → proactive/autonomous.</strong> Customers want to stop reading stale hour/day-old reports and instead have software + agents that proactively and autonomously find the signals that matter and act on them, across thousands of interconnected business signals.</li>
+<li><strong>Operational foundation = 3 architectural layers:</strong> (1) a <strong>unified data estate</strong> (all data, cloud + on-prem, batch + streaming, in one place), (2) <strong>engines that reason</strong> over that data, and (3) an <strong>intelligence layer</strong> that extracts meaning to power both human and agent decisions.</li>
+<li><strong>"Chief Information Officer, not Chief Integration Officer."</strong> Fabric's reason for being is to unify the data platform so CIOs stop spending their time integrating systems; data lands in OneLake and many engines (Data Factory, analytics, Power BI, RTI) work seamlessly on top.</li>
+<li><strong>Fabric's three layers for builders:</strong> Unified Data (OneLake) → Business Intelligence (semantic models) → Operational Intelligence (RTI + ontologies/IQ).</li>
+<li><strong>Agents need the same context as your best employees.</strong> To act, reason, and decide like a trusted employee, an agent needs the same access and understanding (Outlook/Teams/docs <em>and</em> operational systems/customer production data). The <strong>Microsoft IQ layer</strong> unifies enterprise data + knowledge + business state: <strong>Work IQ</strong> (how employees work), <strong>Foundry IQ</strong> (institutional knowledge — documents/procedures), <strong>Fabric IQ</strong> (state of the business + ability to operate it).</li>
+<li><strong>OneLake</strong> brings data in via physical copy <strong>or virtual shortcut</strong>, stores in <strong>open formats (Delta/Parquet)</strong>, gives <strong>one layer of governance and security</strong>, and exposes data to Microsoft <em>and</em> non-Microsoft/SaaS ecosystems. <strong>170+ connectors.</strong></li>
+<li><strong>BI scale today:</strong> <strong>20M+ semantic models</strong> and <strong>35M+ monthly active users</strong> across the ecosystem — a curated repository of analytical business understanding.</li>
+<li><strong>"No AI without RTI."</strong> Agentic solutions need the highest-volume, highest-granularity, freshest, most accurate data — exactly what Real-Time Intelligence provides; it's not limited to <em>time</em> but also <em>where</em> it happened and <em>what's related/impacted</em>.</li>
+<li><strong>RTI runs at planet scale:</strong> <strong>600T+ messages/month</strong>, <strong>14.3 exabytes</strong> of events+logs/month, <strong>7.8B real-time queries/day</strong>, <strong>five-nines (99.999%) messaging reliability</strong> — and is cost-competitive (public benchmark vs Confluent + Snowflake: <strong>12× faster, 37% more cost-effective</strong>).</li>
+<li><strong>Ontology = the "virtual brain of the business."</strong> It models the business by <strong>entities</strong> (rich: properties, measures, geospatial, time-series, actions), <strong>business-meaning relationships</strong> (not just data keys), <strong>rules/policies</strong>, and <strong>objectives</strong> (e.g. satisfaction, profitability) — so people and agents reason in the <em>language of the business</em>, not tables and schemas.</li>
+<li><strong>The problem Fabric IQ solves:</strong> today analytical and operational systems are separate, actions aren't immediately reflected back, teams run fragmented data estates, and even "what is an active gate?" gets different (locally correct) answers — producing reactive, slow organizations.</li>
+<li><strong>Build ontologies fast with Copilot + no-code visual tools.</strong> Copilot suggests entity types, properties, data bindings, and relationships from your existing <strong>semantic models</strong> and <strong>Event House</strong> data, can pull in <strong>industry standards</strong>, and you approve suggestions into a live ontology — not a one-time effort.</li>
+<li><strong>Fabric IQ graph is GA:</strong> native graph over OneLake data (no extra ETL), with a <strong>visual no-code GQL query builder</strong> for multi-hop relationship/causal analysis (entrance → seating section → concession → warehouse).</li>
+<li><strong>Operations agents (GA) are onboarded like a team member:</strong> you give goals + instructions, connect the <strong>ontology</strong> (entities/relationships/actions auto-available), add custom actions, and it <strong>generates a playbook</strong>, then monitors, does root-cause investigation, recommends/takes actions (e.g. reorder low concession stock) directly in a Teams channel, with an <strong>activity log</strong> for trust/refinement.</li>
+<li><strong>Anomaly detection without data science.</strong> A no-code <strong>anomaly detector</strong> (public preview) analyzes Event House data, recommends the best model, and emits anomaly events as new data streams in — feeding alerts and operations agents.</li>
+<li><strong>Agent grounding spectrum (no-code → pro-code):</strong> Foundry, Copilot Studio, and out-of-the-box Fabric agents are all grounded/integrated on Fabric IQ ontologies and powered by RTI; <strong>Fabric IQ APIs + MCP + skills</strong> let developers build and consume ontologies programmatically.</li>
+<li><strong>Physical AI via NVIDIA partnership (preview):</strong> combine RTI (live signals) + Fabric IQ (ontology brain) + <strong>NVIDIA Omniverse</strong> (physically-accurate 3D / <strong>OpenUSD</strong> scenes + simulation) for <strong>digital twins</strong> with <strong>bidirectional cross-highlight</strong>, embedded in real-time dashboards — extending operations from the digital world into the physical world.</li>
+<li><strong>Connect Fabric IQ ↔ Foundry IQ</strong> to unite live business context with document/communication knowledge, giving Foundry-built agents trusted decision context and continuous operations optimization.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="the-opening-narrative-from-fragmented-data-to-a-unified-living-system">The opening narrative — from fragmented data to a unified living system</h3>
+<p>Yitzhak Kesselman opens (caption renders his name as "Sakasaman"/"Yetac"/"Ysack") by framing the talk around bringing <strong>the data, the semantics, and the ontology behind the data</strong> to power applications in the age of AI. An intro video sets the theme: today's world moves faster than most organizations can react; problems and opportunities appear in real time and signals pour in from every direction, changing second by second until the volume becomes overwhelming. To stay ahead, a business must see itself <strong>not as fragmented data but as a unified living system</strong> — one system that shows what's connected, what's changing, and what every action will affect, letting teams and AI <strong>think in the language of the business</strong> from the smallest detail to the big picture, instantly and intuitively. People and AI agents operate as <strong>one team</strong>, not only spotting issues/opportunities but understanding full context and what to do; agents continuously monitor and act when it makes sense, recommend options, and coordinate in real time with their human teammates. <strong>Decisions become actions, and actions ripple across the organization, changing outcomes in the moment.</strong> This is positioned as the present reality and as <strong>Microsoft Fabric</strong>.</p>
+<h3 id="the-core-shift-reactivemanual-proactiveautonomous">The core shift: reactive/manual → proactive/autonomous</h3>
+<p>Across the board, customers want to move away from <strong>reactive, manual</strong> work — looking at reports/dashboards that are stale by hours or days — toward <strong>proactive and autonomous</strong> software and agents that find insights behind the data and help operate the business. Returning to the recurring <strong>stadium operations</strong> scenario, the goal is to collect all the signals across different entities, pair them with <strong>actions</strong> and the <strong>sense/meaning</strong> behind them. Running business operations means connecting <strong>thousands of signals</strong> across the business, understanding what they mean as a whole, and finding the signals that <strong>really matter</strong> to drive a change in business outcome — with humans and agents working together.</p>
+<h3 id="the-operational-foundation-three-architectural-layers">The operational foundation: three architectural layers</h3>
+<p>From an architectural perspective, the operational foundation is <strong>three layers</strong>:
+1. <strong>Unified data estate</strong> — bring all data together across cloud and on-prem, batch and streaming, into one place, so you can reason about how the business operates across its whole majority.
+2. <strong>Engines that reason</strong> — engines that can reason over and understand all this data together.
+3. <strong>Intelligence layer</strong> — find the reasoning and meaning behind the data to power both human and agent decisions.</p>
+<p>The aim is to connect all data — streaming, batch, structured, semi-structured, unstructured — into one unified place. <strong>That is where Fabric came into place.</strong> CIOs say "I want to be the <em>Chief Information</em> Officer, not the <em>Chief Integration</em> Officer," and Fabric is the unified data platform answer: bring all data in, reflect it in <strong>OneLake</strong>, and let different engines (Data Factory, analytics, Power BI, Real-Time Intelligence) work seamlessly on top.</p>
+<p>Mapped onto the operational story, the three layers become: <strong>OneLake</strong> (represents all the data across the organization), <strong>Real-Time Intelligence</strong> (reason about the data, take actions, understand it), and <strong>Fabric IQ</strong> (create the semantic understanding behind analytical data, plus ontologies to drive business operations). These are the critical components that let humans and agents work together.</p>
+<h3 id="agents-as-trusted-productive-employees-and-the-microsoft-iq-layer">Agents as trusted, productive employees — and the Microsoft IQ layer</h3>
+<p>The stated goal for building agents: make them <strong>as trusted and as productive as your best employees</strong>. For that, agents need the <strong>same context and understanding</strong> a person has. A human employee has access to Outlook, Teams, and company documents, <strong>but also</strong> operational systems — customer production environments and systems. Agents need that same context to act, reason, and decide the same way a person can. That is the role of the <strong>intelligence layer</strong> — powering both humans and agents to understand all organizational data together with created knowledge and the <strong>state of the business</strong> (and what actions can be taken).</p>
+<p>This is <strong>Microsoft IQ</strong>, which unifies all enterprise data and understanding into one layer, composed of:
+- <strong>Work IQ</strong> — understands how your employees work.
+- <strong>Foundry IQ</strong> — understands institutional knowledge: all the documents, procedures, communications.
+- <strong>Fabric IQ</strong> — understands the <strong>state of the business</strong> and helps you <strong>operate</strong> it.</p>
+<p>For the stadium scenario, that means collecting and understanding all the data across the business; the session then dives deep into <strong>Fabric IQ</strong> specifically.</p>
+<h3 id="fabrics-three-layers-for-software-builders">Fabric's three layers for software builders</h3>
+<p>For anyone building software on Fabric, it consists of three layers:
+1. <strong>Unified data</strong> — connect all structured, semi-structured, and unstructured data into one place.
+2. <strong>Business intelligence</strong> — use <strong>semantic models</strong> that represent the analytical understanding of the business.
+3. <strong>Operational intelligence</strong> — take all the data + analytical understanding and power it with <strong>reasoning, streams of data, and events</strong> that happen in the business, plus the ability to <strong>act</strong> on that data. The capstone is <strong>ontologies in IQ</strong>, which create the <strong>virtual brain</strong> of business operations and let people and agents work together to operate the business.</p>
+<h3 id="layer-1-onelake-the-unified-data-estate">Layer 1 — OneLake (the unified data estate)</h3>
+<p>OneLake is a critical part of Microsoft Fabric. It brings data in across sources — on-prem and cloud, Microsoft and non-Microsoft — either as a <strong>physical copy</strong> or <strong>virtually as a shortcut</strong> (just point to the data). Once data is in OneLake:
+- It's accessible across Microsoft systems and via <strong>Excel</strong> or other sources.
+- It's accessible through <strong>other SaaS providers</strong> that can read OneLake.
+- It uses <strong>open-format sources</strong> — <strong>Delta/Parquet</strong> — and Fabric's engines are optimized to work seamlessly and performantly on top of it.</p>
+<p>A key emphasis is <strong>governance and security</strong>: OneLake provides <strong>one security layer across all data sources</strong>. Once you mirror or shortcut data into OneLake (across on-prem, cloud, or other data platforms), all of it is secured and governed in one layer — essential for working with data + AI responsibly. Fabric ships <strong>170+ connectors</strong> to bring data in across sources, enabling a <strong>full unified view</strong> of business data.</p>
+<h3 id="layer-2-bi-and-semantic-models-the-analytical-brain">Layer 2 — BI and semantic models (the analytical brain)</h3>
+<p>There are <strong>20M+ semantic models</strong> in organizations today, representing the analytical understanding of businesses. They run day-to-day analytical understanding and provide a <strong>curated repository</strong> for business understanding and analytical decisions. <strong>35M+ users</strong> use these semantic models regularly (monthly) across the ecosystem. These become a primary source Copilot draws on later when generating ontologies.</p>
+<h3 id="layer-3-operational-intelligence-rti-ontologiesiq">Layer 3 — Operational intelligence (RTI + ontologies/IQ)</h3>
+<p>The third layer splits into two aspects: <strong>Real-Time Intelligence</strong> and <strong>ontologies/IQ</strong>. Yitzhak hands over to <strong>Tessa Kloster</strong> for RTI.</p>
+<h3 id="real-time-intelligence-rti-overview">Real-Time Intelligence (RTI) — overview</h3>
+<p>RTI gives access to all <strong>streaming and event data</strong>. It starts from a <strong>wide range of connectors</strong> (Microsoft and cross-cloud, with more added every week). The full capability set is a "toolbox" spanning the end-to-end solution:
+- <strong>Connectors + data ingest</strong> — easy access to streaming/event data.
+- <strong>Streaming</strong> capabilities directly in the streaming area.
+- A <strong>curated engine for analysis</strong> — query <strong>petabytes</strong> of data in <strong>seconds</strong>.
+- <strong>Model &amp; contextualize</strong> the data to understand it.
+- <strong>Visualize</strong> it in a truly <strong>operational format</strong> so you see data as it arrives.
+- <strong>Act on / understand</strong> the data within the rest of the system.</p>
+<p>Crucially, RTI <strong>isn't limited to time</strong>. The temporal aspect matters (sequence of events, how things change over time), but you also need <strong>where</strong> it happened (geospatial) and <strong>what is related / could be impacted</strong> — for a holistic understanding of operations.</p>
+<h3 id="demo-1-rti-end-to-end-stadium-operations">Demo 1 — RTI end-to-end (stadium operations)</h3>
+<p>Tessa walks the <strong>Real-Time Hub</strong> (the central location for all streaming/event data):
+- <strong>Ingest via MQTT:</strong> uses the <strong>new MQTT connector</strong> to bring in <strong>turnstile events</strong>; very easy to connect and land data directly into the system.
+- <strong>Event stream:</strong> sees the MQTT source in the event stream, can mix in custom events or other streaming sources into the same stream, and load to destinations (<strong>Event House</strong>, notebooks).
+- <strong>Notebook processing:</strong> opens a notebook to do additional processing — e.g. detecting increased volume coming into the stadium worth monitoring/acting on.
+- <strong>Business events (new capability):</strong> from the notebook, <strong>emits a business event</strong> when congestion is detected. Back in the Real-Time Hub, the new <strong>business events</strong> capability shows a <strong>"turnstile congested"</strong> event; from that view she <strong>sets an alert</strong> so the team is notified when the condition occurs. Business events are curated events that can flow to the rest of the system.
+- <strong>Task flow → Event House → dashboards:</strong> data lands in Event House and flows all the way to <strong>real-time dashboards</strong>, where the team monitors stadium operations live.
+- <strong>Real-time dashboard + Copilot:</strong> on the dashboard she sees streaming data from a wide range of sources, including <strong>security health</strong>. Drilling into <strong>duplicate ticket scans</strong>, she uses <strong>Copilot</strong> to break down duplicate ticket scans by <strong>ticket type per entrance</strong> — revealing the <strong>VIP entrance</strong> (premium + VIP) has the highest duplicate scans (concerning). She refines the chart colorings so anyone viewing gets the info.
+- <strong>Geospatial:</strong> integrates <strong>rich geospatial</strong> capabilities with the real-time operational data — sees stadium traffic/people flow, <strong>hotspots</strong>, which entry points have congestion, and what concessions/areas will be impacted.
+- <strong>Alert → action:</strong> from the operational dashboard she sets an alert on <strong>rising average wait time</strong>, but goes beyond notification to <strong>take an action</strong> — running a <strong>notebook for load balancing</strong> across areas, passing <strong>specific parameters</strong> from the query as it runs/detects. (This is the <strong>manual</strong> path; the <strong>autonomous</strong> path comes later with operations agents.)</p>
+<p>The demo shows the full <strong>event condition → action</strong> loop. Although focused on stadiums, RTI customers span <strong>sports, energy, airports, airlines, manufacturing, retail</strong> and more.</p>
+<h3 id="no-ai-without-rti-and-planet-scale-infrastructure">"No AI without RTI" — and planet-scale infrastructure</h3>
+<p>Customers say there's <strong>no AI without RTI</strong>: any AI solution — especially an <strong>agentic</strong> one — needs the <strong>highest-volume, highest-granularity</strong> data, and it must be <strong>fresh</strong> and <strong>accurate</strong>. The user-friendly experiences shown are built on <strong>planet-scale infrastructure for real-time data</strong>:
+- <strong>600 trillion+ messages per month</strong>
+- <strong>14.3 exabytes</strong> of events and logs per month
+- <strong>7.8 billion real-time queries per day</strong>
+- <strong>five-nines (99.999%) reliability</strong> across messaging</p>
+<p>On <strong>cost</strong>, RTI is competitive on scale + performance + cost (you don't give any up). A <strong>public benchmark vs Confluent and Snowflake</strong> showed RTI was <strong>12× faster and 37% more cost-effective</strong> across the scenarios.</p>
+<h3 id="rti-updates-shipped-leading-up-to-build">RTI updates shipped leading up to Build</h3>
+<p>Tessa runs through recent RTI updates:
+- <strong>GA: SQL operator in Eventstream</strong> — express custom business logic using <strong>SQL</strong>.
+- <strong>Spark Structured Streaming with Eventstream</strong> — stream-process using <strong>Python</strong>, with a rich connection between Eventstream and Spark notebooks.
+- <strong>Delta flow</strong> for event-driven apps — easily transform <strong>Debezium feeds</strong> directly into analytics-ready events without customizing inside the event stream.
+- <strong>Business events in the Real-Time Hub</strong> — publish business events for anyone in Fabric to subscribe to (analytics or action).
+- <strong>Copilot in RTI</strong> — not just visualize, but understand and explore data in context.
+- <strong>MCP + skills for RTI</strong> — bring real-time data directly to your agents.
+- <strong>GA: geospatial visualization (map item)</strong> — generally available for all geospatial needs, real-time and alongside the rest of Fabric.</p>
+<p>Tessa hands back to Yitzhak for Fabric IQ.</p>
+<h3 id="fabric-iq-modeling-the-business-not-the-tables">Fabric IQ — modeling the business, not the tables</h3>
+<p>Yitzhak reframes: Fabric unifies <strong>data</strong>; the next level is unifying <strong>business operations</strong>. Looking closely at the stadium scenario, the goal is to understand the <strong>entities</strong> involved: the <strong>stadium, gates, food stands, attendees</strong>. These are <strong>rich entities</strong> — they have properties and measures, but also:
+- <strong>Geospatial</strong> info (e.g. the location of a gate).
+- <strong>Time-series</strong> data (e.g. how many people pass through a gate).
+- <strong>Actions</strong> you can apply (e.g. assign crew, schedule a repair).</p>
+<p>Critically, these entities are interconnected by <strong>business meaning</strong> — <strong>not just a data-key relationship</strong>, but a relationship that means something to the business. That lets you apply <strong>rules and policies</strong> (e.g. crowd management, food safety) and ultimately drive the <strong>objective</strong> of the business (e.g. satisfaction, profitability). <strong>That is how the business actually thinks about operations</strong> — in entities, properties, goals, and actions.</p>
+<h3 id="why-todays-reality-falls-short">Why today's reality falls short</h3>
+<p>In reality, teams work with <strong>tables and schemas</strong>. Questions spawn <strong>analytical reports</strong>; more questions spawn more reports. Those analytical systems are <strong>separate from operational systems</strong>, so an action taken on the operational side <strong>isn't immediately reflected</strong> on the analytical side — they don't work in tandem. Wanting to understand something, act, and see feedback becomes slow and disconnected. Zooming out, an organization has <strong>multiple teams</strong> on <strong>multiple data estates</strong> running <strong>different operational systems</strong>, creating a <strong>complex, fragmented</strong> scenario. The classic example: ask <strong>"what does an <em>active gate</em> mean?"</strong> and different teams give <strong>different answers</strong> — each correct in its own context, but <strong>confusing for the broader organization</strong>. The net effect: companies trying to run their business across all their data end up <strong>fragmented, reactive, and slow to act</strong>.</p>
+<h3 id="the-fix-connect-data-to-meaning-then-act">The fix — connect data to meaning, then act</h3>
+<p>The goal is to <strong>connect the data to the meaning and drive actions</strong> on top of it: collect data from applications, IoT devices, telemetry, user behavior, etc., and empower business operations where humans and agents work in tandem. The familiar developer cycle — <strong>collect → observe → analyze → decide → act</strong> — needs the <strong>semantic understanding</strong> of what all those signals and actions mean. That semantic understanding becomes an <strong>ontology</strong> that represents the <strong>virtual brain of the business</strong>: all entities, how they interconnect, the policies, the rules, and the actions you can apply — used to power the business for both humans and agents, across all operational systems.</p>
+<h3 id="fabric-iq-intro-video-the-semantic-foundation">Fabric IQ intro video — the semantic foundation</h3>
+<p>The Fabric IQ video reinforces: <strong>data is the fuel that powers AI, but data alone is not enough</strong> — AI needs an understanding of <strong>what the data means, how things relate, and which actions turn insight into impact</strong>. <strong>Microsoft Fabric IQ</strong> is the <strong>semantic foundation</strong> that unites <strong>data, business meaning, and action</strong> into a single unified view of the organization. You <strong>model your business with visual no-code tools</strong> so the people who know the company can adapt it as fast as it evolves; create <strong>entities over all your OneLake data</strong> — not only analytical data and Power BI semantic models, but also <strong>operational, geospatial, and real-time</strong> data. You <strong>navigate the business the way it actually runs</strong> — by organizational concepts, not tables/schemas — and elevate teams + AI to <strong>ask, reason, and act in the language of the business</strong> over a <strong>live unified view</strong>. You <strong>trigger actions in real time using rules</strong> and empower <strong>AI operations agents</strong> to run the business because they understand its <strong>live context</strong>. Finally, <strong>connect Fabric IQ with Foundry IQ</strong> to unite live business context with knowledge captured in documents/communications — giving developer-built Foundry agents <strong>unmatched context</strong> for trusted decisions and continuous operations optimization. <strong>"From unified data to unified intelligence — this is IQ in Microsoft."</strong></p>
+<h3 id="demo-2-building-using-an-ontology-copilot-no-code">Demo 2 — Building &amp; using an ontology (Copilot + no-code)</h3>
+<p>Tessa returns to show the product. Fabric IQ has three things to highlight: the <strong>ontology</strong> (the brain), <strong>actions &amp; rules</strong> in the ontology item, and <strong>graph analytics</strong>.</p>
+<p><strong>Creating the ontology:</strong>
+- Start as with anything in Fabric by <strong>creating an item</strong> — a new <strong>ontology item</strong> — and choosing which <strong>workspace</strong> it lives in (helps with permissions/control).
+- You can <strong>import</strong> or start directly with <strong>Copilot</strong>. Using Copilot, she types in <strong>natural language</strong> to start creating the ontology; it suggests <strong>leveraging existing semantic models</strong>, and she selects a couple that hold the right entities/relationships for <strong>stadium and security</strong> data.
+- She gives more intent in natural language: <strong>"create a game-day stadium operations ontology,"</strong> specifying concepts to model. She can even specify <strong>industry standards</strong> or other org/web sources for Copilot to pull in.
+- Copilot reasons and produces <strong>entity types, properties, data bindings, and relationships</strong>, assembling them in the ontology. She <strong>approves them all</strong> into the actual ontology.
+- From there it's easy to keep building: <strong>add entity types and relationships</strong>; open an entity type (e.g. <strong>Event</strong> / <strong>Entrance</strong>), see how it relates to others, and <strong>add more data</strong> — e.g. selecting <strong>Event House</strong> data to bring in real-time/streaming data, <strong>binding the precise timestamp</strong> to time-series properties. Copilot <strong>suggests properties</strong> to bring in, and she can add explicit ones — landing that data alongside the existing semantic-model data in a few clicks.
+- She can also add <strong>rules and actions</strong> directly from the entity type (powerful because it's about <strong>everything that makes up the entity</strong>, not a single data source), and even connect <strong>reports</strong> — producing a <strong>unified view</strong> of all components of each business entity.</p>
+<p><strong>Using the ontology:</strong>
+- Back in the <strong>ontology view</strong>, she opens the <strong>entity-type overview</strong> for the <strong>Entrance</strong> entity to see what's happening <strong>right now</strong>: streaming data like <strong>queue length / wait time in minutes</strong>, the <strong>relationship graph</strong>, and the data context.
+- The overview shows <strong>eight instances</strong> of entrances and how data is distributed across them. Selecting a specific instance (the <strong>North entrance</strong>) drills into that instance — properties like <strong>where it is</strong>, plus data views narrowed to that item.</p>
+<h3 id="demo-3-graph-analytics-in-fabric-iq-ga">Demo 3 — Graph analytics in Fabric IQ (GA)</h3>
+<p>Tessa announces <strong>graph is generally available</strong> — <strong>native graph</strong> that takes OneLake data + the ontology and helps you understand all the information together (<strong>no extra ETL</strong> for relationship analysis and more):
+- Continuing from the North-gate entrance that needed more investigation, she goes into the <strong>graph item</strong> and uses the <strong>visual no-code query builder</strong> to build a rich <strong>GQL</strong> query <strong>without writing code</strong>.
+- She picks <strong>Entrance</strong>, and the builder helps add related nodes (<strong>course/concourse segment, seating section</strong>), filters down, and returns <strong>fast graph results</strong> — seeing entrances and the areas they relate to.
+- Using <strong>seating section 204</strong> as an example, she explores the implications of something happening at an entrance on section 204, specifying a GQL query for related areas + nearby entrances, switching to a <strong>list view</strong> for clarity.
+- A richer query goes from <strong>area → related gates → which concession stands are involved</strong>, so that during a <strong>surge</strong> you know which concessions need to be on standby with enough <strong>staff and supplies</strong>. One more <strong>hop</strong> goes all the way to the <strong>warehouse</strong> — understanding which warehouses power which concession stands near which entrances. This <strong>multi-hop analysis</strong> across the entire system is presented as the key power of graph built directly into the ontology.</p>
+<h3 id="planning-in-fabric-iq">Planning in Fabric IQ</h3>
+<p>Tessa notes <strong>planning in Fabric IQ</strong> (announced at <strong>FabCon</strong>): over the same trusted data you can <strong>plan and run what-if scenarios</strong>, powerful for <strong>business and finance teams</strong>.</p>
+<h3 id="customer-story-siemens-healthineers-dr-werner">Customer story — Siemens Healthineers (Dr. Werner)</h3>
+<p>Yitzhak welcomes <strong>Dr. Werner</strong> (surname caption-uncertain; rendered "Worer"/"Verer"/"M") from <strong>Siemens Healthineers</strong> ("Simmons Health"/"Seammeners"). Siemens Healthineers sells <strong>medical products</strong> — <strong>CTs, MRIs, angiography systems, ultrasound systems</strong> — to customers and receives data back; Dr. Werner's job is to <strong>analyze the data and develop cloud solutions</strong> for good customer-service outcomes.</p>
+<ul>
+<li><strong>Evolution:</strong> from <strong>plain old batch file processing</strong> toward <strong>proactive service</strong> and <strong>real-time streaming</strong>. For 20–25 years they transferred <strong>log files</strong> from systems for customer service / data analysis.</li>
+<li><strong>Three main service use cases:</strong>
+  1. <strong>Predictive service</strong> — forecast an upcoming failure (hard if you only get a file once per day).
+  2. <strong>Proactive service</strong> — something already happened on the system that's not good; Siemens knows before the customer realizes, so they're prepared if the customer calls.
+  3. <strong>Reactive service</strong> — mission-critical, especially in <strong>angiography</strong>: a <strong>patient is on the table</strong> mid-treatment and the doctor says the system isn't working — <em>should I relocate the patient?</em> You need the data <strong>immediately</strong>, analyzed <strong>immediately</strong>; technology must enable that.</li>
+<li><strong>Before → now:</strong> previously used <strong>other products/databases</strong> where data scientists were <strong>stuck building intermediate tables</strong>. Moving to Microsoft's native stack — <strong>Event Grid, Event Hub, Azure Data Explorer</strong> — changed things dramatically; data scientists now have time to find the <strong>patterns</strong> that reveal what's actually wrong, helping customers and patients.</li>
+<li><strong>Onto Fabric RTI:</strong> Fabric is a <strong>natural successor</strong> to that prior stack, with impact on two aspects: (1) <strong>Development speed increases</strong> — the nitty-gritty details are automated; (2) <strong>Operations</strong> — no time spent operating VMs, clusters, servers; it's automated, <strong>decreasing operational costs</strong>.</li>
+<li><strong>Business/customer impact:</strong> <strong>streaming is now a commodity</strong> — systems must stream in real time. Fabric helps <strong>reactive service hit the exact point</strong> of a problem, <strong>order spare parts</strong> if required, and <strong>prevent downtime</strong> for customers — a net benefit on the customer side.</li>
+</ul>
+<p>Yitzhak's takeaway: exactly the goal — developers focus on their <strong>specific IP/knowledge</strong>, not the <strong>plumbing</strong> or system maintenance.</p>
+<h3 id="applying-ai-ml-llms-grounded-on-the-ontology">Applying AI: ML + LLMs, grounded on the ontology</h3>
+<p>Everyone talks about AI, but the question is generating <strong>real value</strong>. Two aspects: <strong>machine learning</strong> and <strong>LLMs (large language models)</strong>. AI excels at <strong>finding the needle in the haystack</strong> and reasoning about it — using those signals to drive operations. Fabric IQ's difference: instead of working on <strong>tables and schemas / raw data without business context</strong>, it <strong>grounds agents on the real business context</strong> — what the business represents, all the actions, rules, and policies (the virtual brain).</p>
+<p>Across the <strong>agent spectrum</strong> (no-code → pro-code custom agents), you want agents <strong>grounded on the ontology + Fabric IQ and powered by RTI</strong>. Microsoft's integrations — <strong>Microsoft Foundry, Microsoft Copilot Studio, and out-of-the-box agents from Fabric</strong> — are all <strong>grounded and integrated on Fabric IQ ontologies</strong>.</p>
+<h3 id="demo-4-anomaly-detector-operations-agent-ga">Demo 4 — Anomaly detector + Operations agent (GA)</h3>
+<p>Tessa demos <strong>operations agent</strong> capabilities (<strong>generally available</strong>), starting with an <strong>anomaly detector</strong>:</p>
+<p><strong>Anomaly detector (public preview):</strong>
+- Leverages the <strong>same Event House data</strong>, brings the <strong>power of data science</strong>, analyzes the data and its patterns, and <strong>recommends the best model</strong> to detect anomalies.
+- For non-data-scientists, it uses <strong>user-friendly terminology</strong> (e.g. <strong>"fast outlier scanner," "core pattern finder"</strong>) shown alongside the data so you understand what the model will do and whether it matches the anomalies you know in your business.
+- In a few clicks she <strong>creates and publishes</strong> the anomaly detector; as new data streams in it runs the analysis and <strong>emits an anomaly-detector event</strong> when conditions are met — fully automating what she earlier did manually. Subscribing, she can <strong>filter to specific values</strong>, and the alert can run alongside the team and notify them.</p>
+<p><strong>Operations agent (GA):</strong>
+- Monitors and understands all the data — <strong>anomaly-detector events, Event House data, the ontology</strong> — in <strong>real time</strong>, and most importantly <strong>acts</strong> alongside the business.
+- <strong>Onboarded like a team member:</strong> she gives it <strong>goals</strong> (e.g. ensure <strong>stock levels for concession stands</strong> are adequate) and detailed <strong>instructions</strong>, then connects it <strong>directly to the ontology</strong> so all <strong>entities, relationships, and actions</strong> are <strong>automatically available</strong>. She can also add <strong>custom actions</strong>.
+- <strong>Generate the playbook:</strong> the agent reports back what it understood — the relevant <strong>entities</strong> for the goals, the interesting <strong>properties</strong>, and the <strong>rules</strong> it will monitor <em>and act on</em> when conditions are met.
+- <strong>Running alongside the team in Teams:</strong> the agent appears in the <strong>Teams channel</strong> and has already found a condition — a specific <strong>concession has low stock</strong> — and <strong>recommends an action to reorder</strong>. She can also choose <strong>investigate further</strong>, prompting the agent to do <strong>root-cause analysis</strong> to ensure the suggested action is best (still <strong>reorder</strong>), then asks her to <strong>confirm parameters</strong> — going from <strong>identify → understand → act/resolve</strong> automatically.
+- <strong>Activity log (out-of-box):</strong> shows not just what happened but <strong>what was run/executed</strong> and the <strong>alert/action taken</strong>, building <strong>confidence</strong> and enabling <strong>refinement</strong> so the agent works best alongside the business.</p>
+<p><strong>Other AI capabilities across the system:</strong> build a <strong>RAG</strong> solution directly with <strong>Event House</strong>; the <strong>anomaly detector</strong> (public preview) connects easily to existing Event House data; <strong>data agent is GA</strong> in Fabric IQ for <strong>natural-language questions</strong>; and <strong>operations agent is GA</strong> in Fabric IQ. You can also use <strong>Foundry</strong> to connect to the <strong>same ontology</strong> across the Fabric data estate to build <strong>custom agents</strong>.</p>
+<h3 id="physical-ai-nvidia-partnership-digital-twins-preview">Physical AI — NVIDIA partnership &amp; digital twins (preview)</h3>
+<p>Yitzhak takes it further: use real-world signals + the ontology brain to move into the <strong>physical world</strong> — <strong>physical AI</strong>, via a <strong>strategic partnership with NVIDIA</strong>. In an <strong>airport operations</strong> scenario with many entities (<strong>robotic arms, conveyor belts, baggage, cameras</strong>), the question is how to collect, analyze, understand, and act on signals — with humans and agents <strong>and</strong> in the physical world:
+- <strong>Fabric Real-Time Intelligence</strong> collects all the real-time signals.
+- <strong>Fabric IQ</strong> (ontologies) contextualizes them into the <strong>virtual brain</strong> of operations.
+- <strong>NVIDIA Omniverse</strong> creates <strong>3D visualization</strong> of the real world plus <strong>simulations</strong> to mimic the physical world.</p>
+<p>Together this is a <strong>unified spatial context</strong>: bring all data into one place and drive operations in <strong>both the digital and physical world</strong>. The solution is <strong>in preview</strong> — connect the streams, embed them in the <strong>real-time dashboard</strong> using <strong>OpenUSD scenes</strong> integrated with <strong>NVIDIA Omniverse libraries</strong>, producing a <strong>3D visualization</strong> that shows in real time how systems operate, with <strong>bidirectional cross-highlight</strong>, all powered by a <strong>unified operations picture</strong>.</p>
+<h3 id="demo-5-vanderlande-airport-digital-twin-video">Demo 5 — Vanderlande airport digital twin (video)</h3>
+<p>The Vanderlande ("Vanderland") video shows the future: airports manage <strong>thousands of moving assets</strong> in real time, but operations are spread across fragmented systems, making it hard to see what's happening now or what risks are coming next. With <strong>Vanderlande's Open Air platform</strong>, live operational data flows into <strong>Microsoft Fabric Real-Time Intelligence</strong>, creating <strong>digital twins built over an ontology</strong> connecting <strong>flights, gates, passengers, bags, and equipment</strong>. <strong>Physically-accurate 3D visualizations on NVIDIA Omniverse libraries</strong> add spatial context, while the <strong>operations agent in Fabric</strong> monitors, surfaces risks, and recommends actions — humans and AI working side by side:
+- The agent alerts that a <strong>delayed inbound flight</strong> was <strong>reassigned to a new parking position</strong> with a <strong>tight connection window</strong>; passengers must clear security fast. It recommends to <strong>prep the position immediately</strong>; using the <strong>3D view</strong>, the operator finds <strong>suitable nearby vehicles</strong> and with <strong>one click</strong> approves work orders and dispatches ground teams.
+- A <strong>failing conveyor motor</strong> slows baggage throughput; the agent <strong>flags the risk and highlights the conveyor in 3D</strong>. After verifying, the operator approves a <strong>reroute</strong> and a <strong>maintenance work order</strong>, keeping transfer bags/connections on schedule.
+- Inside the terminal, the 3D view shows a <strong>heat map</strong> of congestion at <strong>security checkpoint A</strong>; the agent recommends <strong>opening lanes and rerouting passengers</strong>. The operator <strong>verifies, then approves</strong>, dispatching staff to escort tight-connection passengers via a faster route to their gates.</p>
+<p>Result: an <strong>integrated real-time view with spatial context and AI-driven operations</strong> — detect risks earlier, act proactively, reduce disruptions, improve passenger experience. The operator <strong>stays in control</strong> throughout (verify → approve).</p>
+<h3 id="roadmap-getting-started">Roadmap &amp; getting started</h3>
+<p>Yitzhak closes: this is the <strong>future of data and AI</strong> — developers using signals to create a representation of the <strong>physical world</strong>. New capabilities were <strong>announced today at Build</strong> (highlighting <strong>GA of operations agents</strong> and more), with features shipping <strong>every week/month</strong> — feedback requested. <strong>Fabric IQ</strong> was <strong>announced as preview at Ignite</strong>, with more capabilities and a <strong>new code</strong> coming; all the demoed capabilities can be used via <strong>APIs and MCP (with skills)</strong> to create ontologies.</p>
+<p>Getting started resources:
+- <strong>Real-Time Intelligence in a Day</strong> workshop.
+- <strong>Skills</strong> to use and learn.
+- <strong>Ontology Playground</strong> — create ontologies within Fabric today.
+- Hands-on <strong>documentation, skills, and learning</strong> materials (scan the QR codes).
+- <strong>Featured partners</strong> to help accelerate onboarding.
+- Recommended related Build sessions: a <strong>unified Fabric overview</strong> ("Nets"), and a <strong>deep-dive on Real-Time Intelligence</strong> from Tessa.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Microsoft Fabric</strong> — the unified data + analytics + operational-intelligence platform underpinning the whole talk.</li>
+<li><strong>OneLake</strong> — Fabric's unified data lake; brings data in via physical copy or <strong>virtual shortcut</strong>, stores in <strong>open formats (Delta/Parquet)</strong>, one governance/security layer, 170+ connectors.</li>
+<li><strong>Microsoft IQ</strong> — the umbrella intelligence layer unifying enterprise data + knowledge + business state.</li>
+<li><strong>Work IQ</strong> — understands how employees work.</li>
+<li><strong>Foundry IQ</strong> — understands institutional knowledge (documents, procedures, communications); connectable to Fabric IQ.</li>
+<li><strong>Fabric IQ</strong> — the semantic foundation: ontologies, entities, relationships, rules, actions = the "virtual brain of the business."</li>
+<li><strong>Real-Time Intelligence (RTI)</strong> — access/reason/act on streaming + event data at planet scale.</li>
+<li><strong>Real-Time Hub</strong> — central location for all streaming/event data.</li>
+<li><strong>Eventstream</strong> — stream ingest/processing; supports SQL operator (GA), Spark Structured Streaming, Delta flow.</li>
+<li><strong>Event House</strong> — curated analytics store for real-time/streaming data; also supports RAG solutions.</li>
+<li><strong>MQTT connector</strong> — new connector used to ingest turnstile events.</li>
+<li><strong>Business events</strong> — curated events emitted (e.g. from a notebook) and published in the Real-Time Hub for others to subscribe to.</li>
+<li><strong>Activator</strong> — the alerting/action engine (referenced for the "wide range of actions, more added every week").</li>
+<li><strong>Real-time dashboards</strong> — operational visualization of streaming data as it arrives.</li>
+<li><strong>Copilot (in RTI / in ontology creation)</strong> — explore/understand data, and generate ontology entities/properties/bindings/relationships from natural language.</li>
+<li><strong>Geospatial map item</strong> — GA geospatial visualization integrated with real-time/operational data.</li>
+<li><strong>Semantic models</strong> — Power BI analytical models (20M+ exist; 35M+ MAU); a primary source for ontology generation.</li>
+<li><strong>Ontology item</strong> — the Fabric item where you model entities, relationships, rules, actions; created in a workspace.</li>
+<li><strong>Graph (Fabric IQ)</strong> — native graph over OneLake data; <strong>visual no-code GQL query builder</strong>; multi-hop relationship/causal analysis. <strong>GA.</strong></li>
+<li><strong>GQL</strong> — graph query language used by the graph builder/queries.</li>
+<li><strong>Planning (Fabric IQ)</strong> — what-if scenarios over trusted data for business/finance (announced at FabCon).</li>
+<li><strong>Anomaly detector</strong> — no-code data-science anomaly detection over Event House data; recommends best model; emits anomaly events. <strong>Public preview.</strong></li>
+<li><strong>Operations agent</strong> — agent onboarded with goals/instructions + ontology; generates a playbook; monitors, investigates (root-cause), recommends/takes actions in Teams; activity log. <strong>GA.</strong></li>
+<li><strong>Data agent</strong> — natural-language Q&amp;A over Fabric IQ data. <strong>GA.</strong></li>
+<li><strong>Microsoft Foundry</strong> — build custom (pro-code) agents grounded on the same Fabric IQ ontology.</li>
+<li><strong>Microsoft Copilot Studio</strong> — build agents grounded/integrated on Fabric IQ ontologies.</li>
+<li><strong>Fabric IQ APIs / MCP / skills</strong> — programmatic creation and consumption of ontologies; bring real-time data + ontologies to agents.</li>
+<li><strong>NVIDIA Omniverse (libraries)</strong> — physically-accurate 3D visualization + simulation for digital twins.</li>
+<li><strong>OpenUSD</strong> — open scene format used to embed 3D scenes in real-time dashboards.</li>
+<li><strong>Azure Data Explorer, Event Grid, Event Hub</strong> — prior-generation Microsoft streaming stack used by Siemens Healthineers before Fabric RTI.</li>
+<li><strong>Data Factory / analytics / Power BI</strong> — engines that work seamlessly over OneLake data.</li>
+<li><strong>Spark notebooks / Python</strong> — stream processing via Spark Structured Streaming with Eventstream; notebook-based processing + load balancing actions.</li>
+<li><strong>Debezium feeds</strong> — CDC feeds transformed into analytics-ready events via Delta flow.</li>
+<li><strong>Vanderlande Open Air platform</strong> — customer airport-operations platform feeding live data into Fabric RTI for digital twins.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Fabric IQ graph — Generally Available (GA).</strong> Native graph over OneLake + ontology, no extra ETL, with visual no-code GQL query builder.</li>
+<li><strong>Operations agent — Generally Available (GA)</strong> in Fabric IQ.</li>
+<li><strong>Data agent — Generally Available (GA)</strong> in Fabric IQ (natural-language questions).</li>
+<li><strong>Anomaly detector — Public Preview.</strong> No-code, data-science-backed, over Event House data.</li>
+<li><strong>Fabric IQ — announced as Preview at Ignite</strong>; more capabilities + a "new code" coming. (Note: the source brief also referenced Fabric IQ GA framing; the transcript itself explicitly states Fabric IQ was <em>announced as preview at Ignite</em> and is adding capabilities — recorded as stated.)</li>
+<li><strong>NVIDIA partnership / physical AI / digital twins — Preview.</strong> Fabric RTI + Fabric IQ + NVIDIA Omniverse + OpenUSD scenes embedded in real-time dashboards, bidirectional cross-highlight.</li>
+<li><strong>SQL operator in Eventstream — GA.</strong> Custom business logic via SQL.</li>
+<li><strong>Geospatial visualization (map item) — GA.</strong></li>
+<li><strong>Spark Structured Streaming with Eventstream</strong> — stream processing in Python (shipped leading up to Build).</li>
+<li><strong>Delta flow</strong> for event-driven apps — transform Debezium feeds into analytics-ready events without custom event-stream code.</li>
+<li><strong>Business events in the Real-Time Hub</strong> — publish/subscribe business events across Fabric.</li>
+<li><strong>Copilot in Real-Time Intelligence</strong> — understand/explore data in context (beyond visualization).</li>
+<li><strong>MCP + skills for Real-Time Intelligence</strong> — bring real-time data directly to agents.</li>
+<li><strong>Fabric IQ APIs + MCP + skills</strong> — create/consume ontologies programmatically.</li>
+<li><strong>Planning in Fabric IQ</strong> — what-if scenarios (previously announced at FabCon; referenced here).</li>
+<li>A general roadmap of new capabilities was <strong>announced today at Build</strong>, with features shipping every week/month.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ol>
+<li><strong>RTI end-to-end (stadium operations)</strong> — Real-Time Hub → MQTT connector ingest of turnstile events → Eventstream → notebook processing → <strong>emit a "turnstile congested" business event</strong> → set alert → land in Event House → real-time dashboard. Then <strong>Copilot</strong> breaks down <strong>duplicate ticket scans by ticket type per entrance</strong> (VIP entrance highest), <strong>geospatial</strong> hotspots, and an <strong>alert → action</strong> running a <strong>load-balancing notebook</strong> with query parameters. <em>Point proved:</em> full event-condition-to-action loop on live streaming data, manual path.</li>
+<li><strong>Build &amp; use an ontology (Copilot + no-code)</strong> — create an ontology item in a workspace, use <strong>Copilot + existing semantic models</strong> to generate entity types/properties/bindings/relationships for a "game-day stadium operations ontology," approve them, add <strong>Event House</strong> time-series data (bind precise timestamp), add <strong>rules/actions/reports</strong>, then view the <strong>Entrance</strong> entity overview (queue length/wait time, 8 instances, drill into North entrance). <em>Point proved:</em> fast, no-code modeling of the business brain over analytical + real-time data.</li>
+<li><strong>Graph analytics (GA)</strong> — <strong>visual no-code GQL</strong> query builder: Entrance → concourse segment → seating section (e.g. 204), then <strong>multi-hop</strong> area → gates → concession stands → <strong>warehouse</strong>. <em>Point proved:</em> causal/relationship analysis across the whole system, no extra ETL, built into the ontology.</li>
+<li><strong>Anomaly detector + Operations agent (GA)</strong> — create/publish a <strong>no-code anomaly detector</strong> over Event House (recommended model, friendly terms) that emits anomaly events; then onboard an <strong>operations agent</strong> with goals (keep concession stock adequate) + the <strong>ontology</strong>, <strong>generate a playbook</strong>, and watch it detect <strong>low stock</strong> in a <strong>Teams channel</strong>, <strong>investigate (root cause)</strong>, recommend/confirm a <strong>reorder</strong>, with an <strong>activity log</strong>. <em>Point proved:</em> autonomous, ontology-grounded operations with human-in-the-loop confirmation.</li>
+<li><strong>Vanderlande airport digital twin (video)</strong> — Open Air platform → Fabric RTI → <strong>digital twin over an ontology</strong> (flights/gates/passengers/bags/equipment) visualized in <strong>NVIDIA Omniverse 3D</strong>, with the <strong>operations agent</strong> handling a reassigned delayed flight, a failing conveyor motor, and security-checkpoint congestion (heat map) — operator verifies then one-click approves. <em>Point proved:</em> physical-AI operations bridging digital + physical worlds.</li>
+</ol>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>20M+</strong> semantic models in organizations today; <strong>35M+</strong> monthly active users of them.</li>
+<li><strong>170+</strong> connectors into OneLake.</li>
+<li>RTI planet scale: <strong>600 trillion+ messages/month</strong>, <strong>14.3 exabytes</strong> of events+logs/month, <strong>7.8 billion real-time queries/day</strong>, <strong>five-nines (99.999%)</strong> messaging reliability.</li>
+<li>Public benchmark vs <strong>Confluent + Snowflake</strong>: RTI was <strong>12× faster</strong> and <strong>37% more cost-effective</strong>.</li>
+<li>Query <strong>petabytes</strong> of data in <strong>seconds</strong> (curated analysis engine).</li>
+<li>Siemens Healthineers transferred system <strong>log files</strong> for <strong>20–25 years</strong> before moving to streaming/Fabric.</li>
+<li><strong>8</strong> entrance instances shown in the ontology Entrance entity overview.</li>
+<li><em>"I want to be the </em><em>Chief Information Officer</em><em>, not the </em><em>Chief Integration Officer</em><em>."</em> — the CIO pain Fabric is built to solve.</li>
+<li><em>"There really is </em><em>no AI without RTI</em><em>."</em> — agentic AI needs the highest-volume, freshest, most accurate data.</li>
+<li><em>"Build agents that are as </em><em>trusted and as productive as your best employees</em><em>"</em> — they need the <strong>same context</strong> a human has.</li>
+<li><em>"From unified </em><em>data</em><em> to unified </em><em>intelligence</em><em> — this is IQ in Microsoft."</em></li>
+<li>Ontology described as the <strong>"virtual brain of the business."</strong></li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: spin up the <strong>Ontology Playground</strong> in Fabric and build a small ontology from an existing semantic model via <strong>Copilot</strong>; wire an <strong>anomaly detector</strong> over an Event House and connect an <strong>operations agent</strong> to the ontology to see the playbook generation + Teams loop end-to-end.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: test the <strong>Fabric IQ MCP + skills</strong> and <strong>APIs</strong> to create/query an ontology programmatically; try the <strong>visual no-code GQL</strong> graph builder for a multi-hop query; run the <strong>"Real-Time Intelligence in a Day"</strong> workshop.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: What's the exact GA vs preview status of <strong>Fabric IQ</strong> itself right now (transcript says "announced as preview at Ignite, new code coming" — confirm the Build-timeframe status)? What does the <strong>operations agent</strong> pricing/consumption model look like at scale? How does <strong>Foundry IQ ↔ Fabric IQ</strong> wiring work in practice for a pro-code agent? Which <strong>graph</strong> limits apply (node/edge counts, query latency) on large estates?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: How does <strong>OpenUSD + Omniverse</strong> licensing/integration work for the <strong>physical-AI preview</strong>, and what hardware/runtime does the 3D digital twin need? How is <strong>ontology</strong> change/versioning governed across multiple teams to avoid the "active gate means different things" problem?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: any <strong>operations-heavy</strong> domain with real-time signals — stadiums/venues, <strong>airports/airlines</strong>, <strong>manufacturing</strong>, <strong>energy</strong>, <strong>retail</strong>, logistics; teams building <strong>agentic</strong> solutions that need grounded <strong>business context</strong>; <strong>Azure/Fabric</strong> data platform modernization away from bespoke streaming stacks (cf. Siemens Healthineers' Event Grid/Event Hub/ADX → Fabric RTI path).</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+<li>Related Build sessions mentioned: unified <strong>Fabric overview</strong> session ("Nets"); <strong>Real-Time Intelligence deep-dive</strong> (Tessa Kloster).</li>
+<li>Concepts: <strong>OneLake</strong>, <strong>Real-Time Intelligence</strong>, <strong>Fabric IQ / ontologies</strong>, <strong>operations agents</strong>, <strong>MCP</strong>, <strong>Foundry IQ</strong>, <strong>NVIDIA Omniverse / OpenUSD</strong>, <strong>digital twins / physical AI</strong>.</li>
+<li>Customers: <strong>Siemens Healthineers</strong> (real-time medical-device service), <strong>Vanderlande</strong> (airport digital twins).</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="OD811.html"><span class="pager-dir">← Previous</span><span class="pager-code">OD811</span><span class="pager-title">Powering the next AI frontier with a unified data platform</span></a>
+    <a class="pager pager-next" href="OD815.html"><span class="pager-dir">Next →</span><span class="pager-code">OD815</span><span class="pager-title">Unify your entire data estate on a single, AI-ready data lake</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

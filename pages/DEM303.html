@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEM303 — Late to agentic coding? Don&#x27;t panic, build.</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEM303</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=6F7HgRhWL9E" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Late to agentic coding? Don&#x27;t panic, build.</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Martin Woodward, Cassidy Williams (GitHub)</span>
+      <span class="meta-item">⏱️ 26m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="agentic-coding">Agentic Coding</span><span class="chip" data-tag="copilot">Copilot</span><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="productivity">Productivity</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Martin Woodward (GitHub) &amp; Cassidy Williams (GitHub)<br>
+<strong>Duration:</strong> ~26 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=6F7HgRhWL9E">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>A fast-paced, highly interactive live-build session where Martin Woodward and Cassidy Williams from GitHub reassure the audience that, despite the "everyone's already doing it" hype on social media, <strong>they are actually early adopters of agentic coding</strong> — and have a real opportunity to shape how these tools and practices evolve. The pair demonstrate the new <strong>GitHub Copilot app</strong> (built on top of the Copilot CLI/SDK), running multiple agentic coding sessions in parallel from crowd-sourced GitHub issues. Core themes: <strong>choice matters</strong> (models, interface, editor, workflow), <strong>don't blindly YOLO in the enterprise</strong> (use plan mode and Copilot instructions to enforce quality), <strong>let Copilot check its own work with a different model</strong> ("rubber duck") for statistically significant improvements, and <strong>auto mode</strong> for cost-aware model routing. The session closes with practical CLI commands (<code>remote</code>, <code>chronicle</code>, cost tips) and the message: you're not late — just give it a go.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>You are NOT late to agentic coding.</strong> On the Moore's innovation-adoption curve, Build attendees sit in the <strong>early adopters / early majority</strong> band. The loud "you're behind" voices on Twitter are a tiny innovator fringe, not the norm — most colleagues back at the office haven't started yet.</li>
+<li><strong>The data backs "early":</strong> A recent Microsoft study found <strong>~84% of developers</strong> use AI nearly daily, yet <strong>~84% of people outside the tech industry have <em>never</em> touched it.</strong> The world has yet to catch up, so practitioners now can genuinely <em>shape</em> practices and tooling.</li>
+<li><strong>Copilot is GitHub's own #1, #2, and #3 contributor</strong> to the GitHub codebase. A provocative question to the audience: if Copilot <em>isn't</em> your top contributor at work, why not? It can work 24/7 — what's blocking broader team adoption?</li>
+<li><strong>Choice is foundational</strong> — not just model choice, but choice of <em>interface</em> (CLI, web, IDE, app), <em>editor</em>, and <em>workflow</em>. Different people on the adoption curve have very different needs; enterprises must offer choice or adoption stalls.</li>
+<li><strong>Don't run YOLO/Autopilot mode in the enterprise.</strong> Live "just say go" demos are fun, but in real organizations you should use <strong>plan mode</strong> and guardrails so quality stays high across <em>all</em> developers, not just the experienced ones.</li>
+<li><strong>Copilot instructions are how you constrain and steer Copilot.</strong> Check them into the repo to encode coding standards, layout, and build expectations — this is how less-experienced teammates produce decent-quality code. Copilot can auto-generate these from an existing project.</li>
+<li><strong>The "rubber duck" pattern works:</strong> having Copilot vet its own plan/work with a <em>different model family</em> (e.g. GPT checked by Claude/Gemini) yields a <strong>statistically significant improvement every single time.</strong></li>
+<li><strong>Auto mode does cost-aware model routing.</strong> It intelligently picks the right model for the context, preventing the classic mistake of burning expensive premium-request budget (e.g. Opus 4.8) on a trivially simple question.</li>
+<li><strong>The new GitHub Copilot app</strong> is built directly on the <strong>Copilot CLI/SDK</strong> — the <em>same engine</em> on your machine — and is <strong>deeply integrated with GitHub</strong> (it auto-detected an issue template and applied it; it live-pulls new issues without refreshing).</li>
+<li><strong>Work happens in isolated git work trees</strong>, so multiple parallel agent sessions don't step on each other.</li>
+<li><strong>AI removes the "learn from failure" loop.</strong> Teams must consciously create ways to keep learning from each other and bring up less-experienced people who don't yet know how to "hold it correctly."</li>
+<li><strong>Writing code has never been faster, but emitting code isn't the goal.</strong> Huge volumes get generated and dumped in open-source repos but never merged/committed. The challenge: build code that <em>lasts</em> and avoid becoming "slop factories."</li>
+<li><strong>Experienced devs get the most leverage</strong> — "Copilot is rocket fuel to experienced devs" — because they know which frameworks to pick and can give the agent constraints. Devs still must steer, set constraints, and own architecture.</li>
+<li><strong>Practical homework: check out Spec Kit</strong> — agent-native documentation via markdown files/instructions that tell agents how to work with your repos.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="format-setup-a-live-interactive-build">Format &amp; Setup: A Live, Interactive Build</h3>
+<p>The session is deliberately interactive. The speakers — fresh off working on the keynote all day — wanted to actually <em>build live</em> rather than just present. They ask the audience to scan a QR code (or visit <code>gh.io/dem303/idea</code>) and <strong>log in with GitHub on their phones</strong> to submit build ideas. Martin jokes the login requirement is itself "the first test of the day" and conveniently boosts his sign-in numbers. The plan: collect ideas → kick off builds → talk → build more → talk.</p>
+<h3 id="audience-show-of-hands-adoption-snapshot">Audience Show-of-Hands (Adoption Snapshot)</h3>
+<p>The room is polled on how they use Copilot:
+- <strong>Currently using GitHub Copilot:</strong> nearly everyone (relief/laughter).
+- <strong>Agent mode in VS Code:</strong> the majority.
+- <strong>Visual Studio:</strong> some.
+- <strong>Command line (CLI):</strong> some.
+- <strong>The new GitHub app</strong> (announced that day, "very new"): just <strong>one person</strong>.
+- <strong>Web / coding agent</strong> (<code>github.com/copilot</code>): a couple.
+- <strong>Built-in code review on github.com:</strong> a handful.</p>
+<p>This snapshot frames the whole talk: even this advanced audience has barely touched the newest surfaces — reinforcing the "you're early" thesis.</p>
+<h3 id="the-github-copilot-app-what-it-is">The GitHub Copilot App — What It Is</h3>
+<p>Martin demos the <strong>GitHub Copilot app</strong> (switching to light mode for visibility). Cassidy explains the architecture: <strong>the app is built on top of the GitHub Copilot CLI</strong>, using all the same SDKs — so it's the <em>exact same engine</em> running on your machine that powers every session. You kick off a "session" to do agentic work.</p>
+<p>Key capabilities surfaced during the demo:
+- <strong>Voice-to-text input</strong> via <strong>Cmd+H (macOS) / Win+H (Windows)</strong> — the speakers repeatedly (and comically) forget to use it.
+- <strong>Typo tolerance</strong> — "It understands your typos."
+- <strong>Deep GitHub integration:</strong> when asked to "create some issues for ideas on what to build," the app <strong>auto-detected a checked-in issue template / coding standards</strong> and prefixed each new issue with <code>idea:</code> per the repo's idea form. Martin notes he didn't know it would do that — a genuine "pretty awesome" moment.
+- <strong>Live data:</strong> new issues submitted by the audience appear in the app <strong>without any refresh.</strong></p>
+<h3 id="crowd-sourced-build-ideas">Crowd-Sourced Build Ideas</h3>
+<p>The audience (and the agent) generate issues. Shouted-out / submitted ideas include:
+- Whiskey / IPA <strong>review app</strong> (it's 5pm, end of day).
+- <strong>Face-controlled Breakout</strong> game.
+- <strong>Gesture-controlled ping pong.</strong>
+- <strong>Gesture rock-paper-scissors.</strong>
+- <strong>Side-scrolling platformer game.</strong>
+- "Build a better MS Build app."</p>
+<p>These become the live-build fodder for the rest of the session, run in parallel.</p>
+<h3 id="the-core-argument-youre-early-not-late">The Core Argument: You're Early, Not Late</h3>
+<p>Martin and Cassidy deliver the session's thesis between builds:</p>
+<p><strong>The hype is misleading.</strong> Agentic coding growth is massive — pull requests from agents are "going through the roof." Martin, who lived through dot-com, says the last time he saw anything approaching this pace was the dot-com boom — but <em>that</em> played out over a year or two, whereas this feels like it happened <strong>within the last 6 months.</strong> It's "a brand new epoch" in how software is built.</p>
+<p><strong>Where you actually sit on the curve.</strong> Using the classic <strong>Moore's innovation-adoption curve</strong>, the "blah blah blah" people on Twitter making you feel behind are the tiny <strong>innovator</strong> fringe. Build attendees are squarely in <strong>early adopters</strong>, crossing into <strong>early majority</strong>. The colleagues back at the office are way over on the other side — they haven't started.</p>
+<p><strong>Different cohorts have different needs.</strong> Innovators/early adopters will <em>completely change how they work</em> to suit a new tool — they want the latest and coolest. That will <strong>not</strong> happen in the broader organization. If someone there can only work in, say, "a random version of Eclipse," and it can't talk to Copilot, they'll never adopt Copilot. People are attached to their existing tools — which is exactly <strong>why choice across the company is so important.</strong></p>
+<p><strong>The 84%/84% study.</strong> Cassidy cites a recent Microsoft study: <strong>~84% of developers</strong> use AI nearly daily — <em>wild</em> — but the same study, viewed across the <em>whole world outside tech</em>, shows <strong>~84% of people have never touched it.</strong> So even casual dabblers at Build are not just early — they're positioned to <strong>"be the change you want to see"</strong> and shape practices, because so much of the world has yet to catch up.</p>
+<h3 id="quality-craft-learning-in-the-agentic-era">Quality, Craft &amp; Learning in the Agentic Era</h3>
+<p>Several connected cautions:
+- <strong>Speed ≠ value.</strong> Writing/emitting code has never been faster, but mass volumes pour into open-source repos and <strong>often never get merged or committed.</strong> The real question: <em>how do we build code that's going to last</em> and avoid becoming <strong>"slop factories"</strong>?
+- <strong>Guardrails for everyone.</strong> Copilot is "rocket fuel to experienced devs," but organizations must build the <strong>safeguards, skills, and instructions</strong> so that <em>everybody</em> — not just senior devs — produces decent-quality code.
+- <strong>The lost failure-learning loop.</strong> Cassidy's standout point: a disadvantage of AI is <strong>you don't get to learn from failure the way you once did.</strong> Teams must deliberately create ways to keep communicating and learning from each other — learning the tools the <em>right</em> way — and <strong>bring up less-experienced people</strong> who don't yet know "how to hold it correctly."
+- <strong>Humans still steer.</strong> Martin's self-deprecating framing: Cassidy is "an actually good developer" who knows which frameworks to pick, so she can give the agent constraints and get what she wants. Someone who "just plays a developer on TV" can make bad architecture choices. <strong>Developers still have to be in control, steer, set constraints, and point it the right way.</strong></p>
+<h3 id="demo-plan-mode-vs-autopilotyolo">Demo: "Plan Mode" vs "Autopilot/YOLO"</h3>
+<p>Cassidy walks through the <strong>reasoning/mode controls</strong> in the app:
+- <strong>Reasoning level</strong> is adjustable (low → high). Lower reasoning is cheaper/faster for simpler tasks.
+- <strong>Model selection:</strong> all major model providers are available; you can <strong>bring your own key</strong> or <strong>bring in local models</strong> (e.g. hosted on <strong>Foundry</strong>).
+- <strong>Interactive mode</strong> = step-by-step collaboration.
+- <strong>Plan mode</strong> = produce a plan first (it nearly renders a Mermaid-style diagram).
+- <strong>Autopilot</strong> = "just go do it." The CLI slash command is <strong><code>/yolo</code></strong> (or <code>allow all</code>) — it runs to a finished product so you can come back later.</p>
+<p>For the <strong>gesture rock-paper-scissors</strong> issue (issue #19), they "come up with a plan," see the proposed <strong>tech stack (MediaPipe Hands for gesture recognition)</strong>, then drop it into <strong>autopilot ("just say go")</strong> as a <em>demo</em>. <strong>Crucial caveat:</strong> in the enterprise, "we very, very rarely stick it in YOLO mode… we do not say go typically at work." Plan mode + guardrails are the responsible default.</p>
+<h3 id="deep-dive-how-to-use-plan-mode-well">Deep Dive: How to Use Plan Mode Well</h3>
+<p>Cassidy's personal workflow when starting a project or feature:
+- Use <strong>plan mode</strong> in an existing repo, <strong>or</strong> start in a <strong>"quick chat"</strong> — a session <em>not attached to a repo</em> where you can ask any side question (even "what's the weather in Chicago," depending on which MCP servers you've pulled in), add MCP servers/skills, and go.
+- For a second parallel build (<strong>side-scrolling platformer, issue #17</strong>), she asks for a step-by-step plan, picks <strong>GPT-5.5</strong>, starts with <strong>low reasoning</strong>, and notes you can also use <strong>auto mode</strong>.
+- <strong>Keep prompting / interrogating the plan.</strong> Some models rush to "here's your plan, done." Cassidy deliberately goes <strong>back and forth to find holes.</strong> She steers the stack ("Don't worry about the stack," then later "I want to do this with <strong>Phaser</strong>").
+- <strong>Interrupt freely</strong> — it's a collaboration tool; you don't have to wait for it to finish a thought. You can edit the plan inline in chat or <strong>open it in a side markdown editor.</strong></p>
+<h3 id="deep-dive-the-rubber-duck-pattern">Deep Dive: The "Rubber Duck" Pattern</h3>
+<p>A highlighted technique: <strong>rubber duck</strong> vets the plan using a <strong>different model family</strong> than the one you're working in. While using GPT-5.5, the rubber duck might run <strong>Claude (e.g. Opus 4.8) or Gemini</strong> to <strong>find holes in the plan</strong>, refine it, and potentially ask you more questions. You can run it automatically on different runs or manually ("just start the rubber duck"). The payoff per the speakers: <strong>having Copilot check its own work with a different model gives a better result <em>every single time</em> — a statistically significant improvement.</strong></p>
+<h3 id="deep-dive-auto-mode-costtoken-management">Deep Dive: Auto Mode &amp; Cost/Token Management</h3>
+<p>Martin raises the universal pain: asking a "really dumb question" while accidentally in <strong>Opus 4.6 / 4.8</strong>, burning ~<strong>54 or 100 premium requests</strong> (the day's quota number) on something trivial — when a cheaper/faster model would've cost "0.1." <strong>Auto mode handles your model routing automatically</strong>, picking the right model for the right use case. As models proliferate with different costs, <strong>auto mode becomes increasingly important.</strong></p>
+<h3 id="parallel-execution-work-trees">Parallel Execution &amp; Work Trees</h3>
+<p>Multiple agent sessions run <strong>side by side</strong> because <strong>everything happens in git work trees</strong> — so concurrent tasks <strong>won't step on each other.</strong> You can ask the agent to do anything (open a browser, spin up a web server) or do it yourself in a terminal.</p>
+<h3 id="tip-playwright-mcp-for-visual-vetting">Tip: Playwright MCP for Visual Vetting</h3>
+<p>Cassidy shares a colleague's favorite workflow: use the <strong>Playwright MCP server</strong> (kept always-on at the <em>user level</em>) to <strong>screenshot websites and vet designs visually.</strong> Examples: feed in a URL and ask "How would you describe this design?", or "take the styles from the Microsoft Build website and apply it to my project." It opens the browser, takes the screenshot, and does everything the MCP server can — <strong>just from a command.</strong></p>
+<h3 id="the-rock-paper-scissors-payoff">The Rock-Paper-Scissors Payoff</h3>
+<p>The gesture RPS app actually builds and runs. There's a humorous live moment where it "froze your face," the game seems to win every time ("It's too good… I feel like that's cheating"), and then finally works correctly. It demonstrates the end-to-end loop: issue → plan → build → run → review, all from the app.</p>
+<h3 id="web-delegation-copilot-and-assign-to-copilot">Web Delegation: @Copilot and Assign-to-Copilot</h3>
+<p>For "build a better MS Build app," Martin shows <strong>using Copilot through the web</strong>: you can <strong><code>@Copilot</code></strong> in a conversation or <strong>assign an issue to Copilot</strong> (you don't even need a prompt — "just hit assign") and it joins the conversation to do the work. This is how you <strong>delegate activity</strong> to the coding agent on the web.</p>
+<h3 id="closing-cli-tips-commands">Closing CLI Tips &amp; Commands</h3>
+<p>Before wrap-up, several practical pointers:
+- <strong>Copilot instructions are critical.</strong> When you start the CLI and it can't find Copilot instructions, it "tells you off" — that's how important they are. They tell Copilot about your project: coding standards, how to build, how things are laid out. Copilot is <strong>amazing at analyzing an existing project and generating a Copilot-instructions file</strong> for you. <strong>Create them and check them in</strong> to constrain code and onboard less-experienced teammates.
+- <strong>Spec Kit (homework):</strong> an agent-native way to add markdown files / instructions telling agents how to work with your repos — "documentation that's agent native… a really great way of working."
+- <strong><code>/remote</code> (remote on):</strong> creates a <strong>pipe back into your agent</strong>, so you can kick off a long-running task on your local machine, <strong>point your phone at it, walk away, and control it remotely</strong> from your phone.
+- <strong><code>/chronicle</code>:</strong> a newly landed command with options like <strong>stand-up</strong> ("what did I do yesterday?") and <strong>cost tips.</strong> Cassidy loves <strong>cost tips</strong> — it analyzes your usage and advises which model to use more, when to switch modes, and <strong>how to reduce context windows / be more efficient with tokens.</strong>
+- You can also just <strong>click "Implement"</strong> on a plan instead of typing a command.</p>
+<h3 id="closing-message">Closing Message</h3>
+<p>The speakers run out of time but stress they could "play with this all day." They invite the audience to the <strong>Ask the Experts</strong> area and the <strong>Ship &amp; Tell booth</strong> ("we're here all week"). The core call to action: <strong>just give it a go — try these tools, learn them, play with them, and use your time at Build to do it so you can ship it at home.</strong> Cassidy closes warmly: they genuinely love teaching this, attendees are "at the forefront of so many new changes," and the team wants feedback to make the tools better.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>GitHub Copilot</strong> — core agentic coding assistant; GitHub's #1–3 codebase contributor.</li>
+<li><strong>GitHub Copilot app</strong> — new desktop app built on the Copilot CLI/SDK; deeply GitHub-integrated; light/dark mode; live issue sync.</li>
+<li><strong>GitHub Copilot CLI</strong> — command-line agent; the engine underneath the app.</li>
+<li><strong>GitHub Copilot coding agent (web)</strong> — <code>github.com/copilot</code>; <code>@Copilot</code> mentions and assign-to-Copilot delegation.</li>
+<li><strong>GitHub.com built-in code review.</strong></li>
+<li><strong>VS Code</strong> &amp; <strong>Visual Studio</strong> — Copilot agent mode surfaces.</li>
+<li><strong>Agent mode / Plan mode / Interactive mode / Autopilot (YOLO)</strong> — execution modes.</li>
+<li><strong>Auto mode</strong> — automatic cost-aware model routing.</li>
+<li><strong>Rubber duck</strong> — cross-model self-review feature.</li>
+<li><strong>Quick chat</strong> — repo-less session for side questions.</li>
+<li><strong>MCP servers</strong> — incl. <strong>Playwright MCP</strong> for screenshots/visual design vetting.</li>
+<li><strong>Skills</strong> — pluggable into sessions.</li>
+<li><strong>Models referenced:</strong> GPT-5.5, Claude / Opus 4.6 &amp; 4.8, Gemini; "high Q"; bring-your-own-key; local models.</li>
+<li><strong>Microsoft Foundry</strong> — host for local/self-hosted models.</li>
+<li><strong>MediaPipe Hands</strong> — gesture-recognition library used in the RPS build.</li>
+<li><strong>Phaser</strong> — JS game framework chosen for the platformer.</li>
+<li><strong>Git work trees</strong> — isolation for parallel agent sessions.</li>
+<li><strong>Spec Kit</strong> — agent-native markdown documentation/instructions for repos.</li>
+<li><strong>Copilot instructions</strong> — checked-in file to constrain/steer Copilot.</li>
+<li><strong>Voice-to-text</strong> — Cmd+H / Win+H.</li>
+<li><strong>CLI commands:</strong> <code>/yolo</code>, <code>allow all</code>, <code>/remote</code> (remote on), <code>/chronicle</code> (stand-up, cost tips).</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>GitHub Copilot app</strong> — described as "very new" / talked about that day at Build; only one audience member had used it. Built on the Copilot CLI/SDK with live GitHub integration.</li>
+<li><strong><code>/chronicle</code> CLI command</strong> — "a new command that just landed," offering stand-up summaries and <strong>cost tips</strong> (usage-based model/efficiency advice).</li>
+<li><strong><code>/remote</code></strong> — pipe back into your agent to run long tasks locally and control them from your phone.</li>
+<li><em>(Context: the broader keynote earlier that day covered agentic coding growth and agent-generated PR volume, referenced but not detailed here.)</em></li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ol>
+<li><strong>Auto-generating GitHub issues from voice/text</strong> — the Copilot app created idea issues and auto-applied the repo's <code>idea:</code> issue template / coding standards.</li>
+<li><strong>Gesture Rock-Paper-Scissors (issue #19)</strong> — planned (tech stack: MediaPipe Hands), dropped into autopilot, built, run live; comedic "it wins every time / froze your face" moments before working correctly.</li>
+<li><strong>Side-scrolling platformer (issue #17)</strong> — built in <strong>plan mode</strong> with GPT-5.5 + low reasoning; stack steered toward <strong>Phaser</strong>; <strong>rubber duck</strong> invoked to vet the plan with a different model family; live back-and-forth refinement.</li>
+<li><strong>"Build a better MS Build app"</strong> — delegated via web by <strong>assigning the issue to Copilot</strong> (no prompt needed) to research the current app and propose iOS/Android improvements.</li>
+<li><strong>Parallel sessions in work trees</strong> — multiple builds running side by side without collision; agent asked to open a browser / start a web server.</li>
+<li><strong><code>/remote</code></strong> — demonstrated piping the agent back to a phone for remote control.</li>
+<li><strong><code>/chronicle</code> → cost tips</strong> — usage-based efficiency/model recommendations.</li>
+</ol>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>"Copilot is the number one, two, and three contributor to the GitHub codebase right now."</strong> — Martin Woodward.</li>
+<li><strong>~84% of developers</strong> use AI (nearly daily), yet <strong>~84% of people outside tech have never touched it</strong> (recent Microsoft study, via Cassidy).</li>
+<li><strong>"The last time I saw anything approaching this was during dot com… and this feels like it's happening within the last 6 months."</strong> — Martin, on the pace of change.</li>
+<li><strong>"Copilot's rocket fuel to experienced devs."</strong> — Martin.</li>
+<li><strong>"The disadvantage of AI is you don't get to learn from failure like you once did in the past."</strong> — Cassidy.</li>
+<li><strong>"How do we make sure we don't become like slop factories?"</strong> — Martin.</li>
+<li><strong>"Having Copilot check its own work with a different model… gives you a better result every single time"</strong> — a <strong>statistically significant improvement.</strong></li>
+<li>On wasted spend: asking a "really dumb question" in <strong>Opus 4.6/4.8</strong> can burn <strong>~54–100 premium requests</strong> when a cheaper model would cost <strong>~0.1</strong>.</li>
+<li><strong>"You're at Build for crying out loud — you are in the early adopters."</strong> — Martin (paraphrased thesis).</li>
+<li><strong>"You can be the change you want to see in the world and shape the way these tools are going."</strong> — Cassidy.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Try the <strong>GitHub Copilot app</strong> (CLI/SDK-based) and connect it to a real repo with a checked-in <strong>issue template</strong> to see auto-detection in action.</li>
+<li>Author and commit a <strong>Copilot instructions</strong> file (let Copilot generate a draft from an existing project), then verify it constrains output for the team.</li>
+<li>Experiment with the <strong>rubber duck</strong> cross-model review (e.g. GPT-5.5 vetted by Claude/Gemini) and measure quality delta on a real plan.</li>
+<li>Switch to <strong>auto mode</strong> and watch model routing / token spend; run <strong><code>/chronicle</code> cost tips</strong> to get efficiency advice.</li>
+<li>Wire up <strong>Playwright MCP</strong> at the user level for screenshot-based design vetting ("describe this design" / "apply these styles").</li>
+<li>Test <strong><code>/remote</code></strong> to drive a long-running local agent task from my phone.</li>
+<li>Read up on <strong>Spec Kit</strong> and try agent-native markdown instructions on one of my repos.</li>
+<li>Run a build entirely in <strong>plan mode</strong>, interrogating the plan for holes before letting it implement.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What's the exact source/date of the "84% of developers / 84% of non-tech" Microsoft study, and how is "using AI nearly daily" defined?</li>
+<li>How does <strong>auto mode</strong> decide routing under the hood, and how aggressively does it down-route to save premium requests?</li>
+<li>What's the current premium-request quota referenced ("54 or 100… today") and how does it map to my plan?</li>
+<li>Which model families can the <strong>rubber duck</strong> use, and can I pin a specific reviewer model?</li>
+<li>Is the <strong>GitHub Copilot app</strong> generally available, and on which platforms (macOS/Windows/Linux)?</li>
+<li>How do <strong>work trees</strong> surface in the app UI for managing many parallel sessions?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Driving broader <strong>team adoption</strong> of Copilot (the "why isn't Copilot your #1 contributor?" challenge).</li>
+<li>Establishing <strong>enterprise guardrails</strong>: checked-in Copilot instructions + plan mode over YOLO.</li>
+<li><strong>Cost/token governance</strong> as model choice proliferates (auto mode, <code>/chronicle</code> cost tips).</li>
+<li>Onboarding <strong>less-experienced developers</strong> without losing the failure-learning loop.</li>
+<li>Standardizing <strong>agent-native docs</strong> (Spec Kit) across our repositories.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Build 2026">Microsoft Build 2026</span></li>
+<li><span class="wikilink wikilink--unresolved" title="GitHub Copilot">GitHub Copilot</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Agentic Coding">Agentic Coding</span></li>
+<li><span class="wikilink wikilink--unresolved" title="GitHub Copilot CLI">GitHub Copilot CLI</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Spec Kit">Spec Kit</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Model Context Protocol (MCP)">Model Context Protocol (MCP)</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Copilot instructions">Copilot instructions</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEM302.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEM302</span><span class="pager-title">Build and deploy an Azure app with your agent team</span></a>
+    <a class="pager pager-next" href="DEM304.html"><span class="pager-dir">Next →</span><span class="pager-code">DEM304</span><span class="pager-title">Union types in C#</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

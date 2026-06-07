@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEM302 — Build and deploy an Azure app with your agent team</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEM302</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=c4xpRbUytLw" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Build and deploy an Azure app with your agent team</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Brady Gaster (GitHub), Ron (PM, Microsoft)</span>
+      <span class="meta-item">⏱️ 26m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="azure">Azure</span><span class="chip" data-tag="github-copilot">GitHub Copilot</span><span class="chip" data-tag="foundry">Foundry</span><span class="chip" data-tag="devops">DevOps</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Brady Gaster (GitHub — joined "a couple weeks ago", creator of <em>Squad</em>) &amp; Ron (PM at Microsoft, Foundry)<br>
+<strong>Duration:</strong> ~26 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=c4xpRbUytLw">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>A fully live, two-person demo (no slides until the final CTA) that builds and deploys a complete <strong>multi-agent customer-insights system</strong> for a fictional retailer "Zava" — entirely through prompting. <strong>Ron drives everything inside VS Code</strong> using GitHub Copilot + the <strong>Foundry Toolkit VS Code extension</strong> to scaffold a 4-agent workflow with the <strong>Microsoft Agent Framework</strong>, wire it to enterprise data via a <strong>Foundry Tools Toolbox</strong>, debug it with the <strong>Agent Inspector</strong>, add <strong>evaluations</strong> at scale, and <strong>deploy it as a hosted agent</strong> in Microsoft Foundry. <strong>Brady then forks her repo and works entirely inside Copilot CLI</strong>, unleashing <strong>Squad</strong> (his open-source multi-agent framework for Copilot) plus <strong>Azure MCP tools + Azure skills</strong> to provision the Foundry instance, build a React front end, and deploy both front end and back end to <strong>Azure Container Apps</strong> — with the front end and agent reusing the same Foundry model across two compute hosts, secured via <strong>Managed Identity</strong>. The throughline: humans write almost zero code; agents (and teams of agents) do the building, the infra, the fixing, and even document their own work.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>You can go from prompt → production multi-agent app → live deployment without writing code by hand.</strong> Both presenters repeatedly stress "I did not write a single line of code."</li>
+<li><strong>The Microsoft Agent Framework</strong> is the open-source orchestration layer for multi-agent systems; an entire 4-agent workflow (with conditions and branching) is composed in essentially <strong>one <code>workflow</code> function / four lines of code</strong>.</li>
+<li><strong>Copilot learns new/unfamiliar services via skills.</strong> Because Agent Framework and Foundry are brand-new, Copilot pulled the <strong>Foundry skill</strong> shipped with the Foundry Toolkit VS Code extension to get current knowledge before scaffolding.</li>
+<li><strong>Plan mode first, then implement</strong> — Ron switches Copilot to plan mode to discuss and lay out the architecture before generating code; it's cheaper and produces a better plan.</li>
+<li><strong>The 4 agents:</strong> (1) <strong>Classifier</strong> (sentiment: positive/negative), (2) <strong>Enrichment</strong> (looks up customer + order data, VIP status), (3) <strong>Triage</strong> (decides whether to draft a customer email), (4) <strong>Aggregate</strong> (assembles the final result).</li>
+<li><strong>Foundry Tools Toolbox</strong> packages many tools behind <strong>one unified endpoint + one auth</strong> — here bundling <strong>Azure AI Search</strong> (product catalog index) and a <strong>Fabric IQ connector</strong> (customer/orders data). Only the enrichment agent is granted the toolbox.</li>
+<li><strong>Microsoft Fabric</strong> is positioned as the single data platform where all your data lives; agents in Foundry connect back to it through the toolbox.</li>
+<li><strong>Agent Inspector</strong> (Foundry Toolkit extension) is a visualizer + playground + debugger: live workflow diagram built from <strong>runtime object models</strong>, hover-to-inspect variables, and <strong>per-node capture of every runtime event</strong> (inputs/outputs).</li>
+<li><strong>Evaluations are added by prompting</strong> ("add evaluations to my agent") — Copilot reads the source, generates a <strong>10-row test dataset</strong>, selects + implements <strong>evaluators</strong>, and submits the eval run via the <strong>Foundry MCP server</strong>, with results viewable inside VS Code.</li>
+<li><strong>Deploy a hosted agent with one command</strong> ("deploy hosted agent") via a short wizard → fully managed + observable, with a live playground talking to the real service.</li>
+<li><strong>Live log streaming + one-click Copilot fix:</strong> the hosted-agent playground streams server-side call stacks; clicking sends the messages to Copilot, which can fix errors/exceptions in place.</li>
+<li><strong>Squad</strong> = Brady's open-source <strong>multi-agent framework for GitHub Copilot</strong> (built with his friend Tamir). Token-hungry (many agents talk simultaneously) but reaches the goal faster than single-threaded chat.</li>
+<li><strong>Give agents distinct roles, not identical instructions</strong> — otherwise they "fight over work like hungry hungry hippos." Each Squad agent knows only its job and collaborates with others.</li>
+<li><strong>Azure MCP server + Azure skills</strong> power Squad: MCP tools (incl. all Foundry tools) provide the <em>capabilities</em>; <strong>Azure skills</strong> (markdown files on disk) tell Copilot <em>how to use those tools the right way</em> to complete tasks.</li>
+<li><strong>Agents adapt to mistakes autonomously:</strong> Squad re-targeted the deployment from the wrong compute host (Container Apps) to the correct Foundry endpoint and rewrote everything in ~1 hour using its skills + tools.</li>
+<li><strong>One Foundry model, reused across two compute layers/hosts</strong>, with the React front end and the agent back end authenticating to each other via <strong>Managed Identity (MI)</strong> — secure cross-app communication.</li>
+<li><strong>Squad self-documents:</strong> at the end it produces a <strong>report</strong> of everything it wrote, deployed, the tools used, and the skills consulted.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="setup-speakers-framing">Setup, speakers &amp; framing</h3>
+<p>This was billed as the <strong>last demo in the theater for the evening</strong> (the Chainsmokers were performing after). Brady Gaster opens — he joined <strong>GitHub a couple of weeks ago</strong> — and hands to <strong>Ron</strong>, a <strong>PM at Microsoft</strong>. Their explicit goal: <strong>be in a live demo within the first minute</strong>, and use the ~25 minutes to <strong>build a "Zava customer insights agent system" together</strong>. Zava is framed as an online retailer that "really cares about customers" and wants to understand and act on customer feedback. A running gag/constraint: <strong>Ron does literally everything inside VS Code</strong> ("you can tell me if I ever step out of VS Code"), while <strong>Brady does everything inside Copilot</strong> (CLI + a customized "for Build in San Francisco" Copilot app).</p>
+<h3 id="the-end-product-what-theyre-building-toward">The end product (what they're building toward)</h3>
+<p>Before touching code, Ron shows the finished app: a <strong>front-end website</strong> connected to a back-end <strong>agent team running in Microsoft Foundry</strong>. It ingests customer feedback, analyzes sentiment, and <strong>takes actions</strong>. Example feedback items shown:
+- <em>"Price reasonable but delivery was slow"</em> → <strong>mixed</strong> sentiment (positive + negative).
+- <em>"App crashed"</em> → clearly <strong>negative</strong>.
+- <em>"My item arrived damaged very bad"</em> → <strong>negative</strong>.</p>
+<p>For the damaged-item case, the system didn't just classify sentiment — it <strong>connected the feedback to a specific customer</strong>, looked up their orders in <strong>Microsoft Fabric</strong>, and <strong>determined a free replacement was warranted</strong>, triggering downstream actions. All of this happens agent-side via <strong>multiple agents working together</strong>.</p>
+<h3 id="kicking-off-in-vs-code-prompt-plan-mode">Kicking off in VS Code: prompt + plan mode</h3>
+<p>Ron's very first action was opening VS Code + Copilot and sending essentially this prompt:</p>
+<blockquote>
+<p><em>"I want to build a production-ready Foundry hosted agent using the Microsoft Agent Framework."</em></p>
+</blockquote>
+<p>Workflow habits demonstrated:
+- <strong>Switch to plan mode</strong> so Copilot <strong>discusses and lays out a plan before implementing</strong> — cheaper and better-architected.
+- Because the demo is time-boxed, she replays the <strong>actual history from ~a week earlier</strong> (same prompt) rather than waiting live.</p>
+<p><strong>Why Copilot needs help:</strong> both the <strong>Microsoft Agent Framework</strong> (a "really wonderful" open-source multi-agent orchestration framework) and <strong>Microsoft Foundry</strong> are <strong>very new</strong> and <strong>actively being built</strong>. So when asked to use them, Copilot <strong>pulled up the Foundry skill</strong> shipped with the <strong>Foundry Toolkit VS Code extension</strong> to learn the latest about the service and framework before it could plan the build.</p>
+<h3 id="evolving-from-one-agent-to-a-team-of-four">Evolving from one agent to a team of four</h3>
+<p>The initial idea was trivial: a single <strong>sentiment analysis</strong> agent that takes feedback and returns a positive/negative score. Iterating with Copilot in plan mode, Ron expanded it into a <strong>multi-agent system of four agents</strong>:
+1. <strong>Classifier agent</strong> — determines negative vs. positive feedback.
+2. <strong>Enrichment agent</strong> — looks up back-end data: <em>which customer is this? Is this a VIP? What's their order status?</em>
+3. <strong>Triage agent</strong> — decides <em>do I need to draft an email to the customer?</em>
+4. <strong>Aggregate agent</strong> — <strong>puts everything together</strong> into the final result.</p>
+<p>Copilot then <strong>scaffolded the entire project</strong> — Ron reiterates she <strong>did not write a single line of code</strong>.</p>
+<h3 id="the-code-orchestration-in-4-lines">The code: orchestration in ~4 lines</h3>
+<p>Copilot generated code using the <strong>Microsoft Agent Framework</strong> (shown via its import statement). The key reveal: the <strong>four agents are composed with roughly four lines of code</strong>, and a <strong>single <code>workflow</code> line</strong> ties everything together — including <strong>conditions and branching flows between agents</strong>, all defined in <strong>one function</strong>. (Hard to read intent from raw code alone — hence the Agent Inspector visualizer later.)</p>
+<h3 id="connecting-to-enterprise-data-fabric-the-toolbox">Connecting to enterprise data: Fabric + the Toolbox</h3>
+<p>The enrichment agent needs <strong>customer + order data living in Microsoft Fabric</strong>. Fabric is pitched as the <strong>one platform where all your data lives</strong>. The challenge: <em>if my agent runs in Microsoft Foundry, how do I connect back to Fabric data?</em> → <strong>Foundry Tools + Toolbox.</strong></p>
+<p>A <strong>toolbox</strong> is "a way to package various tools into a single entity" your program interacts with. Ron's toolbox bundles:
+- <strong>Azure AI Search</strong> — indexing a <strong>product catalog</strong>.
+- A <strong>Fabric IQ connector</strong> — linking to <strong>customer and orders data</strong>.</p>
+<p>Benefits: <strong>one unified endpoint + one unified authentication</strong> — <em>connect once, reach everything in the toolbox</em>. A single line of code <strong>attaches the toolbox to the enrichment agent only</strong>; all other agents lack that capability (least-privilege by design).</p>
+<h3 id="running-the-agent-locally">Running the agent locally</h3>
+<p>Everything runs <strong>locally</strong>: code on local disk, but <strong>connecting to a Foundry model in the cloud</strong> and to the <strong>toolbox</strong> (part of the Foundry service). She prepares <strong>test data in raw JSON</strong> (the format Brady's front end will later replace) and runs it.</p>
+<h3 id="agent-inspector-foundry-toolkit-vs-code-extension">Agent Inspector (Foundry Toolkit VS Code extension)</h3>
+<p>A possibly-new UI that serves <strong>multiple purposes</strong>:
+- <strong>Visualizer</strong> — left-hand diagram showing how multiple agents flow together (clarifies what's hard to see in code).
+- <strong>Playground</strong> — send a payload and watch it execute.
+- <strong>Debugger</strong> — standard VS Code debugging: <strong>hover to inspect variables</strong> (she sees 3 payload items; first two classified negative, last positive), step/continue through the workflow.
+- <strong>Live diagram updates</strong> — built from <strong>runtime object models</strong>, so you can follow execution in real time.
+- <strong>Per-node runtime event capture</strong> — <em>every event in and out of every agent</em> is captured; selecting a node shows its specific <strong>input and output</strong> (e.g., what the enrichment agent takes in vs. emits).</p>
+<p>A nice ops tell from Ron: <em>"I know things are working when it's taking a long time — because it didn't fail right away"</em> (the enrichment agent's Fabric/AI Search calls take a moment). Results show <strong>overall sentiment</strong>, <strong>per-item product identification</strong>, and a <strong>draft email</strong> produced by one of the agents.</p>
+<h3 id="adding-evaluations-at-scale-by-prompting">Adding evaluations at scale (by prompting)</h3>
+<p>A 3-item payload is fine as a <strong>PoC/prototype</strong>, but production needs <strong>scale testing + formal evaluations</strong>. Being "lazy," Ron just told Copilot:</p>
+<blockquote>
+<p><em>"Add evaluations to my agent."</em></p>
+</blockquote>
+<p>Because Copilot <strong>has access to the source code</strong>, it understands the agent's inputs/outputs and <strong>figured everything out</strong>, generating:
+- A <strong>test dataset of 10 rows</strong> (simulated customer-feedback scenarios).
+- A set of <strong>evaluators</strong> — suggested <em>and</em> implemented automatically.</p>
+<p>She replies <em>"all looks good, just run it,"</em> and Copilot uses the <strong>Foundry MCP server</strong> behind the scenes to <strong>submit the evaluation directly to the Foundry service</strong>. Results are then <strong>viewable directly inside VS Code</strong>.</p>
+<h3 id="deploying-as-a-hosted-agent">Deploying as a hosted agent</h3>
+<p>Everything so far ran locally. To get a <strong>fully managed + observable hosted agent</strong>, Ron runs:</p>
+<blockquote>
+<p><em>"deploy hosted agent"</em></p>
+</blockquote>
+<p>A short <strong>wizard</strong> ("a couple steps") completes the deploy. The hosted agent gets a <strong>playground</strong> like the local one — but this one <strong>talks to the live service</strong>.</p>
+<h3 id="rons-favorite-feature-live-log-streaming-one-click-copilot-fix">Ron's favorite feature: live log streaming + one-click Copilot fix</h3>
+<p>The hosted-agent playground provides <strong>log streaming</strong> as the agent runs, including <strong>all server-side call stacks</strong>. The "magic": <strong>review logs directly in VS Code</strong> — clicking <strong>extracts the messages from the service and sends them to Copilot</strong>, and if there are <strong>errors/exceptions/issues, Copilot can fix them right there</strong>. This closes the loop: deploy → observe → diagnose → fix, all without leaving the editor. Ron then hands off to Brady for the front end.</p>
+<h3 id="handoff-to-brady-fork-clone-and-throw-a-squad-at-it">Handoff to Brady: fork, clone, and "throw a squad at it"</h3>
+<p>Contrast in styles: Ron did everything in <strong>VS Code</strong>; Brady does everything in a <strong>customized Copilot ("for Build in San Francisco")</strong>, rarely inside VS Code. He <strong>forked Ron's repo first</strong> (<em>"otherwise it'd be rude"</em>) then <strong>cloned it</strong> locally — now he has her code and wants to <strong>"throw a squad at it."</strong></p>
+<p><strong>What is Squad?</strong> A <strong>multi-agent framework for GitHub Copilot</strong> that Brady built with his friend <strong>Tamir</strong>. It runs <strong>multiple agents talking at the same time</strong> — uses <strong>a lot of tokens</strong>, but <strong>reaches the endpoint quicker</strong> than a single-threaded conversation with Copilot. Works in <strong>brownfield or greenfield</strong>, brand-new or existing repos.</p>
+<h3 id="bootstrapping-squad">Bootstrapping Squad</h3>
+<p>Inside the repo he types <strong><code>squad init</code></strong> (using the <strong>"no workflows" version</strong> — <em>"if you know, you know"</em>), which lays down <strong>a bunch of files on disk</strong>. Then in Copilot he goes to <strong>autopilot mode</strong>, selects the <strong><code>squad</code> GitHub Copilot agent</strong> (<em>"yes, I trust you, Brady and Squad"</em>), and fires a prompt from his <strong>cheat sheet</strong>. Copilot reads the code + prompt and <strong>builds a team of agents</strong> for him.</p>
+<p>He deliberately gave the agents <strong>"cool names" instead of descriptive ones</strong>. Crucial design principle:</p>
+<blockquote>
+<p>If you send all agents the <strong>same instructions</strong>, <em>"they'll fight over work like hungry hungry hippos."</em> Instead, <strong>each agent knows only its job</strong> and <strong>collaborates</strong> with the others.</p>
+</blockquote>
+<h3 id="the-back-end-azure-mcp-tools-azure-skills">The back end: Azure MCP tools + Azure skills</h3>
+<p>Two <code>MCP</code>/<code>skills</code> introspection commands reveal Brady's toolbox:
+- <strong>MCP servers/tools</strong> — including all the <strong>Azure MCP tools</strong> from the <strong>Azure MCP server</strong>, dialed into his CLI <strong>by default</strong> (plus <strong>all the Foundry tools</strong>). These are the <strong>capabilities</strong> for "all the different Azure things and Foundry things."
+- <strong>Azure skills</strong> — <em>"a series of markdown files on disk that tell Copilot how to use all those MCP tools together the right way to get tasks done."</em></p>
+<p>So his Squad — and anything on his Copilot instance — has access to <strong>all those tools + all those skills</strong>, letting him <strong>"talk to my squad in [my] favorite language"</strong> and get going.</p>
+<h3 id="provisioning-foundry-and-recovering-from-a-wrong-compute-host">Provisioning Foundry — and recovering from a wrong compute host</h3>
+<p>Brady's first prompt: take Ron's code and <strong>provision a new instance in Azure Foundry — and only that</strong> (the infra was "already written"… by <strong>Squad, in the hotel room last night</strong>, because he's "too lazy to do it myself").</p>
+<p>The honest war story: he'd originally been <strong>deploying the agent to the wrong compute host (Azure Container Apps)</strong>. Ron proofread it the night before and flagged <em>"that's the wrong endpoint."</em> He told Squad, and <strong>Squad changed everything in ~1 hour</strong> — <em>using all those skills and tools, working together to figure out how to rewire it.</em> He'd <strong>never used the service</strong> and feared he'd never get it working, but was <strong>done in ~45 minutes</strong>, crediting the skills + tools.</p>
+<h3 id="the-front-end-react-on-azure-container-apps-via-azd">The front end: React on Azure Container Apps via <code>azd</code></h3>
+<p>Second prompt: <strong>"the backend is live"</strong> and the <strong>React front-end code is already written by Squad</strong> (Brady is a <strong>.NET person</strong>, so he has a <strong>React agent on the team</strong>). Now deploy it as a <strong>second container app</strong>.</p>
+<p>Brady works <strong>almost entirely in the CLI</strong> via <strong><code>azd</code> (Azure Developer CLI)</strong>. He asked Squad to deploy <strong>both front end and back end 100% with <code>azd</code></strong>. Squad honestly determined it <strong>couldn't be done with <code>azd</code> alone</strong> — there were <strong>additional steps required with the Foundry SDK/CLI</strong>. Not only did Squad <strong>figure that out</strong>, it realized it could perform them as a <strong>post-deployment hook</strong> using the existing infra — <strong>and just did it</strong>.</p>
+<p>Running that second command deploys the front-end stack: an <strong>Azure Container App</strong>, a <strong>Container Apps environment</strong>, a <strong>Container Registry</strong> (newly needed), and a <strong>Log Analytics workspace</strong> — all standard <strong>dependencies of an ACA environment</strong> required by the <strong>React front end</strong>, <em>not</em> by Ron's agent code.</p>
+<h3 id="the-surprise-one-foundry-model-across-two-compute-hosts">The surprise: one Foundry model across two compute hosts</h3>
+<p>Clicking into the deployed front end → <strong>"send feedback."</strong> The reveal (a surprise even to Ron): the <strong>front end calls her Foundry model to generate fake feedback</strong>. So the <strong>same Foundry model instance is reused across two different compute layers / two different compute hosts</strong>, with the two apps <strong>authenticated to one another using Managed Identity (MI)</strong> → <em>"completely secure with those apps talking to each other."</em> Entirely built with <strong>prompts + Squad + the existing tools</strong> installed in <strong>both</strong> his CLI and her VS Code (<em>"the same tools, CLI and everything else"</em>).</p>
+<h3 id="squad-self-documentation-report">Squad self-documentation report</h3>
+<p>At the very end, Squad produces a <strong>report</strong> showing <strong>everything the squad agents did</strong>: everything they <strong>wrote</strong>, everything they <strong>deployed</strong> (incl. <strong>Python</strong>), all the <strong>tools used</strong>, and all the <strong>skills consulted</strong> (Brady notes they consulted even more during development <em>"because I don't know how to use half this stuff"</em> — the skills laid down all the IaC). Takeaway: you can have the squad <strong>do the work <em>and</em> document it on the fly</strong>.</p>
+<h3 id="call-to-action-the-single-slide">Call to action (the single slide)</h3>
+<p>Both presenters are visibly proud of finishing on time. The CTA:
+- <strong>Foundry Toolkit for VS Code</strong> — install it.
+- <strong>Azure skills + Azure MCP tools</strong> for your <strong>Copilot CLI</strong> — <em>"install all of it. You need it all."</em>
+- <strong>GitHub Copilot</strong> (the app) — get it.
+- <strong>Try Squad</strong> — like it, hate it, leave comments/issues/PRs. It will <strong>always stay an open-source project</strong>, though it may <strong>move out of "some guy's organization"</strong> to somewhere more efficient (<strong>no ETA</strong>).</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Microsoft Foundry</strong> — service hosting the agents/model; supports <strong>hosted agents</strong> (managed + observable); brand-new and actively evolving.</li>
+<li><strong>Microsoft Agent Framework</strong> — open-source multi-agent orchestration framework; composes the 4-agent workflow with conditions/branching in ~4 lines + one <code>workflow</code> function.</li>
+<li><strong>Foundry Toolkit (VS Code extension)</strong> — ships the <strong>Foundry skill</strong>, the <strong>Agent Inspector</strong>, deploy commands, and eval result viewing.</li>
+<li><strong>Foundry skill</strong> — current knowledge about Foundry/Agent Framework that Copilot pulls to scaffold correctly.</li>
+<li><strong>Foundry Tools / Toolbox</strong> — packages multiple tools behind one unified endpoint + auth.</li>
+<li><strong>Azure AI Search</strong> — product-catalog index inside the toolbox.</li>
+<li><strong>Microsoft Fabric</strong> + <strong>Fabric IQ connector</strong> — single data platform for customer/orders data; connector links it into the toolbox.</li>
+<li><strong>Agent Inspector</strong> — visualizer + playground + debugger; live runtime diagram + per-node event capture.</li>
+<li><strong>Foundry MCP server</strong> — submits evaluation runs to the Foundry service.</li>
+<li><strong>GitHub Copilot</strong> — app + <strong>Copilot CLI</strong>; plan mode, autopilot mode, custom agents.</li>
+<li><strong>Squad</strong> — open-source multi-agent framework for GitHub Copilot (by Brady Gaster &amp; Tamir); <code>squad init</code>, "no workflows" mode.</li>
+<li><strong>Azure MCP server / Azure MCP tools</strong> — Azure + Foundry capabilities dialed into the Copilot CLI by default.</li>
+<li><strong>Azure skills</strong> — markdown files telling Copilot how to use MCP tools correctly.</li>
+<li><strong>Azure Container Apps</strong> + <strong>Container Apps environment</strong>, <strong>Azure Container Registry</strong>, <strong>Log Analytics workspace</strong> — front-end (React) compute + dependencies.</li>
+<li><strong>Azure Developer CLI (<code>azd</code>)</strong> — primary deployment tool; extended via Foundry SDK/CLI <strong>post-deployment hook</strong>.</li>
+<li><strong>Managed Identity (MI)</strong> — secure auth between front-end and back-end apps.</li>
+<li><strong>React</strong> — front-end framework (built by a dedicated Squad "React agent").</li>
+<li><strong>Python</strong> — back-end language scaffolded/deployed by the agents.</li>
+<li><strong>VS Code</strong> — Ron's entire workflow surface.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p>None explicitly announced as new releases — this was a <strong>live demo session</strong>, not a launch keynote. That said, the session <strong>surfaces and showcases very new / actively-evolving capabilities</strong>:
+- <strong>Microsoft Foundry hosted agents</strong> + <strong>one-command deploy</strong> ("deploy hosted agent") with managed/observable runtime, live playground, and <strong>log streaming with one-click Copilot fix</strong>.
+- <strong>Microsoft Agent Framework</strong> for multi-agent orchestration (explicitly called "very new").
+- <strong>Foundry Toolkit VS Code extension</strong> features: <strong>Foundry skill</strong>, <strong>Agent Inspector</strong> (live runtime visualizer + event capture), and <strong>MCP-driven evaluations</strong>.
+- <strong>Foundry Tools / Toolbox</strong> unifying Azure AI Search + Fabric IQ behind one endpoint/auth.
+- <strong>Squad</strong> — Brady's open-source multi-agent framework for GitHub Copilot (still in "some guy's org," may relocate; no ETA).</p>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>End-product walkthrough</strong> — Zava feedback site classifying mixed/negative feedback and auto-deciding a free replacement (Fabric order lookup → action).</li>
+<li><strong>Prompt → plan → scaffold</strong> — single prompt in Copilot plan mode produces the 4-agent architecture; Copilot pulls the Foundry skill to learn the framework.</li>
+<li><strong>Orchestration code reveal</strong> — 4 agents in ~4 lines + a single <code>workflow</code> function with conditions/branching.</li>
+<li><strong>Toolbox wiring</strong> — one line attaches the Azure AI Search + Fabric IQ toolbox to <em>only</em> the enrichment agent.</li>
+<li><strong>Local run + Agent Inspector</strong> — live workflow diagram from runtime object models, hover-to-inspect variables (3 items; 2 negative, 1 positive), per-node input/output event capture, draft-email output.</li>
+<li><strong>Eval-by-prompt</strong> — "add evaluations to my agent" → 10-row dataset + evaluators auto-generated, submitted via Foundry MCP server, results in VS Code.</li>
+<li><strong>One-command hosted deploy</strong> — "deploy hosted agent" wizard → live playground + <strong>log streaming</strong> with <strong>one-click Copilot fix</strong> of server-side errors.</li>
+<li><strong>Fork → Squad init</strong> — Brady forks/clones Ron's repo, runs <code>squad init</code> (no-workflows), autopilot mode builds a named team of collaborating agents.</li>
+<li><strong>CLI tooling tour</strong> — Azure MCP tools (incl. Foundry) + Azure skills (markdown how-to files) listed from the CLI.</li>
+<li><strong>Provision Foundry + recover</strong> — Squad re-targets from wrong host (Container Apps) to correct Foundry endpoint in ~1 hour; Brady productive in ~45 min on a service he'd never used.</li>
+<li><strong><code>azd</code> front-end deploy</strong> — React app → second Container App; Squad self-discovers it needs a <strong>Foundry SDK/CLI post-deployment hook</strong> and adds it; stack includes ACA env, Container Registry, Log Analytics.</li>
+<li><strong>Cross-host model reuse</strong> — front end calls Ron's Foundry model to generate fake feedback; same model across two compute hosts, secured with <strong>Managed Identity</strong>.</li>
+<li><strong>Squad self-documentation report</strong> — lists everything written, deployed (incl. Python), tools used, and skills consulted.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>4 agents, ~4 lines of code</strong> — the entire multi-agent workflow composed via one <code>workflow</code> function.</li>
+<li><strong>10-row</strong> auto-generated evaluation dataset.</li>
+<li><strong>~1 hour</strong> for Squad to re-platform from the wrong compute host (Container Apps) to the correct Foundry endpoint.</li>
+<li><strong>~45 minutes</strong> for Brady to get a never-before-used service working, thanks to skills + tools.</li>
+<li><strong>~25 minutes</strong> total demo budget; goal to be <strong>"in a live demo in the first minute."</strong></li>
+<li><strong>1 Foundry model reused across 2 compute layers / 2 compute hosts.</strong><blockquote>
+<p><em>"I did not write a single line of code here."</em> — Ron (a recurring refrain from both presenters).
+<em>"If you just send all the agents the same instructions, they're going to fight over work like hungry hungry hippos."</em> — Brady, on why each agent needs a distinct role.
+<em>"I know things are working when it's taking a long time — because it didn't fail right away."</em> — Ron, on the enrichment agent's Fabric calls.
+<em>"Squad wrote that infra in the hotel room last night because I'm too lazy to do it myself."</em> — Brady.
+<em>"A toolbox is really just a way to package various tools into a single entity that you can interact with from your program."</em> — Ron.
+<em>"Those are a series of markdown files on disk that tell Copilot how to use all those MCP tools together the right way."</em> — Brady, on Azure skills.
+<em>"Install all of it. You need it all."</em> — Brady's CTA.</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Install the <strong>Foundry Toolkit VS Code extension</strong> and explore the <strong>Agent Inspector</strong> (runtime visualizer + per-node event capture) on a toy multi-agent workflow.</li>
+<li>Build a minimal <strong>Microsoft Agent Framework</strong> workflow (classifier → enrichment → triage → aggregate) and confirm the "~4 lines" orchestration claim.</li>
+<li>Stand up a <strong>Foundry Tools Toolbox</strong> combining <strong>Azure AI Search</strong> + a <strong>Fabric IQ connector</strong>; test the single-endpoint/single-auth claim and least-privilege (attach to one agent only).</li>
+<li>Try the <strong>"add evaluations to my agent"</strong> prompt flow → confirm Copilot auto-generates dataset + evaluators and submits via the <strong>Foundry MCP server</strong>.</li>
+<li>Try <strong>one-command hosted deploy</strong> + <strong>log streaming → one-click Copilot fix</strong> loop.</li>
+<li>Install <strong>Squad</strong> (<code>squad init</code>, no-workflows mode) on a brownfield repo; test the "distinct roles vs. hungry hippos" effect.</li>
+<li>Wire <strong>Azure MCP server + Azure skills</strong> into <strong>Copilot CLI</strong>; deploy a React front + Python back to <strong>Azure Container Apps</strong> with <code>azd</code> and confirm the <strong>Foundry SDK/CLI post-deployment hook</strong> pattern.</li>
+<li>Reproduce <strong>cross-host Foundry model reuse</strong> secured with <strong>Managed Identity</strong> between front end and back end.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>Where does <strong>Squad</strong> end up living (it may move out of "some guy's organization")? What's the repo + license? (No ETA given.)</li>
+<li>How does the <strong>Foundry MCP server</strong> authenticate eval submissions, and what evaluators are available out of the box?</li>
+<li>What exactly is the <strong>"no workflows" version</strong> of Squad vs. the workflows version?</li>
+<li>How does the <strong>Foundry hosted agent</strong> pricing/quotas compare to running locally?</li>
+<li>What are the precise <strong>Foundry SDK/CLI steps</strong> that <code>azd</code> alone can't cover (the post-deployment hook)?</li>
+<li>Is the <strong>Foundry skill</strong> auto-pulled, or must Copilot be told to use the Foundry Toolkit?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Anyone building <strong>multi-agent systems on Microsoft Foundry</strong> with the <strong>Agent Framework</strong>.</li>
+<li>Teams connecting agents to <strong>enterprise data in Fabric</strong> via toolboxes.</li>
+<li><strong>Agentic dev workflows</strong> (Copilot + Squad) for greenfield/brownfield app delivery.</li>
+<li><strong>Azure deployment</strong> patterns: ACA + <code>azd</code> + Foundry hosted agents + MI.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><a class="wikilink wikilink--resolved" href="DEM303.html">DEM303 - Late to agentic coding Dont panic build</a> — sibling DEM demo on getting started with agentic coding.</li>
+<li><a class="wikilink wikilink--resolved" href="DEM312.html">DEM312 - Multi-agents in action 3 agents 3 frameworks</a> — sibling multi-agent demo (compare orchestration approaches).</li>
+<li><a class="wikilink wikilink--resolved" href="DEM301.html">DEM301 - Rethinking CI Actions AI Agents End of Commit-Fail-Commit</a> — sibling agentic-dev/CI demo.</li>
+<li><a class="wikilink wikilink--resolved" href="ODSP923.html">ODSP923 - Create enterprise apps with AI and MCP</a> — enterprise apps with AI + MCP tooling.</li>
+<li><a class="wikilink wikilink--resolved" href="BRK243.html">BRK243 - Claw and agent harness in Microsoft Foundry</a> — agent harness on Foundry (deeper dive).</li>
+<li><a class="wikilink wikilink--resolved" href="BRK241.html">BRK241 - From prototype to production build and run agents at scale</a> — prototype → production agents (mirrors the eval/deploy arc here).</li>
+<li><a class="wikilink wikilink--resolved" href="DEM340.html">DEM340 - Build work-ready agents with Foundry and Work IQ</a> — Foundry agents + IQ data connectors.</li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEM301.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEM301</span><span class="pager-title">Rethinking CI: Actions, AI Agents, and the End of Commit-Fail-Commit</span></a>
+    <a class="pager pager-next" href="DEM303.html"><span class="pager-dir">Next →</span><span class="pager-code">DEM303</span><span class="pager-title">Late to agentic coding? Don&#x27;t panic, build.</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

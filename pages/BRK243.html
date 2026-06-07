@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRK243 — Claw and agent harness in Microsoft Foundry</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">BRK243</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=e_ZJy3RsNkg" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Claw and agent harness in Microsoft Foundry</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Sean Henry, Glenn, Amanda</span>
+      <span class="meta-item">⏱️ 46m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="foundry">Foundry</span><span class="chip" data-tag="agent-harness">Agent Harness</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Sean Henry (Microsoft Foundry), Glenn (Hermes deployment demo), Amanda (Teams / M365 Copilot publishing demo) — all on the Microsoft Foundry team<br>
+<strong>Duration:</strong> ~46 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=e_ZJy3RsNkg">YouTube</a></p>
+  </div>
+</div>
+
+<div class="callout callout-note">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">📝</span><span class="callout-title-text">On the title &quot;Claw&quot;</span></div>
+  <div class="callout-body">
+<p>"Claw" in the title is <strong>not</strong> a separate Microsoft product. The session repeatedly uses <strong>"claw" / "claw-style" / "claw-like"</strong> to describe the class of autonomous agent harnesses popularised by <strong>OpenClaw</strong> — local, always-running agents that own a sandbox/VM, carry their own memory and skills, self-improve, and talk to you over a messaging channel. <strong>Hermes</strong> is presented as a "second-generation" claw-like agent (similar ingredients, not a literal OpenClaw fork). The talk's real subject is <strong>agent harnesses</strong> and how to deploy these claw-style patterns into Microsoft Foundry.</p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>This session unpacks what an <strong>agent harness</strong> is — the "car" you build around the LLM "engine" so it can run long, complex tasks — and shows three concrete ways to get advanced, "claw-style" agents running in <strong>Microsoft Foundry</strong>. Sean Henry defines the harness's core components (agent loop, context management, skills/tools, sub-agent orchestration, memory/session persistence, lifecycle hooks, human-in-the-loop). Glenn demos deploying <strong>Hermes</strong> (an off-the-shelf claw-like agent) onto <strong>Foundry Hosted Agents</strong>, using a new <strong>Routines</strong> feature (preview) for nightly self-maintenance and a shut-down-when-idle design to avoid paying for an always-on sandbox. Sean then shows building a <strong>custom</strong> harness with <strong>Microsoft Agent Framework</strong> (now v1.0) — agent loop + workflows + harness — and deploying it to Foundry, a console TUI, or an AG-UI web front end. Finally Amanda demos <strong>one-click publish to Teams / M365 Copilot</strong> and introduces a third agent identity type, <strong>Autopilot agents</strong>, which act on their own behalf with a real user account (email, Teams, documents), exemplified by a group-chat <strong>workstream manager</strong> sample.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li>An <strong>agent harness</strong> = the shell of tools/scaffolding around an agent that lets it perform longer, more complicated tasks. Analogy: the model is the <strong>motor/engine</strong>; the harness is the <strong>whole car</strong> (wheels, steering, seats) that makes the motor useful.</li>
+<li>The harness's <strong>core nugget is the agent loop</strong>: give the LLM context + available tools → it requests tool calls → execute tools → feed results back → loop until the goal is reached.</li>
+<li>Other harness components: <strong>context management</strong> (incl. context compaction), <strong>skills + tools</strong> (skills = text-based capabilities; tools over MCP/OpenAPI/code), <strong>giving the agent a computer</strong> (file system + code/program execution = human-like capability), <strong>sub-agent orchestration</strong>, <strong>memory &amp; session persistence</strong> (which lets the runtime be <strong>stateless</strong>), <strong>lifecycle hooks</strong> (before/after agent, LLM, tool calls — where you inject policy), and <strong>human-in-the-loop</strong> for higher-risk actions.</li>
+<li><strong>"Claw-style" agents</strong> (OpenClaw-popularised pattern): own their sandbox/VM, have memory + skills + autonomy, run for long periods, talk to you via Telegram/Slack/etc., and <strong>self-improve</strong> with use. They are extremely <strong>"pet-like"</strong> (you literally name them).</li>
+<li><strong>Hermes</strong> is a claw-like agent with those ingredients but is <strong>not an OpenClaw fork</strong>; Glenn deployed it onto <strong>Foundry Hosted Agents</strong> (which provide a <strong>built-in sandbox</strong>).</li>
+<li><strong>Routines</strong> (new, <strong>in preview</strong>) let agents react to external/scheduled stimuli — e.g. Hermes auto-creates a <strong>nightly maintenance routine</strong> that prunes stale skills and backs the agent up to blob storage; routines can <strong>spin a shut-down sandbox back up</strong> to do maintenance, then let it idle off again.</li>
+<li><strong>Agent state makes each instance unique by design</strong> (own skills/content/learning) — but that uniqueness causes <strong>pain when recovering/resuming from errors</strong>, so you must deliberately decide how to handle/back up state.</li>
+<li>Foundry Hosted Agents keep the <strong>sandbox file system for ~30 days of inactivity</strong>; the <strong>Foundry session ID controls which file system / VM</strong> the agent gets — changing it spins up a brand-new agent from the deployed snapshot.</li>
+<li><strong>Microsoft Agent Framework</strong> (Python + .NET, full feature parity) reached <strong>v1.0</strong> (released to preview Oct last year). Three parts: <strong>agent loop</strong>, <strong>workflows</strong>, <strong>harnesses</strong>.</li>
+<li>You can now <strong><code>.AsAgentHarness()</code></strong> on top of any chat client/agent to get file-system/code/shell tools + context compaction <strong>for free</strong>, then customise by swapping "Lego bricks" rather than assembling from scratch.</li>
+<li>Agent Framework connects to many model providers (OpenAI, Anthropic, Gemini, Bedrock, local via Ollama) and agent types (Foundry prompt agents, Copilot Studio, Claude Code, GitHub Copilot CLI, A2A), and deploys to Foundry Hosted Agents, Azure Functions, Azure Container Apps, even AWS.</li>
+<li><strong>Workflows</strong> support multi-agent patterns: sequential/hand-off (context moves too), author-critic, and <strong>Magentic</strong> (a planner/supervisor pattern built with Microsoft Research); plus custom directed workflows mixing agents with plain code, authored in code or <strong>YAML</strong>.</li>
+<li><strong>AG-UI</strong> (open standard for UI ↔ agent) + <strong>CopilotKit</strong> let you put a real web UI on a harness agent with a couple of lines (enable AG-UI endpoint), including <strong>auto-generated charts/controls for free</strong>.</li>
+<li>Foundry offers <strong>one-click publish to Teams + M365 Copilot</strong> — fill a short form, choose self-only or submit to the <strong>Microsoft admin center</strong> for org-wide approval; you get <strong>both Teams and Copilot UIs out of the box</strong>.</li>
+<li>New <strong>Autopilot agents</strong>: the third agent identity type (after <strong>assistive</strong> and <strong>autonomous</strong>). Unlike autonomous agents, an autopilot agent has a <strong>real user account</strong> (email alias, can send Teams messages, create Word docs on its own behalf) — removing the limitation that work-IQ-style actions previously needed a human's identity. <strong>Scout</strong> is cited as a ready-made example of an autopilot agent.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-foundrys-three-layers-for-agents">Framing: Foundry's three layers for agents</h3>
+<p>Sean Henry opens (day two of Build) introducing himself and colleagues <strong>Glenn</strong> and <strong>Amanda</strong>, all on <strong>Microsoft Foundry</strong> — Microsoft's AI platform for using models and building AI apps and agents. The session is a deep-dive follow-on to Tina and Jeff's Foundry overview from the prior day.</p>
+<p>Foundry's mental model is a stack of layers:
+1. <strong>Intelligence (bottom):</strong> the <strong>models</strong> — Foundry exposes "thousands… hundreds of models" usable with agents.
+2. <strong>Runtime (middle):</strong> how agents are <strong>hosted, deployed, and managed</strong> in Foundry.
+3. <strong>Human + agent collaboration (top):</strong> where agents <strong>meet you where you work</strong> — Teams, M365 Copilot — to help you every day.</p>
+<p>All wrapped in a cross-cutting layer of <strong>trust, security, manageability, observability, and evaluations</strong> needed to run agents in production. A core Foundry value is <strong>choosing your level of simplicity vs. control</strong>: start with simple prompt agents built in the portal, or move to <strong>advanced agents written in code</strong>, bringing your own libraries and connecting to other systems. This talk focuses on the <strong>agent runtime</strong> and the <strong>collaboration</strong> layer for those advanced agents.</p>
+<h3 id="whats-changed-in-the-last-six-months">What's changed in the last six months</h3>
+<p>Referencing a similar talk he gave at <strong>Ignite six months ago</strong>, Sean notes how much has shifted:
+- <strong>Frontier models got very good at coding</strong>, changing the role of software development — coding agents now do most of the actual coding while humans <strong>supervise</strong> and ensure the right thing gets built. Tools cited: <strong>GitHub Copilot, Claude Code, Cursor</strong>.
+- <strong>OpenClaw</strong> emerged: an agent that <strong>runs locally with your credentials</strong>, that you <strong>interact with over messaging</strong>, <strong>constantly running</strong>, waiting for you.
+- A <strong>second generation</strong> of these "claw-style" apps appeared (<strong>Hermes</strong>, covered later).
+- The new frontier: taking the <strong>agent-harness techniques</strong> learned from coding agents and claws and <strong>applying them to scaled enterprise applications</strong> — the whole point of the session.</p>
+<h3 id="defining-the-agent-harness">Defining the agent harness</h3>
+<p>Sean acknowledges there are "dozens of definitions" and offers Foundry's: an agent harness is <strong>the shell — the set of tools you put around your agent so it can perform longer, more complicated tasks.</strong> The <strong>engine/car</strong> analogy: a motor alone is useless; you need wheels, steering, seats — but you still need the core motor.</p>
+<p><strong>Components of an agent harness:</strong></p>
+<ul>
+<li><strong>The agent loop (the core "nugget"/motor):</strong> give the agent context + available tools, call the LLM for a response; it typically asks you to execute tools; you run them and return results; loop continues until the goal is reached. This is the traditional-agent concept at the heart of the harness.</li>
+<li><strong>Context management:</strong> as you add prompts, messages, tools, skills, the context grows. The harness proactively <strong>keeps context contained</strong>, including <strong>context compaction</strong> — looking at everything in the context window and compacting it to something more manageable.</li>
+<li><strong>Skills and tools:</strong> tools have always existed; <strong>skills</strong> (text-based capabilities you add to the agent) are now much more common. Tools come over <strong>MCP, OpenAPI</strong>, or code. A key insight: <strong>tools that give the agent a computer are very powerful</strong> — file-system read/write, the ability to <strong>write and execute code</strong>, or <strong>run programs</strong> — enabling more <strong>human-like tasks</strong>.</li>
+<li><strong>Agent orchestration:</strong> the harness <strong>manages/orchestrates specialised agents</strong> (e.g. web browsing, code execution, document synthesis).</li>
+<li><strong>Memory &amp; session persistence:</strong> so the agent <strong>remembers things about you and what it learned</strong> to improve over time. Critically, this lets the <strong>runtime be stateless</strong>, so it can be hosted across different environments/deployments — important when agents run for long periods.</li>
+<li><strong>Lifecycle hooks:</strong> connect the agent to your existing apps at every cycle — before/after the agent runs, before/after the LLM call, before/after tool calls — <strong>the place to apply your app-specific policy and logic</strong>.</li>
+<li><strong>Human-in-the-loop:</strong> as agents do more powerful/advanced things, the harness provides <strong>channels for direct human communication</strong>, so the agent can <strong>ask a human before a higher-risk tool call/execution</strong> (e.g. writing files or executing code).</li>
+</ul>
+<p>These are framed as the <strong>core capabilities common across all agent harnesses</strong> (there are others). The rest of the session shows three ways to get harnesses into Foundry.</p>
+<h3 id="demo-1-deploying-hermes-an-off-the-shelf-claw-like-agent-into-foundry-glenn">Demo 1 — Deploying Hermes (an off-the-shelf claw-like agent) into Foundry (Glenn)</h3>
+<p><strong>Clarifying "claw-like":</strong> Glenn adds colour on the <strong>claw pattern</strong>: take a harness that has <strong>memory</strong>, <strong>owns its environment</strong> (sandbox or VM), has <strong>tools</strong> and <strong>autonomy</strong>, can <strong>execute for long periods deciding its own actions</strong>, and typically has a <strong>communication platform</strong> (Telegram, Slack, etc.). <strong>OpenClaw popularised</strong> this architecture. Many things are "literally claws" or a flavour of claw (he mentions <strong>nano-claw</strong> and "various things… that have claw in their name"). <strong>Hermes</strong> has the same claw qualities/ingredients but is <strong>not literally an OpenClaw clone or fork</strong> — its makers do many of their own things. Hermes focuses heavily on a <strong>"collective wisdom" / constant self-improvement</strong> layer: the more you do a task with Hermes, the <strong>better it gets</strong> at it.</p>
+<p><strong>The deployment goal / design constraint:</strong> Most claw-like architectures today are optimised to run on a machine/VM the agent <strong>owns</strong> — making them the <strong>most "pet-like" thing invented since the start of cloud computing</strong> (recalling the early-cloud <strong>"pets vs. cattle"</strong> analogy; you literally name them). Glenn wanted a setup where the <strong>back end runs on Foundry</strong> but the agent is <strong>always available to talk to</strong>, yet <strong>shuts down when idle</strong> so he isn't <strong>paying for it all the time</strong> — "I always had this Hermes there… but I wasn't paying for it all the time."</p>
+<p><strong>The setup shown:</strong>
+- Back end on <strong>Foundry</strong>; Glenn "lives in the terminal," so the interface is a <strong>Hermes TUI</strong> running on his machine.
+- He's <strong>not using OpenShell</strong> today (left in the script as something you might want depending on deployment) because <strong>Foundry Hosted Agents has a sandbox built in</strong>, which he relies on.
+- On start-up the TUI <strong>connects to a Hermes agent running on Foundry Hosted Agents</strong>, using his <strong>local Azure Default Credential</strong> to reach the endpoint, then the <strong>same Entra credentials to pull a model from Foundry</strong> (a Foundry model).
+- He tries to have Hermes read a SharePoint file (<code>build demos.docx</code> — the demo script for Tina &amp; Jeff's session) via a <strong>Work IQ SharePoint MCP</strong> (shown as "MCP … Work IQ SharePoint"). <strong>Conference networking failed</strong>, so the MCP download didn't work — but the architectural point stands: <strong>Hermes is deployed to the cloud, has a toolbox connection, and uses its identity + yours to reach the Work IQ MCP / SharePoint.</strong></p>
+<p><strong>The state / maintenance problem and Routines (new, preview):</strong>
+- As you work, <strong>Hermes generates files, skills, and context on disk</strong> — which can start to <strong>cause problems</strong> (bloat/staleness).
+- In the <strong>Foundry portal</strong>, the deployed agent has a <strong>Foundry agent endpoint</strong> the TUI connects to, plus a new section called <strong>Routines</strong> (<strong>"this is new… in preview"</strong>).
+- Hermes ships <strong>maintenance routines</strong> that <strong>curate skills</strong> — delete stale/old skills, etc. Because Glenn <strong>doesn't want the sandbox running forever</strong>, the agent <strong>shuts down after ~15 minutes of idle time</strong>, and the <strong>routines spin it back up when it's time to do maintenance</strong>, then let it idle off again.
+- The portal showed a <strong>maintenance routine that had already run</strong> (its output appeared at the top of the TUI on launch).
+- A <strong>shell script</strong> sets environment variables and runs the TUI, pointing it at the back end. It contains a <strong>session ID</strong> string (e.g. <em>"George the Build Hermes"</em>). <strong>Every Foundry session ID controls the file system the agent gets.</strong> Changing it (e.g. to <em>"Jeff the Build Hermes"</em>) yields a <strong>brand-new Hermes</strong> — new file system, new VM — <strong>recreated from the snapshot</strong> deployed when the Hermes agent was created. On first launch the new agent <strong>automatically creates a new nightly maintenance routine</strong>.
+- That <strong>nightly maintenance routine</strong>: deletes old scheduled skills, curates files, and <strong>importantly backs Hermes up</strong> — creating an <strong>independent backup</strong> (onto <strong>blob storage</strong>) so the files are always safely on disk.
+- <strong>Routines</strong> generally let an agent <strong>react to external stimuli</strong> and <strong>prompt an agent to do something</strong>. You create one by selecting an <strong>agent + session + prompt + recurrence</strong> — but, crucially, <strong>agents can create routines themselves to re-enter the same session</strong>. That's why the listed routines have "weird names": <strong>each was created by the agent itself</strong> to maintain itself because it knew it needed to.</p>
+<p><strong>The overall topology Glenn built:</strong>
+- Hermes runs <strong>in the cloud</strong>; a <strong>TUI</strong> is on his local machine; a <strong>proxy</strong> carries the (agent-to-engine) <strong>protocol over the network</strong> to the cloud Hermes agent; a <strong>routine</strong> manages and looks after the agent's context.
+- After a fresh respawn (because the internet was bad), it worked: <strong>isolated in a sandbox</strong>, with Work IQ access, correctly identifying the demo document as <strong>authored by Jeff Holland</strong>, and the new instance had <strong>auto-created its own routine</strong> he could run <strong>test runs</strong> against.</p>
+<p><strong>Glenn's key point — state:</strong> the <strong>agent state creates unique environments</strong>; every Hermes instance/file system/agent in a claw-like pattern is <strong>unique by design</strong> (you <em>want</em> uniqueness so it keeps its own skills/content and keeps learning/evolving). But (as learned <strong>painfully</strong> building cloud apps) <strong>uniqueness causes pain when recovering/resuming from errors</strong>, so <strong>you must decide how to handle that state</strong>. His chosen constraint: <strong>nightly backup to blob storage</strong> + reliance on Foundry Hosted Agents <strong>keeping the sandbox file system for ~30 days of inactivity</strong> (deleted only after 30 days idle; otherwise kept indefinitely while in use).</p>
+<p><strong>Wrap / call to action:</strong> Glenn has <strong>all the code available</strong> (a <strong>proof of concept</strong> he keeps evolving), invites people to find him to use Hermes/routines, and notes he's making <strong>PRs directly into the Hermes repo</strong> to improve its Foundry integration.</p>
+<h3 id="demo-2-building-a-custom-harness-with-microsoft-agent-framework-sean">Demo 2 — Building a custom harness with Microsoft Agent Framework (Sean)</h3>
+<p>Sean pivots from off-the-shelf to <strong>building your own custom harness</strong> with <strong>Microsoft Agent Framework</strong> — Microsoft's <strong>library/SDK for building AI applications and agents</strong> in <strong>Python and C#</strong>, <strong>released to preview last October</strong>, recently reaching <strong>version 1.0</strong> "a couple months ago."</p>
+<p><strong>Three parts of Agent Framework:</strong></p>
+<ol>
+<li>
+<p><strong>Agent loop</strong> — the core <strong>AI agent construct</strong>. Builds loops that talk to <strong>Foundry models, Foundry tools, and host directly in Foundry</strong>, but also connects elsewhere in the AI ecosystem: <strong>OpenAI directly, Anthropic directly, Gemini, Bedrock, local models via Ollama</strong>, and <strong>any tool over OpenAPI / MCP / code</strong>. <strong>Deploy anywhere:</strong> Foundry Hosted Agents, <strong>Azure Functions, Azure Container Apps</strong>, or even <strong>AWS</strong> ("I don't know why you'd want to do that"). It also provides <strong>connectors that abstract other agent providers</strong> — connect to <strong>Foundry prompt agents</strong> (declarative agents built in Foundry), <strong>Copilot Studio agents</strong>, <strong>Claude Code agents</strong>, <strong>GitHub Copilot CLI agents</strong> (many people bridge their agent systems into GitHub Copilot), or the broader ecosystem via the <strong>A2A (agent-to-agent) protocol</strong>.</p>
+</li>
+<li>
+<p><strong>Workflows</strong> — built-in constructs for <strong>multi-agent systems</strong>:
+   - <strong>Sequential / hand-off</strong> — one agent talks to another, <strong>moving the context</strong> along.
+   - <strong>Author–critic</strong> — agents continually <strong>refine output</strong>.
+   - <strong>Magentic</strong> — a <strong>planning</strong> pattern built with <strong>Microsoft Research</strong>: a <strong>supervisor agent generates a plan</strong> and <strong>sub-agents work through it</strong>.
+   - <strong>Custom directed workflows</strong> — a full directed-workflow capability; you can <strong>mix agents with regular code</strong> ("not everything needs to be an agent"), authored in <strong>code or declaratively in YAML</strong>.</p>
+</li>
+<li>
+<p><strong>Agent harnesses</strong> (the latest addition) — the <strong>shell on top of the agent</strong>: common <strong>tools</strong> (file-system access, code execution, shell execution), <strong>built-in context</strong> (chaining prompts + skills + agent memory smartly before handing to the LLM), <strong>planning capabilities</strong> (these systems often — not always — work much better with a planning phase plus specialised sub-agents), and <strong>extensive middleware</strong> (context compaction, <strong>tool selection</strong> algorithms, <strong>permissions/capabilities</strong> definitions for what the agent and its tools can do). Enables <strong>deep-research agents, coding agents (à la GitHub Copilot / Claude Code), content-generation agents</strong> — <strong>goal-driven agents</strong> you give an abstract goal and let them plan their own path to success. Being a framework, you can <strong>build your own custom harness and mix-and-match</strong> harnesses with workflows.</p>
+</li>
+</ol>
+<p><strong>Coding demo (shown in C#; full parity in Python):</strong>
+- Familiar first lines set up a <strong>chat client</strong> = the <strong>core agent loop</strong>.
+- New capability: <strong>slap an agent harness on top of any agent</strong> via <strong><code>.AsAgentHarness()</code></strong>. A <strong>minimal</strong> harness is two lines (lines ~79–80 in his sample), and those two lines will become <strong>optional after preview</strong>.
+- Adding the harness gives <strong>all those tools, plus compaction, for free</strong>. Contrast: old Agent Framework was "a bunch of <strong>Lego bricks</strong> you attached together"; the harness approach gives you the <strong>thing already built</strong>, and you <strong>take bricks away or swap pieces</strong> to customise.
+- <strong>Customising — a research agent example:</strong> configured with a <strong>name + description + metadata</strong>; a <strong>tool that converts a web page into a markdown file</strong>; <strong>model-level settings like reasoning effort</strong>; <strong>where to store files / memory / which files to grant access to</strong> (a <strong>file access store</strong>); <strong>where telemetry goes</strong> — it <strong>emits the full complement of OpenTelemetry from the GenAI spec</strong>, sendable up to Foundry or anywhere; and <strong>preconfigured background agents</strong> (e.g. one doing <strong>web search in the background</strong>).
+- <strong>Harness Console (a TUI)</strong> — built to make harness agents <strong>easy to run, demo, and prototype</strong>, similar to Hermes' TUI. He runs the research agent through it with <strong>configuration, listeners, observers, and event handlers</strong> for events coming off the agent.
+- <strong>Live run:</strong> prompts <em>"write a blog about Microsoft Agent Framework announcements at Build 2026."</em> The agent enters <strong>plan mode</strong> (modes include <strong>plan</strong> and <strong>plan-and-execute</strong>; can show its <strong>to-do list</strong> and <strong>export the session</strong>). It calls many tools, loads skills (he'd prebuilt a <strong>blog-outlining skill</strong>), reads files, builds a <strong>to-do list</strong>, and downloads info to build an outline. It then hits a <strong>human-in-the-loop</strong> moment, <strong>asking what type of blog/content</strong> (a harness event the console listens for); they pick <strong>"developers building AI agents."</strong> It continues building/iterating the plan; when finished it <strong>shows the plan and asks for approval to execute</strong>. They <strong>approve and execute</strong> and it <strong>writes the blog post</strong>, running in the background over a long period.
+- <strong>AG-UI + CopilotKit (web UI):</strong> because customers usually <strong>don't want a TUI</strong>, Foundry worked with the <strong>AG-UI</strong> and <strong>CopilotKit</strong> folks. <strong>AG-UI</strong> = an <strong>open standard for UI that talks to agents</strong>. With a couple of lines (similar to <strong>ASP.NET</strong> usage) you <strong>enable AG-UI on top of your agent</strong> via an app, giving it an <strong>AG-UI endpoint</strong>; <strong>CopilotKit</strong> provides a library that talks directly to it. Demoed a <strong>different agent given a sales CSV</strong>, showing the <strong>same harness behaviours</strong> (tool calls appearing/completing) in a <strong>nice web UI</strong> (you can hide tool calls in production). With <strong>CopilotKit's built-in controls</strong>, the agent can <strong>generate charts</strong> — <strong>no extra code</strong>, just telling the agent it can produce these controls/charts — "for free."
+- <strong>Deploy to Foundry:</strong> because it's just an agent, use the <strong>agent host builder</strong> to create a <strong>responses endpoint</strong> and interact with it (with tools). Shout-out to the <strong>Foundry Toolkit Agent Inspector</strong> for building/debugging agents — connect to your agent, view <strong>previous responses and events</strong>, and <strong>debug</strong> through it. Hitting <strong>deploy</strong> takes a few minutes; Sean had deployed one earlier so showed his agent <strong>up and running in Foundry</strong>, now behaving like <strong>any other agent</strong> — interact with it, see <strong>traces</strong>, and use all of Foundry's tools to <strong>manage, monitor, and evaluate</strong> it.</p>
+<p>Summary of Demo 2's three ways to run/consume the same harness agent: <strong>(1)</strong> in a <strong>workflow with no UI at all</strong>, <strong>(2)</strong> in a <strong>console/TUI</strong> application, or <strong>(3)</strong> in a <strong>web UI</strong> via AG-UI — and then <strong>deploy directly into Foundry</strong>.</p>
+<h3 id="demo-3-getting-agents-where-people-work-teams-m365-copilot-publishing-autopilot-agents-amanda">Demo 3 — Getting agents where people work: Teams &amp; M365 Copilot publishing + Autopilot agents (Amanda)</h3>
+<p>Amanda covers <strong>"what comes next"</strong> once an agent is built: you usually <strong>don't want a standalone UI</strong> — you want the agent in the <strong>surfaces you use every day</strong>. Foundry provides <strong>one-click publish to Teams and M365 Copilot</strong>: once an agent is deployed, a <strong>drop-down</strong> lets you fill in a few details and the agent is <strong>instantly available</strong> (scoped to yourself), with an option to <strong>share with your whole organisation</strong>.</p>
+<p><strong>Publishing experience (demoed with a simple prompt agent):</strong>
+- Once you have a <strong>tested version</strong> you're happy with, click the <strong>Publish</strong> drop-down → <strong>"Publish to Teams and M365 Copilot."</strong>
+- A dialog lets you <strong>name the agent</strong> and provide <strong>key details</strong> — importantly these are <strong>what end users see</strong> when interacting (focused on <strong>actions it can perform</strong>, not internal implementation details).
+- Next page offers two options: <strong>make it available just to yourself</strong> (shows up immediately, usable right away) or <strong>submit to the Microsoft admin center for approval</strong> → once approved, <strong>available to everyone in your org</strong>. There's also an option to <strong>download and customise</strong>.
+- She'd pre-published a <strong>Zava</strong> <em>customer &amp; product support agent</em> and showed it in <strong>M365 Copilot</strong> answering <em>"what products do we sell."</em> Key benefit: <strong>one publish gives you BOTH the Teams and Copilot UIs out of the box</strong> — nothing else to build.</p>
+<p><strong>Three agent identity types in Foundry:</strong> Amanda situates a new type against the two existing ones. <strong>All</strong> agent types have a unique <strong>Entra agent identity</strong>, but they differ in <strong>whose behalf they act on</strong>:
+1. <strong>Assistive agents</strong> — typically a <strong>personal productivity</strong> agent given a <strong>Work IQ</strong> tool; can <strong>send emails / draft Teams messages on your behalf</strong>; most functions are an <strong>extension of you</strong>.
+2. <strong>Autonomous agents</strong> — usually <strong>run in the background</strong>; you can <strong>assign the agent's identity permissions</strong> (e.g. on an <strong>Azure resource group</strong> or <strong>storage account</strong>), trigger it from a <strong>non-human, chat-based trigger</strong>, and it <strong>performs actions on its own behalf</strong>. <strong>Limitation:</strong> the Work-IQ-style actions available to assistive agents <strong>can't be done</strong> here — because those need a user account.
+3. <strong>Autopilot agents (NEW)</strong> — also always act on <strong>their own behalf</strong>, but the difference is they have a <strong>real user account</strong>, giving the agent its <strong>own email address/alias</strong>, the ability to <strong>send Teams messages on its own behalf</strong>, and <strong>create Word documents on its own behalf</strong> — essentially <strong>any action, even those that normally require a user account</strong>. (Amanda demoed a snippet of these in <strong>yesterday's keynote</strong>.) <strong>Scout</strong> in Foundry is positioned as <strong>one out-of-the-box example</strong> of an autopilot agent; Foundry gives you the <strong>platform to build any type of autopilot agent</strong> yourself.</p>
+<p><strong>Workstream Manager hero sample (group-chat autopilot agent):</strong> Foundry focused on a hero scenario called the <strong>workstream manager agent</strong>, built around <strong>group-chat behaviours</strong> as the key unlock:
+- <strong>Automatically tracks open items</strong>; can <strong>answer questions about everything in your team's chat</strong>; includes an <strong>onboarding flow</strong>.
+- After deploying the sample, you go to the <strong>Microsoft admin center → Requests tab</strong>, <strong>approve</strong> the agent, then go to <strong>Teams and "hire" it</strong>.
+- Because she <strong>created the instance</strong>, she gets an <strong>onboarding message</strong> asking <strong>who it should be able to talk to</strong> (by <strong>default only the creator</strong> can). She grants access to teammates (<strong>Seth, Elijah</strong>, others); the agent will then <strong>respond to them one-on-one and in group chats</strong>.
+- <strong>Access control demo:</strong> she throws <strong>Burke</strong> (no access) plus the workstream manager into a chat and says hi — the point being you have <strong>complete control over who can talk to it</strong>.
+- <strong>Out-of-the-box group-chat behaviours:</strong> for every message it will respond to, it <strong>signals it's working on a response</strong>; if you <strong>@-mention</strong> the agent it <strong>@-mentions you back</strong>; and <strong>critically it does NOT respond to every message</strong> — when she asks <strong>other chat members</strong> to do things, the agent <strong>stays silent</strong>, which is <strong>essential behaviour for agents in group chats</strong>.
+- Call to action: <strong>start building with the code sample</strong> — a set of examples <strong>meant to be tailored</strong> to your team's needs and behaviour preferences.</p>
+<h3 id="wrap-up-sean">Wrap-up (Sean)</h3>
+<p>The session showed <strong>three things</strong> under the banner of <strong>agent harnesses</strong>: (1) taking an <strong>off-the-shelf harness — Hermes — and deploying it into Foundry</strong>; (2) <strong>building custom harnesses with Microsoft Agent Framework</strong> and running them in Foundry; and (3) <strong>getting agents where customers are</strong> — in <strong>M365 Copilot and Teams</strong> — via the publishing experience and the new agent identity types. <strong>All code is on GitHub</strong> (linked in the deck and the breakout-session repo). They plug the <strong>Agent League hackathon</strong> (running <strong>until the 14th</strong>, with prizes; join via a QR code), point to <strong>other Foundry/agent sessions</strong>, and invite attendees to the <strong>Foundry agents booth</strong> (Sean has <strong>stickers</strong>).</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Microsoft Foundry</strong> — Microsoft's AI platform for using models and building AI apps, agents; the host/runtime/management plane throughout the talk.</li>
+<li><strong>Foundry Hosted Agents</strong> — Foundry's agent hosting with a <strong>built-in sandbox</strong>; keeps the sandbox file system ~30 days after inactivity; Foundry <strong>session ID</strong> controls the agent's file system/VM.</li>
+<li><strong>Foundry models</strong> — the thousands/hundreds of models usable with agents (intelligence layer).</li>
+<li><strong>Foundry prompt agents</strong> — simple, <strong>declaratively built</strong> agents created in the Foundry portal.</li>
+<li><strong>Routines (preview)</strong> — schedule/stimulus-driven triggers that prompt an agent into a session; can spin an idle sandbox back up; <strong>agents can create their own routines</strong> (e.g. nightly self-maintenance/backup).</li>
+<li><strong>Hermes</strong> — a <strong>claw-like</strong> autonomous agent harness (memory, sandbox/VM ownership, tools, autonomy, self-improvement); <strong>not</strong> an OpenClaw fork; deployed here onto Foundry Hosted Agents.</li>
+<li><strong>OpenClaw</strong> — the agent that popularised the local, credential-using, messaging-driven, always-running <strong>"claw" architecture</strong>.</li>
+<li><strong>nano-claw</strong> — mentioned as one of the many "literal claw" flavours.</li>
+<li><strong>OpenShell</strong> — referenced (not used in the demo) as an optional component depending on your deployment.</li>
+<li><strong>Work IQ</strong> — Microsoft tool/MCP surface giving agents access to <strong>SharePoint / org data</strong> (used for the SharePoint document retrieval).</li>
+<li><strong>Microsoft Agent Framework</strong> — Python + .NET SDK for AI apps/agents; <strong>v1.0</strong>; three parts: agent loop, workflows, harnesses; <code>.AsAgentHarness()</code> to add a harness to any agent.</li>
+<li><strong>Harness Console</strong> — a TUI from Agent Framework to run/prototype/iterate on harness agents with event listeners.</li>
+<li><strong>AG-UI</strong> — open standard for UI that talks to agents; exposes an AG-UI endpoint on your agent.</li>
+<li><strong>CopilotKit</strong> — UI library that talks to AG-UI; provides built-in controls incl. <strong>auto-generated charts</strong> with no extra code.</li>
+<li><strong>Magentic</strong> — multi-agent <strong>planning/supervisor</strong> workflow pattern built with <strong>Microsoft Research</strong>.</li>
+<li><strong>A2A (agent-to-agent) protocol</strong> — open protocol to connect agents across the ecosystem.</li>
+<li><strong>MCP (Model Context Protocol)</strong> — tool/connector protocol (used for Work IQ SharePoint, general tools).</li>
+<li><strong>OpenAPI</strong> — alternative way to expose tools to agents.</li>
+<li><strong>OpenTelemetry / GenAI semantic spec</strong> — full telemetry emitted by harness agents, sendable to Foundry or anywhere.</li>
+<li><strong>Foundry Toolkit Agent Inspector</strong> — tool to connect to, view responses/events for, and <strong>debug</strong> agents.</li>
+<li><strong>Agent host builder / responses endpoint</strong> — Agent Framework mechanism to expose/deploy an agent (e.g. a responses-style endpoint) and into Foundry.</li>
+<li><strong>Teams &amp; M365 Copilot</strong> — collaboration surfaces; Foundry <strong>one-click publish</strong> delivers both UIs out of the box.</li>
+<li><strong>Microsoft admin center</strong> — where org-wide agent publishing is <strong>approved</strong> (Requests tab to approve/"hire" the agent).</li>
+<li><strong>Entra (agent identity / Default Credential)</strong> — every agent has an Entra agent identity; demo authenticated via <strong>Azure Default Credential / Entra credentials</strong>.</li>
+<li><strong>Blob storage</strong> — target for Hermes' nightly independent backups.</li>
+<li><strong>Azure Functions / Azure Container Apps</strong> — additional deploy targets for Agent Framework agents.</li>
+<li><strong>Scout</strong> — an out-of-the-box example of an <strong>autopilot agent</strong> in Foundry.</li>
+<li><strong>Assistive / Autonomous / Autopilot agents</strong> — Foundry's three agent identity types (see Detailed Notes).</li>
+<li><strong>Ecosystem connectors named:</strong> GitHub Copilot, Claude Code, Cursor, Copilot Studio, GitHub Copilot CLI, OpenAI, Anthropic, Gemini, Amazon Bedrock, Ollama (local models), AWS (as a deploy target).</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Routines in Foundry — in preview.</strong> Stimulus/schedule-driven triggers for agents; agents can create their own; used for self-maintenance, skill curation, and backups. <em>(Explicitly called "new… in preview.")</em></li>
+<li><strong>Autopilot agents — new third agent identity type</strong> that acts on its own behalf <strong>with a real user account</strong> (own email alias, can send Teams messages and create Word documents on its own behalf). Demoed in snippet form in the <strong>Build 2026 keynote</strong> the day before. <em>(New; preview status not explicitly stated.)</em></li>
+<li><strong>Workstream Manager sample</strong> — a hero, group-chat autopilot-agent code sample (auto-tracks open items, answers team-chat questions, onboarding + access control, selective group-chat replies). Available in the breakout-session repo.</li>
+<li><strong>Microsoft Agent Framework v1.0</strong> — Agent Framework (released to <strong>preview last October</strong>) reached <strong>version 1.0</strong> "a couple months ago," now including the <strong>agent harness</strong> capability (<code>.AsAgentHarness()</code>, built-in tools + compaction, planning, middleware). The two minimal-harness setup lines will become <strong>optional after preview</strong>.</li>
+<li><strong>One-click publish to Teams + M365 Copilot</strong> from Foundry (both UIs out of the box, self-scope or org-wide via admin center). <em>(Presented as available/current capability.)</em></li>
+<li><strong>Hermes on Foundry Hosted Agents</strong> — Glenn's working <strong>proof-of-concept</strong> integration (with code available; he's submitting <strong>PRs into the Hermes repo</strong> to improve Foundry support). <em>(POC, not GA.)</em></li>
+<li><strong>Agent League hackathon</strong> — running <strong>until the 14th</strong>, with prizes; join via QR code. <em>(Event, not a product.)</em></li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Hermes on Foundry (Glenn):</strong> A local <strong>Hermes TUI</strong> connecting over a network <strong>proxy</strong> to a <strong>Hermes agent on Foundry Hosted Agents</strong>, authenticating via Azure Default Credential/Entra and pulling a <strong>Foundry model</strong>. Showed the agent attempting <strong>SharePoint retrieval via a Work IQ MCP</strong> (failed on conference Wi-Fi, recovered after respawning a fresh instance, then correctly identified the doc's author as <strong>Jeff Holland</strong>). Showed <strong>Routines</strong> in the portal: an <strong>auto-created nightly maintenance routine</strong> (prunes stale skills, backs up to blob storage) and how the <strong>session ID</strong> swaps the entire file system/VM from a snapshot. <strong>Point proved:</strong> you can run a pet-like, self-improving claw-style agent on Foundry <strong>without paying for an always-on sandbox</strong>, <em>if</em> you deliberately externalise/back up its unique state.</li>
+<li><strong>Custom harness with Agent Framework (Sean):</strong> In <strong>C#</strong>, added a harness to a chat client with <strong><code>.AsAgentHarness()</code></strong> (file/code/shell tools + compaction for free), then a <strong>customised research agent</strong> (web→markdown tool, reasoning effort, file/memory stores, full OTel telemetry, background web-search agent). Ran it in the <strong>Harness Console</strong>, prompting <em>"write a blog about Microsoft Agent Framework announcements at Build 2026"</em>; it entered <strong>plan mode</strong>, loaded a prebuilt <strong>blog-outlining skill</strong>, built a <strong>to-do list</strong>, hit a <strong>human-in-the-loop</strong> question (audience chose "developers building AI agents"), produced a plan, and on <strong>approve/execute</strong> wrote the blog. <strong>Point proved:</strong> harness behaviours (planning, skills, tools, human-in-the-loop, long-running background work) are available out of the box and easy to customise.</li>
+<li><strong>AG-UI + CopilotKit web UI (Sean):</strong> Enabled an <strong>AG-UI endpoint</strong> on an agent in a couple of lines; ran a <strong>sales-CSV agent</strong> in a CopilotKit web UI showing live tool calls and <strong>auto-generated charts with no extra code</strong>. <strong>Point proved:</strong> the same harness agent can ship a polished customer-facing web UI trivially. Then <strong>deployed the agent into Foundry</strong> (responses endpoint, traces, Agent Inspector). <strong>Point proved:</strong> one agent → workflow / console / web UI / Foundry deployment.</li>
+<li><strong>Teams &amp; M365 Copilot publishing (Amanda):</strong> <strong>One-click publish</strong> of a <strong>Zava</strong> support prompt agent to Teams + Copilot (self-scope vs. admin-center org approval), then used it in <strong>M365 Copilot</strong>. <strong>Point proved:</strong> both UIs out of the box, no extra build.</li>
+<li><strong>Workstream Manager group-chat autopilot agent (Amanda):</strong> Onboarding message granting chat access to named teammates; demonstrated <strong>access control</strong> (Burke denied), the <strong>"working on a response" signal</strong>, <strong>@-mention reciprocity</strong>, and <strong>selective (not every-message) responses</strong> in group chats. <strong>Point proved:</strong> autopilot agents can behave like a well-mannered group-chat participant with creator-controlled access.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><em>"If you think of your agent as the motor, as the engine… then the harness is the car… a motor by itself is not very useful."</em> — Sean's defining analogy for an agent harness.</li>
+<li>Claws are <em>"the most pet-like thing we perhaps have invented since the beginning of cloud computing"</em> — Glenn, on pets-vs-cattle.</li>
+<li><em>"I always had this Hermes there doing whatever I wanted, but I wasn't paying for it all the time."</em> — Glenn's design goal (shut-down-when-idle).</li>
+<li>Hermes idles down after <strong>~15 minutes</strong> of inactivity; <strong>Routines</strong> spin it back up for maintenance.</li>
+<li>Foundry Hosted Agents retain the sandbox file system for <strong>~30 days</strong> of inactivity (then deleted; otherwise kept indefinitely while in use).</li>
+<li><strong>Microsoft Agent Framework:</strong> preview <strong>last October</strong> → <strong>v1.0</strong> ~a couple months ago; <strong>full feature parity between .NET and Python</strong>.</li>
+<li>Foundry offers <strong>thousands… hundreds of models</strong> for agents.</li>
+<li><strong>Three</strong> ways to consume a harness agent (workflow / console / web UI) and <strong>three</strong> agent identity types (assistive / autonomous / autopilot).</li>
+<li><strong>Agent League hackathon</strong> runs <strong>until the 14th</strong> with prizes.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Stand up <strong>Microsoft Agent Framework v1.0</strong> (C# or Python), add a harness with <code>.AsAgentHarness()</code>, and run the <strong>Harness Console</strong> locally; then expose it via <strong>AG-UI + CopilotKit</strong> and deploy to <strong>Foundry</strong>.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Deploy a <strong>claw-style agent (Hermes)</strong> onto <strong>Foundry Hosted Agents</strong> and replicate Glenn's <strong>idle-shutdown + Routines self-maintenance/backup</strong> pattern; grab his POC code at the booth/repo.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Build an <strong>Autopilot agent</strong> from the <strong>Workstream Manager</strong> sample and test the <strong>group-chat access control + selective-reply</strong> behaviours; compare against <strong>Scout</strong>.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Use the <strong>Foundry Toolkit Agent Inspector</strong> to debug responses/traces on a deployed agent.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: What is the <strong>GA / pricing</strong> model for <strong>Foundry Routines</strong> and <strong>Autopilot agents</strong> (esp. the per-autopilot <strong>user account</strong> cost/licensing)? Are autopilot user accounts standard Entra/M365 licences?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: How does <strong>session-ID-controlled file system isolation</strong> interact with multi-user/team agents — collisions, sharing, RBAC on the sandbox FS?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: For idle-shutdown agents, what's the <strong>cold-start latency</strong> when a Routine (or a user message) wakes the sandbox?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: Find the <strong>GitHub repo</strong> link from the deck / breakout-session resources for all three demos' code.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: Anyone building <strong>enterprise agent harnesses</strong> on Azure/Foundry; teams evaluating <strong>OpenClaw-style</strong> patterns for production; <strong>agentic ops/automation</strong> projects; my own OpenClaw setup (Routines ≈ cron/heartbeat self-maintenance parallels).</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li>Build 2026 Foundry overview (Tina &amp; Jeff's prior-day session — referenced repeatedly)</li>
+<li><span class="wikilink wikilink--unresolved" title="Build2026">Build2026</span> session notes index</li>
+<li>Microsoft Agent Framework docs / GitHub (workflows, Magentic, harnesses)</li>
+<li>OpenClaw / Hermes agent-harness patterns</li>
+<li>AG-UI + CopilotKit (agent web UI standard)</li>
+<li>Foundry: Routines, Autopilot agents, Scout, Work IQ</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="BRK242.html"><span class="pager-dir">← Previous</span><span class="pager-code">BRK242</span><span class="pager-title">Turn your agents into action: Connect tools, APIs, and documents</span></a>
+    <a class="pager pager-next" href="BRK244.html"><span class="pager-dir">Next →</span><span class="pager-code">BRK244</span><span class="pager-title">Agent supervision is the new senior engineering skill</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

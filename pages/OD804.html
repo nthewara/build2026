@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OD804 — Simplifying .NET Installs with dotnetup</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">OD804</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=ZMnyohA5yrw" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Simplifying .NET Installs with dotnetup</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Chet Husk (.NET SDK team, Microsoft — GitHub @baronfel)</span>
+      <span class="meta-item">⏱️ 48m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="dotnet">.NET</span><span class="chip" data-tag="tooling">Tooling</span><span class="chip" data-tag="devtools">Devtools</span><span class="chip" data-tag="dotnetup">Dotnetup</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Chet Husk — Software Engineer on the .NET SDK team, Microsoft (GitHub @baronfel)<br>
+<strong>Duration:</strong> ~48 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=ZMnyohA5yrw">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Microsoft is building <strong><code>dotnet-up</code></strong> (a.k.a. ".NET up") — a single, cross-platform, native-AOT CLI that installs and manages the .NET SDK and runtimes consistently on every OS, without requiring admin/root elevation. It targets the "everyone who isn't using Visual Studio on Windows" crowd, who today face a fragmented mess of IDE installers, package managers, install scripts, and community version managers (DNVM, mise, asdf). <code>dotnet-up</code> reads <code>global.json</code> to install the exact SDK a repo needs, can install <strong>runtimes independently of SDKs</strong> (so you can multi-target tests without downloading multiple full SDKs), and keeps a signed, auditable manifest of everything installed so a single <code>dotnet-up update</code> keeps you patched and prunes stale versions. Everything shown is <strong>internal-preview / "under construction"</strong>; the roadmap runs internal preview → public preview (before end of summer) → GA, with a long-term vision of componentizing the SDK (rust-up style) and powering CI/CD actions. It's a <strong>developer-time tool only</strong> — production deployments should still use package managers or self-contained bundles.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>The core problem: .NET installation is wildly heterogeneous.</strong> You're either on Visual Studio/Windows (tool chain managed for you) or you're "everyone else," juggling IDE installers, package managers (winget, Homebrew, distro repos), install scripts, and community version managers — each with different trade-offs.</li>
+<li><strong><code>dotnet-up</code> is one tool that behaves identically on every platform</strong> (Windows, macOS, Linux), built with <strong>native AOT</strong> so it's fast and lightweight and "gets out of your way."</li>
+<li><strong>"Global" means <em>user</em>-global, not <em>system</em>-global.</strong> Installs land in your user/home directory and never require elevation — no sudo, no admin.</li>
+<li><strong>It reads <code>global.json</code></strong> to determine which SDK version a repo wants (including roll-forward policies like <code>latestFeature</code> / <code>latestPatch</code>) and installs exactly that — <code>dotnet-up install</code> or <code>dotnet-up sdk install</code> is the one command you need after cloning.</li>
+<li><strong>Runtimes can be installed independently of SDKs.</strong> <code>dotnet-up runtime install 8.0 9.0 10.0</code> grabs just the runtimes you need to <em>run</em> multi-targeted tests, instead of installing several hundred-MB full SDKs in parallel (the common CI/CD workaround).</li>
+<li><strong>Component-at-version syntax</strong> is emerging: <code>dotnet-up runtime install ASP.NET Core@8.0</code>, also <code>.NET Runtime</code>, <code>Windows Desktop</code> (Windows only), etc.</li>
+<li><strong>It keeps a signed manifest / "lock file" of desired state</strong> in a user data directory — <code>dotnet-up list</code> shows what's installed <em>and why</em> (which channel or which <code>global.json</code> requested it).</li>
+<li><strong><code>dotnet-up update</code> keeps everything current</strong> across tracked channels, and — uniquely for SDK management — <strong>uninstalls/prunes</strong> versions no longer needed by your declared requirements. Manual uninstall is also supported.</li>
+<li><strong>Provenance &amp; supply-chain safety are first-class:</strong> the team is working with the .NET Releases teams to <strong>sign all binaries and manifests</strong> so you can trust the bits are what Microsoft intended.</li>
+<li><strong>Designed for two consumers: humans <em>and</em> agents</strong> (LLM/AI agents <em>and</em> CI/CD systems, which are "agents" too). Agents work best without admin rights in sandboxes, so the no-elevation/user-directory model fits naturally and provides guardrails against agents "unzipping a zip" the wrong way.</li>
+<li><strong>Telemetry</strong> is collected like the .NET CLI, and the <strong>same telemetry opt-out flags</strong> from the .NET CLI apply.</li>
+<li><strong>Acquisition is a one-liner:</strong> <code>aka.ms</code> links provide a shell script (curl → sh) or PowerShell (<code>Invoke-WebRequest</code> → <code>Invoke-Expression</code>); first run walks you through an <strong><code>init</code></strong> configuration wizard (pick channel, choose "terminal mode," it edits your shell profile and adds itself + <code>dotnet</code> to PATH).</li>
+<li><strong>Roadmap:</strong> internal preview (manage stable + daily/nightly SDKs, one-shot A/B execution) → public preview before end of summer (self-update, update notifications, full signature verification, published agent skills) → GA (fit &amp; finish, official docs, <code>global.json</code>-managed runtimes).</li>
+<li><strong>It ships "out of band"</strong> — not tied to the quarterly .NET SDK release cadence — so gates are driven by feature-readiness <em>and</em> user feedback.</li>
+<li><strong>Explicitly NOT for production.</strong> Use package managers (for system-wide security updates) or self-contained bundles in prod; <code>dotnet-up</code> is a developer-time convenience tool.</li>
+<li><strong>Try it &amp; give feedback now:</strong> docs at <code>aka.ms/dotnet-up/docs</code>, feedback at <code>aka.ms/dotnet-up/feedback</code> (a dedicated discussion category on the .NET SDK repo), and a samples repo at <code>github.com/baronfel/dotnet-up-repo-patterns-demo</code>.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="why-this-exists-the-installation-problem">Why this exists — the installation problem</h3>
+<p>Chet frames the problem by splitting all .NET users into two buckets:
+1. <strong>Visual Studio on Windows users</strong> — Visual Studio manages the tool chain, updates on a frequent cadence, and delivers all the feature-band and servicing/bug-fix updates automatically.
+2. <strong>Everyone else</strong> — and <em>this</em> is the group the team wants to help.</p>
+<p>Installing .NET off the VS-on-Windows happy path is, in his words, a "very heterogeneous situation." He categorizes the existing mechanisms into three buckets:</p>
+<ul>
+<li><strong>IDE-based distribution</strong> — Visual Studio (Windows); Visual Studio Code (cross-platform), where his team owns the <strong>C#/.NET VS Code extension</strong> whose job is to fetch the SDK versions a project and its tools need.</li>
+<li><strong>Package-manager-based distribution</strong> — <code>winget</code>, <strong>Homebrew</strong> (macOS/Linux), and Linux distro package managers. These use the system's native package capabilities to acquire .NET. Big upside: <strong>centralized management</strong> (one place to update everything, including across system-wide security updates).</li>
+<li><strong>Manual distribution</strong> — the .NET website (<strong>get.dot.net</strong>, "one of my favorite things to say"), the official <strong>install scripts</strong> (PowerShell + POSIX shells) for managing CLI/SDK installs, and a whole ecosystem of <strong>version managers</strong>: the community <strong>DNVM</strong> (".NET Version Manager"), plus pluggable/extensible managers like <strong>mise (mise-en-place)</strong> and <strong>asdf</strong>.</li>
+</ul>
+<p>A crucial caveat: <strong>many of these mechanisms are community-owned, not Microsoft-operated</strong> (he flags them with asterisks on his slide). Some use OS packages under the hood, some use plain zips/tarballs, and some — like Homebrew — can use either depending on your preference.</p>
+<h3 id="linux-makes-it-even-messier">Linux makes it even messier</h3>
+<p>Linux adds the same three categories <em>plus</em> a long, tangled history: sometimes <strong>Microsoft</strong> provided packages for your package manager, sometimes your <strong>distro</strong> did, sometimes <strong>both</strong> existed simultaneously. That produces a decision tree just to install .NET, forcing you to weigh:
+- <strong>Feature bands:</strong> the .NET SDK ships <strong>four times a year</strong>, and each quarterly shipment contains net-new features and enhancements. Distro package managers often give you centralized updates but may <strong>restrict which feature bands</strong> you can get.
+- <strong>Per-repo version needs:</strong> if different repos need different SDK versions, package managers may not fit at all.</p>
+<p>As soon as you look at the real needs of individual repos or developers, the package-manager "happy path" breaks down, and people fall back to local management (install scripts, DNVM, mise, etc.). Those tools work, but they have gaps:
+- <strong>No central management</strong> — you can't easily see what SDKs/tool chains are installed <em>where</em> on your system.
+- <strong>No easy update</strong> — no simple way to update one install, or all installs at once.
+- <strong>Clashes</strong> — local installs frequently conflict with global/system-level installs. (And this is true on every platform, not just Linux.)</p>
+<p>There's also <strong>pain on Microsoft's side</strong>: when users hit bugs or gaps, it's hard for the team to categorize <em>how</em> the install happened and even to <strong>validate the install is correct</strong> in the first place. So both ends suffer.</p>
+<h3 id="the-plan-make-another-one-the-xkcd-joke">The plan — "make another one" (the xkcd joke)</h3>
+<p>Chet leans into the famous <strong>xkcd #927 "Standards"</strong> comic by Randall Munroe ("there are 14 competing standards… let's make one universal one… now there are 15"). He's "only half joking": the plan is a brand-new install mechanism, but one designed deliberately to subsume the others. Design principles:</p>
+<ul>
+<li><strong>Identical behavior on every platform.</strong></li>
+<li><strong>Lean into user-global installs that require no elevation.</strong> Scoped to your user/home directory (or a location you control), never impacting other users.</li>
+<li><strong>Fast &amp; lightweight via native AOT</strong> so it executes quickly and stays out of the way.</li>
+<li><strong>Leverage existing description mechanisms</strong> — today that's <strong><code>global.json</code></strong>. Long term, they hope a shared way of interacting with SDK installs could let them <strong>evolve <code>global.json</code>'s format/purpose</strong> into something more ergonomic.</li>
+<li><strong>Close the feature gaps</strong> that system-level installs enjoy but user-level installs lack — chiefly <strong>central management and auditability</strong>, which package managers and VS-style installers bake in but current user-level installs don't.</li>
+<li><strong>Provenance/signing:</strong> working with the .NET Releases teams to <strong>sign all binaries and all manifests</strong>, end to end, so you know the bits are exactly what Microsoft intended to deliver.</li>
+<li><strong>A library, not just a CLI.</strong> They're building <code>dotnet-up</code> <em>and</em> a library around it so other tools that need to install/interact with .NET installs can do it "correctly and safely." The long-term hope: the manifests and bookkeeping become a <strong>shared resource for a constellation of tools</strong> — think <strong>Dependabot</strong> and <strong>Renovate</strong> and the broader auditability/automated-compliance infrastructure developers already use for package references and Dockerfile references. <code>dotnet-up</code> wants to fit into and plug into that world.</li>
+</ul>
+<p>He's emphatic that <strong>everything from here is internal-preview level</strong> — a "big giant under construction label," joking about the early-2000s blinking marquee "under construction" GIF. The point of showing it now is to convey the vision and <strong>gather early feedback</strong> (earlier feedback → better end product).</p>
+<h3 id="demo-overview">Demo overview</h3>
+<p>Three things to demo:
+1. <strong>Acquisition &amp; initialization</strong> of <code>dotnet-up</code> on a system.
+2. Using it to <strong>get started in different repo shapes</strong> quickly.
+3. Using it to tackle <strong>one of the more annoying tool-chain problems</strong> (multi-runtime testing).</p>
+<p>He works from a <strong>scenarios repo</strong> containing three example repository patterns:
+- a <strong>cross-platform web app</strong>,
+- a <strong>multi-runtime testing application</strong>, and
+- an app with <strong>up-to-date vs outdated SDK installs</strong>.</p>
+<h3 id="demo-1-acquisition-init">Demo 1 — Acquisition &amp; <code>init</code></h3>
+<ul>
+<li><strong>Get it via <code>aka.ms</code> links</strong> → a shell or PowerShell script (docs will have examples for both). Running the script <strong>detects your platform</strong> and downloads the correct <strong>AOT, platform-specific</strong> <code>dotnet-up</code> build, <strong>verifies</strong> it, and installs it into your <strong>home directory by default</strong> (you have 100% control over the location).</li>
+<li>PATH isn't auto-configured by the sourced script (hard to do reliably when you <code>source</code> a script on Linux), so the first invocation is manual.</li>
+<li><strong><code>dotnet-up init</code></strong> runs a <strong>configuration walk-through</strong> the first time (or whenever you run <code>init</code>):</li>
+<li><strong>Telemetry notice:</strong> like the .NET CLI, <code>dotnet-up</code> collects usage telemetry; the <strong>same opt-out flags</strong> from the .NET CLI control it.</li>
+<li><strong>Channel prompt:</strong> which channel(s) to track. Chet, "a bleeding-edge person," chooses <strong><code>latest</code></strong> → installs the latest stable release today and <strong>stays up to date over time</strong>.</li>
+<li><strong>Usage-mode prompt:</strong> how you'd like to use it. The option closest to DNVM/mise expectations is <strong>terminal mode</strong>, which configures <code>dotnet-up</code> to <strong>add itself to PATH</strong> and add the <strong>managed .NET install location</strong> to PATH.</li>
+<li>It <strong>detected pre-existing global installs and offered to port them over</strong> to the new managed world (he skipped that step).</li>
+<li>It then <strong>downloaded the latest SDK</strong>, installed it into its managed location, showed nice download/install <strong>UI/UX</strong>, and <strong>edited the shell profile</strong> (it detected <strong>zsh</strong>) so future shells get the needed env vars + PATH entries to run <code>dotnet-up</code> and <code>dotnet</code>.</li>
+<li>After a new shell session: <strong><code>dotnet-up info</code></strong> shows the <code>dotnet-up</code> version; <strong><code>dotnet --info</code></strong> (first run does some "crunching") confirms the install: <strong>SDK 10.0.300</strong>, on <strong>macOS</strong>, installed to the <code>dotnet-up</code>-managed location, including the <strong>ASP.NET Core</strong> and <strong>.NET Core</strong> runtimes — "exactly what anyone coming to .NET would need," achieved with just <code>dotnet-up init</code>.</li>
+</ul>
+<h3 id="demo-2-globaljson-driven-sdk-install-cross-platform-web-app">Demo 2 — <code>global.json</code>-driven SDK install (cross-platform web app)</h3>
+<ul>
+<li>The web app is simple: a <strong>library</strong> + a <strong>web app</strong> that consumes it, plus a <strong><code>global.json</code></strong>.</li>
+<li>That <code>global.json</code> pins <strong>SDK 10.0.100</strong> (different from the 10.0.300 just installed) but allows <strong>rolling forward to the latest feature band</strong>. ("Why? I don't know — that's what the developer chose.")</li>
+<li><code>dotnet-up sdk install</code> <strong>understands <code>global.json</code></strong> and <strong>rolled forward to the latest feature band</strong> as the policy requested.</li>
+<li>He then edits <code>global.json</code> to <strong><code>latestPatch</code></strong> instead, reruns install, and <code>dotnet-up</code> now installs a <strong><code>1xx</code>-feature-band</strong> SDK (the 100 band) — and <strong>tells you <em>why</em></strong> (because the project's <code>global.json</code> specifies that version). The download/install of the new SDK is shown.</li>
+<li>Building/running the web app now "just works" — it uses the SDK you told it to. <strong>One command</strong> (<code>dotnet-up install</code> / <code>dotnet-up sdk install</code>) and you're good. He proves the <strong>108 SDK</strong> is the one in use.</li>
+<li><strong>Core value proposition:</strong> clone any repo → <code>dotnet-up install</code> → get a <code>dotnet</code> SDK that works for that repo. Today, while CI helpers like <strong>GitHub Actions <code>actions/setup-dotnet</code></strong> honor <code>global.json</code>, <strong>nothing supported existed for <em>local</em> developer machines or for an <em>agent</em> acting on your behalf.</strong> <code>dotnet-up</code> fills that gap in a supported way.</li>
+</ul>
+<h3 id="dotnet-up-list-tracking-decisions-and-why"><code>dotnet-up list</code> — tracking decisions and <em>why</em></h3>
+<ul>
+<li><code>dotnet-up list</code> shows it's <strong>tracking the decisions you made and the reasons</strong>:</li>
+<li><strong>2 SDK versions</strong> installed.</li>
+<li>Tracking the <strong><code>latest</code> channel</strong> (because he explicitly chose it at startup).</li>
+<li>Tracking the <strong><code>1xx</code> channel</strong> (because the web app's <code>global.json</code> told it to).</li>
+<li>Because it tracks channels, <strong>future releases are handled automatically</strong>: when <strong>10.0.109</strong> ships in June, <strong>10.0.110</strong> in July, etc. (he notes 108 was May), a single <strong><code>dotnet-up update</code></strong> applies them.</li>
+<li>The real beauty: it's <strong>not just installation</strong> — it understands <strong>what you need, what you have, and what's available</strong>, and keeps them aligned. This directly solves the "clone a repo, run a normal <code>dotnet build</code>, and the SDK you have doesn't match the repo" problem — "solved definitively."</li>
+</ul>
+<h3 id="demo-3-installing-runtimes-independently-multi-runtime-testing">Demo 3 — Installing runtimes independently (multi-runtime testing)</h3>
+<p>This is the demo Chet thinks best shows the future direction.</p>
+<ul>
+<li><strong>Setup:</strong> a workspace with a <strong>source library</strong> (a "truncation string helper" + a helper that checks whether a string is <strong>alphanumeric ASCII only</strong>) and a <strong>test project</strong> that consumes it, with a set of test cases.</li>
+<li><strong>Multi-targeting motivation:</strong> library authors often specialize per target framework. Example: on <strong>.NET 10</strong> there may be a new <strong>span-based <code>IndexOf(string)</code> overload</strong> you want to use that isn't available on <strong>.NET 8</strong>, so you add an <code>#if</code> to take a different code path on 10 vs 8 — while still building for 8 so 8 users can consume the library. This is <strong>multi-targeting</strong>.</li>
+<li>His <strong>library targets <code>.NET Standard 2.0</code></strong> (no per-runtime specialization needed), but to ensure consumers on the latest/greatest .NET work, you write <strong>tests that target multiple in-support runtimes</strong> — here <strong>.NET 8, 9, and 10</strong>.</li>
+<li><strong>The pain point:</strong> he wants to use the <strong>latest <em>SDK</em></strong> (10) because that's where all the tooling features come from, regardless of which <em>runtime</em> he's building for. So he ends up with <strong>one SDK but needing multiple runtimes</strong> to actually run the tests.</li>
+<li><strong><code>dotnet --list-runtimes</code></strong> shows only the <strong>10</strong> runtime installed. Running <code>dotnet test</code> against the 8/9/10-targeted tests finishes instantly but <strong>fails to run</strong> on 8 and 9: <strong>"no tests ran"</strong> because there was <strong>no .NET Core runtime for 8</strong> and <strong>none for 9</strong>; only <strong>.NET 10 tests ran and passed</strong>.</li>
+<li><strong>The common (wasteful) fix:</strong> in CI/CD, people install <strong>entirely parallel full SDKs</strong> — an 8 SDK, a 9 SDK, and one or more 10 SDKs. Chet argues that's unnecessary because <strong>new SDKs include new tooling and fully support building older runtimes</strong>. You only need the <em>runtimes</em> to run the app.</li>
+<li><strong><code>dotnet-up</code>'s answer — install runtimes directly.</strong> He shows a <strong>fake/hypothetical <code>global.json</code> extension</strong> declaring needed runtimes (".NET runtime, versions 8, 9, 10") — <strong>syntax is <em>not</em> final</strong>, just a glimpse. In a future world <code>dotnet-up install</code> would read that and install both SDKs and runtimes for you. <strong>Not available today.</strong></li>
+<li><strong>What works today:</strong> <code>dotnet-up runtime install 8.0 9.0 10.0</code> installs <strong>all three at once</strong>, finding the <strong>latest of each band</strong>, downloading and installing them. You can also pin <strong>specific versions</strong> if needed.</li>
+<li>After installing the runtimes, <strong>the tests run and pass</strong> — <strong>without installing multiple hundred-MB SDKs</strong>. "The best of both worlds": latest tooling + the ability to do what you need. It brings <strong>CI/CD-style convenience to local development.</strong></li>
+<li><strong>Other runtime components</strong> use the <strong><code>component@version</code></strong> pattern: e.g. <code>dotnet-up runtime install ASP.NET Core@8.0</code>; also <code>Windows Desktop</code> (on Windows). This <code>component name @ version</code> pattern has been "fleshed out over a few SDK releases."</li>
+<li>After installing ASP.NET Core, <code>dotnet --list-runtimes</code> shows <strong>.NET Core runtimes for 8, 9, 10</strong> and <strong>ASP.NET Core runtimes for 8 and 10</strong>.</li>
+</ul>
+<h3 id="maintenance-updates-uninstall-the-long-tail">Maintenance, updates &amp; uninstall — "the long tail"</h3>
+<ul>
+<li>Getting tooling is "only half the battle"; there's a <strong>long tail of maintenance and upgrades</strong> responsible teams must follow.</li>
+<li><strong><code>dotnet-up list</code></strong> also tracks the <strong>explicit runtimes</strong> you requested — you can see what's <strong>installed</strong> and what was <strong>requested</strong>.</li>
+<li>When new runtime versions release, <strong><code>dotnet-up update</code></strong> covers them too. (His were already current since he'd just installed them; otherwise update would install them right there.)</li>
+<li>Under the covers, <code>dotnet-up</code> keeps a <strong>manifest / installation tracker</strong> in a <strong>data directory in your user directory</strong> — think of it as a <strong>lock file for the <em>declared/desired state</em> of your system</strong>. It's <strong>not</strong> intended to be shared across repos/developers (use <code>global.json</code> for shared dev requirements); the manifest is what powers the update intelligence.</li>
+<li><strong><code>dotnet-up print-init-script</code></strong> is a helper that ensures your shell is configured to natively use <code>dotnet-up</code> (it's what <code>init</code> uses). Currently supported for <strong>bash, zsh, and other POSIX shells</strong>; <strong>PowerShell support is in PR</strong> and expected to land "within a week or two" of the video.</li>
+<li><strong>Uninstallation</strong> — long missing from SDK management. After updates, old SDKs/runtimes may no longer be needed; <strong><code>update</code> removes out-of-date installs</strong> no longer required by your declared requirements. You can also <strong>manually uninstall</strong> SDKs/runtimes.</li>
+<li><strong>Command architecture:</strong> there are <strong>top-level</strong> <code>install</code> / <code>update</code> / <code>uninstall</code> commands <strong>and component-level</strong> ones (<code>dotnet-up sdk install</code>, <code>dotnet-up sdk update</code>, <code>dotnet-up runtime install</code>, …). This reflects a vision of <strong>thinking about the entire .NET tool chain as <em>components</em>.</strong></li>
+</ul>
+<h3 id="the-component-vision-rust-up-parallel">The component vision (rust-up parallel)</h3>
+<ul>
+<li>Today the clean component lines are <strong>SDKs</strong> and <strong>runtimes</strong>, but <strong>features/functionality within the SDK</strong> might make sense as <strong>discrete components</strong>.</li>
+<li>For those familiar with <strong><code>rust-up</code></strong>, this is where it's heading: a world where <strong>pieces of the SDK release at different cadences</strong>, and instead of drowning in many update notifications and being unable to control the rate of change, a developer uses <strong>one tool (<code>dotnet-up</code>) and one command</strong> to manage all updates and components.</li>
+</ul>
+<h3 id="who-its-for-humans-and-agents">Who it's for — humans <em>and</em> agents</h3>
+<p>Two primary consumers:
+- <strong>Humans (developers specifically).</strong> Expectations from other ecosystems should carry over. Goal: <strong>no new concepts to learn</strong> — clone a repo, <code>dotnet-up install</code>, done, on <strong>any OS</strong>.
+- <strong>Agents — both AI/LLM agents <em>and</em> CI/CD systems</strong> (which are "agents" in their own right; really "humans + automated use cases").</p>
+<p>For agents specifically:
+- Their expectations come from <strong>training data + the skills/context they're given</strong>, so the tool should <strong>look/feel like other tools</strong> but adapt to .NET's specifics.
+- Agents can easily <strong>"get half the story" from docs and unzip a zip the wrong way</strong>, harming your dev experience. <code>dotnet-up</code> provides <strong>guardrails</strong> that ad-hoc download/execution can't.
+- Agents work best <strong>without admin rights, in sandboxes with guardrails</strong> — which is exactly why a <strong>no-elevation, user-directory</strong> tool fits naturally.
+- Both categories need to <strong>stay current</strong> (security fixes, tooling enhancements) and <strong>express constraints semantically</strong>: "give me the latest stable," or "keep me on the latest 10 series." <code>dotnet-up</code> lets you express those constraints and <strong>respect them locally</strong>, the same way CI/CD tooling respects them today.</p>
+<h3 id="explicitly-a-developer-time-tool-not-production">Explicitly a developer-time tool (NOT production)</h3>
+<ul>
+<li>For <strong>production</strong>, keep using your <strong>package manager</strong> (to get framework-dependent runtimes <em>and</em> system-wide security updates as soon as available) or <strong>bundle self-contained</strong> if that's your deployment model. (Self-contained means you must be "on the ball every month" for security releases.)</li>
+<li><code>dotnet-up</code> is about <strong>developer-time use cases for humans (and agents)</strong> — <em>not</em> production.</li>
+</ul>
+<h3 id="the-roadmap-milestone-by-milestone">The roadmap (milestone by milestone)</h3>
+<p><strong>Internal preview</strong> (aiming for the next couple of weeks) — <em>try the bleeding edge &amp; give fast feedback</em>:
+- <strong>Manage stable SDKs</strong> (shown today) plus <strong>daily/nightly SDKs</strong> (a PR is in the pipeline). Context: monthly previews of the next major version are treated as "stable" from a release-management perspective (e.g. <strong>.NET 11 Preview 5</strong> is in progress; Preview 4 was just out). <em>Separately</em>, <strong>every build in the .NET unified build system produces a usable SDK</strong>, which can carry bug fixes or new functionality the team wants fast feedback on. Internal preview will let you say (in <code>global.json</code> or on the CLI) "give me the 11 nightlies / the hot 11 builds" and try them easily.
+- <strong>One-shot execution</strong> for <strong>A/B comparison</strong>: a planned command <code>dotnet-up dotnet</code> that runs a given command against a <em>specific</em> .NET version without touching your global install. Example: validate that <code>dotnet build</code> behaves the same on <strong>10.0.300</strong> as on <strong>11 Preview 5</strong> — useful for spotting MSBuild <strong>terminal-logger</strong> UX changes, SDK targets behavioral changes, or trying a CLI bug fix. Lets you do ad-hoc fixes and give even faster feedback.</p>
+<p><strong>Public preview</strong> (ideally <strong>before the end of summer</strong>) — <em>helping you stay compliant</em>:
+- <strong><code>dotnet-up</code> self-update</strong> — once installed, it takes control of its own updating (with appropriate signing/validation). Compared to the <strong>Aspire CLI</strong>'s self-update, which has proven useful in practice.
+- <strong>Update checks &amp; notifications</strong> — like <strong>Oh My Posh / Oh My Zsh</strong>, which check once a day/week for new versions on terminal startup. <code>dotnet-up</code> would do this for <strong>itself <em>and</em> your installed SDKs</strong>, so you hear about security/feature updates and can hop on quickly.
+- <strong>Full signature verification</strong> of all stable releases — of the <strong>.NET SDK and runtime tooling</strong> <em>and</em> <code>dotnet-up</code> itself — for the provenance/supply-chain confidence mentioned earlier.
+- <strong>Agent skills published to the <code>dotnet/skills</code> repo</strong>, so people using LLMs for automated updates or A/B testing get good, ready-made ways to use <code>dotnet-up</code> without authoring their own skills.</p>
+<p><strong>GA</strong> — <em>fit &amp; finish</em>:
+- Polish of the tool itself, <strong>official docs on the .NET website</strong>, and <code>dotnet-up</code> listed/supported as an <strong>official install method</strong> on the .NET website.
+- <strong>Expanding <code>global.json</code> to manage runtimes</strong> (the hypothetical syntax shown in Demo 3 becomes real).</p>
+<p><strong>Far future / vision:</strong>
+- <code>dotnet-up</code> as a <strong>vehicle to radically change how the SDK ships</strong> and enable <strong>faster updates of all tooling</strong>. With AI/LLMs exploding, there's pressure to <strong>release earlier, more often, more incrementally</strong>; you manage risk via <strong>broad testing + fast rollout</strong> so you can react quickly to problems. The team wants that for the <strong>entire .NET tool chain</strong>, and <code>dotnet-up</code> can help <strong>accelerate delivery</strong> and <strong>factor the SDK into components</strong> that update more rapidly.
+- <strong>CI/CD integration:</strong> today <strong><code>actions/setup-dotnet</code></strong> (GitHub Actions) and <strong><code>UseDotNet@2</code></strong> (Azure DevOps) are great but their features <strong>subtly differ</strong> and they may not invest equally in <strong>caching/performance</strong>. The hope is to use <code>dotnet-up</code> as the <strong>implementation</strong> of those tools to bring <strong>consistency of experience</strong> and a <strong>single place</strong> to improve performance across environments.</p>
+<p><strong>Cadence note:</strong> <code>dotnet-up</code> is <strong>not locked to the .NET SDK ship cycle</strong> — it ships <strong>"out of band."</strong> So milestone gates depend on both <strong>feature/functionality readiness</strong> and <strong>user feedback</strong> about quality/usefulness. The more feedback (even on internal nightly bits), the better.</p>
+<h3 id="call-to-action">Call to action</h3>
+<ul>
+<li><strong>Get <code>dotnet-up</code></strong> via the <code>aka.ms</code> links; start at the <strong>docs</strong> link, which gives the exact copy-paste snippet (shell: <code>curl … | sh</code>; PowerShell: <code>Invoke-WebRequest … | Invoke-Expression</code>).</li>
+<li><strong>Read the design spec</strong> (created several months ago, iterated on as features are added).</li>
+<li><strong>Give feedback</strong> at the feedback link → a dedicated <code>dotnet-up</code> category on the <strong>.NET SDK repo discussion board</strong>, monitored by Chet and the team.</li>
+<li><strong>Clone the samples repo</strong> (<code>github.com/baronfel/dotnet-up-repo-patterns-demo</code>) — it has everything from the demo plus <strong>GitHub Actions</strong> that auto-wire <code>dotnet-up</code>. Try it on the samples and on your own repos; let them know if it flows well, performs well, and has the features you want.</li>
+</ul>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong><code>dotnet-up</code> / ".NET up"</strong> — the new cross-platform, native-AOT CLI (and accompanying library) for installing/managing the .NET SDK and runtimes at the <em>user</em> level without elevation. The whole subject of the talk.</li>
+<li><strong>.NET SDK</strong> — the developer tool chain; ships <strong>4×/year</strong> in quarterly feature bands; where all tooling features come from. New SDKs support building older runtimes.</li>
+<li><strong>.NET runtimes</strong> — <strong>.NET Core</strong>, <strong>ASP.NET Core</strong>, <strong>Windows Desktop</strong> (Windows-only) — installable independently of the SDK via <code>dotnet-up</code>.</li>
+<li><strong><code>global.json</code></strong> — the existing file <code>dotnet-up</code> reads to determine required SDK version + roll-forward policy (<code>latestFeature</code>, <code>latestPatch</code>, etc.); future plans may extend it to declare runtimes.</li>
+<li><strong>Visual Studio</strong> — Windows IDE that manages the .NET tool chain for you (the "bucket 1" experience).</li>
+<li><strong>Visual Studio Code + the C#/.NET extension</strong> — cross-platform; the speaker's team owns the extension that fetches SDK versions projects/tools need.</li>
+<li><strong>Package managers:</strong> <strong>winget</strong>, <strong>Homebrew</strong> (macOS/Linux), <strong>Linux distro package managers</strong> — centralized but with feature-band/per-repo limitations; recommended for <strong>production</strong>.</li>
+<li><strong>Install scripts</strong> — official PowerShell + POSIX shell scripts for CLI/SDK installs (from get.dot.net).</li>
+<li><strong>DNVM (.NET Version Manager)</strong> — community version manager.</li>
+<li><strong>mise (mise-en-place)</strong> &amp; <strong>asdf</strong> — pluggable/extensible multi-tool version managers.</li>
+<li><strong>get.dot.net</strong> — the .NET download website.</li>
+<li><strong>Native AOT</strong> — used to compile <code>dotnet-up</code> into a fast, platform-specific binary.</li>
+<li><strong><code>rust-up</code></strong> — the Rust toolchain manager; the conceptual model for <code>dotnet-up</code>'s component/cadence vision.</li>
+<li><strong>Dependabot &amp; Renovate</strong> — dependency-update/compliance tools the team hopes <code>dotnet-up</code>'s signed manifests can plug into.</li>
+<li><strong>GitHub Actions <code>actions/setup-dotnet</code></strong> — CI action that honors <code>global.json</code> (the inspiration for the missing <em>local</em> equivalent).</li>
+<li><strong>Azure DevOps <code>UseDotNet@2</code></strong> (<code>use-dotnet</code>) — the Azure DevOps equivalent install task.</li>
+<li><strong>Aspire CLI</strong> — cited as a good example of a self-updating CLI.</li>
+<li><strong>Oh My Posh / Oh My Zsh</strong> — terminal-prompt tools cited as the model for periodic update-check notifications.</li>
+<li><strong><code>dotnet/skills</code> repo</strong> — where <code>dotnet-up</code> agent skills will be published.</li>
+<li><strong>MSBuild terminal logger</strong> — example of a UX surface that one-shot A/B execution helps you compare across versions.</li>
+<li><strong>xkcd #927 "Standards"</strong> (Randall Munroe) — the comic used to self-deprecatingly justify building "another" install mechanism.</li>
+</ul>
+<h4 id="key-dotnet-up-commands-seen">Key <code>dotnet-up</code> commands seen</h4>
+<ul>
+<li><code>dotnet-up init</code> — first-run config wizard (channel, mode, PATH/profile setup, optional port of existing global installs).</li>
+<li><code>dotnet-up info</code> / <code>dotnet --info</code> / <code>dotnet --list-runtimes</code> — inspect <code>dotnet-up</code> and installed SDKs/runtimes.</li>
+<li><code>dotnet-up install</code> / <code>dotnet-up sdk install</code> — install the SDK a repo's <code>global.json</code> requires.</li>
+<li><code>dotnet-up runtime install 8.0 9.0 10.0</code> — install runtimes directly (parallel); supports <code>Component@Version</code>, e.g. <code>ASP.NET Core@8.0</code>.</li>
+<li><code>dotnet-up list</code> — show installed SDKs/runtimes, tracked channels, and the <em>reason</em> each is tracked.</li>
+<li><code>dotnet-up update</code> — update tracked channels/components and prune stale versions.</li>
+<li><code>dotnet-up uninstall</code> — manual removal; also component-level <code>dotnet-up sdk install|update</code>, etc.</li>
+<li><code>dotnet-up print-init-script</code> — emit the shell-config snippet (bash/zsh/POSIX today; PowerShell in PR).</li>
+<li><code>dotnet-up dotnet &lt;cmd&gt; &lt;version&gt;</code> — <em>planned</em> one-shot execution for A/B testing without touching the global install.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong><code>dotnet-up</code> (".NET up") unveiled</strong> as a new, supported, cross-platform, no-elevation install/management tool for the .NET SDK + runtimes — currently <strong>internal-preview / "under construction."</strong> This is the headline of the session.</li>
+<li><strong>Roadmap with timelines stated:</strong> <strong>internal preview in the next couple of weeks</strong>; <strong>public preview ideally before the end of summer</strong>; <strong>GA</strong> later (no firm date).</li>
+<li><strong>PowerShell support for the init/print-init-script flow</strong> is <strong>in PR</strong>, expected to land <strong>within ~1–2 weeks</strong> of the video — at which point viewers can grab <code>dotnet-up</code> and try it.</li>
+<li><strong>Daily/nightly SDK management</strong> via <code>dotnet-up</code> is <strong>in PR</strong> (internal-preview target).</li>
+<li>Planned-but-not-yet-shipped: <strong><code>global.json</code>-declared runtimes</strong>, <strong>one-shot A/B execution (<code>dotnet-up dotnet</code>)</strong>, <strong><code>dotnet-up</code> self-update</strong>, <strong>update notifications</strong>, <strong>full signature verification of stable releases</strong>, <strong>published agent skills (<code>dotnet/skills</code>)</strong>, and <strong>using <code>dotnet-up</code> to back <code>actions/setup-dotnet</code> / <code>UseDotNet@2</code></strong>.</li>
+<li>Status framing: stable-SDK management was <strong>demoed working</strong>; runtime install <strong>works today</strong>; the <code>global.json</code> runtime-declaration syntax is <strong>explicitly not final / hypothetical</strong>.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Demo 1 — Acquisition + <code>dotnet-up init</code> on macOS.</strong> Showed the script downloading the correct AOT build, the init wizard (telemetry notice, channel = <code>latest</code>, terminal mode, offer to port existing global installs), shell-profile editing for zsh, and verification via <code>dotnet-up info</code> + <code>dotnet --info</code> → <strong>SDK 10.0.300</strong> with ASP.NET Core + .NET Core runtimes. <em>Proved:</em> getting a working .NET from scratch is one <code>init</code> away on any platform, no elevation.</li>
+<li><strong>Demo 2 — <code>global.json</code>-driven SDK install (cross-platform web app).</strong> <code>global.json</code> pinned 10.0.100 with roll-forward; <code>dotnet-up sdk install</code> rolled forward to the latest feature band, then (after editing to <code>latestPatch</code>) installed the <code>1xx</code>/100-band SDK and <strong>explained why</strong> (the project's <code>global.json</code>). Built the app on the <strong>108 SDK</strong>. <em>Proved:</em> one command makes any cloned repo build with the exact SDK it declares — and it's transparent about the reasoning. <code>dotnet-up list</code> then showed both SDKs and the tracked <code>latest</code> + <code>1xx</code> channels with reasons.</li>
+<li><strong>Demo 3 — Independent runtime installs for multi-runtime testing.</strong> A <code>.NET Standard 2.0</code> library + a test project multi-targeting <strong>.NET 8/9/10</strong>. With only the 10 runtime present, <code>dotnet test</code> reported <strong>"no tests ran"</strong> on 8 and 9 (missing runtimes) and passed only on 10. After <code>dotnet-up runtime install 8.0 9.0 10.0</code> (and <code>ASP.NET Core@8.0</code>), <code>dotnet --list-runtimes</code> showed Core 8/9/10 + ASP.NET Core 8/10, and <strong>all tests passed</strong> — <strong>without</strong> installing multiple full SDKs. <em>Proved:</em> you can stay on the latest SDK yet run older-runtime tests cheaply, bringing CI/CD-style convenience to local dev. Also showed a <strong>hypothetical <code>global.json</code> runtime-declaration</strong> syntax (explicitly not final).</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>"You are either using Visual Studio on Windows… or you're everyone else. And that's exactly the problem that we'd like to solve."</strong> — the framing of the whole talk.</li>
+<li><strong>"There's all these different installation mechanisms and we discovered we would make another one… and I'm only half joking here."</strong> — the xkcd #927 self-deprecating premise.</li>
+<li><strong>The .NET SDK ships 4× a year</strong>, each quarterly shipment containing net-new features/enhancements.</li>
+<li><strong>Release cadence example:</strong> 10.0.<strong>108</strong> in May, <strong>109</strong> in June, <strong>110</strong> in July — handled automatically by <code>dotnet-up update</code>.</li>
+<li><strong>SDKs are "hundreds of megabytes a piece"</strong> — the cost the runtime-only approach avoids.</li>
+<li><strong>"That problem we can say is solved definitively."</strong> — on SDK/version mismatch after cloning a repo.</li>
+<li><strong>"This to me is the best of both worlds. You're on the latest tooling, but you're able to do the things that you need to do in ways that you couldn't before easily."</strong> — on independent runtime installs.</li>
+<li><strong>"When we say global, we don't mean system global. We mean user global."</strong> — the no-elevation design principle.</li>
+<li><strong>"Production is not what we're talking about with this tool — we're talking about developer-time use cases."</strong></li>
+<li><strong>.NET 11 Preview 5</strong> in progress at the time of recording (Preview 4 just released).</li>
+<li><strong>Timelines:</strong> internal preview "in the next couple weeks"; public preview "before the end of the summer ideally."</li>
+<li><strong>Key links:</strong> <code>aka.ms/dotnet-up/docs</code>, <code>aka.ms/dotnet-up/feedback</code>, <code>github.com/baronfel/dotnet-up-repo-patterns-demo</code>.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Grab <code>dotnet-up</code> from <code>aka.ms/dotnet-up/docs</code> once PowerShell support lands; run <code>dotnet-up init</code> on a dev box.</li>
+<li>Clone <code>github.com/baronfel/dotnet-up-repo-patterns-demo</code> and walk the three scenarios (web app, multi-runtime tests, outdated installs).</li>
+<li>Replace per-repo <code>global.json</code> SDK juggling with <code>dotnet-up install</code> on a real project.</li>
+<li>Try <code>dotnet-up runtime install 8.0 9.0 10.0</code> to multi-target tests <em>without</em> installing extra full SDKs (potential CI cost/time savings).</li>
+<li>Test <code>dotnet-up update</code> + auto-prune behavior; inspect the manifest/lock file in the user data dir.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>Where exactly does the manifest/data dir live per-OS, and what's its format (sharable for compliance tooling)?</li>
+<li>How does PATH precedence interact with an existing system/Homebrew <code>dotnet</code>? Conflict handling when porting existing global installs?</li>
+<li>Will the eventual <code>global.json</code> runtime syntax be standardized so <code>actions/setup-dotnet</code> / <code>UseDotNet@2</code> honor it too?</li>
+<li>What's the signature-verification UX/failure mode if a manifest or binary fails validation?</li>
+<li>Telemetry: which exact <code>.NET CLI</code> opt-out env vars/flags apply (e.g. <code>DOTNET_CLI_TELEMETRY_OPTOUT</code>)?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Cross-platform .NET dev environments (macOS/Linux) and onboarding scripts.</li>
+<li>CI/CD pipeline simplification &amp; caching strategy (GitHub Actions / Azure DevOps).</li>
+<li>AI/agent-driven dev workflows needing safe, no-elevation toolchain setup.</li>
+<li>Dependabot/Renovate-style supply-chain &amp; compliance automation for .NET tooling.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<h2 id="-2026-build-session-list">- <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></h2>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="OD803.html"><span class="pager-dir">← Previous</span><span class="pager-code">OD803</span><span class="pager-title">Taking your AI to the edge with .NET MAUI</span></a>
+    <a class="pager pager-next" href="OD805.html"><span class="pager-dir">Next →</span><span class="pager-code">OD805</span><span class="pager-title">AI Building Blocks for .NET: Add intelligence to your C# apps</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

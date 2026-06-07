@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEM311 — Scale cloud-native workloads with Azure Linux</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEM311</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=mkeb8FbATG8" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Scale cloud-native workloads with Azure Linux</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Jim Perrin, Porvi Narang</span>
+      <span class="meta-item">⏱️ 26m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="azure-linux">Azure Linux</span><span class="chip" data-tag="containers">Containers</span><span class="chip" data-tag="aks">Aks</span><span class="chip" data-tag="cloud-native">Cloud Native</span><span class="chip" data-tag="linux">Linux</span><span class="chip" data-tag="security">Security</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Jim Perrin (PM, Azure Linux team) &amp; Porvi Narang (PM, Azure Linux team)<br>
+<strong>Duration:</strong> ~26 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=mkeb8FbATG8">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Azure Linux is Microsoft's own Linux distribution, now in its 4.0 generation, built on Fedora as its upstream and re-architected around a "one OS everywhere" story: the same binaries, kernel, and libraries run across WSL, Azure VMs, containers, and AKS. The team's core philosophy is <strong>security out of the box</strong> (SELinux enforcing, firewalld, FIPS/FedRamp targeting) plus <strong>declarative deviations</strong> — intentionally stripping the desktop/graphical stack and other non-cloud packages to produce a lean image with a minimal attack surface and fewer CVEs, all tracked publicly in GitHub. The live demo proved the consistency claim by running the same Python app simultaneously on WSL, an Azure Linux 4.0 VM, and an AKS cluster. The headline announcements: <strong>Azure Linux 4.0 VM image entered public preview</strong> (WSL preview as a fast follow), and <strong>Azure Container Linux went generally available</strong> at Build — a hardened, immutable variant derived from CNCF's Flatcar Container Linux, currently shipping as 3.0 until 4.0 GA brings everything into alignment.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Azure Linux uses Fedora as its upstream</strong> (the same innovation distro Red Hat builds RHEL from), giving Microsoft access to existing ISV support, CVE discovery/remediation partnership, and upstream open-source speed.</li>
+<li><strong>Microsoft's added value is programmatic reliability</strong>: predictable release cadence, consistent CVE fixes (Patch-Tuesday-style cadence), FIPS compliance, FedRamp compliance — the enterprise dependability Azure customers expect layered onto fast upstream innovation.</li>
+<li><strong>All source code for the distribution is public on GitHub</strong>, with a clear, declarative set of differences from Fedora so customers can see exactly where and why Microsoft deviates.</li>
+<li><strong>"One OS everywhere"</strong> is the central value prop: Azure Linux and Azure Container Linux are built from the <em>exact same sources and binaries</em> and are fully compatible across WSL, VM, and Kubernetes/container scenarios.</li>
+<li><strong>Security out of the box</strong> is the #1 principle: SELinux <strong>enabled by default in enforcing mode</strong>, firewalld on by default (only SSH open out of the box), no configuration required to be secure.</li>
+<li><strong>Declarative deviations = a leaner image</strong>: the graphical/desktop stack is removed (no need for cloud workloads), reducing package bloat, attack surface, and CVE complexity.</li>
+<li><strong>Azure Linux 4.0 ships kernel 6.18</strong> (latest upstream at the time), maintained for the lifetime of the distribution; a hardware-enabled kernel offers both LTS stability and faster iteration for customers who want rapid turnover.</li>
+<li><strong>DNF5</strong> is the package manager; the demo installed Azure CLI in well under a minute.</li>
+<li><strong>Azure Container Linux is immutable and hardened</strong>, derived from <strong>Flatcar Container Linux</strong> (contributed by Microsoft to the CNCF as an incubating project) — it adds Secure Boot, DM-Verity (read-only, verified-on-boot filesystem), and SELinux by default.</li>
+<li><strong>Azure Container Linux ≠ Flatcar deprecation.</strong> Flatcar continues upstream, fully supported; ACL is a productized, consistency-focused variant. It consolidates the two immutable images previously in AKS into one usable product.</li>
+<li><strong>The AppArmor → SELinux conversion</strong> is the one migration friction point the team expects for AKS customers used to AppArmor.</li>
+<li><strong>Version skew during preview is intentional and temporary</strong>: Azure Container Linux is 3.0 (kernel 6.6) while Azure Linux 4.0 (kernel 6.18) is in preview; at 4.0 GA everything aligns to 4.0 across the board.</li>
+<li><strong>Developer workflow simplicity</strong>: validate an app on one surface (e.g. WSL on a laptop) and trust it across all of them — same Python, same kernel, same internal libraries from local → GitHub → cloud → AI workloads.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="what-is-azure-linux-and-the-fedora-upstream-choice">What is Azure Linux — and the Fedora upstream choice</h3>
+<p>Azure Linux is Microsoft's first-party Linux distribution, presented here by the two PMs on the team (Jim Perrin and Porvi Narang). The agenda: explain what Azure Linux is, cover the Azure Container Linux story for the container/Kubernetes audience, demo it, and take Q&amp;A.</p>
+<p>For people from the broader Linux ecosystem, the anchor is familiar: Red Hat Enterprise Linux is built on <strong>Fedora</strong>, Fedora being the upstream innovation distribution Red Hat uses. <strong>Azure Linux now uses Fedora the same way</strong> — as its upstream. Microsoft is partnering closely with the Fedora community on Linux innovation, performance tweaks, and "Azure flavoring," and wants the Microsoft Linux community's changes visible to the broader Fedora world.</p>
+<p>Why Fedora as upstream:
+- <strong>Existing ISV support</strong> in the ecosystem comes along for free.
+- Microsoft can <strong>add its own work and contribute it back</strong> to Fedora where it makes sense.
+- It enables <strong>partnership on CVE discovery and CVE remediation</strong>.</p>
+<h3 id="microsofts-added-value-programmatic-reliability">Microsoft's added value: programmatic reliability</h3>
+<p>Beyond consuming the upstream, Microsoft layers on the program-management value enterprises want:
+- <strong>FIPS compliance</strong> and <strong>FedRamp compliance</strong>.
+- <strong>Clear, determined release timing</strong> — explicitly likened to Microsoft's famous "Patch Tuesday" cadence.
+- The result: you get upstream open-source innovation <em>and</em> speed, but with <strong>programmatic reliability</strong> — consistent release times, consistent CVE fixes, and consistency across the different application families.</p>
+<p>A key transparency commitment: <strong>all distribution source code is public on GitHub</strong>, and Microsoft maintains a <strong>clear declarative set of differences</strong> from Fedora and other distros so customers can see exactly where Azure Linux deviates and why.</p>
+<h3 id="one-os-everywhere-azure-linux-azure-container-linux-from-the-same-source">One OS everywhere — Azure Linux + Azure Container Linux from the same source</h3>
+<p>A foundational point: <strong>Azure Container Linux and Azure Linux are derived from the exact same sources.</strong> The same binaries exist in both; they're completely compatible across the board. What the team is delivering spans three surfaces:
+- <strong>Containers</strong>
+- <strong>The VM space</strong>
+- <strong>A hardened set of images</strong> for customers who want an <strong>immutable build system</strong> (covered later as Azure Container Linux).</p>
+<p>Much of the engineering value is in <strong>kernel tuning specifically for Azure</strong> — for performance and reliability. A <strong>hardware-enabled kernel</strong> delivers both the <strong>LTS stability</strong> some customers want <em>and</em> the ability to <strong>iterate quickly</strong> for customers who want rapid transition/turnover. Layered on top is <strong>streamlined management</strong>: all the Azure tooling customers already use — e.g. <strong>Azure Update Manager</strong> — works as-is, preserving consistency across Azure.</p>
+<h3 id="demo-setup-the-three-columns-consistency-demo">Demo setup — the "three columns" consistency demo</h3>
+<p>Porvi drives the technical demo to show the strategy in action. The premise: run <strong>one simple Python application</strong> across three different platforms — <strong>WSL</strong>, an <strong>Azure Linux VM</strong>, and <strong>AKS</strong> (with Azure Container Linux) — and show identical behavior to prove "one OS everywhere." The app is a small Python app that continuously refreshes CPU usage, memory, and uptime. The demo UI lights up a column per platform as each one comes online (WSL first, then VM, then AKS).</p>
+<h3 id="wsl-on-azure-linux-40">WSL on Azure Linux 4.0</h3>
+<p>Porvi is already inside WSL running <strong>Azure Linux 4.0</strong> and verifies the version live. The Python app is started in WSL — lighting up the first "column" of the demo. This establishes the local-developer entry point of the one-OS story.</p>
+<h3 id="azure-linux-40-on-an-azure-vm-a-deep-dive">Azure Linux 4.0 on an Azure VM — a deep dive</h3>
+<p>The same app is then deployed on an <strong>Azure Linux 4.0 VM</strong>, live. Porvi SSHes into a pre-created VM to confirm it's running Azure Linux 4.0, then walks through what the VM actually contains:</p>
+<ul>
+<li><strong>Kernel 6.18</strong> — the latest upstream kernel, which they will <strong>maintain for the lifetime of the distribution</strong>.</li>
+<li><strong>Security: SELinux enabled by default in enforcing mode</strong> — "security out of the box," no extra configuration needed. (Jim notes this will delight the SELinux-loving MVP in the audience and is a strong selling point for how seriously they take security.)</li>
+<li><strong>Declarative deviations in practice</strong>: the image is <strong>very lean</strong> — deliberately optimized for Azure and cloud-native workloads. Image size is much smaller because Microsoft <strong>intentionally defers</strong> packages and only includes what Azure customers need.</li>
+<li>Jim elaborates: <strong>most of the graphical/desktop stack has been pulled out.</strong> Fedora targets desktop users; that's irrelevant for cloud. Removing the graphical stack removes <strong>package bloat</strong> and <strong>CVE complication</strong>. Everything not required for cloud use has been stripped.</li>
+<li>Result: a <strong>very minimal attack surface and fewer CVEs.</strong></li>
+<li><strong>DNF5</strong> as the package manager. To demonstrate, Porvi installs <strong>Azure CLI</strong> via DNF5 — it resolves dependencies and pulls from the repo in seconds (the live install completed quickly), then she verifies the correct/latest Azure CLI from their repository landed in the image.</li>
+<li><strong>firewalld enabled out of the box</strong> — preconfigured, nothing to do. By default the <strong>only thing the firewall allows is SSH</strong> (for management/configuration). No additional services run beyond SSH.</li>
+<li>Jim's important caveat on the one extra open port: the <strong>DHCPv6 client</strong> port exists only because the <strong>IPv6 protocol has an ICMP requirement</strong> to obtain an address — that's its sole purpose.</li>
+<li>Porvi then <strong>manually opens a port</strong> to show that, while secure by default, ports are easy to open and remain <strong>under explicit administrator control</strong> — "you have to manually allow anything to be enabled."</li>
+<li>The Python app is then started on the VM via SSH (lighting the second column), constantly refreshing CPU/memory/uptime like the WSL instance.</li>
+</ul>
+<h3 id="aks-with-azure-container-linux">AKS with Azure Container Linux</h3>
+<p>The final surface is <strong>Azure Kubernetes Service</strong> using <strong>Azure Container Linux</strong> (ACL) — "another thing we are making generally available at Build." It's described as the <strong>hardened Azure Linux image</strong>. The demo deploys the same app to an AKS cluster, lighting the <strong>third and final column</strong>. With all three (WSL, VM, AKS) running on Azure Linux, the consistency claim is visually complete — same OS everywhere.</p>
+<blockquote>
+<p>Note on versions during preview: the AKS column shows <strong>Azure Container Linux 3.0</strong>, because <strong>Azure Linux 4.0 is still in preview</strong>. When 4.0 GAs, Azure Container Linux will move to 4.0 to match. The 3.0 label is purely a preview-period artifact; everything becomes 4.0 and consistent at GA.</p>
+</blockquote>
+<h3 id="why-the-consistency-matters-the-developer-story">Why the consistency matters (the developer story)</h3>
+<p>Jim summarizes the core benefit: no matter how you consume Azure Linux — WSL, VM, container, or Azure Container Linux — you're using the <strong>same Python version, the same kernel, and the same internal libraries</strong>. So if you <strong>validate your application on one surface, you can be confident it works across all of them.</strong> The intended developer flow: <strong>WSL on a local laptop → local deployment → production deployment → AI space</strong>, made as frictionless as possible from local laptop into GitHub, into the cloud, into AI workloads.</p>
+<p><strong>Status recap from the demo:</strong> the Azure Linux 4.0 <strong>VM image is in public preview</strong> — available to use, test, validate, and give feedback on.</p>
+<h3 id="azure-container-linux-deep-dive-immutability-the-flatcar-relationship">Azure Container Linux deep dive — immutability &amp; the Flatcar relationship</h3>
+<p>Jim takes the ACL portion in depth. Key technical and strategic points:</p>
+<ul>
+<li>ACL is an <strong>immutable distribution</strong>, <strong>derived from Flatcar Container Linux</strong> — the distribution Microsoft <strong>contributed to the CNCF</strong> (landed as an <strong>incubating project</strong>, he believes the prior year).</li>
+<li>Microsoft is <strong>partnering with the Flatcar team and the CNCF</strong> to make a <strong>productized version</strong> based on the same libraries, for <strong>consistency in the use case</strong>.</li>
+<li>ACL <strong>deviates from Flatcar slightly in terms of where the binaries come from</strong>, purely for <strong>application consistency</strong> (so it matches the rest of Azure Linux).</li>
+<li><strong>Flatcar is NOT being deprecated.</strong> Jim explicitly debunks the rumor: Microsoft <strong>continues to support Flatcar upstream</strong>, stays heavily engaged with its developer team for new features, and wants it to keep growing. Flatcar and ACL <strong>serve different purposes</strong>. ACL gives customers <strong>product-ready consistency</strong> without disrupting existing Flatcar users' expectations or workflows.</li>
+<li>Practically, ACL <strong>consolidates the two immutable images that were previously in AKS</strong> into a single, usable product customers can interact with.</li>
+</ul>
+<h3 id="azure-container-linux-the-acl-demo-recorded">Azure Container Linux — the ACL demo (recorded)</h3>
+<p>A short ACL demo (assembled by <strong>Flora</strong>, with a shout-out; likely to be at KubeCon) repeats the earlier live flow of creating an AKS cluster using Azure Container Linux. It mirrors a standard <strong>Azure CLI cluster create from the command line</strong>: provisions a node, gets credentials, shows status. Highlights shown:
+- The node <strong>identifies as Flatcar</strong> — Microsoft is "telling customers exactly what's going on."
+- <strong>Kernel 6.6</strong> here (vs 6.18 on Azure Linux 4.0) — again, a preview-period difference; everything aligns at 4.0 GA.
+- <strong>Secure Boot</strong> set up and enabled.
+- <strong>DM-Verity</strong> configured so images are <strong>verified on boot</strong>; testing confirms a <strong>read-only filesystem</strong>.
+- <strong>SELinux enabled by default</strong> — called out as a <strong>key differentiator</strong>. Many in the AKS space currently use <strong>AppArmor</strong>; with Flatcar/ACL it's <strong>SELinux</strong>, so the <strong>AppArmor → SELinux conversion</strong> is the one area the team expects to be <strong>tricky for some customers</strong>.</p>
+<h3 id="status-summary-as-stated">Status summary (as stated)</h3>
+<ul>
+<li><strong>Azure Linux 4.0 on WSL</strong> — entering preview (WSL is a <strong>fast follow</strong> for preview after VMs).</li>
+<li><strong>Azure Linux 4.0 on VMs</strong> — <strong>public preview</strong>.</li>
+<li><strong>Azure Container Linux</strong> — <strong>now generally available</strong>; it's the <strong>immutable variant of Azure Linux 3.0</strong> for now, moving to 4.0 when 4.0 GAs.</li>
+</ul>
+<h3 id="qa-firewalld-rules">Q&amp;A — firewalld rules</h3>
+<p><strong>Question (from Hayden in the audience):</strong> How are firewall rules handled when packages ship their own?
+<strong>Answer (Jim):</strong> Some packages are designed to install their own firewalld rules by default to simplify life for administrators. Some packages in the Azure Linux distribution <strong>will</strong> do that; some <strong>will not</strong>. Wherever Microsoft takes an opinion on this, it will be documented in <strong>two places</strong>: the <strong>product documentation</strong> and the <strong>declarative change state in GitHub</strong>. So for any package taken from upstream, you can see exactly what it was, what select changes Microsoft made, and what the firewall setup includes. (Jim called it a good question.)</p>
+<h3 id="wrap-up-how-to-engage">Wrap-up &amp; how to engage</h3>
+<p>The team is excited to bring a Microsoft Linux distribution out for everyone to use. Ways to engage:
+- <strong>Reach out on GitHub</strong> to learn more, get the image, or become a <strong>software-validated partner</strong> on Azure Linux (they'll guide partners through validation, including for Red Hat).
+- There's a <strong>community call</strong> and <strong>other resources</strong> to check out.
+(A final short ACL video had no audio and was cut for time.)</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Azure Linux</strong> — Microsoft's first-party Linux distribution; the umbrella product (VM + WSL + container surfaces) built on a Fedora upstream.</li>
+<li><strong>Azure Linux 4.0</strong> — the current generation; kernel 6.18, leaner image, SELinux enforcing by default; VM image in public preview.</li>
+<li><strong>Azure Container Linux (ACL)</strong> — hardened, immutable variant for containers/AKS; derived from Flatcar; GA at Build (3.0 now, 4.0 at GA).</li>
+<li><strong>Fedora Linux</strong> — the upstream innovation distribution Azure Linux is built on (same role Fedora plays for RHEL).</li>
+<li><strong>Red Hat Enterprise Linux (RHEL)</strong> — referenced as the familiar Fedora-derived enterprise distro analogy.</li>
+<li><strong>Flatcar Container Linux</strong> — immutable container OS contributed by Microsoft to the CNCF (incubating); the upstream basis for ACL; continues to be supported independently.</li>
+<li><strong>CNCF (Cloud Native Computing Foundation)</strong> — where Flatcar lives as an incubating project.</li>
+<li><strong>WSL (Windows Subsystem for Linux)</strong> — local developer surface running Azure Linux 4.0; preview is a fast follow.</li>
+<li><strong>Azure Kubernetes Service (AKS)</strong> — the Kubernetes platform where Azure Container Linux runs as node OS.</li>
+<li><strong>Azure VMs</strong> — the virtual-machine surface for Azure Linux 4.0 (public preview).</li>
+<li><strong>Linux kernel 6.18</strong> — latest upstream kernel shipped in Azure Linux 4.0, maintained for the distro's lifetime.</li>
+<li><strong>Linux kernel 6.6</strong> — the kernel in Azure Container Linux 3.0 during preview (aligns to 6.18 at 4.0 GA).</li>
+<li><strong>SELinux</strong> — mandatory access control; enabled by default in enforcing mode (key security differentiator vs AppArmor).</li>
+<li><strong>firewalld</strong> — host firewall enabled out of the box; only SSH open by default.</li>
+<li><strong>DNF5</strong> — the latest package manager used in Azure Linux 4.0.</li>
+<li><strong>Azure CLI</strong> — installed via DNF5 in the demo to show speed and repo freshness.</li>
+<li><strong>Azure Update Manager</strong> — existing Azure management tooling that works with Azure Linux unchanged.</li>
+<li><strong>Secure Boot</strong> — enabled in Azure Container Linux for boot integrity.</li>
+<li><strong>DM-Verity</strong> — verifies/validates images on boot; enforces a read-only filesystem in ACL.</li>
+<li><strong>AppArmor</strong> — the MAC system many AKS users come from; the AppArmor→SELinux conversion is the expected migration friction.</li>
+<li><strong>DHCPv6 client</strong> — the only reason an extra port (beyond SSH) is open by default, due to IPv6's ICMP address requirement.</li>
+<li><strong>SSH</strong> — the sole service/port open by default for management.</li>
+<li><strong>Python</strong> — the language of the demo app; same version across all three surfaces reinforces consistency.</li>
+<li><strong>GitHub</strong> — where all distribution source and the declarative deviation set live; primary engagement/contact channel.</li>
+<li><strong>FIPS compliance / FedRamp compliance</strong> — government/security compliance Microsoft layers onto the Fedora base.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Azure Container Linux — Generally Available (GA) at Build 2026.</strong> Hardened, immutable Azure Linux image for containers/AKS; derived from Flatcar; currently shipping as <strong>3.0</strong> (kernel 6.6) and will move to <strong>4.0</strong> when Azure Linux 4.0 GAs.</li>
+<li><strong>Azure Linux 4.0 VM image — Public Preview.</strong> Available to use, test, validate, and provide feedback on; kernel 6.18, SELinux enforcing, DNF5, lean image.</li>
+<li><strong>Azure Linux 4.0 on WSL — Preview (fast follow).</strong> WSL preview follows the VM preview.</li>
+<li><strong>Roadmap / consistency commitment:</strong> at <strong>Azure Linux 4.0 GA</strong>, all surfaces (VM, WSL, container/ACL) converge to <strong>4.0</strong> with a consistent kernel (6.18) and binaries across the board.</li>
+<li><strong>Ongoing Flatcar support (clarification, not a deprecation):</strong> Microsoft continues to support and develop Flatcar Container Linux upstream within the CNCF; ACL is additive, not a replacement.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>"One OS everywhere" consistency demo (live):</strong> the same Python app (live CPU/memory/uptime refresh) was deployed across <strong>WSL</strong>, an <strong>Azure Linux 4.0 VM</strong>, and an <strong>AKS cluster (Azure Container Linux)</strong>, lighting three columns. <strong>Point proved:</strong> identical app/runtime behavior across all surfaces because they share the same kernel, libraries, and Python — validate once, trust everywhere.</li>
+<li><strong>Azure Linux 4.0 VM walkthrough (live):</strong> SSH into the VM; verified Azure Linux 4.0, kernel 6.18, SELinux enforcing by default, lean image (declarative deviations / desktop removed), DNF5 installing Azure CLI in seconds, firewalld on with only SSH open, then manually opening a port. <strong>Point proved:</strong> security out of the box + explicit admin control + a minimal, fast, cloud-optimized image.</li>
+<li><strong>Azure Container Linux / AKS demo (recorded, assembled by Flora):</strong> <code>az</code>-style AKS cluster create — provision node, get credentials, show status; node reports as Flatcar, kernel 6.6, Secure Boot enabled, DM-Verity verifying a read-only filesystem on boot, SELinux by default. <strong>Point proved:</strong> ACL is genuinely immutable and hardened with verified boot, and is transparent about its Flatcar lineage.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>Kernel 6.18</strong> in Azure Linux 4.0 (latest upstream), <strong>maintained for the lifetime of the distribution</strong>; <strong>kernel 6.6</strong> in Azure Container Linux 3.0 during preview.</li>
+<li><strong>DNF5 installed Azure CLI in seconds</strong> during the live demo ("Pretend that was like 2 seconds, not 12.").</li>
+<li><strong>Only one service open by default: SSH</strong> — "out of the box there are no additional services running beyond SSH."</li>
+<li><em>"You can use the same OS everywhere — that's the consistency that Azure Linux brings to you."</em></li>
+<li><em>"If you validate your application on one, you can have confidence that it will work across all of them."</em></li>
+<li><em>"That is not true… Flatcar will continue to grow. It continues to exist upstream. We continue to support it upstream."</em> — Jim, debunking the Flatcar-deprecation rumor.</li>
+<li><em>"Security out of the box… I'm repeating it again because it's one of our primary principles with Azure Linux 4.0."</em> — Porvi.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Deploy the Azure Linux 4.0 VM image from public preview; install Azure CLI via DNF5; confirm SELinux enforcing + firewalld defaults out of the box. Spin up an AKS cluster on Azure Container Linux (now GA) and inspect Secure Boot / DM-Verity / read-only FS. Run the same containerized app across WSL + VM + AKS to feel the "one OS everywhere" story firsthand.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: What's the concrete migration path for existing AKS workloads from AppArmor profiles to SELinux policies? When is Azure Linux 4.0 GA expected (and the 3.0→4.0 / kernel 6.6→6.18 cutover for ACL)? How does the declarative-deviation GitHub manifest map to specific CVE reductions vs stock Fedora? What's the support lifecycle/LTS commitment per 4.x release?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: AKS node OS standardization; container image hardening &amp; supply-chain (immutable + verified boot); FedRamp/FIPS workloads; dev-to-prod parity using WSL → Azure; any Flatcar users evaluating a productized path.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+<li>Topics: #topic/azure-linux #topic/containers #topic/aks #topic/cloud-native #topic/security</li>
+<li>External: <a href="https://github.com/microsoft/azurelinux">Azure Linux on GitHub</a> · <a href="https://www.flatcar.org/">Flatcar Container Linux (CNCF)</a> · <a href="https://learn.microsoft.com/azure/aks/">AKS documentation</a></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEM310.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEM310</span><span class="pager-title">Ship code faster with AI-powered NoSQL schema design</span></a>
+    <a class="pager pager-next" href="DEM312.html"><span class="pager-dir">Next →</span><span class="pager-code">DEM312</span><span class="pager-title">Multi-agents in action with 3 AI agents, 3 frameworks, tools &amp; models</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

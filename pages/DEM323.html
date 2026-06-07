@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DEM323 — Under the hood of Microsoft AI models</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">DEM323</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=5vz1pUSpRAE" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Under the hood of Microsoft AI models</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Dave Citron (CVP of Product, Microsoft AI)</span>
+      <span class="meta-item">⏱️ 18m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ai-models">Ai Models</span><span class="chip" data-tag="foundation-models">Foundation Models</span><span class="chip" data-tag="microsoft-ai">Microsoft Ai</span><span class="chip" data-tag="ai">AI</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Dave Citron — CVP of Product, Microsoft AI<br>
+<strong>Duration:</strong> ~18 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=5vz1pUSpRAE">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Microsoft AI shipped <strong>seven first-party foundation models</strong> across image, transcription, voice, coding, and reasoning — all <strong>hill-climbed from scratch with no distillation and no teacher model</strong>. The crown jewel is <strong>MAI Thinking 1</strong>, Microsoft's first frontier reasoning model: a mixture-of-experts architecture with 35B active / ~1T total parameters and a 256K context window, trained on 30T+ tokens of in-house, commercially licensed data, then climbed via reinforcement learning (GRPO) from near-zero to <strong>97% on AIME</strong>. The session is a technical deep dive into the lab's "humanist superintelligence" philosophy, the data and RL pipeline behind Thinking 1, and <strong>Microsoft Frontier Tuning</strong> — a way for any developer or organization to run their own hill-climbing loop on these models inside their secure tenant, demonstrated by a Land O'Lakes case study that beat all frontier models at 10x lower cost.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Seven models announced</strong> across five modalities: Image 2.5, Voice 2, Transcribe 1.5, Code 1 Flash, and Thinking 1 (plus Flash variants of several).</li>
+<li><strong>"We don't distill."</strong> Every capability was earned through Microsoft AI's own training loop — no third-party weights, no black-box inheritance — giving full transparency, debuggability, and clean commercially licensed data lineage for enterprise.</li>
+<li><strong>MAI Thinking 1</strong> is a Mixture-of-Experts model: <strong>35B active parameters, ~1T total, 256K context window</strong>, hill-climbed from scratch with no teacher.</li>
+<li><strong>Reasoning is learned via reinforcement learning</strong> using <strong>GRPO</strong> with binary, verifiable rewards for math/code, plus <strong>five custom innovations</strong> to keep the RL climb stable across thousands of steps (AIME climbed near-zero → 97% in a steady log-linear line).</li>
+<li><strong>Three specialist models</strong> (STEM, agentic, helpfulness &amp; safety) were trained separately and then <strong>merged</strong> into one model with three areas of mastery.</li>
+<li><strong>Safety is an entire dedicated RL climb</strong>, not a bolted-on filter — baked into the reward math so you "cannot trade safety for helpfulness," validated by 15 rounds of red teaming and 2,100+ adversarial scenarios.</li>
+<li><strong>Benchmark leadership punching above weight class:</strong> AIME 25 @ 97, AIME 26 @ 94.5, LiveCodeBench @ 87.7, SweetBench Pro @ 52.8 (competitive with Opus 4.6), GPQA Diamond @ 84.2 — all from a 35B <em>active</em> parameter model.</li>
+<li><strong>Image 2.5</strong> is #2 on the image-editing leaderboard, surpassing Nano Banana; already live in PowerPoint, rolling out to OneDrive, and on Foundry.</li>
+<li><strong>Transcribe 1.5</strong> is positioned as the world's most accurate transcription model across <strong>43 languages</strong>, up to <strong>5x faster</strong> than rivals, beating Gemini and OpenAI flagship transcription models.</li>
+<li><strong>Code 1 Flash</strong> ships as the default in GitHub Copilot inside VS Code today — strong agentic coding from just a 5B active-parameter model.</li>
+<li><strong>Microsoft Frontier Tuning</strong> lets every org build its own "hill-climbing machine": private (data never moves), cost-efficient, context-aware, and lock-in-free; usage feeds back into the next training cycle so the model compounds over time.</li>
+<li><strong>Land O'Lakes proof point:</strong> frontier-tuned <strong>MAI Thinking 1 Flash</strong> hit a <strong>89.3% quality score</strong> (higher than all frontier models) at <strong>10x lower cost</strong> on a real business workflow.</li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="session-framing-structure">Session framing &amp; structure</h3>
+<p>Dave Citron, CVP of Product at Microsoft AI, opens with the explicit goal of explaining <em>how</em> the headline numbers from Mustafa Suleyman's keynote earlier that morning were actually achieved — "if you were watching the keynote and thinking 'cool numbers, but how did they actually do that?' then this is the talk for you." The session is structured as: (1) the philosophy behind the models and how the lab builds; (2) a walkthrough of all seven models being shipped; (3) a deep dive into <strong>MAI Thinking 1</strong> — architecture, training recipe, and the reinforcement-learning system; and (4) <strong>Frontier Tuning</strong>, so customers can run their own hill-climbing loop on top of what Microsoft built.</p>
+<h3 id="the-philosophy-humanist-superintelligence">The philosophy: Humanist Superintelligence</h3>
+<p>Before going model by model, Citron stresses that philosophy drives real technical decisions at the lab. Microsoft AI calls its approach <strong>humanist superintelligence</strong> — state-of-the-art AI explicitly designed to <strong>serve people and organizations, not replace them</strong>. "Humanist" is described as non-decorative and means three concrete things:
+- <strong>Human first</strong> — the model always prioritizes human well-being.
+- <strong>Serve, not replace</strong> — AI that augments what people can do.
+- <strong>Platform commitment</strong> — keep developers at the frontier.</p>
+<h3 id="why-we-dont-distill-the-core-technical-decision">Why "we don't distill" — the core technical decision</h3>
+<p>The philosophy has three concrete implications for how they build, the most important being: <strong>they do not distill.</strong> Distillation transfers a stronger model's behavior into a smaller one and can produce fast gains (many labs do it), but it makes the <strong>teacher's capability the practical ceiling</strong> for the student. It also fails to test whether the lab's own training pipeline can climb from weak initial performance or make progress in domains where no good teacher exists. So Microsoft AI <strong>hill climbs from scratch</strong> — every capability is earned through their own training loop, not borrowed. The payoff is <strong>full transparency and control</strong>: they know exactly what went in (clean, commercially licensed data), with no third-party weights and no black-box inheritance, so every component can be debugged, audited, and improved. This is repeatedly framed as the foundation that enterprise customers need.</p>
+<h3 id="model-1-image-25-image-generation-editing">Model 1 — Image 2.5 (image generation &amp; editing)</h3>
+<p>Microsoft's image generation and editing model, now <strong>#2 on the EleutherAI image-to-image leaderboard</strong>, surpassing <strong>Nano Banana</strong> — described as a real step change over prior iterations. Its differentiator is <strong>precision</strong>: it executes edit instructions with fidelity and consistency that other models struggle with. It cleanly handles complex compositional edits — changing lighting, adding objects that match the environment, and editing one region while leaving everything else intact. The flagship <strong>2.5</strong> model is optimized for maximum quality (professional-grade output for creative and enterprise workflows) and is <strong>already live in PowerPoint, rolling out to OneDrive, and available on Foundry now</strong>. The <strong>Flash variant</strong> keeps the same architecture but is optimized for high-volume production — more throughput, minimal quality trade-off, significantly lower cost per token (Citron noted the Flash variant delivers quality at production scale at roughly <strong>a third of the cost</strong>). Users are encouraged to try it on the <strong>MAI playground</strong> website, even from a phone.</p>
+<h3 id="model-2-voice-2-speech-generation">Model 2 — Voice 2 (speech generation)</h3>
+<p>Microsoft's latest speech generation model, differentiated by <strong>naturalness</strong>. The team went deep on <strong>prosody</strong> — the rhythm, stress, and intonation that make speech sound like a person rather than a text-to-speech engine. The headline new capability is <strong>fine-grained emotional control</strong>: you can tune not just what the voice says but how it <em>feels</em> — warm, urgent, conversational, joyful. Available <strong>today in 15 languages</strong>, with many more coming. It also does high-fidelity <strong>voice cloning</strong> from just a tiny amount of source audio. A <strong>Flash variant</strong> is coming, designed for <strong>voice agents</strong> with incredibly low latency. (Citron also cited an under-150ms figure and a 72% blind-listening-test preference for Voice 2 in the model overview.) A live "joy" emotion demo was attempted on stage but suffered audio issues before partially playing.</p>
+<h3 id="model-3-transcribe-15-transcription">Model 3 — Transcribe 1.5 (transcription)</h3>
+<p>Positioned bluntly as "simply the best transcription model in the world. Not close. The best." Accuracy spans <strong>43 languages</strong>, beating <strong>Gemini and OpenAI's flagship transcription models</strong> on head-to-head accuracy benchmarks. Critically, it's optimized for <strong>real-world use</strong> — noisy environments, accents, domain-specific terminology, and multiple speakers — not just benchmark accuracy. On <strong>Artificial Analysis</strong> speed benchmarks it is "in a league of its own," up to <strong>5x faster</strong> than rivals while also being more accurate ("no one else comes close in both dimensions at once"). It is being integrated across the Microsoft stack — <strong>Copilot, Teams, GitHub, Dynamics 365</strong> — and is on <strong>Foundry now</strong>. Summed up as the fastest, most accurate, and most cost-effective transcription model available; "if you're building anything involving speech-to-text, this is your model."</p>
+<h3 id="model-4-code-1-flash-coding">Model 4 — Code 1 Flash (coding)</h3>
+<p>A dedicated coding model <strong>built from the ground up for agentic coding tasks at speed</strong>. Benchmarks: <strong>71.6 on SweetBench Verified</strong> and <strong>51.2 on SweetBench Pro</strong> (one of the hardest real-world coding benchmarks). It's optimized to be cost-effective for high-throughput workloads and is a <strong>5B active-parameter</strong> coding model delivering "amazing coding performance." It is <strong>already shipping as the default in GitHub Copilot inside VS Code</strong> — Citron repeatedly urges developers to try it there today and send feedback.</p>
+<h3 id="model-5-deep-dive-mai-thinking-1-reasoning">Model 5 (deep dive) — MAI Thinking 1 (reasoning)</h3>
+<p><strong>Microsoft's first reasoning model</strong>, and the focus of the session.</p>
+<p><strong>Architecture:</strong> Mixture of Experts (MoE), <strong>~35 billion active parameters, ~1 trillion total</strong>, with a <strong>256K context window</strong>. It "punches well above its weight class" and was <strong>hill-climbed entirely from scratch — no distillation, no teacher model</strong>, with clean, commercially licensed data lineage suitable for shipping to enterprise customers. A <strong>100+ page tech report</strong> detailing exactly how it was built was released the same morning on the lab's website.</p>
+<p><strong>Three guiding principles</strong> governed every decision:
+1. Capabilities should be <strong>learned, not inherited</strong>.
+2. <strong>Simplicity is sustainable</strong>.
+3. <strong>Scientific rigor over shortcuts</strong>.</p>
+<p><strong>The data story (what they <em>didn't</em> use):</strong> No open-source training sets and no synthetic data. They actively <strong>hunted down AI-generated content on the web and removed it</strong> from the training set (a task getting harder every month), and the <strong>benchmarks are decontaminated</strong> so the numbers are real.</p>
+<p><strong>The data story (what they <em>did</em> use):</strong>
+- <strong>Pre-training:</strong> <strong>30 trillion tokens</strong> sourced and processed entirely in-house — web, code, books, papers, multilingual text, and domain-specific materials, with every pipeline owned end-to-end.
+- <strong>Mid-training:</strong> an additional <strong>3.55 trillion tokens</strong> of curated STEM, math, and coding data with <strong>verifiable answers</strong> and code that either runs or doesn't. This phase <strong>extends context to 256K</strong> and sets up the RL climb.</p>
+<p><strong>The RL climb (where the model learns to think):</strong> The base algorithm is <strong>GRPO</strong> — generate a group of rollouts for a problem, score them against a verifiable ground truth, and reinforce the better ones. For math and code the <strong>reward is binary</strong> (did you get the right answer?). Running RL for thousands of steps on a model this size "doesn't just work," so the team built <strong>five innovations</strong> that together keep the climb stable across thousands of steps. The AIME score rising from <strong>near-zero to 97% in a steady log-linear line</strong> is offered as evidence those techniques compound correctly.</p>
+<p><strong>Specialist merge:</strong> They trained <strong>three specialist models — STEM, agentic, and helpfulness &amp; safety — and merged them</strong> into a single model with three areas of mastery.</p>
+<p><strong>The safety climb:</strong> Safety is <strong>not a filter bolted on at the end</strong> — it's an <strong>entire dedicated RL climb</strong> with a reward model trained on <strong>human preference</strong>. By design, "you cannot trade safety for helpfulness — it's baked into the math." This was hardened with <strong>15 rounds of red teaming</strong> across early, mid, and late training — Microsoft's AI red team <strong>plus independent external vendors</strong>, covering <strong>over 2,100 adversarial scenarios</strong>. The result: on the safety/helpfulness scatter plot, <strong>MAI sits above and to the right of Claude Sonnet 4.6 on about five of eight categories</strong> — i.e., more helpful <em>and</em> safer at the same time.</p>
+<p><strong>Results that the pipeline produced (with anti-contamination notes):</strong>
+- <strong>AIME 25: 97</strong> and <strong>AIME 26: 94.5</strong> — AIME 26 problems were released <em>after</em> the training cutoff; the model has never seen them.
+- <strong>LiveCodeBench: 87.7</strong> — continuously adds new problems to prevent contamination.
+- <strong>SweetBench Pro: 52.8</strong> — real GitHub issues on real codebases; competitive with <strong>Opus 4.6</strong>.
+- <strong>GPQA Diamond: 84.2</strong> — graduate-level biology, chemistry, and physics questions answered <strong>without using any search tools</strong>.</p>
+<p>The recurring thesis: this is only a <strong>35B active-parameter</strong> model — not the largest — yet fully competitive "because the capabilities were learned, not inherited." Citron summarizes Thinking 1 as "a clean foundation, well-designed climb, scientific rigor."</p>
+<h3 id="microsoft-frontier-tuning">Microsoft Frontier Tuning</h3>
+<p>The closing topic and the bridge from "our models" to "your models." The premise: most AI products today ask you to <strong>rent a generic model and hope it works</strong> for your business — "we don't think that's good enough." <strong>Frontier Tuning</strong> lets every developer and org build its <strong>own hill-climbing machine</strong> — a model that knows your work, your language, and your data, trained <strong>entirely inside your environment</strong>.</p>
+<p><strong>Four things that matter for Frontier Tuning:</strong>
+- <strong>Private</strong> — your data never moves.
+- <strong>Cost-efficient</strong> — you don't burn dollars on tokens you don't need.
+- <strong>Smarter on your actual context</strong> — it improves on your real workflows.
+- <strong>You control the model</strong> — no big-model lock-in, no dependency on anyone's roadmap but your own.</p>
+<p><strong>The process:</strong>
+1. <strong>Define your task</strong> and what "good" looks like for your business.
+2. <strong>Bring your data</strong> — M365 context, Azure Fabric context, workflows, domain expertise.
+3. <strong>Train inside your secure tenant</strong>.
+4. <strong>Deploy</strong> through either <strong>Foundry or Copilot</strong>.
+5. <strong>It doesn't stop</strong> — real usage feeds back into the next training cycle, so the model gets better the more your org uses it. That feedback loop is what "hill-climbing machine" really means: it <strong>compounds over time against your objectives, not a generic benchmark</strong>.</p>
+<h3 id="real-world-example-land-olakes">Real-world example — Land O'Lakes</h3>
+<p><strong>Land O'Lakes</strong> needed to generate <strong>product quality reports from tasting-panel discussions</strong>. Microsoft <strong>frontier-tuned MAI Thinking 1 Flash</strong> on that specific task. The result: <strong>89.3% quality score — higher than all frontier models — and 10x more cost-efficient.</strong> Citron stresses this is "not a small model beating a big one on a toy task" but a <strong>tuned model beating the best generalists on a real business workflow at a fraction of the cost.</strong></p>
+<h3 id="availability-wrap-up">Availability &amp; wrap-up</h3>
+<ul>
+<li><strong>Image 2.5, Voice 2, Transcribe 1.5</strong> — live in <strong>Foundry today</strong>, and playable on the <strong>MAI playground</strong> website (works on mobile).</li>
+<li><strong>Thinking 1</strong> — live on <strong>Foundry</strong> for a couple of <strong>private-preview</strong> customers, expanding soon; interested testers should <strong>sign up on the Foundry website</strong>.</li>
+<li><strong>Code 1 Flash</strong> — available <strong>right now in VS Code</strong> with GitHub Copilot.</li>
+<li>All models will also be available across <strong>Base Ten, OpenRouter, and Fireworks</strong>.</li>
+<li>Learn more at the <strong>Foundry website</strong> or <strong>microsoft.ai</strong> — model cards, API documentation, and pricing.</li>
+<li>Citron closes by noting the team is on-site all week with more sessions and a demo booth, inviting feedback via social channels: "We're just getting started as a lab, and we have much more to come."</li>
+</ul>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>MAI Image 2.5</strong> (flagship + Flash) — image generation &amp; editing</li>
+<li><strong>MAI Voice 2</strong> (+ Flash) — speech generation with emotional control &amp; voice cloning</li>
+<li><strong>MAI Transcribe 1.5</strong> — multilingual transcription (43 languages)</li>
+<li><strong>MAI Code 1 Flash</strong> — agentic coding model (5B active params)</li>
+<li><strong>MAI Thinking 1</strong> (+ Thinking 1 Flash) — frontier reasoning MoE model</li>
+<li><strong>Microsoft Frontier Tuning</strong> — in-tenant model tuning / hill-climbing loop</li>
+<li><strong>MAI Playground</strong> (website, mobile-friendly) — try the models</li>
+<li><strong>Azure AI Foundry</strong> — deployment &amp; API surface for the models</li>
+<li><strong>GitHub Copilot in VS Code</strong> — ships Code 1 Flash as default</li>
+<li><strong>Microsoft 365 / PowerPoint / OneDrive / Teams / Dynamics 365 / Copilot</strong> — integration surfaces</li>
+<li><strong>Azure Fabric</strong> &amp; <strong>M365 context</strong> — data sources for Frontier Tuning</li>
+<li><strong>GRPO</strong> (Group Relative Policy Optimization) — base RL algorithm</li>
+<li><strong>Mixture of Experts (MoE)</strong> — Thinking 1 architecture</li>
+<li>Third-party distribution: <strong>Base Ten, OpenRouter, Fireworks</strong></li>
+<li><strong>microsoft.ai</strong> — model cards, API docs, pricing</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>Seven new Microsoft AI first-party models</strong> announced (image, transcription, voice, coding, reasoning) — all built from scratch with no distillation.</li>
+<li><strong>MAI Thinking 1</strong> — Microsoft's <strong>first frontier reasoning model</strong> (MoE, 35B active / ~1T total, 256K context), with a <strong>100+ page technical report</strong> published the same morning.</li>
+<li><strong>Microsoft Frontier Tuning</strong> — new capability to tune these models privately inside a customer's own secure tenant, deployable via Foundry or Copilot.</li>
+<li><strong>Image 2.5</strong> now <strong>#2 on the image-editing leaderboard</strong>, surpassing Nano Banana; <strong>live in PowerPoint</strong>, rolling out to <strong>OneDrive</strong>, available on <strong>Foundry</strong>.</li>
+<li><strong>Code 1 Flash</strong> is now the <strong>default coding model in GitHub Copilot inside VS Code</strong>.</li>
+<li><strong>Voice 2</strong> adds <strong>fine-grained emotional control</strong> and <strong>voice cloning</strong>, in <strong>15 languages</strong>.</li>
+<li><strong>Flash variants</strong> announced/forthcoming for Image, Voice, and Thinking, targeting production scale, voice agents, and tunable workloads respectively.</li>
+<li>Models rolling out to third-party platforms: <strong>Base Ten, OpenRouter, Fireworks</strong>.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Voice 2 "joy" emotion demo (live, on-stage):</strong> Citron attempted to play a sample of the Voice 2 model speaking with a joyful emotion ("I just got the best news ever. I cannot stop smiling... This is the happiest I have ever been"). The demo hit <strong>audio playback issues</strong> ("I'm not getting any audio... Can you hear that?") before partially playing through; Citron acknowledged it was "a little hard to hear" in the noisy room and pointed the audience to the website for clearer examples of the full emotional range and voices.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<p><strong>MAI Thinking 1 architecture &amp; training:</strong>
+- <strong>35B active parameters / ~1T total / 256K context window</strong> (MoE)
+- <strong>30T tokens</strong> pre-training (in-house) + <strong>3.55T tokens</strong> mid-training (curated STEM/math/code)
+- <strong>15 rounds</strong> of red teaming; <strong>2,100+</strong> adversarial scenarios
+- Sits <strong>above &amp; right of Claude Sonnet 4.6 on ~5 of 8</strong> safety/helpfulness categories</p>
+<p><strong>MAI Thinking 1 benchmarks:</strong>
+- <strong>AIME 25: 97</strong> · <strong>AIME 26: 94.5</strong>
+- <strong>LiveCodeBench: 87.7</strong>
+- <strong>SweetBench Pro: 52.8</strong> (competitive with Opus 4.6)
+- <strong>GPQA Diamond: 84.2</strong> (no search tools)</p>
+<p><strong>Other models:</strong>
+- <strong>Image 2.5:</strong> #2 on EleutherAI image-to-image leaderboard; Flash ≈ <strong>1/3 the cost</strong>
+- <strong>Transcribe 1.5:</strong> <strong>43 languages</strong>, up to <strong>5x faster</strong> than rivals, beats Gemini/OpenAI flagships
+- <strong>Voice 2:</strong> preferred on <strong>72%</strong> of blind listening tests; Flash <strong>under 150 ms</strong> latency; <strong>15 languages</strong>
+- <strong>Code 1 Flash:</strong> <strong>71.6</strong> SweetBench Verified, <strong>51.2</strong> SweetBench Pro; <strong>5B</strong> active params
+- <strong>Land O'Lakes (frontier-tuned Thinking 1 Flash):</strong> <strong>89.3% quality score</strong>, <strong>10x</strong> more cost-efficient than all frontier models</p>
+<p><strong>Quotes:</strong>
+- "We call our approach <strong>humanist superintelligence</strong>... designed to serve people and organizations, not replace them."
+- "<strong>We don't distill.</strong>... So we hill climb from scratch. Every capability in these models was earned through our own training loop, not borrowed."
+- "<strong>Capabilities should be learned, not inherited. Simplicity is sustainable. Scientific rigor over shortcuts.</strong>"
+- "<strong>You cannot trade safety for helpfulness. It's baked into the math</strong> with this design."
+- On Transcribe 1.5: "Simply the best transcription model in the world. <strong>Not close. The best.</strong>"
+- "We're just getting started as a lab, and we have much more to come."</p>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Test <strong>Code 1 Flash</strong> as the default in <strong>GitHub Copilot / VS Code</strong> on a real agentic coding task and compare to current default.</li>
+<li>Try <strong>Image 2.5</strong> editing in <strong>PowerPoint</strong> and on the <strong>MAI playground</strong> (mobile) — test compositional edits (lighting changes, object insertion, region-locked edits).</li>
+<li>Experiment with <strong>Voice 2</strong> emotional control and voice cloning on the MAI playground / Foundry.</li>
+<li>Run <strong>Transcribe 1.5</strong> on a noisy, multi-speaker recording with domain jargon to validate the real-world accuracy claims.</li>
+<li>Sign up on the <strong>Foundry website</strong> for <strong>Thinking 1</strong> private preview access.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>What are the <strong>five RL stability innovations</strong> named in the 100+ page tech report? (Worth reading the report directly.)</li>
+<li>How exactly is the <strong>three-specialist model merge</strong> (STEM / agentic / safety) performed — weight averaging, routing, or something else?</li>
+<li>What does <strong>Frontier Tuning</strong> cost and what minimum data volume is needed for a meaningful quality lift?</li>
+<li>How is "AI-generated content removal" from the web corpus done at 30T-token scale, and how is it validated?</li>
+<li>Where does <strong>Thinking 1</strong> land vs <strong>GPT-5 / Gemini 3 / Claude Opus 4.6</strong> on a head-to-head reasoning suite beyond the cherry-picked benchmarks?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Enterprise teams needing <strong>commercially licensed, auditable</strong> model lineage (clean-data requirement for regulated industries).</li>
+<li>Anyone building <strong>voice agents</strong> (Voice 2 Flash, sub-150ms) or <strong>speech-to-text</strong> pipelines (Transcribe 1.5).</li>
+<li>Platform/agent teams evaluating <strong>GitHub Copilot</strong> model defaults (Code 1 Flash).</li>
+<li>Solutions architects scoping <strong>domain-specific fine-tuning</strong> in-tenant via Frontier Tuning (M365 + Azure Fabric context).</li>
+<li>Cost-optimization conversations — Flash variants + Frontier Tuning as the "smaller, tuned, cheaper, better" play vs renting generalist frontier models.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Build 2026">Microsoft Build 2026</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft AI (MAI) models">Microsoft AI (MAI) models</span></li>
+<li><span class="wikilink wikilink--unresolved" title="MAI Thinking 1">MAI Thinking 1</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Microsoft Frontier Tuning">Microsoft Frontier Tuning</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Azure AI Foundry">Azure AI Foundry</span></li>
+<li><span class="wikilink wikilink--unresolved" title="GitHub Copilot">GitHub Copilot</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Reinforcement Learning - GRPO">Reinforcement Learning - GRPO</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Mixture of Experts (MoE)">Mixture of Experts (MoE)</span></li>
+<li><span class="wikilink wikilink--unresolved" title="Humanist Superintelligence">Humanist Superintelligence</span></li>
+<li>Keynote: Mustafa Suleyman — Microsoft AI at Build 2026</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEM322.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEM322</span><span class="pager-title">Smaller, faster, smarter: Distilling models with fine-tuning</span></a>
+    <a class="pager pager-next" href="DEM331.html"><span class="pager-dir">Next →</span><span class="pager-code">DEM331</span><span class="pager-title">Turn APIs, tools, and data into real agent velocity</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ODSP916 — Design systems for every user including people and LLMs</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">ODSP916</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=XcI81nVWmWU" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Design systems for every user including people and LLMs</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Hisby (Software Engineer, PDF SDK team — iText / Apryse; speaker name &amp; company caption-uncertain)</span>
+      <span class="meta-item">⏱️ 12m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="design-systems">Design Systems</span><span class="chip" data-tag="ui">Ui</span><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="llm">Llm</span><span class="chip" data-tag="accessibility">Accessibility</span><span class="chip" data-tag="pdf">Pdf</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Hisby — Software Engineer on a PDF SDK team (works on the iText SDK + PDF accessibility; speaker name and company "Price" are caption-uncertain, most consistent with <strong>iText / Apryse</strong>)<br>
+<strong>Duration:</strong> ~12 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=XcI81nVWmWU">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>A short, focused partner talk arguing that <strong>documents (specifically PDFs) now have two kinds of consumers — humans and LLMs — and both struggle with the same problem: missing semantic structure.</strong> A raw PDF is just drawing instructions ("paint these glyphs at these pixels"), so the <em>meaning</em> (what's a heading, a table, a list) is implicit. Humans reconstruct that meaning automatically from visual cues; LLMs can't, so they either burn tokens on heavy OCR/vision or produce garbled, structureless output. The fix is <strong>Tagged PDF</strong> — an HTML-like semantic layer (H1, paragraph, table, list) embedded alongside the pixel-perfect rendering — which is exactly the same mechanism that makes PDFs <em>accessible</em> to assistive technology. The speaker demos extracting the same 4-page PDF two ways: <strong>Docling (OCR/vision) takes ~18s and leaks a watermark + flattens sublists</strong>, while <strong>iText reading the embedded tags takes ~0.075s (≈200× faster), is clean, and preserves structure.</strong> The thesis: <strong>"Design for understanding, not just rendering"</strong> — enabling tag embedding is a few minutes of work (often a single flag) and gives you free smart extraction, search, accessibility, <em>and</em> a competitive edge as you build AI infrastructure on your documents.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Documents are now consumed by both people AND LLMs</strong> — design for both audiences, not just visual human readers.</li>
+<li>The four accessibility principles (<strong>POUR: Perceivable, Operable, Understandable, Robust</strong>) describe the <em>same</em> issues that trip up <em>both</em> humans and LLMs working with PDFs.</li>
+<li><strong>A PDF is a container format</strong> (fonts, images, video, etc.) whose core is a <strong>drawing language</strong>: low-level instructions like "move to (x,y), draw these characters here." It guarantees pixel-perfect rendering but encodes <strong>no meaning</strong>.</li>
+<li><strong>Humans infer semantics for free</strong> — reading order, "this is a title," "this is a list" — from visual/drawing artifacts (lines, list symbols, layout). We're "trained up on it."</li>
+<li><strong>LLMs only see pixels.</strong> Without embedded metadata they can't apply semantic reasoning, so meaning has to be reconstructed expensively (heavy training/vision) or lost.</li>
+<li><strong>Plain LLMs are actually decent at raw extraction, but the output has no structure</strong> — it can <em>guess</em> "annual report = title" but can't reliably know what means what; that's inefficient and error-prone to train on.</li>
+<li><strong>Add semantic meaning and everything gets easier:</strong> the same content tagged as header / table / paragraph is far simpler for both LLMs <em>and</em> normal users to extract correctly.</li>
+<li><strong>Tagged PDF</strong> is the built-in mechanism for this: it gives a document an <strong>HTML-like structure tree</strong> (H1 → paragraph → table) <strong>while keeping pixel-perfect rendering</strong>. As a developer you get it largely for free because low-level libraries do the tagging.</li>
+<li>Once structure + metadata exist, <strong>assistive technology, search, and text extraction are all far easier</strong> because you're working against a structured data model, not pixels.</li>
+<li><strong>Demo result — speed:</strong> OCR/vision (Docling) ≈ <strong>18 s</strong> for 4 pages vs iText reading embedded text/tags ≈ <strong>0.075 s</strong> → <strong>~200× faster.</strong></li>
+<li><strong>Demo result — quality/security:</strong> OCR pulled in a <strong>watermark</strong> the author never intended as data (a training-data poisoning / <strong>jailbreak-via-injection</strong> risk) and <strong>flattened sublists</strong>; the tag-based path produced clean output and <strong>preserved sublist hierarchy</strong>.</li>
+<li><strong>OCR mistakes are silent and compounding</strong> — hard to trace, they accumulate and eventually yield badly-wrong output formats; structured extraction avoids the whole class of error.</li>
+<li><strong>Accessibility isn't extra work.</strong> Two cheap steps — (1) enable metadata/tag embedding (often a single flag), (2) make sure tags correctly convey the author's intent — give you smart extraction, easy search, and accessibility, all at once.</li>
+<li><strong>Strategic payoff:</strong> making your documents accessible to <em>both</em> users and LLMs makes the AI infrastructure you build over the next years dramatically better at processing your data — <strong>a competitive edge from accessibility.</strong></li>
+</ul>
+<h2 id="detailed-notes">📚 Detailed Notes</h2>
+<h3 id="framing-a-pdf-now-has-two-audiences">Framing: a PDF now has two audiences</h3>
+<p>The speaker (Hisby), a software engineer working on a PDF SDK and on <strong>PDF accessibility</strong>, opens with the core reframe: <strong>PDF documents today are not only consumed by people — they are also consumed by LLMs.</strong> Therefore a PDF should be <strong>as accessible as possible for both consumers</strong>. This is the whole session in one sentence: accessibility work and "AI-readiness" work are the same work.</p>
+<h3 id="the-accessibility-lens-pour-applies-to-machines-too">The accessibility lens — POUR — applies to machines too</h3>
+<p>He pulls in the classic accessibility principles. For content to be usable it needs to be:
+- <strong>Perceivable</strong>
+- <strong>Operable</strong>
+- <strong>Understandable</strong>
+- <strong>Robust</strong></p>
+<p>(These are the four <strong>POUR</strong> principles from web/document accessibility, e.g. WCAG.) His point in raising them: <strong>these are exactly the kinds of issues that <em>both</em> humans and LLMs hit when working with PDF documents.</strong> A document that fails these for a screen-reader user tends to fail an LLM for the same underlying reason — missing structure/meaning.</p>
+<h3 id="what-a-pdf-actually-is-a-container-a-drawing-language">What a PDF actually is: a container + a drawing language</h3>
+<ul>
+<li><strong>PDF is a container format.</strong> You can bundle different formats — fonts, images, video — together into one file.</li>
+<li>The most important part to understand is the <strong>drawing language</strong>: the PDF's content is fundamentally a set of <strong>drawing instructions</strong> you can render.</li>
+<li>Concretely, on a canvas (a PDF <em>page</em>) the instructions say things like <strong>"move to this location, then draw these characters at this exact location."</strong></li>
+<li>The payoff of this design: when you open a PDF someone else created, <strong>your PDF processor knows exactly which pixel to render which content on</strong> → guaranteed faithful, pixel-perfect rendering everywhere.</li>
+</ul>
+<h3 id="the-gap-pixelscharacters-meaning">The gap: pixels/characters ≠ meaning</h3>
+<p>Pixels and characters are <strong>very different from what we actually do when we look at a PDF.</strong> When <em>humans</em> look at those rendered pixels, we automatically:
+- assign a <strong>reading order</strong>,
+- understand the <strong>semantics</strong>, and
+- <strong>infer the author's intended structure</strong> from <strong>drawing artifacts</strong> — lines, list symbols, spacing, layout — e.g. "these bullets mean this is a list," "this big text up top is a title."</p>
+<p>We do this effortlessly <strong>because we're trained on it.</strong> The meaning is <em>implicit</em> in the visual rendering, never explicitly stored.</p>
+<h3 id="why-this-breaks-llms">Why this breaks LLMs</h3>
+<ul>
+<li><strong>An LLM, out of the box, has none of that meta information.</strong> It "just looks at the page and sees pixels."</li>
+<li>So it's <strong>very hard for an LLM to extract the data</strong>, and to interpret the <em>actual meaning behind</em> those pixels.</li>
+<li>Two expensive escape routes, both bad:
+  1. <strong>Heavy training / vision</strong> to reason directly over the rendered image → <strong>lots of tokens</strong>, costly.
+  2. <strong>Text extraction first</strong>, then train the LLM on the extracted data — only as good as the extraction step.</li>
+<li>Important nuance he stresses: <strong>plain LLMs are actually <em>quite good</em> at extracting this kind of data</strong> from a raw page — <strong>but the result has no structure.</strong> It "doesn't really know what means what." It can <em>guess</em> ("annual report is probably a title") but it <strong>can't apply semantic reasoning onto the context</strong>, which makes it <strong>inefficient and unreliable to train on.</strong></li>
+</ul>
+<h3 id="the-beforeafter-same-content-with-vs-without-semantics">The before/after: same content, with vs without semantics</h3>
+<p>He contrasts two views of <em>the exact same document</em>:
+- <strong>Left (no structure):</strong> raw extracted content. No idea which part is a header, which is a table — meaning is guessed at best.
+- <strong>Right (with semantics):</strong> the same content <strong>tagged</strong> — <em>this</em> is a header, <em>this</em> is a table — making it <strong>far easier for both the LLM and the normal user to extract the semantic meaning.</strong></p>
+<h3 id="tagged-pdf-the-fix-that-serves-both-audiences">Tagged PDF: the fix that serves both audiences</h3>
+<ul>
+<li>Historically, <strong>normal PDFs didn't have a system to tag content with semantic meaning</strong> — meaning lived only in the pixels.</li>
+<li><strong>PDF evolved</strong>, and now includes a mechanism for exactly this: <strong>Tagged PDF.</strong></li>
+<li>As a <strong>developer you get the advantage largely for free</strong>, because <strong>low-level tools do the tagging for you.</strong></li>
+<li>What it looks like in practice: open a tagged PDF and on one side you have the <strong>pixel-perfect rendering (left)</strong>, and on the other you now have a <strong>text/structure tree (right)</strong> — <strong>the same kind of structure you'd know from HTML.</strong> You can see definitively that, e.g., <strong>the blue text is an <code>H1</code></strong>, below it is a <strong>paragraph</strong>, then a <strong>table</strong>.</li>
+<li>Net result: <strong>pixel-perfect rendering AND complete semantic information + metadata about the document, together.</strong></li>
+</ul>
+<h3 id="why-structure-changes-the-economics-of-tooling">Why structure changes the economics of tooling</h3>
+<p>Once a document carries that semantic layer:
+- <strong>Building tools on top of PDFs becomes far easier</strong> — you just inspect the structure tree to see what text/elements are there.
+- <strong>Assistive technology, search, and extraction are all far easier to implement</strong>, because you now have a <strong>structured model of the displayed data</strong> instead of raw pixels.
+- <strong>Text extraction</strong> is called out as one of the most interesting wins, since <strong>lots of developers need to process large volumes of PDFs.</strong></p>
+<h3 id="the-demo-pipeline-two-approaches-compared">The demo pipeline (two approaches compared)</h3>
+<p>He builds a small <strong>LLM data pipeline</strong> and runs the <strong>same PDF</strong> through two extraction strategies, converting each to <strong>Markdown</strong> (chosen because Markdown is <strong>information-dense</strong> — it carries the semantic structure compactly, ideal to feed an LLM):</p>
+<ol>
+<li><strong>OCR / vision path — Docling (<code>docling</code>).</strong> Open-source, "the most well-used and one of the best tools out there." It analyzes the rendered pixels/pictures.</li>
+<li><strong>Embedded-text path — iText SDK (Java).</strong> Instead of analyzing pictures, it <strong>leverages the embedded text/tag system inside the PDF</strong> (the metadata) to pull out exactly the content you want.</li>
+</ol>
+<p><strong>Test document:</strong> a normal summary PDF with tables, lists, and deliberate <strong>stress tests</strong> — including a <strong>watermark</strong> and some <strong>very tiny text</strong>.</p>
+<ul>
+<li><strong>Docling run:</strong> the script (Python, "quite easy") reads the PDF and calls the right library functions to convert to Markdown. There's a one-time <strong>model warm-up/load</strong> (only once per Docling process), then the actual conversion runs and <strong>takes ~18 seconds</strong> for the 4 pages (because it's processing the OCR / the pixels).</li>
+<li><strong>Docling output quality:</strong> <strong>actually quite good</strong> — gets the tables, the lists, even <strong>difficult languages</strong> — <strong>but it also extracts the watermark</strong>, which was <strong>not</strong> intended as real content. (See security note below.)</li>
+<li><strong>iText run (Java):</strong> <strong>0.075 seconds</strong> (he corrects himself from "0.75" to <strong>0.075 s</strong>) → <strong>~200× faster than the OCR implementation.</strong></li>
+<li><strong>iText output quality:</strong> <strong>tables look exactly the same, content looks the same</strong> — but <strong>the watermark is correctly absent</strong> (the author never intended it as data), which is <strong>better for security</strong>. Crucially, comparing the <strong>"budget notes" list</strong>: <strong>OCR/Docling failed to recognize that some items were <em>sublists</em></strong> and flattened them, <strong>because the semantic meaning was lost from the rendered page.</strong> Using the <strong>embedded metadata</strong>, the <strong>sublist is reconstructed correctly.</strong></li>
+</ul>
+<h3 id="why-the-ocr-failure-mode-is-dangerous-not-just-slower">Why the OCR failure mode is dangerous, not just slower</h3>
+<ul>
+<li>The <strong>watermark leaking into the Markdown</strong> isn't a cosmetic bug. If that polluted Markdown becomes <strong>training data</strong>, the stray text can be <strong>used or abused to jailbreak your LLM</strong> — i.e. OCR can <strong>spoil/poison your training data</strong> with content the author never meant to expose. (A practical document-level <strong>prompt-injection / data-poisoning</strong> vector.)</li>
+<li>The <strong>flattened sublists</strong> illustrate a deeper problem: <strong>OCR generates mistakes that are very hard to trace, and those mistakes compound over time</strong>, eventually producing <strong>very wrong output formats.</strong> Structured (tag-based) extraction sidesteps this entire error class.</li>
+</ul>
+<h3 id="the-takeaway-design-for-understanding-not-just-rendering">The takeaway: design for understanding, not just rendering</h3>
+<p>Both paths produced the <em>same kind</em> of Markdown to train LLM models on to extract the business data you need — but only the structured path did it fast, clean, and safe. So the actionable rule is <strong>"design for understanding, not just rendering,"</strong> especially for PDFs. Concretely, <strong>two steps</strong>:
+1. <strong>When producing a PDF, enable that the metadata is embedded.</strong> In most PDF libraries this is <strong>a single flag.</strong>
+2. <strong>Make sure the tags are correct</strong> and genuinely <strong>convey the author's intent</strong> for the document.</p>
+<p>Do those two things and you get, <strong>for free:</strong>
+- <strong>smart data extraction</strong>,
+- <strong>easy search</strong>, and
+- <strong>accessible PDF documents</strong> (for assistive technology / people with disabilities).</p>
+<h3 id="closing-thesis">Closing thesis</h3>
+<p><strong>"Accessibility isn't extra work."</strong> What you do now is <strong>only a few more minutes of work</strong>, but it means the <strong>AI infrastructure you build over the coming years will be far better at processing all your documents</strong> — so you <strong>gain a competitive edge simply because you made your data accessible to both users and LLMs.</strong> He closes by inviting questions and offering follow-up help (contact him or the company, "Price"/iText).</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>PDF (Portable Document Format)</strong> — a <strong>container format</strong> (fonts, images, video, …) whose core content is a <strong>drawing language</strong> of low-level paint instructions; guarantees pixel-perfect rendering but stores no inherent semantics.</li>
+<li><strong>Tagged PDF</strong> — the PDF mechanism that adds an <strong>HTML-like semantic structure tree</strong> (e.g. <code>H1</code>, paragraph, table, list) and metadata <em>alongside</em> the rendering; the foundation for both accessibility and machine extraction.</li>
+<li><strong>iText SDK</strong> — the PDF library the speaker works on (demoed in <strong>Java</strong>); reads the <strong>embedded text/tags + metadata</strong> to extract structured content extremely fast (~0.075 s for 4 pages). Owned by <strong>iText Group / Apryse</strong> (the company name "Price" in the captions is uncertain; iText/Apryse is the most consistent fit).</li>
+<li><strong>Docling (<code>docling</code>)</strong> — open-source, widely-used <strong>OCR/vision-based</strong> document-extraction tool; analyzes rendered pixels and converts to Markdown (~18 s for 4 pages; leaked the watermark and flattened sublists in the demo).</li>
+<li><strong>Markdown</strong> — chosen output format for the LLM pipeline because it is <strong>information-dense</strong> and preserves semantic structure compactly.</li>
+<li><strong>POUR accessibility principles</strong> — Perceivable, Operable, Understandable, Robust — the lens used to argue humans and LLMs face the same document problems (WCAG-style principles).</li>
+<li><strong>OCR (Optical Character Recognition)</strong> — the pixel-analysis approach contrasted unfavorably with reading embedded tags.</li>
+<li><strong>Assistive technology</strong> — screen readers etc., the accessibility consumers that benefit from the same tag structure LLMs need.</li>
+<li><strong>Python</strong> — used to drive the Docling extraction script.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<p>None explicitly announced. This is an educational/best-practices partner talk; no new product, preview, GA, or roadmap items were revealed. Tagged PDF and the tools shown (iText, Docling) are existing technologies.</p>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>OCR vs. embedded-tags extraction, head to head.</strong> The same stress-test PDF (4 pages; tables, lists, a watermark, very tiny text) was converted to Markdown two ways:</li>
+<li><strong>Docling (OCR/vision, Python):</strong> after a one-time model warm-up, conversion took <strong>~18 seconds</strong>. Output was "quite good" (tables, lists, even difficult languages) <strong>but</strong> it <strong>included the watermark</strong> (unintended, a poisoning/jailbreak risk) and <strong>failed to detect sublists</strong>, flattening the "budget notes" hierarchy because semantic meaning wasn't available.</li>
+<li><strong>iText (embedded text/tags, Java):</strong> conversion took <strong>~0.075 seconds — ≈200× faster.</strong> Tables and content matched, the <strong>watermark was correctly excluded</strong>, and the <strong>sublist structure was reconstructed correctly</strong> from the embedded metadata.</li>
+<li><strong>Point proved:</strong> reading a document's <em>semantic layer</em> is dramatically faster, cleaner, safer, and structurally accurate compared with reconstructing meaning from pixels via OCR — and OCR's errors are silent and compounding.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>~18 seconds</strong> — Docling/OCR to convert the 4-page PDF to Markdown (after model warm-up).</li>
+<li><strong>~0.075 seconds</strong> — iText reading embedded text/tags for the same document (speaker corrects himself from "0.75 s" to <strong>0.075 s</strong>).</li>
+<li><strong>~200× faster</strong> — the embedded-tags path vs the OCR path.</li>
+<li><strong>4 principles — Perceivable, Operable, Understandable, Robust</strong> (POUR) — framed as the shared failure modes for humans <em>and</em> LLMs.</li>
+<li><strong>2 steps</strong> to readiness — (1) enable metadata/tag embedding (often a single flag), (2) ensure tags convey author intent.</li>
+<li>
+<blockquote>
+<p>"Design for understanding, not just rendering." <em>(the session's central maxim)</em></p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>"Accessibility isn't extra work… only a few more minutes of work… your AI infrastructure will be so much better at processing all your documents… you will gain a competitive edge just because you made your data accessible to both users and LLMs."</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>"The LLM just looks at the page and sees pixels." <em>(why raw PDFs are hard for models)</em></p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>A leaked watermark in OCR output "might be used or abused to jailbreak your LLM." <em>(document-level injection/poisoning risk)</em></p>
+</blockquote>
+</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li>Re-run the demo's premise on real corpora: extract a folder of tagged vs untagged PDFs with <strong>iText (embedded tags)</strong> vs <strong>Docling (OCR)</strong> and measure speed + structural fidelity (especially nested lists/tables).</li>
+<li>Check whether our PDF-generation pipeline <strong>enables the Tagged-PDF / accessibility flag</strong> — confirm the single-flag setting in whatever library we use, and validate the produced tag tree.</li>
+<li>Build a quick <strong>tag-correctness audit</strong> (does the structure tree actually match author intent: headings level-correct, tables/lists not flattened, no decorative artifacts mis-tagged).</li>
+<li>Treat OCR'd document text as <strong>untrusted input</strong> in any RAG/training pipeline — sanitize/strip watermarks &amp; decorative layers to avoid prompt-injection / data-poisoning.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li>Confirm the <strong>speaker's name</strong> ("Hisby") and <strong>company</strong> ("Price") — almost certainly <strong>iText / Apryse</strong> given the iText SDK demo; verify before citing.</li>
+<li>For <em>scanned</em> (image-only) PDFs with <strong>no embedded text</strong>, OCR is unavoidable — what's the recommended hybrid (OCR + post-tagging) so downstream consumers still get structure?</li>
+<li>How well does iText's tag-based extraction handle <strong>complex/merged tables</strong> and <strong>multi-column</strong> layouts vs OCR?</li>
+<li>Does enabling tagging meaningfully increase <strong>file size</strong>, and are there tools to <strong>auto-tag</strong> large legacy untagged archives?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li>Any <strong>RAG / document-ingestion</strong> pipeline feeding LLMs from PDFs (cleaner, faster, safer extraction).</li>
+<li><strong>Accessibility/compliance</strong> work (PDF/UA, WCAG) — the same effort now also yields AI-readiness.</li>
+<li><strong>Design-system / UI metadata for machines</strong> theme — same core idea (make structure machine-readable) applied to documents; pairs with ODSP902's design-systems-for-AI angle.</li>
+<li>Teams generating customer-facing PDFs (reports, statements) who want them both accessible <em>and</em> agent-consumable.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li>Design systems made machine-consumable (UI side of the same idea): <a class="wikilink wikilink--resolved" href="ODSP902.html">ODSP902 - Build AI-driven UIs in NET MAUI with design systems</a></li>
+<li>Extracting/serving unstructured data to LLMs (RAG over documents): <a class="wikilink wikilink--resolved" href="ODSP925.html">ODSP925 - Deliver production-ready AI search on unstructured data with RAG</a></li>
+<li>Connecting documents &amp; tools into agent workflows: <a class="wikilink wikilink--resolved" href="BRK242.html">BRK242 - Turn your agents into action Connect tools APIs documents</a></li>
+<li>Designing data structure for AI consumption (rows → reasoning): <a class="wikilink wikilink--resolved" href="BRK223.html">BRK223 - From rows to reasoning</a></li>
+<li>Document data foundations / open-source document store: <a class="wikilink wikilink--resolved" href="OD821.html">OD821 - Building Azure DocumentDB on Open-Source Foundations</a></li>
+<li>Source list: <span class="wikilink wikilink--unresolved" title="2026 Build Session List">2026 Build Session List</span></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="ODSP915.html"><span class="pager-dir">← Previous</span><span class="pager-code">ODSP915</span><span class="pager-title">Resolve support cases with multi-agent workflows</span></a>
+    <a class="pager pager-next" href="ODSP918.html"><span class="pager-dir">Next →</span><span class="pager-code">ODSP918</span><span class="pager-title">Build persistent and scalable AI agent memory with TiDB</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>
