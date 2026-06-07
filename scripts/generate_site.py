@@ -689,6 +689,18 @@ def build_index(sessions: list[Session]) -> str:
     <p class="hero-subtitle">{SITE_SUBTITLE}</p>
     <p class="hero-blurb">{SITE_BLURB}</p>
     <div class="stats">{stats}</div>
+    <div style="margin-top:26px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;">
+      <a href="wiki/index.html" style="display:inline-flex;align-items:center;gap:9px;background:#50e6ff;color:#003a66;font-weight:700;font-size:1rem;text-decoration:none;padding:12px 22px;border-radius:999px;box-shadow:0 6px 20px rgba(0,0,0,.18);transition:transform .15s ease,box-shadow .15s ease;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 10px 28px rgba(0,0,0,.26)';" onmouseout="this.style.transform='';this.style.boxShadow='0 6px 20px rgba(0,0,0,.18)';">
+        \U0001f578️  Explore the LLM Wiki
+        <span aria-hidden="true">&rarr;</span>
+      </a>
+      <a href="wiki/graph.html" style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.14);color:#eaf6ff;font-weight:600;font-size:.95rem;text-decoration:none;padding:12px 20px;border-radius:999px;border:1px solid rgba(255,255,255,.28);">
+        \U0001f579️  Concept graph
+      </a>
+    </div>
+    <p style="margin-top:12px;font-size:.88rem;color:#cfe6f5;max-width:640px;">
+      A Karpathy-style <strong>LLM&nbsp;Wiki</strong> compiled from these session notes — ~90 cross-linked concept pages plus an interactive knowledge graph. Same content, reorganized to explore by idea.
+    </p>
   </div>
 </header>
 

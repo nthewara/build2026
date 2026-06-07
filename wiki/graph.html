@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Concept graph — Build 2026 LLM Wiki</title>
+<link rel="stylesheet" href="../assets/wiki.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="wk-nav"><div class="wk-container wk-nav-inner"><a class="wk-nav-link" href="index.html">← LLM Wiki home</a><a class="wk-nav-link is-active" href="graph.html">Graph view</a><a class="wk-nav-link" href="../index.html">Main site</a></div></nav>
+<header class="wk-graph-head">
+  <div class="wk-container">
+    <h1 class="wk-graph-title">Concept graph</h1>
+    <p class="wk-graph-sub">Each node is a concept (91 of them); each edge means the two
+      concepts share at least one session. <strong>Node size</strong> = number of sessions;
+      <strong>colour</strong> = cluster; <strong>edge thickness</strong> = shared-session count.
+      Hover to highlight neighbours, drag to rearrange, click a node to open its page.</p>
+    <div class="wk-graph-toolbar">
+      <input id="wk-search" class="wk-search" type="search" placeholder="🔍  Highlight concepts by name…" autocomplete="off" aria-label="Search concepts">
+      <label class="wk-toggle"><input type="checkbox" id="wk-labels" checked> Labels</label>
+      <button id="wk-reheat" class="wk-btn wk-btn-sm" type="button">Reheat</button>
+      <span class="wk-legend"><span class="wk-leg"><span class="wk-leg-dot" style="background:#0067b8"></span>AI &amp; Agents</span><span class="wk-leg"><span class="wk-leg-dot" style="background:#008575"></span>Azure &amp; Infra</span><span class="wk-leg"><span class="wk-leg-dot" style="background:#8661c5"></span>Data &amp; Databases</span><span class="wk-leg"><span class="wk-leg-dot" style="background:#d83b01"></span>Developer Tools &amp; Languages</span><span class="wk-leg"><span class="wk-leg-dot" style="background:#c19c00"></span>Observability &amp; Ops</span><span class="wk-leg"><span class="wk-leg-dot" style="background:#a4262c"></span>Security &amp; Governance</span><span class="wk-leg"><span class="wk-leg-dot" style="background:#0a7c42"></span>Platforms &amp; Devices</span><span class="wk-leg"><span class="wk-leg-dot" style="background:#5c2d91"></span>Community &amp; Career</span><span class="wk-leg"><span class="wk-leg-dot" style="background:#605e5c"></span>Other</span></span>
+    </div>
+  </div>
+</header>
+
+<main class="wk-graph-wrap">
+  <div id="wk-stage" class="wk-stage">
+    <svg id="wk-svg" role="img" aria-label="Concept co-occurrence graph"></svg>
+    <div id="wk-tooltip" class="wk-tooltip" hidden></div>
+    <div class="wk-caption">edges = shared sessions · click a node to open its page</div>
+  </div>
+</main>
+
+<script id="wk-data" type="application/json">{"nodes": [{"id": "dotnet", "name": ".NET", "count": 16, "cluster": "Developer Tools & Languages", "color": "#d83b01", "file": "dotnet.html"}, {"id": "dotnet-maui", "name": ".NET MAUI", "count": 2, "cluster": "Platforms & Devices", "color": "#0a7c42", "file": "dotnet-maui.html"}, {"id": "agent-365", "name": "Agent 365", "count": 3, "cluster": "AI & Agents", "color": "#0067b8", "file": "agent-365.html"}, {"id": "agent-memory", "name": "Agent Memory", "count": 2, "cluster": "AI & Agents", "color": "#0067b8", "file": "agent-memory.html"}, {"id": "agents", "name": "Agents", "count": 58, "cluster": "AI & Agents", "color": "#0067b8", "file": "agents.html"}, {"id": "ai", "name": "AI", "count": 91, "cluster": "AI & Agents", "color": "#0067b8", "file": "ai.html"}, {"id": "ai-coding", "name": "AI Coding", "count": 2, "cluster": "AI & Agents", "color": "#0067b8", "file": "ai-coding.html"}, {"id": "ai-foundry", "name": "AI Foundry", "count": 6, "cluster": "AI & Agents", "color": "#0067b8", "file": "ai-foundry.html"}, {"id": "aks", "name": "AKS", "count": 4, "cluster": "Azure & Infra", "color": "#008575", "file": "aks.html"}, {"id": "arm", "name": "Arm", "count": 3, "cluster": "Platforms & Devices", "color": "#0a7c42", "file": "arm.html"}, {"id": "automation", "name": "Automation", "count": 3, "cluster": "Observability & Ops", "color": "#c19c00", "file": "automation.html"}, {"id": "azure", "name": "Azure", "count": 25, "cluster": "Azure & Infra", "color": "#008575", "file": "azure.html"}, {"id": "azure-ai-foundry", "name": "Azure AI Foundry", "count": 2, "cluster": "Azure & Infra", "color": "#008575", "file": "azure-ai-foundry.html"}, {"id": "azure-linux", "name": "Azure Linux", "count": 2, "cluster": "Azure & Infra", "color": "#008575", "file": "azure-linux.html"}, {"id": "blazor", "name": "Blazor", "count": 3, "cluster": "Developer Tools & Languages", "color": "#d83b01", "file": "blazor.html"}, {"id": "csharp", "name": "C#", "count": 4, "cluster": "Developer Tools & Languages", "color": "#d83b01", "file": "csharp.html"}, {"id": "ci-cd", "name": "CI/CD", "count": 2, "cluster": "Observability & Ops", "color": "#c19c00", "file": "ci-cd.html"}, {"id": "cloud-native", "name": "Cloud Native", "count": 2, "cluster": "Azure & Infra", "color": "#008575", "file": "cloud-native.html"}, {"id": "cobalt", "name": "Cobalt", "count": 3, "cluster": "Platforms & Devices", "color": "#0a7c42", "file": "cobalt.html"}, {"id": "coding-agents", "name": "Coding Agents", "count": 3, "cluster": "AI & Agents", "color": "#0067b8", "file": "coding-agents.html"}, {"id": "community", "name": "Community", "count": 2, "cluster": "Community & Career", "color": "#5c2d91", "file": "community.html"}, {"id": "confidential-computing", "name": "Confidential Computing", "count": 2, "cluster": "Security & Governance", "color": "#a4262c", "file": "confidential-computing.html"}, {"id": "containers", "name": "Containers", "count": 4, "cluster": "Azure & Infra", "color": "#008575", "file": "containers.html"}, {"id": "copilot", "name": "Copilot", "count": 2, "cluster": "AI & Agents", "color": "#0067b8", "file": "copilot.html"}, {"id": "cosmos-db", "name": "Cosmos DB", "count": 2, "cluster": "Data & Databases", "color": "#8661c5", "file": "cosmos-db.html"}, {"id": "cross-platform", "name": "Cross-Platform", "count": 2, "cluster": "Platforms & Devices", "color": "#0a7c42", "file": "cross-platform.html"}, {"id": "data", "name": "Data", "count": 5, "cluster": "Data & Databases", "color": "#8661c5", "file": "data.html"}, {"id": "database", "name": "Database", "count": 3, "cluster": "Data & Databases", "color": "#8661c5", "file": "database.html"}, {"id": "databases", "name": "Databases", "count": 3, "cluster": "Data & Databases", "color": "#8661c5", "file": "databases.html"}, {"id": "defender", "name": "Defender", "count": 2, "cluster": "Security & Governance", "color": "#a4262c", "file": "defender.html"}, {"id": "design-systems", "name": "Design Systems", "count": 2, "cluster": "Developer Tools & Languages", "color": "#d83b01", "file": "design-systems.html"}, {"id": "developer-productivity", "name": "Developer Productivity", "count": 3, "cluster": "Developer Tools & Languages", "color": "#d83b01", "file": "developer-productivity.html"}, {"id": "devops", "name": "DevOps", "count": 10, "cluster": "Observability & Ops", "color": "#c19c00", "file": "devops.html"}, {"id": "devtools", "name": "DevTools", "count": 4, "cluster": "Developer Tools & Languages", "color": "#d83b01", "file": "devtools.html"}, {"id": "edge", "name": "Edge", "count": 2, "cluster": "Platforms & Devices", "color": "#0a7c42", "file": "edge.html"}, {"id": "edge-ai", "name": "Edge AI", "count": 3, "cluster": "Platforms & Devices", "color": "#0a7c42", "file": "edge-ai.html"}, {"id": "elastic", "name": "Elastic", "count": 3, "cluster": "Data & Databases", "color": "#8661c5", "file": "elastic.html"}, {"id": "engineering-culture", "name": "Engineering Culture", "count": 2, "cluster": "Developer Tools & Languages", "color": "#d83b01", "file": "engineering-culture.html"}, {"id": "enterprise", "name": "Enterprise", "count": 3, "cluster": "Other", "color": "#605e5c", "file": "enterprise.html"}, {"id": "evals", "name": "Evals", "count": 2, "cluster": "AI & Agents", "color": "#0067b8", "file": "evals.html"}, {"id": "evaluation", "name": "Evaluation", "count": 2, "cluster": "AI & Agents", "color": "#0067b8", "file": "evaluation.html"}, {"id": "fabric", "name": "Fabric", "count": 8, "cluster": "Data & Databases", "color": "#8661c5", "file": "fabric.html"}, {"id": "fine-tuning", "name": "Fine Tuning", "count": 4, "cluster": "AI & Agents", "color": "#0067b8", "file": "fine-tuning.html"}, {"id": "foundry", "name": "Foundry", "count": 12, "cluster": "AI & Agents", "color": "#0067b8", "file": "foundry.html"}, {"id": "frameworks", "name": "Frameworks", "count": 2, "cluster": "Developer Tools & Languages", "color": "#d83b01", "file": "frameworks.html"}, {"id": "github", "name": "GitHub", "count": 4, "cluster": "Other", "color": "#605e5c", "file": "github.html"}, {"id": "github-actions", "name": "GitHub Actions", "count": 2, "cluster": "Observability & Ops", "color": "#c19c00", "file": "github-actions.html"}, {"id": "github-copilot", "name": "GitHub Copilot", "count": 11, "cluster": "AI & Agents", "color": "#0067b8", "file": "github-copilot.html"}, {"id": "governance", "name": "Governance", "count": 7, "cluster": "Security & Governance", "color": "#a4262c", "file": "governance.html"}, {"id": "inference", "name": "Inference", "count": 2, "cluster": "AI & Agents", "color": "#0067b8", "file": "inference.html"}, {"id": "infrastructure", "name": "Infrastructure", "count": 4, "cluster": "Azure & Infra", "color": "#008575", "file": "infrastructure.html"}, {"id": "kubernetes", "name": "Kubernetes", "count": 2, "cluster": "Azure & Infra", "color": "#008575", "file": "kubernetes.html"}, {"id": "linux", "name": "Linux", "count": 2, "cluster": "Azure & Infra", "color": "#008575", "file": "linux.html"}, {"id": "low-code", "name": "Low-Code", "count": 2, "cluster": "Developer Tools & Languages", "color": "#d83b01", "file": "low-code.html"}, {"id": "m365", "name": "M365", "count": 2, "cluster": "Other", "color": "#605e5c", "file": "m365.html"}, {"id": "mcp", "name": "MCP", "count": 9, "cluster": "AI & Agents", "color": "#0067b8", "file": "mcp.html"}, {"id": "models", "name": "Models", "count": 4, "cluster": "AI & Agents", "color": "#0067b8", "file": "models.html"}, {"id": "monitoring", "name": "Monitoring", "count": 2, "cluster": "Observability & Ops", "color": "#c19c00", "file": "monitoring.html"}, {"id": "multi-agent", "name": "Multi-Agent", "count": 3, "cluster": "AI & Agents", "color": "#0067b8", "file": "multi-agent.html"}, {"id": "multimodal", "name": "Multimodal", "count": 3, "cluster": "AI & Agents", "color": "#0067b8", "file": "multimodal.html"}, {"id": "mvp", "name": "MVP", "count": 2, "cluster": "Community & Career", "color": "#5c2d91", "file": "mvp.html"}, {"id": "nosql", "name": "NoSQL", "count": 2, "cluster": "Data & Databases", "color": "#8661c5", "file": "nosql.html"}, {"id": "nvidia", "name": "NVIDIA", "count": 2, "cluster": "Platforms & Devices", "color": "#0a7c42", "file": "nvidia.html"}, {"id": "observability", "name": "Observability", "count": 9, "cluster": "Observability & Ops", "color": "#c19c00", "file": "observability.html"}, {"id": "on-device", "name": "On-Device", "count": 2, "cluster": "Platforms & Devices", "color": "#0a7c42", "file": "on-device.html"}, {"id": "on-device-ai", "name": "On-Device AI", "count": 2, "cluster": "Platforms & Devices", "color": "#0a7c42", "file": "on-device-ai.html"}, {"id": "onelake", "name": "OneLake", "count": 2, "cluster": "Data & Databases", "color": "#8661c5", "file": "onelake.html"}, {"id": "open-source", "name": "Open Source", "count": 5, "cluster": "Other", "color": "#605e5c", "file": "open-source.html"}, {"id": "opentelemetry", "name": "OpenTelemetry", "count": 4, "cluster": "Observability & Ops", "color": "#c19c00", "file": "opentelemetry.html"}, {"id": "oracle", "name": "Oracle", "count": 2, "cluster": "Data & Databases", "color": "#8661c5", "file": "oracle.html"}, {"id": "performance", "name": "Performance", "count": 4, "cluster": "Observability & Ops", "color": "#c19c00", "file": "performance.html"}, {"id": "postgresql", "name": "PostgreSQL", "count": 2, "cluster": "Data & Databases", "color": "#8661c5", "file": "postgresql.html"}, {"id": "production", "name": "Production", "count": 5, "cluster": "Observability & Ops", "color": "#c19c00", "file": "production.html"}, {"id": "productivity", "name": "Productivity", "count": 2, "cluster": "Other", "color": "#605e5c", "file": "productivity.html"}, {"id": "profiling", "name": "Profiling", "count": 3, "cluster": "Observability & Ops", "color": "#c19c00", "file": "profiling.html"}, {"id": "rag", "name": "RAG", "count": 5, "cluster": "Data & Databases", "color": "#8661c5", "file": "rag.html"}, {"id": "real-time-intelligence", "name": "Real-Time Intelligence", "count": 2, "cluster": "Observability & Ops", "color": "#c19c00", "file": "real-time-intelligence.html"}, {"id": "responsible-ai", "name": "Responsible AI", "count": 2, "cluster": "Security & Governance", "color": "#a4262c", "file": "responsible-ai.html"}, {"id": "robotics", "name": "Robotics", "count": 2, "cluster": "Platforms & Devices", "color": "#0a7c42", "file": "robotics.html"}, {"id": "runtime", "name": "Runtime", "count": 3, "cluster": "Developer Tools & Languages", "color": "#d83b01", "file": "runtime.html"}, {"id": "search", "name": "Search", "count": 2, "cluster": "Data & Databases", "color": "#8661c5", "file": "search.html"}, {"id": "security", "name": "Security", "count": 7, "cluster": "Security & Governance", "color": "#a4262c", "file": "security.html"}, {"id": "snapdragon", "name": "Snapdragon", "count": 2, "cluster": "Data & Databases", "color": "#8661c5", "file": "snapdragon.html"}, {"id": "sre", "name": "SRE", "count": 2, "cluster": "Observability & Ops", "color": "#c19c00", "file": "sre.html"}, {"id": "testing", "name": "Testing", "count": 2, "cluster": "Developer Tools & Languages", "color": "#d83b01", "file": "testing.html"}, {"id": "vector-search", "name": "Vector Search", "count": 3, "cluster": "Data & Databases", "color": "#8661c5", "file": "vector-search.html"}, {"id": "visual-studio", "name": "Visual Studio", "count": 2, "cluster": "Developer Tools & Languages", "color": "#d83b01", "file": "visual-studio.html"}, {"id": "voice", "name": "Voice", "count": 2, "cluster": "AI & Agents", "color": "#0067b8", "file": "voice.html"}, {"id": "windows", "name": "Windows", "count": 4, "cluster": "Platforms & Devices", "color": "#0a7c42", "file": "windows.html"}, {"id": "winui", "name": "WinUI", "count": 2, "cluster": "Platforms & Devices", "color": "#0a7c42", "file": "winui.html"}, {"id": "wsl", "name": "WSL", "count": 2, "cluster": "Platforms & Devices", "color": "#0a7c42", "file": "wsl.html"}], "links": [{"s": 4, "t": 5, "w": 37}, {"s": 5, "t": 11, "w": 16}, {"s": 5, "t": 0, "w": 13}, {"s": 4, "t": 11, "w": 11}, {"s": 5, "t": 47, "w": 10}, {"s": 5, "t": 43, "w": 9}, {"s": 4, "t": 43, "w": 8}, {"s": 4, "t": 63, "w": 8}, {"s": 5, "t": 41, "w": 8}, {"s": 4, "t": 55, "w": 7}, {"s": 5, "t": 55, "w": 7}, {"s": 5, "t": 63, "w": 7}, {"s": 4, "t": 7, "w": 5}, {"s": 4, "t": 32, "w": 5}, {"s": 4, "t": 0, "w": 5}, {"s": 4, "t": 48, "w": 5}, {"s": 5, "t": 26, "w": 5}, {"s": 5, "t": 32, "w": 5}, {"s": 4, "t": 26, "w": 4}, {"s": 4, "t": 41, "w": 4}, {"s": 4, "t": 68, "w": 4}, {"s": 4, "t": 72, "w": 4}, {"s": 5, "t": 42, "w": 4}, {"s": 5, "t": 48, "w": 4}, {"s": 5, "t": 56, "w": 4}, {"s": 5, "t": 67, "w": 4}, {"s": 5, "t": 75, "w": 4}, {"s": 15, "t": 0, "w": 4}, {"s": 32, "t": 45, "w": 4}, {"s": 63, "t": 68, "w": 4}, {"s": 2, "t": 4, "w": 3}, {"s": 4, "t": 36, "w": 3}, {"s": 4, "t": 47, "w": 3}, {"s": 4, "t": 59, "w": 3}, {"s": 4, "t": 75, "w": 3}, {"s": 4, "t": 81, "w": 3}, {"s": 5, "t": 14, "w": 3}, {"s": 5, "t": 19, "w": 3}, {"s": 5, "t": 15, "w": 3}, {"s": 5, "t": 28, "w": 3}, {"s": 5, "t": 31, "w": 3}, {"s": 5, "t": 35, "w": 3}, {"s": 5, "t": 45, "w": 3}, {"s": 5, "t": 50, "w": 3}, {"s": 5, "t": 58, "w": 3}, {"s": 5, "t": 68, "w": 3}, {"s": 5, "t": 85, "w": 3}, {"s": 9, "t": 18, "w": 3}, {"s": 11, "t": 32, "w": 3}, {"s": 11, "t": 0, "w": 3}, {"s": 11, "t": 50, "w": 3}, {"s": 11, "t": 55, "w": 3}, {"s": 32, "t": 47, "w": 3}, {"s": 0, "t": 55, "w": 3}, {"s": 42, "t": 56, "w": 3}, {"s": 2, "t": 48, "w": 2}, {"s": 2, "t": 81, "w": 2}, {"s": 3, "t": 5, "w": 2}, {"s": 3, "t": 85, "w": 2}, {"s": 4, "t": 10, "w": 2}, {"s": 4, "t": 14, "w": 2}, {"s": 4, "t": 16, "w": 2}, {"s": 4, "t": 38, "w": 2}, {"s": 4, "t": 40, "w": 2}, {"s": 4, "t": 44, "w": 2}, {"s": 4, "t": 54, "w": 2}, {"s": 4, "t": 58, "w": 2}, {"s": 4, "t": 62, "w": 2}, {"s": 4, "t": 65, "w": 2}, {"s": 4, "t": 67, "w": 2}, {"s": 4, "t": 76, "w": 2}, {"s": 4, "t": 80, "w": 2}, {"s": 4, "t": 83, "w": 2}, {"s": 4, "t": 87, "w": 2}, {"s": 5, "t": 7, "w": 2}, {"s": 5, "t": 8, "w": 2}, {"s": 5, "t": 12, "w": 2}, {"s": 5, "t": 24, "w": 2}, {"s": 5, "t": 25, "w": 2}, {"s": 5, "t": 27, "w": 2}, {"s": 5, "t": 30, "w": 2}, {"s": 5, "t": 1, "w": 2}, {"s": 5, "t": 34, "w": 2}, {"s": 5, "t": 36, "w": 2}, {"s": 5, "t": 38, "w": 2}, {"s": 5, "t": 39, "w": 2}, {"s": 5, "t": 51, "w": 2}, {"s": 5, "t": 53, "w": 2}, {"s": 5, "t": 57, "w": 2}, {"s": 5, "t": 59, "w": 2}, {"s": 5, "t": 61, "w": 2}, {"s": 5, "t": 64, "w": 2}, {"s": 5, "t": 66, "w": 2}, {"s": 5, "t": 69, "w": 2}, {"s": 5, "t": 70, "w": 2}, {"s": 5, "t": 71, "w": 2}, {"s": 5, "t": 72, "w": 2}, {"s": 5, "t": 73, "w": 2}, {"s": 5, "t": 74, "w": 2}, {"s": 5, "t": 76, "w": 2}, {"s": 5, "t": 77, "w": 2}, {"s": 5, "t": 79, "w": 2}, {"s": 5, "t": 81, "w": 2}, {"s": 5, "t": 84, "w": 2}, {"s": 5, "t": 86, "w": 2}, {"s": 7, "t": 42, "w": 2}, {"s": 8, "t": 13, "w": 2}, {"s": 8, "t": 17, "w": 2}, {"s": 8, "t": 22, "w": 2}, {"s": 8, "t": 51, "w": 2}, {"s": 8, "t": 52, "w": 2}, {"s": 9, "t": 11, "w": 2}, {"s": 9, "t": 50, "w": 2}, {"s": 11, "t": 18, "w": 2}, {"s": 11, "t": 22, "w": 2}, {"s": 11, "t": 24, "w": 2}, {"s": 11, "t": 47, "w": 2}, {"s": 11, "t": 48, "w": 2}, {"s": 11, "t": 59, "w": 2}, {"s": 13, "t": 22, "w": 2}, {"s": 13, "t": 52, "w": 2}, {"s": 14, "t": 0, "w": 2}, {"s": 16, "t": 32, "w": 2}, {"s": 18, "t": 50, "w": 2}, {"s": 20, "t": 60, "w": 2}, {"s": 21, "t": 50, "w": 2}, {"s": 22, "t": 52, "w": 2}, {"s": 25, "t": 0, "w": 2}, {"s": 26, "t": 41, "w": 2}, {"s": 29, "t": 81, "w": 2}, {"s": 31, "t": 47, "w": 2}, {"s": 32, "t": 46, "w": 2}, {"s": 33, "t": 88, "w": 2}, {"s": 33, "t": 90, "w": 2}, {"s": 0, "t": 47, "w": 2}, {"s": 0, "t": 70, "w": 2}, {"s": 0, "t": 74, "w": 2}, {"s": 0, "t": 75, "w": 2}, {"s": 0, "t": 86, "w": 2}, {"s": 36, "t": 75, "w": 2}, {"s": 36, "t": 80, "w": 2}, {"s": 40, "t": 43, "w": 2}, {"s": 41, "t": 66, "w": 2}, {"s": 41, "t": 76, "w": 2}, {"s": 43, "t": 56, "w": 2}, {"s": 43, "t": 72, "w": 2}, {"s": 45, "t": 47, "w": 2}, {"s": 48, "t": 77, "w": 2}, {"s": 55, "t": 69, "w": 2}, {"s": 57, "t": 63, "w": 2}, {"s": 63, "t": 83, "w": 2}, {"s": 70, "t": 74, "w": 2}, {"s": 74, "t": 86, "w": 2}, {"s": 88, "t": 90, "w": 2}, {"s": 2, "t": 5, "w": 1}, {"s": 2, "t": 29, "w": 1}, {"s": 2, "t": 38, "w": 1}, {"s": 2, "t": 43, "w": 1}, {"s": 2, "t": 54, "w": 1}, {"s": 3, "t": 4, "w": 1}, {"s": 3, "t": 11, "w": 1}, {"s": 3, "t": 28, "w": 1}, {"s": 4, "t": 6, "w": 1}, {"s": 4, "t": 12, "w": 1}, {"s": 4, "t": 17, "w": 1}, {"s": 4, "t": 22, "w": 1}, {"s": 4, "t": 23, "w": 1}, {"s": 4, "t": 15, "w": 1}, {"s": 4, "t": 27, "w": 1}, {"s": 4, "t": 28, "w": 1}, {"s": 4, "t": 29, "w": 1}, {"s": 4, "t": 34, "w": 1}, {"s": 4, "t": 39, "w": 1}, {"s": 4, "t": 42, "w": 1}, {"s": 4, "t": 45, "w": 1}, {"s": 4, "t": 46, "w": 1}, {"s": 4, "t": 49, "w": 1}, {"s": 4, "t": 51, "w": 1}, {"s": 4, "t": 53, "w": 1}, {"s": 4, "t": 56, "w": 1}, {"s": 4, "t": 57, "w": 1}, {"s": 4, "t": 64, "w": 1}, {"s": 4, "t": 70, "w": 1}, {"s": 4, "t": 74, "w": 1}, {"s": 4, "t": 77, "w": 1}, {"s": 4, "t": 79, "w": 1}, {"s": 4, "t": 82, "w": 1}, {"s": 4, "t": 84, "w": 1}, {"s": 4, "t": 85, "w": 1}, {"s": 4, "t": 86, "w": 1}, {"s": 4, "t": 88, "w": 1}, {"s": 4, "t": 89, "w": 1}, {"s": 5, "t": 9, "w": 1}, {"s": 5, "t": 10, "w": 1}, {"s": 5, "t": 17, "w": 1}, {"s": 5, "t": 18, "w": 1}, {"s": 5, "t": 20, "w": 1}, {"s": 5, "t": 21, "w": 1}, {"s": 5, "t": 22, "w": 1}, {"s": 5, "t": 23, "w": 1}, {"s": 5, "t": 33, "w": 1}, {"s": 5, "t": 37, "w": 1}, {"s": 5, "t": 40, "w": 1}, {"s": 5, "t": 44, "w": 1}, {"s": 5, "t": 49, "w": 1}, {"s": 5, "t": 60, "w": 1}, {"s": 5, "t": 62, "w": 1}, {"s": 5, "t": 78, "w": 1}, {"s": 5, "t": 80, "w": 1}, {"s": 5, "t": 82, "w": 1}, {"s": 5, "t": 83, "w": 1}, {"s": 5, "t": 89, "w": 1}, {"s": 6, "t": 16, "w": 1}, {"s": 6, "t": 32, "w": 1}, {"s": 6, "t": 37, "w": 1}, {"s": 6, "t": 45, "w": 1}, {"s": 6, "t": 72, "w": 1}, {"s": 6, "t": 78, "w": 1}, {"s": 7, "t": 39, "w": 1}, {"s": 7, "t": 44, "w": 1}, {"s": 7, "t": 49, "w": 1}, {"s": 7, "t": 56, "w": 1}, {"s": 7, "t": 65, "w": 1}, {"s": 7, "t": 67, "w": 1}, {"s": 7, "t": 72, "w": 1}, {"s": 7, "t": 82, "w": 1}, {"s": 7, "t": 87, "w": 1}, {"s": 8, "t": 81, "w": 1}, {"s": 9, "t": 21, "w": 1}, {"s": 9, "t": 70, "w": 1}, {"s": 9, "t": 74, "w": 1}, {"s": 10, "t": 32, "w": 1}, {"s": 10, "t": 45, "w": 1}, {"s": 10, "t": 47, "w": 1}, {"s": 10, "t": 72, "w": 1}, {"s": 11, "t": 13, "w": 1}, {"s": 11, "t": 21, "w": 1}, {"s": 11, "t": 26, "w": 1}, {"s": 11, "t": 27, "w": 1}, {"s": 11, "t": 28, "w": 1}, {"s": 11, "t": 36, "w": 1}, {"s": 11, "t": 38, "w": 1}, {"s": 11, "t": 49, "w": 1}, {"s": 11, "t": 52, "w": 1}, {"s": 11, "t": 53, "w": 1}, {"s": 11, "t": 58, "w": 1}, {"s": 11, "t": 61, "w": 1}, {"s": 11, "t": 63, "w": 1}, {"s": 11, "t": 70, "w": 1}, {"s": 11, "t": 71, "w": 1}, {"s": 11, "t": 75, "w": 1}, {"s": 11, "t": 79, "w": 1}, {"s": 11, "t": 80, "w": 1}, {"s": 11, "t": 81, "w": 1}, {"s": 11, "t": 83, "w": 1}, {"s": 11, "t": 85, "w": 1}, {"s": 11, "t": 87, "w": 1}, {"s": 12, "t": 48, "w": 1}, {"s": 12, "t": 59, "w": 1}, {"s": 12, "t": 77, "w": 1}, {"s": 13, "t": 17, "w": 1}, {"s": 13, "t": 81, "w": 1}, {"s": 14, "t": 53, "w": 1}, {"s": 14, "t": 55, "w": 1}, {"s": 16, "t": 45, "w": 1}, {"s": 16, "t": 46, "w": 1}, {"s": 16, "t": 72, "w": 1}, {"s": 17, "t": 22, "w": 1}, {"s": 17, "t": 51, "w": 1}, {"s": 17, "t": 52, "w": 1}, {"s": 18, "t": 21, "w": 1}, {"s": 18, "t": 70, "w": 1}, {"s": 19, "t": 31, "w": 1}, {"s": 19, "t": 43, "w": 1}, {"s": 19, "t": 47, "w": 1}, {"s": 19, "t": 67, "w": 1}, {"s": 21, "t": 81, "w": 1}, {"s": 22, "t": 33, "w": 1}, {"s": 22, "t": 79, "w": 1}, {"s": 22, "t": 88, "w": 1}, {"s": 22, "t": 90, "w": 1}, {"s": 23, "t": 54, "w": 1}, {"s": 23, "t": 73, "w": 1}, {"s": 24, "t": 58, "w": 1}, {"s": 24, "t": 61, "w": 1}, {"s": 25, "t": 15, "w": 1}, {"s": 15, "t": 55, "w": 1}, {"s": 15, "t": 75, "w": 1}, {"s": 15, "t": 89, "w": 1}, {"s": 26, "t": 38, "w": 1}, {"s": 26, "t": 48, "w": 1}, {"s": 26, "t": 69, "w": 1}, {"s": 27, "t": 41, "w": 1}, {"s": 27, "t": 47, "w": 1}, {"s": 27, "t": 55, "w": 1}, {"s": 27, "t": 69, "w": 1}, {"s": 27, "t": 71, "w": 1}, {"s": 28, "t": 61, "w": 1}, {"s": 28, "t": 67, "w": 1}, {"s": 28, "t": 85, "w": 1}, {"s": 29, "t": 38, "w": 1}, {"s": 29, "t": 54, "w": 1}, {"s": 29, "t": 79, "w": 1}, {"s": 30, "t": 1, "w": 1}, {"s": 31, "t": 37, "w": 1}, {"s": 32, "t": 83, "w": 1}, {"s": 32, "t": 84, "w": 1}, {"s": 33, "t": 0, "w": 1}, {"s": 33, "t": 70, "w": 1}, {"s": 33, "t": 73, "w": 1}, {"s": 0, "t": 1, "w": 1}, {"s": 0, "t": 35, "w": 1}, {"s": 0, "t": 53, "w": 1}, {"s": 0, "t": 79, "w": 1}, {"s": 0, "t": 85, "w": 1}, {"s": 0, "t": 89, "w": 1}, {"s": 1, "t": 35, "w": 1}, {"s": 34, "t": 64, "w": 1}, {"s": 35, "t": 64, "w": 1}, {"s": 35, "t": 78, "w": 1}, {"s": 35, "t": 82, "w": 1}, {"s": 36, "t": 47, "w": 1}, {"s": 37, "t": 78, "w": 1}, {"s": 38, "t": 53, "w": 1}, {"s": 38, "t": 54, "w": 1}, {"s": 39, "t": 42, "w": 1}, {"s": 39, "t": 56, "w": 1}, {"s": 39, "t": 63, "w": 1}, {"s": 40, "t": 56, "w": 1}, {"s": 40, "t": 63, "w": 1}, {"s": 40, "t": 68, "w": 1}, {"s": 41, "t": 69, "w": 1}, {"s": 42, "t": 43, "w": 1}, {"s": 43, "t": 62, "w": 1}, {"s": 43, "t": 67, "w": 1}, {"s": 43, "t": 68, "w": 1}, {"s": 44, "t": 58, "w": 1}, {"s": 44, "t": 67, "w": 1}, {"s": 46, "t": 81, "w": 1}, {"s": 47, "t": 62, "w": 1}, {"s": 47, "t": 69, "w": 1}, {"s": 47, "t": 86, "w": 1}, {"s": 48, "t": 68, "w": 1}, {"s": 49, "t": 72, "w": 1}, {"s": 50, "t": 81, "w": 1}, {"s": 52, "t": 81, "w": 1}, {"s": 54, "t": 81, "w": 1}, {"s": 55, "t": 58, "w": 1}, {"s": 55, "t": 59, "w": 1}, {"s": 57, "t": 83, "w": 1}, {"s": 59, "t": 87, "w": 1}, {"s": 61, "t": 67, "w": 1}, {"s": 62, "t": 81, "w": 1}, {"s": 63, "t": 77, "w": 1}, {"s": 64, "t": 82, "w": 1}, {"s": 65, "t": 82, "w": 1}, {"s": 65, "t": 88, "w": 1}, {"s": 65, "t": 89, "w": 1}, {"s": 67, "t": 77, "w": 1}, {"s": 70, "t": 86, "w": 1}, {"s": 70, "t": 88, "w": 1}, {"s": 70, "t": 90, "w": 1}, {"s": 75, "t": 80, "w": 1}, {"s": 88, "t": 89, "w": 1}]}</script>
+<script>
+(function () {
+  "use strict";
+  var raw = document.getElementById("wk-data").textContent;
+  var data = JSON.parse(raw);
+  var nodes = data.nodes, links = data.links;
+  var svg = document.getElementById("wk-svg");
+  var stage = document.getElementById("wk-stage");
+  var tooltip = document.getElementById("wk-tooltip");
+  var searchBox = document.getElementById("wk-search");
+  var labelToggle = document.getElementById("wk-labels");
+  var reheatBtn = document.getElementById("wk-reheat");
+  var SVGNS = "http://www.w3.org/2000/svg";
+
+  var W = 1000, H = 700;
+  function measure() {
+    var r = stage.getBoundingClientRect();
+    W = Math.max(360, r.width);
+    H = Math.max(420, r.height);
+    svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+  }
+  measure();
+
+  // ---- node radius from session count ----
+  var maxCount = 1, minCount = 1e9;
+  nodes.forEach(function (n) { maxCount = Math.max(maxCount, n.count); minCount = Math.min(minCount, n.count); });
+  function radius(n) {
+    var t = (n.count - minCount) / Math.max(1, (maxCount - minCount));
+    return 7 + Math.sqrt(t) * 22;   // 7 .. ~29 px
+  }
+
+  // ---- adjacency for highlight ----
+  var nbr = nodes.map(function () { return {}; });
+  links.forEach(function (l) { nbr[l.s][l.t] = 1; nbr[l.t][l.s] = 1; });
+
+  // ---- initial layout: circle + jitter (deterministic-ish) ----
+  var seed = 1337;
+  function rnd() { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; }
+  nodes.forEach(function (n, i) {
+    var a = (i / nodes.length) * Math.PI * 2;
+    var rad = Math.min(W, H) * 0.34;
+    n.x = W / 2 + Math.cos(a) * rad + (rnd() - 0.5) * 60;
+    n.y = H / 2 + Math.sin(a) * rad + (rnd() - 0.5) * 60;
+    n.vx = 0; n.vy = 0;
+    n.r = radius(n);
+  });
+
+  // ---- SVG groups: edges under nodes ----
+  var gEdges = document.createElementNS(SVGNS, "g");
+  var gNodes = document.createElementNS(SVGNS, "g");
+  var gLabels = document.createElementNS(SVGNS, "g");
+  svg.appendChild(gEdges); svg.appendChild(gNodes); svg.appendChild(gLabels);
+
+  var maxW = 1; links.forEach(function (l) { maxW = Math.max(maxW, l.w); });
+  var lineEls = links.map(function (l) {
+    var ln = document.createElementNS(SVGNS, "line");
+    ln.setAttribute("class", "wk-edge");
+    var sw = 0.6 + (l.w / maxW) * 4.0;
+    ln.setAttribute("stroke-width", sw.toFixed(2));
+    ln.setAttribute("stroke-opacity", (0.18 + (l.w / maxW) * 0.4).toFixed(2));
+    gEdges.appendChild(ln);
+    return ln;
+  });
+
+  var nodeEls = [], labelEls = [];
+  nodes.forEach(function (n, i) {
+    var c = document.createElementNS(SVGNS, "circle");
+    c.setAttribute("class", "wk-node");
+    c.setAttribute("r", n.r);
+    c.setAttribute("fill", n.color);
+    c.setAttribute("data-i", i);
+    c.setAttribute("tabindex", "0");
+    c.setAttribute("role", "link");
+    c.setAttribute("aria-label", n.name + ", " + n.count + " sessions");
+    gNodes.appendChild(c);
+    nodeEls.push(c);
+
+    var t = document.createElementNS(SVGNS, "text");
+    t.setAttribute("class", "wk-label");
+    t.setAttribute("text-anchor", "middle");
+    t.textContent = n.name;
+    gLabels.appendChild(t);
+    labelEls.push(t);
+  });
+
+  // ---- force simulation ----
+  var alpha = 1.0, alphaMin = 0.005, alphaDecay = 0.0228, running = true;
+  var CENTER_K = 0.012, LINK_K = 0.045, CHARGE = -1400, LINK_DIST = 90;
+
+  function step() {
+    // charge (repulsion) — O(n^2), fine for ~90 nodes
+    for (var i = 0; i < nodes.length; i++) {
+      var a = nodes[i];
+      for (var j = i + 1; j < nodes.length; j++) {
+        var b = nodes[j];
+        var dx = a.x - b.x, dy = a.y - b.y;
+        var d2 = dx * dx + dy * dy + 0.01;
+        var d = Math.sqrt(d2);
+        var force = (CHARGE * alpha) / d2;
+        var fx = (dx / d) * force, fy = (dy / d) * force;
+        a.vx += fx; a.vy += fy;
+        b.vx -= fx; b.vy -= fy;
+      }
+    }
+    // links (springs)
+    for (var k = 0; k < links.length; k++) {
+      var l = links[k];
+      var s = nodes[l.s], t = nodes[l.t];
+      var dx = t.x - s.x, dy = t.y - s.y;
+      var d = Math.sqrt(dx * dx + dy * dy) + 0.01;
+      var desired = LINK_DIST / (1 + Math.log(1 + l.w));
+      var diff = (d - desired) / d;
+      var f = LINK_K * diff * alpha;
+      var fx = dx * f, fy = dy * f;
+      s.vx += fx; s.vy += fy;
+      t.vx -= fx; t.vy -= fy;
+    }
+    // centering + integrate
+    for (var m = 0; m < nodes.length; m++) {
+      var n = nodes[m];
+      n.vx += (W / 2 - n.x) * CENTER_K * alpha;
+      n.vy += (H / 2 - n.y) * CENTER_K * alpha;
+      if (n.fx != null) { n.x = n.fx; n.y = n.fy; n.vx = 0; n.vy = 0; }
+      else {
+        n.vx *= 0.82; n.vy *= 0.82;
+        n.x += n.vx; n.y += n.vy;
+        var pad = n.r + 4;
+        n.x = Math.max(pad, Math.min(W - pad, n.x));
+        n.y = Math.max(pad, Math.min(H - pad, n.y));
+      }
+    }
+    alpha = Math.max(0, alpha - alphaDecay * alpha);
+  }
+
+  function draw() {
+    for (var k = 0; k < links.length; k++) {
+      var l = links[k], s = nodes[l.s], t = nodes[l.t];
+      var ln = lineEls[k];
+      ln.setAttribute("x1", s.x.toFixed(1)); ln.setAttribute("y1", s.y.toFixed(1));
+      ln.setAttribute("x2", t.x.toFixed(1)); ln.setAttribute("y2", t.y.toFixed(1));
+    }
+    for (var i = 0; i < nodes.length; i++) {
+      var n = nodes[i];
+      nodeEls[i].setAttribute("cx", n.x.toFixed(1));
+      nodeEls[i].setAttribute("cy", n.y.toFixed(1));
+      var lab = labelEls[i];
+      lab.setAttribute("x", n.x.toFixed(1));
+      lab.setAttribute("y", (n.y - n.r - 4).toFixed(1));
+    }
+  }
+
+  var rafId = null;
+  function tick() {
+    step();
+    draw();
+    if (alpha > alphaMin && running) {
+      rafId = requestAnimationFrame(tick);
+    } else {
+      running = false; rafId = null;
+    }
+  }
+  function reheat(a) {
+    alpha = a || 0.9; running = true;
+    if (!rafId) rafId = requestAnimationFrame(tick);
+  }
+  tick();
+
+  // ---- labels toggle ----
+  function applyLabels() { gLabels.style.display = labelToggle.checked ? "" : "none"; }
+  labelToggle.addEventListener("change", applyLabels);
+  applyLabels();
+
+  // ---- highlight logic ----
+  function setHighlight(i) {
+    if (i == null) {
+      svg.classList.remove("wk-has-focus");
+      nodeEls.forEach(function (e) { e.classList.remove("wk-dim", "wk-hot"); });
+      labelEls.forEach(function (e) { e.classList.remove("wk-dim", "wk-hot"); });
+      lineEls.forEach(function (e) { e.classList.remove("wk-dim", "wk-hot"); });
+      return;
+    }
+    svg.classList.add("wk-has-focus");
+    for (var k = 0; k < nodes.length; k++) {
+      var on = (k === i) || nbr[i][k];
+      nodeEls[k].classList.toggle("wk-hot", on);
+      nodeEls[k].classList.toggle("wk-dim", !on);
+      labelEls[k].classList.toggle("wk-hot", on);
+      labelEls[k].classList.toggle("wk-dim", !on);
+    }
+    for (var e = 0; e < links.length; e++) {
+      var l = links[e];
+      var on2 = (l.s === i || l.t === i);
+      lineEls[e].classList.toggle("wk-hot", on2);
+      lineEls[e].classList.toggle("wk-dim", !on2);
+    }
+  }
+
+  function showTip(n, px, py) {
+    tooltip.innerHTML = '<strong>' + escapeHtml(n.name) + '</strong><span>' +
+      n.count + (n.count === 1 ? ' session' : ' sessions') + ' \u00b7 ' + escapeHtml(n.cluster) + '</span>';
+    tooltip.hidden = false;
+    var sr = stage.getBoundingClientRect();
+    var x = px - sr.left + 14, y = py - sr.top + 14;
+    var tw = tooltip.offsetWidth, th = tooltip.offsetHeight;
+    if (x + tw > sr.width) x = px - sr.left - tw - 14;
+    if (y + th > sr.height) y = py - sr.top - th - 14;
+    tooltip.style.left = x + "px";
+    tooltip.style.top = y + "px";
+  }
+  function hideTip() { tooltip.hidden = true; }
+  function escapeHtml(s) {
+    return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  // ---- pointer interactions (hover, drag, click) ----
+  var dragI = null, didDrag = false, downXY = null;
+  nodeEls.forEach(function (el, i) {
+    el.addEventListener("pointerenter", function (ev) {
+      if (dragI == null) { setHighlight(i); showTip(nodes[i], ev.clientX, ev.clientY); }
+    });
+    el.addEventListener("pointermove", function (ev) {
+      if (dragI == null) showTip(nodes[i], ev.clientX, ev.clientY);
+    });
+    el.addEventListener("pointerleave", function () {
+      if (dragI == null) { setHighlight(null); hideTip(); }
+    });
+    el.addEventListener("pointerdown", function (ev) {
+      dragI = i; didDrag = false; downXY = [ev.clientX, ev.clientY];
+      nodes[i].fx = nodes[i].x; nodes[i].fy = nodes[i].y;
+      el.setPointerCapture(ev.pointerId);
+      reheat(0.5);
+      ev.preventDefault();
+    });
+    el.addEventListener("pointermove", function (ev) {
+      if (dragI !== i) return;
+      var pt = clientToSvg(ev.clientX, ev.clientY);
+      nodes[i].fx = pt.x; nodes[i].fy = pt.y;
+      if (downXY) {
+        var dd = Math.hypot(ev.clientX - downXY[0], ev.clientY - downXY[1]);
+        if (dd > 4) didDrag = true;
+      }
+      reheat(0.4);
+    });
+    el.addEventListener("pointerup", function (ev) {
+      if (dragI === i) {
+        nodes[i].fx = null; nodes[i].fy = null;
+        try { el.releasePointerCapture(ev.pointerId); } catch (e) {}
+        dragI = null;
+        if (!didDrag) { window.location.href = "concepts/" + nodes[i].file; }
+      }
+    });
+    el.addEventListener("keydown", function (ev) {
+      if (ev.key === "Enter" || ev.key === " ") {
+        ev.preventDefault();
+        window.location.href = "concepts/" + nodes[i].file;
+      }
+    });
+    el.addEventListener("focus", function () { setHighlight(i); });
+    el.addEventListener("blur", function () { setHighlight(null); });
+  });
+
+  function clientToSvg(cx, cy) {
+    var r = svg.getBoundingClientRect();
+    return { x: (cx - r.left) / r.width * W, y: (cy - r.top) / r.height * H };
+  }
+
+  // ---- search / filter highlight ----
+  searchBox.addEventListener("input", function () {
+    var q = searchBox.value.trim().toLowerCase();
+    if (!q) {
+      svg.classList.remove("wk-has-focus");
+      nodeEls.forEach(function (e) { e.classList.remove("wk-dim", "wk-hot"); });
+      labelEls.forEach(function (e) { e.classList.remove("wk-dim", "wk-hot"); });
+      lineEls.forEach(function (e) { e.classList.remove("wk-dim", "wk-hot"); });
+      return;
+    }
+    svg.classList.add("wk-has-focus");
+    var hits = {};
+    nodes.forEach(function (n, i) {
+      var on = n.name.toLowerCase().indexOf(q) !== -1;
+      hits[i] = on;
+      nodeEls[i].classList.toggle("wk-hot", on);
+      nodeEls[i].classList.toggle("wk-dim", !on);
+      labelEls[i].classList.toggle("wk-hot", on);
+      labelEls[i].classList.toggle("wk-dim", !on);
+    });
+    lineEls.forEach(function (e, k) {
+      var l = links[k];
+      var on = hits[l.s] && hits[l.t];
+      e.classList.toggle("wk-hot", on);
+      e.classList.toggle("wk-dim", !on);
+    });
+  });
+
+  reheatBtn.addEventListener("click", function () { reheat(0.95); });
+
+  // ---- responsive ----
+  var rt = null;
+  window.addEventListener("resize", function () {
+    clearTimeout(rt);
+    rt = setTimeout(function () { measure(); reheat(0.5); }, 160);
+  });
+})();
+</script>
+
+<footer class="wiki-footer">
+  <div class="wk-container">
+    LLM Wiki · a cross-linked knowledge base compiled from the
+    <strong>Microsoft Build 2026</strong> session notes on this site.
+    Re-organisation of existing content only — no new information added.
+    Pattern after Andrej Karpathy’s
+    <a href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f" target="_blank" rel="noopener noreferrer">LLM&#8209;wiki gist</a>.
+    No tracking, no CDNs.
+  </div>
+</footer>
+
+</body>
+</html>
