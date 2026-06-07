@@ -1,0 +1,3551 @@
+{
+ "BRK200": [
+  {
+   "code": "BRK203",
+   "title": "From CLI to PR: Automating the path to merged code",
+   "score": 0.74
+  },
+  {
+   "code": "DEM301",
+   "title": "Rethinking CI: Actions, AI Agents, and the End of Commit-Fail-Commit",
+   "score": 0.73
+  },
+  {
+   "code": "DEM351",
+   "title": "AI Skills Navigator: Accelerate tech skills with personalized learning",
+   "score": 0.72
+  },
+  {
+   "code": "BRK247",
+   "title": "Scott and Mark learn...how agents reshape software engineering",
+   "score": 0.72
+  },
+  {
+   "code": "DEM367",
+   "title": "Onboarding a Developer with AI: A Better First-Day Experience",
+   "score": 0.72
+  }
+ ],
+ "BRK202": [
+  {
+   "code": "BRK203",
+   "title": "From CLI to PR: Automating the path to merged code",
+   "score": 0.72
+  },
+  {
+   "code": "OD854",
+   "title": "Building WinUI Apps with C# First Patterns and AI Assisted Workflows",
+   "score": 0.71
+  },
+  {
+   "code": "BRK220",
+   "title": "Using AI tools to teach old apps new tricks",
+   "score": 0.71
+  },
+  {
+   "code": "DEM301",
+   "title": "Rethinking CI: Actions, AI Agents, and the End of Commit-Fail-Commit",
+   "score": 0.7
+  },
+  {
+   "code": "OD804",
+   "title": "Simplifying .NET Installs with dotnetup",
+   "score": 0.7
+  }
+ ],
+ "BRK203": [
+  {
+   "code": "SEG04",
+   "title": "GitHub App + Rayfin",
+   "score": 0.73
+  },
+  {
+   "code": "BRK229",
+   "title": "From Skeptic to Superpower: Real-World AI Coding Workflows That Scale",
+   "score": 0.72
+  },
+  {
+   "code": "BRK202",
+   "title": "Azure DevOps meets GitHub, the path to AI powered SDLC",
+   "score": 0.72
+  },
+  {
+   "code": "DEM367",
+   "title": "Onboarding a Developer with AI: A Better First-Day Experience",
+   "score": 0.71
+  },
+  {
+   "code": "DEM301",
+   "title": "Rethinking CI: Actions, AI Agents, and the End of Commit-Fail-Commit",
+   "score": 0.71
+  }
+ ],
+ "BRK205": [
+  {
+   "code": "OD802",
+   "title": "Building for the agentic web with .NET 11",
+   "score": 0.76
+  },
+  {
+   "code": "BRK247",
+   "title": "Scott and Mark learn...how agents reshape software engineering",
+   "score": 0.72
+  },
+  {
+   "code": "DEM351",
+   "title": "AI Skills Navigator: Accelerate tech skills with personalized learning",
+   "score": 0.69
+  },
+  {
+   "code": "OD805",
+   "title": "AI Building Blocks for .NET: Add intelligence to your C# apps",
+   "score": 0.68
+  },
+  {
+   "code": "BRK220",
+   "title": "Using AI tools to teach old apps new tricks",
+   "score": 0.67
+  }
+ ],
+ "BRK207": [
+  {
+   "code": "DEM300",
+   "title": "Supercharged profiling: Finding performance bugs with agents",
+   "score": 0.75
+  },
+  {
+   "code": "DEM303",
+   "title": "Late to agentic coding? Don't panic, build.",
+   "score": 0.73
+  },
+  {
+   "code": "BRK203",
+   "title": "From CLI to PR: Automating the path to merged code",
+   "score": 0.72
+  },
+  {
+   "code": "BRK200",
+   "title": "Why your AI code doesn't ship: Closing the gap to production",
+   "score": 0.71
+  },
+  {
+   "code": "BRK202",
+   "title": "Azure DevOps meets GitHub, the path to AI powered SDLC",
+   "score": 0.7
+  }
+ ],
+ "BRK208": [
+  {
+   "code": "BRK203",
+   "title": "From CLI to PR: Automating the path to merged code",
+   "score": 0.73
+  },
+  {
+   "code": "OD818",
+   "title": "The AI-native Data Engineer",
+   "score": 0.71
+  },
+  {
+   "code": "DEM367",
+   "title": "Onboarding a Developer with AI: A Better First-Day Experience",
+   "score": 0.71
+  },
+  {
+   "code": "ODSP912",
+   "title": "Build agentic testing systems to validate AI generated code",
+   "score": 0.69
+  },
+  {
+   "code": "ODSP909",
+   "title": "Take AI agents from prototype to production with OpenTelemetry",
+   "score": 0.69
+  }
+ ],
+ "BRK210": [
+  {
+   "code": "OD822",
+   "title": "Smarter PostgreSQL migrations to power modern, intelligent apps",
+   "score": 0.7
+  },
+  {
+   "code": "BRK242",
+   "title": "Turn your agents into action: Connect tools, APIs, and documents",
+   "score": 0.66
+  },
+  {
+   "code": "BRK247",
+   "title": "Scott and Mark learn...how agents reshape software engineering",
+   "score": 0.66
+  },
+  {
+   "code": "OD854",
+   "title": "Building WinUI Apps with C# First Patterns and AI Assisted Workflows",
+   "score": 0.66
+  },
+  {
+   "code": "DEM375",
+   "title": "So you want to become an MVP?",
+   "score": 0.66
+  }
+ ],
+ "BRK220": [
+  {
+   "code": "OD802",
+   "title": "Building for the agentic web with .NET 11",
+   "score": 0.68
+  },
+  {
+   "code": "OD801",
+   "title": "Modernize intelligent apps and agents with .NET that scale as you grow",
+   "score": 0.68
+  },
+  {
+   "code": "OD854",
+   "title": "Building WinUI Apps with C# First Patterns and AI Assisted Workflows",
+   "score": 0.67
+  },
+  {
+   "code": "OD805",
+   "title": "AI Building Blocks for .NET: Add intelligence to your C# apps",
+   "score": 0.67
+  },
+  {
+   "code": "OD803",
+   "title": "Taking your AI to the edge with .NET MAUI",
+   "score": 0.67
+  }
+ ],
+ "BRK221": [
+  {
+   "code": "DEM312",
+   "title": "Multi-agents in action with 3 AI agents, 3 frameworks, tools & models",
+   "score": 0.74
+  },
+  {
+   "code": "OD839",
+   "title": "AI solutions built to power industrial innovation and sovereign control",
+   "score": 0.69
+  },
+  {
+   "code": "ODSP922",
+   "title": "Develop a conversational search experience without rebuilding your app",
+   "score": 0.68
+  },
+  {
+   "code": "BRK231",
+   "title": "Deploy. Observe. Learn. Reinforcement learning for production agents",
+   "score": 0.68
+  },
+  {
+   "code": "DEM367",
+   "title": "Onboarding a Developer with AI: A Better First-Day Experience",
+   "score": 0.68
+  }
+ ],
+ "BRK222": [
+  {
+   "code": "DEM351",
+   "title": "AI Skills Navigator: Accelerate tech skills with personalized learning",
+   "score": 0.69
+  },
+  {
+   "code": "OD839",
+   "title": "AI solutions built to power industrial innovation and sovereign control",
+   "score": 0.68
+  },
+  {
+   "code": "BRK244",
+   "title": "Agent supervision is the new senior engineering skill",
+   "score": 0.68
+  },
+  {
+   "code": "BRK227",
+   "title": "Distributed systems to AI platforms with Mark Russinovich & Ion Stoica",
+   "score": 0.66
+  },
+  {
+   "code": "OD805",
+   "title": "AI Building Blocks for .NET: Add intelligence to your C# apps",
+   "score": 0.66
+  }
+ ],
+ "BRK223": [
+  {
+   "code": "ODSP916",
+   "title": "Design systems for every user including people and LLMs",
+   "score": 0.72
+  },
+  {
+   "code": "BRK233",
+   "title": "Software Defensibility in the era of AI coding",
+   "score": 0.69
+  },
+  {
+   "code": "BRK225",
+   "title": "Data, apps, and agents: the future of app dev with Rayfin",
+   "score": 0.69
+  },
+  {
+   "code": "OD823",
+   "title": "Faster AI Responses with Semantic Caching in Azure Managed Redis",
+   "score": 0.68
+  },
+  {
+   "code": "ODSP918",
+   "title": "Build persistent and scalable AI agent memory with TiDB",
+   "score": 0.67
+  }
+ ],
+ "BRK224": [
+  {
+   "code": "BRK221",
+   "title": "Idea to production-ready agent in seconds on AI-native runtime",
+   "score": 0.64
+  },
+  {
+   "code": "DEMSP395",
+   "title": "Teach AI agents to manage context with Elastic Agent Builder",
+   "score": 0.64
+  },
+  {
+   "code": "DEMSP390",
+   "title": "Create multimodal AI agents with persistent memory",
+   "score": 0.64
+  },
+  {
+   "code": "DEM351",
+   "title": "AI Skills Navigator: Accelerate tech skills with personalized learning",
+   "score": 0.63
+  },
+  {
+   "code": "SEG04",
+   "title": "GitHub App + Rayfin",
+   "score": 0.63
+  }
+ ],
+ "BRK225": [
+  {
+   "code": "SEG04",
+   "title": "GitHub App + Rayfin",
+   "score": 0.82
+  },
+  {
+   "code": "OD811",
+   "title": "Powering the next AI frontier with a unified data platform",
+   "score": 0.78
+  },
+  {
+   "code": "DEM369",
+   "title": "Responsible AI in Action: From Principles to Real-World Engineering",
+   "score": 0.69
+  },
+  {
+   "code": "DEM362",
+   "title": "Building a Multi-Agent Workflow in Microsoft Fabric",
+   "score": 0.69
+  },
+  {
+   "code": "KEY01",
+   "title": "Microsoft Build 2026 Opening Keynote (Satya Nadella)",
+   "score": 0.69
+  }
+ ],
+ "BRK226": [
+  {
+   "code": "BRK227",
+   "title": "Distributed systems to AI platforms with Mark Russinovich & Ion Stoica",
+   "score": 0.68
+  },
+  {
+   "code": "OD827",
+   "title": "Build, deploy, and run Linux workloads on Azure",
+   "score": 0.67
+  },
+  {
+   "code": "OD815",
+   "title": "Unify your entire data estate on a single, AI-ready data lake",
+   "score": 0.67
+  },
+  {
+   "code": "OD801",
+   "title": "Modernize intelligent apps and agents with .NET that scale as you grow",
+   "score": 0.66
+  },
+  {
+   "code": "OD828",
+   "title": "Latest Cobalt VMs and Azure Boost enhancements",
+   "score": 0.66
+  }
+ ],
+ "BRK227": [
+  {
+   "code": "OD823",
+   "title": "Faster AI Responses with Semantic Caching in Azure Managed Redis",
+   "score": 0.66
+  },
+  {
+   "code": "BRK228",
+   "title": "Modern resiliency from build to recovery through Agentic AI",
+   "score": 0.65
+  },
+  {
+   "code": "BRK226",
+   "title": "Inside Azure innovations with Mark Russinovich",
+   "score": 0.65
+  },
+  {
+   "code": "BRKSP92",
+   "title": "Scale agentic AI from on-device to cloud orchestration",
+   "score": 0.64
+  },
+  {
+   "code": "OD870",
+   "title": "Azure Storage for AI workloads",
+   "score": 0.64
+  }
+ ],
+ "BRK228": [
+  {
+   "code": "DEM351",
+   "title": "AI Skills Navigator: Accelerate tech skills with personalized learning",
+   "score": 0.71
+  },
+  {
+   "code": "BRK241",
+   "title": "From prototype to production: build and run agents at scale",
+   "score": 0.66
+  },
+  {
+   "code": "DEM312",
+   "title": "Multi-agents in action with 3 AI agents, 3 frameworks, tools & models",
+   "score": 0.66
+  },
+  {
+   "code": "OD820",
+   "title": "Designing Reliable Multi-Agent Apps with Azure Cosmos DB",
+   "score": 0.66
+  },
+  {
+   "code": "OD805",
+   "title": "AI Building Blocks for .NET: Add intelligence to your C# apps",
+   "score": 0.66
+  }
+ ],
+ "BRK229": [
+  {
+   "code": "OD854",
+   "title": "Building WinUI Apps with C# First Patterns and AI Assisted Workflows",
+   "score": 0.72
+  },
+  {
+   "code": "DEM351",
+   "title": "AI Skills Navigator: Accelerate tech skills with personalized learning",
+   "score": 0.72
+  },
+  {
+   "code": "BRK244",
+   "title": "Agent supervision is the new senior engineering skill",
+   "score": 0.71
+  },
+  {
+   "code": "ODSP908",
+   "title": "Streamline your end-to-end developer workflow with AI",
+   "score": 0.71
+  },
+  {
+   "code": "BRK203",
+   "title": "From CLI to PR: Automating the path to merged code",
+   "score": 0.7
+  }
+ ],
+ "BRK230": [
+  {
+   "code": "BRK241",
+   "title": "From prototype to production: build and run agents at scale",
+   "score": 0.75
+  },
+  {
+   "code": "BRK231",
+   "title": "Deploy. Observe. Learn. Reinforcement learning for production agents",
+   "score": 0.7
+  },
+  {
+   "code": "BRKSP94",
+   "title": "Orchestrate specialist agents with NVIDIA Nemotron models on Foundry",
+   "score": 0.7
+  },
+  {
+   "code": "OD836",
+   "title": "From Test Kitchen to Table: A Demo-driven Tour of Foundry Portal for AI Developers",
+   "score": 0.69
+  },
+  {
+   "code": "DEM322",
+   "title": "Smaller, faster, smarter: Distilling models with fine-tuning",
+   "score": 0.69
+  }
+ ],
+ "BRK231": [
+  {
+   "code": "BRKSP94",
+   "title": "Orchestrate specialist agents with NVIDIA Nemotron models on Foundry",
+   "score": 0.75
+  },
+  {
+   "code": "BRK252",
+   "title": "From observability to ROI for AI agents on any framework",
+   "score": 0.72
+  },
+  {
+   "code": "SEG01",
+   "title": "Frontier Tuning",
+   "score": 0.71
+  },
+  {
+   "code": "DEMSP383",
+   "title": "Move AI workflows from test to production on Microsoft Foundry",
+   "score": 0.71
+  },
+  {
+   "code": "BRK241",
+   "title": "From prototype to production: build and run agents at scale",
+   "score": 0.7
+  }
+ ],
+ "BRK233": [
+  {
+   "code": "DEM351",
+   "title": "AI Skills Navigator: Accelerate tech skills with personalized learning",
+   "score": 0.71
+  },
+  {
+   "code": "BRK247",
+   "title": "Scott and Mark learn...how agents reshape software engineering",
+   "score": 0.69
+  },
+  {
+   "code": "BRK229",
+   "title": "From Skeptic to Superpower: Real-World AI Coding Workflows That Scale",
+   "score": 0.68
+  },
+  {
+   "code": "DEM367",
+   "title": "Onboarding a Developer with AI: A Better First-Day Experience",
+   "score": 0.68
+  },
+  {
+   "code": "OD818",
+   "title": "The AI-native Data Engineer",
+   "score": 0.68
+  }
+ ],
+ "BRK240": [
+  {
+   "code": "BRK241",
+   "title": "From prototype to production: build and run agents at scale",
+   "score": 0.68
+  },
+  {
+   "code": "BRK224",
+   "title": "PepsiCo's blueprint for agentic AI",
+   "score": 0.68
+  },
+  {
+   "code": "DEM351",
+   "title": "AI Skills Navigator: Accelerate tech skills with personalized learning",
+   "score": 0.68
+  },
+  {
+   "code": "DEMSP395",
+   "title": "Teach AI agents to manage context with Elastic Agent Builder",
+   "score": 0.67
+  },
+  {
+   "code": "DEM302",
+   "title": "Build and deploy an Azure app with your agent team",
+   "score": 0.67
+  }
+ ],
+ "BRK241": [
+  {
+   "code": "BRK231",
+   "title": "Deploy. Observe. Learn. Reinforcement learning for production agents",
+   "score": 0.75
+  },
+  {
+   "code": "DEMSP388",
+   "title": "Ship faster with Claude Code and Cowork in Microsoft Foundry",
+   "score": 0.72
+  },
+  {
+   "code": "OD832",
+   "title": "From workflows to agentic automation with Azure Logic Apps",
+   "score": 0.72
+  },
+  {
+   "code": "DEMSP383",
+   "title": "Move AI workflows from test to production on Microsoft Foundry",
+   "score": 0.71
+  },
+  {
+   "code": "BRK222",
+   "title": "The honest practitioner's take on agentic AI on Kubernetes",
+   "score": 0.71
+  }
+ ],
+ "BRK242": [
+  {
+   "code": "BRK208",
+   "title": "Ensuring your code works when AI testing isn't enough",
+   "score": 0.77
+  },
+  {
+   "code": "DEMSP380",
+   "title": "Build automated agents using optimized AI Foundry models on Snapdragon",
+   "score": 0.77
+  },
+  {
+   "code": "BRK250",
+   "title": "Observe and control agents across any framework with open source tools",
+   "score": 0.76
+  },
+  {
+   "code": "DEMSP395",
+   "title": "Teach AI agents to manage context with Elastic Agent Builder",
+   "score": 0.76
+  },
+  {
+   "code": "BRK224",
+   "title": "PepsiCo's blueprint for agentic AI",
+   "score": 0.76
+  }
+ ],
+ "BRK243": [
+  {
+   "code": "OD805",
+   "title": "AI Building Blocks for .NET: Add intelligence to your C# apps",
+   "score": 0.67
+  },
+  {
+   "code": "BRK241",
+   "title": "From prototype to production: build and run agents at scale",
+   "score": 0.67
+  },
+  {
+   "code": "DEM302",
+   "title": "Build and deploy an Azure app with your agent team",
+   "score": 0.66
+  },
+  {
+   "code": "BRK230",
+   "title": "Build smarter AI systems in Foundry as models and costs evolve",
+   "score": 0.65
+  },
+  {
+   "code": "DEM341",
+   "title": "Any agent, any cloud: Standardized tracing with Foundry+OpenTelemetry",
+   "score": 0.65
+  }
+ ],
+ "BRK244": [
+  {
+   "code": "DEM351",
+   "title": "AI Skills Navigator: Accelerate tech skills with personalized learning",
+   "score": 0.68
+  },
+  {
+   "code": "DEM367",
+   "title": "Onboarding a Developer with AI: A Better First-Day Experience",
+   "score": 0.68
+  },
+  {
+   "code": "BRK247",
+   "title": "Scott and Mark learn...how agents reshape software engineering",
+   "score": 0.66
+  },
+  {
+   "code": "OD800",
+   "title": "Using autonomous SRE to move from alerts to action",
+   "score": 0.66
+  },
+  {
+   "code": "BRK252",
+   "title": "From observability to ROI for AI agents on any framework",
+   "score": 0.65
+  }
+ ],
+ "BRK245": [
+  {
+   "code": "DEM351",
+   "title": "AI Skills Navigator: Accelerate tech skills with personalized learning",
+   "score": 0.78
+  },
+  {
+   "code": "OD818",
+   "title": "The AI-native Data Engineer",
+   "score": 0.72
+  },
+  {
+   "code": "ODSP908",
+   "title": "Streamline your end-to-end developer workflow with AI",
+   "score": 0.71
+  },
+  {
+   "code": "OD832",
+   "title": "From workflows to agentic automation with Azure Logic Apps",
+   "score": 0.7
+  },
+  {
+   "code": "OD802",
+   "title": "Building for the agentic web with .NET 11",
+   "score": 0.7
+  }
+ ],
+ "BRK246": [
+  {
+   "code": "DEM340",
+   "title": "Build work-ready agents with Foundry + Work IQ, govern with Agent 365",
+   "score": 0.76
+  },
+  {
+   "code": "BRK240",
+   "title": "Build context-aware agents: From data to decisions",
+   "score": 0.74
+  },
+  {
+   "code": "DEM369",
+   "title": "Responsible AI in Action: From Principles to Real-World Engineering",
+   "score": 0.71
+  },
+  {
+   "code": "DEM302",
+   "title": "Build and deploy an Azure app with your agent team",
+   "score": 0.71
+  },
+  {
+   "code": "OD836",
+   "title": "From Test Kitchen to Table: A Demo-driven Tour of Foundry Portal for AI Developers",
+   "score": 0.7
+  }
+ ],
+ "BRK247": [
+  {
+   "code": "DEM351",
+   "title": "AI Skills Navigator: Accelerate tech skills with personalized learning",
+   "score": 0.71
+  },
+  {
+   "code": "BRK220",
+   "title": "Using AI tools to teach old apps new tricks",
+   "score": 0.69
+  },
+  {
+   "code": "BRK244",
+   "title": "Agent supervision is the new senior engineering skill",
+   "score": 0.67
+  },
+  {
+   "code": "BRK245",
+   "title": "Build the thing that builds the thing",
+   "score": 0.66
+  },
+  {
+   "code": "BRK208",
+   "title": "Ensuring your code works when AI testing isn't enough",
+   "score": 0.66
+  }
+ ],
+ "BRK250": [
+  {
+   "code": "BRK252",
+   "title": "From observability to ROI for AI agents on any framework",
+   "score": 0.76
+  },
+  {
+   "code": "DEM341",
+   "title": "Any agent, any cloud: Standardized tracing with Foundry+OpenTelemetry",
+   "score": 0.74
+  },
+  {
+   "code": "ODSP933",
+   "title": "Agentic infrastructure needs agentic observability",
+   "score": 0.73
+  },
+  {
+   "code": "ODSP909",
+   "title": "Take AI agents from prototype to production with OpenTelemetry",
+   "score": 0.72
+  },
+  {
+   "code": "DEM361",
+   "title": "Understand and fix Agent Framework apps with observability and evals",
+   "score": 0.71
+  }
+ ],
+ "BRK251": [
+  {
+   "code": "OD840",
+   "title": "Enable agents for enterprises using Agent 365 SDK",
+   "score": 0.76
+  },
+  {
+   "code": "BRK240",
+   "title": "Build context-aware agents: From data to decisions",
+   "score": 0.73
+  },
+  {
+   "code": "BRKSP94",
+   "title": "Orchestrate specialist agents with NVIDIA Nemotron models on Foundry",
+   "score": 0.73
+  },
+  {
+   "code": "DEM340",
+   "title": "Build work-ready agents with Foundry + Work IQ, govern with Agent 365",
+   "score": 0.72
+  },
+  {
+   "code": "ODSP940",
+   "title": "Create enterprise AI apps at scale with Bolt and Microsoft",
+   "score": 0.68
+  }
+ ],
+ "BRK252": [
+  {
+   "code": "DEM341",
+   "title": "Any agent, any cloud: Standardized tracing with Foundry+OpenTelemetry",
+   "score": 0.76
+  },
+  {
+   "code": "ODSP909",
+   "title": "Take AI agents from prototype to production with OpenTelemetry",
+   "score": 0.73
+  },
+  {
+   "code": "ODSP933",
+   "title": "Agentic infrastructure needs agentic observability",
+   "score": 0.71
+  },
+  {
+   "code": "DEM369",
+   "title": "Responsible AI in Action: From Principles to Real-World Engineering",
+   "score": 0.7
+  },
+  {
+   "code": "DEM312",
+   "title": "Multi-agents in action with 3 AI agents, 3 frameworks, tools & models",
+   "score": 0.7
+  }
+ ],
+ "BRK261": [
+  {
+   "code": "OD857",
+   "title": "Connected Experience APIs for Windows apps",
+   "score": 0.67
+  },
+  {
+   "code": "KEY01",
+   "title": "Microsoft Build 2026 Opening Keynote (Satya Nadella)",
+   "score": 0.67
+  },
+  {
+   "code": "DEM346",
+   "title": "WSL improvements and the new Containers CLI and APIs",
+   "score": 0.66
+  },
+  {
+   "code": "DEM345",
+   "title": "From prompt to app, build AI powered apps on Windows",
+   "score": 0.66
+  },
+  {
+   "code": "BRK207",
+   "title": "GitHub Copilot in Visual Studio: Agents That Debug, Profile, and Test",
+   "score": 0.65
+  }
+ ],
+ "BRKSP90": [
+  {
+   "code": "DEMSP380",
+   "title": "Build automated agents using optimized AI Foundry models on Snapdragon",
+   "score": 0.67
+  },
+  {
+   "code": "OD837",
+   "title": "Build and deploy AI at the edge for real-world impact",
+   "score": 0.64
+  },
+  {
+   "code": "BRKSP92",
+   "title": "Scale agentic AI from on-device to cloud orchestration",
+   "score": 0.64
+  },
+  {
+   "code": "OD803",
+   "title": "Taking your AI to the edge with .NET MAUI",
+   "score": 0.63
+  },
+  {
+   "code": "OD805",
+   "title": "AI Building Blocks for .NET: Add intelligence to your C# apps",
+   "score": 0.62
+  }
+ ],
+ "BRKSP91": [
+  {
+   "code": "BRKSP94",
+   "title": "Orchestrate specialist agents with NVIDIA Nemotron models on Foundry",
+   "score": 0.77
+  },
+  {
+   "code": "BRK241",
+   "title": "From prototype to production: build and run agents at scale",
+   "score": 0.72
+  },
+  {
+   "code": "DEMSP383",
+   "title": "Move AI workflows from test to production on Microsoft Foundry",
+   "score": 0.69
+  },
+  {
+   "code": "BRK231",
+   "title": "Deploy. Observe. Learn. Reinforcement learning for production agents",
+   "score": 0.69
+  },
+  {
+   "code": "DEMSP388",
+   "title": "Ship faster with Claude Code and Cowork in Microsoft Foundry",
+   "score": 0.67
+  }
+ ],
+ "BRKSP92": [
+  {
+   "code": "DEM351",
+   "title": "AI Skills Navigator: Accelerate tech skills with personalized learning",
+   "score": 0.72
+  },
+  {
+   "code": "BRK252",
+   "title": "From observability to ROI for AI agents on any framework",
+   "score": 0.68
+  },
+  {
+   "code": "DEMSP380",
+   "title": "Build automated agents using optimized AI Foundry models on Snapdragon",
+   "score": 0.68
+  },
+  {
+   "code": "BRK244",
+   "title": "Agent supervision is the new senior engineering skill",
+   "score": 0.68
+  },
+  {
+   "code": "OD837",
+   "title": "Build and deploy AI at the edge for real-world impact",
+   "score": 0.68
+  }
+ ],
+ "BRKSP94": [
+  {
+   "code": "OD800",
+   "title": "Using autonomous SRE to move from alerts to action",
+   "score": 0.66
+  },
+  {
+   "code": "DEMSP390",
+   "title": "Create multimodal AI agents with persistent memory",
+   "score": 0.65
+  },
+  {
+   "code": "DEMSP387",
+   "title": "Secure agent workflows in GitHub Copilot with NVIDIA OpenShell",
+   "score": 0.64
+  },
+  {
+   "code": "DEM320",
+   "title": "Hugging Face open-source models to production on Microsoft Foundry",
+   "score": 0.64
+  },
+  {
+   "code": "DEM341",
+   "title": "Any agent, any cloud: Standardized tracing with Foundry+OpenTelemetry",
+   "score": 0.64
+  }
+ ],
+ "DEM300": [
+  {
+   "code": "BRK207",
+   "title": "GitHub Copilot in Visual Studio: Agents That Debug, Profile, and Test",
+   "score": 0.67
+  },
+  {
+   "code": "DEM341",
+   "title": "Any agent, any cloud: Standardized tracing with Foundry+OpenTelemetry",
+   "score": 0.66
+  },
+  {
+   "code": "OD805",
+   "title": "AI Building Blocks for .NET: Add intelligence to your C# apps",
+   "score": 0.65
+  },
+  {
+   "code": "BRK250",
+   "title": "Observe and control agents across any framework with open source tools",
+   "score": 0.65
+  },
+  {
+   "code": "ODSP900",
+   "title": "Performance tuning on Cobalt with Arm Performix",
+   "score": 0.65
+  }
+ ],
+ "DEM301": [
+  {
+   "code": "DEM351",
+   "title": "AI Skills Navigator: Accelerate tech skills with personalized learning",
+   "score": 0.73
+  },
+  {
+   "code": "OD804",
+   "title": "Simplifying .NET Installs with dotnetup",
+   "score": 0.7
+  },
+  {
+   "code": "ODSP908",
+   "title": "Streamline your end-to-end developer workflow with AI",
+   "score": 0.7
+  },
+  {
+   "code": "BRK202",
+   "title": "Azure DevOps meets GitHub, the path to AI powered SDLC",
+   "score": 0.69
+  },
+  {
+   "code": "BRK233",
+   "title": "Software Defensibility in the era of AI coding",
+   "score": 0.69
+  }
+ ],
+ "DEM302": [
+  {
+   "code": "OD836",
+   "title": "From Test Kitchen to Table: A Demo-driven Tour of Foundry Portal for AI Developers",
+   "score": 0.73
+  },
+  {
+   "code": "OD832",
+   "title": "From workflows to agentic automation with Azure Logic Apps",
+   "score": 0.71
+  },
+  {
+   "code": "DEM351",
+   "title": "AI Skills Navigator: Accelerate tech skills with personalized learning",
+   "score": 0.7
+  },
+  {
+   "code": "BRK205",
+   "title": "Aspire for agents: Transform how you build and deploy distributed apps",
+   "score": 0.69
+  },
+  {
+   "code": "BRK202",
+   "title": "Azure DevOps meets GitHub, the path to AI powered SDLC",
+   "score": 0.69
+  }
+ ],
+ "DEM303": [
+  {
+   "code": "DEM351",
+   "title": "AI Skills Navigator: Accelerate tech skills with personalized learning",
+   "score": 0.69
+  },
+  {
+   "code": "DEM367",
+   "title": "Onboarding a Developer with AI: A Better First-Day Experience",
+   "score": 0.69
+  },
+  {
+   "code": "DEM302",
+   "title": "Build and deploy an Azure app with your agent team",
+   "score": 0.68
+  },
+  {
+   "code": "DEMSP388",
+   "title": "Ship faster with Claude Code and Cowork in Microsoft Foundry",
+   "score": 0.67
+  },
+  {
+   "code": "BRK208",
+   "title": "Ensuring your code works when AI testing isn't enough",
+   "score": 0.66
+  }
+ ],
+ "DEM304": [
+  {
+   "code": "OD854",
+   "title": "Building WinUI Apps with C# First Patterns and AI Assisted Workflows",
+   "score": 0.58
+  },
+  {
+   "code": "DEM310",
+   "title": "Ship code faster with AI-powered NoSQL schema design",
+   "score": 0.58
+  },
+  {
+   "code": "ODSP929",
+   "title": "Build modern .NET apps with Uno Platform, AI, and visual tools",
+   "score": 0.57
+  },
+  {
+   "code": "BRK207",
+   "title": "GitHub Copilot in Visual Studio: Agents That Debug, Profile, and Test",
+   "score": 0.57
+  },
+  {
+   "code": "DEMSP394",
+   "title": "Scale enterprise .NET apps with AI-assisted cross-platform workflows",
+   "score": 0.56
+  }
+ ],
+ "DEM305": [
+  {
+   "code": "ODSP908",
+   "title": "Streamline your end-to-end developer workflow with AI",
+   "score": 0.73
+  },
+  {
+   "code": "OD832",
+   "title": "From workflows to agentic automation with Azure Logic Apps",
+   "score": 0.69
+  },
+  {
+   "code": "BRK203",
+   "title": "From CLI to PR: Automating the path to merged code",
+   "score": 0.68
+  },
+  {
+   "code": "BRK200",
+   "title": "Why your AI code doesn't ship: Closing the gap to production",
+   "score": 0.68
+  },
+  {
+   "code": "DEMSP387",
+   "title": "Secure agent workflows in GitHub Copilot with NVIDIA OpenShell",
+   "score": 0.67
+  }
+ ],
+ "DEM310": [
+  {
+   "code": "BRK223",
+   "title": "From rows to reasoning: Designing databases for AI apps and agents",
+   "score": 0.7
+  },
+  {
+   "code": "ODSP916",
+   "title": "Design systems for every user including people and LLMs",
+   "score": 0.66
+  },
+  {
+   "code": "OD820",
+   "title": "Designing Reliable Multi-Agent Apps with Azure Cosmos DB",
+   "score": 0.64
+  },
+  {
+   "code": "OD823",
+   "title": "Faster AI Responses with Semantic Caching in Azure Managed Redis",
+   "score": 0.64
+  },
+  {
+   "code": "OD815",
+   "title": "Unify your entire data estate on a single, AI-ready data lake",
+   "score": 0.64
+  }
+ ],
+ "DEM311": [
+  {
+   "code": "BRK244",
+   "title": "Agent supervision is the new senior engineering skill",
+   "score": 0.75
+  },
+  {
+   "code": "BRK222",
+   "title": "The honest practitioner's take on agentic AI on Kubernetes",
+   "score": 0.74
+  },
+  {
+   "code": "BRKSP90",
+   "title": "Stop routing docstrings to 70B models with on-device AI on Snapdragon",
+   "score": 0.74
+  },
+  {
+   "code": "BRK233",
+   "title": "Software Defensibility in the era of AI coding",
+   "score": 0.74
+  },
+  {
+   "code": "OD827",
+   "title": "Build, deploy, and run Linux workloads on Azure",
+   "score": 0.72
+  }
+ ],
+ "DEM312": [
+  {
+   "code": "DEM351",
+   "title": "AI Skills Navigator: Accelerate tech skills with personalized learning",
+   "score": 0.7
+  },
+  {
+   "code": "DEM333",
+   "title": "How Foundry integrates with open-source frameworks and tools",
+   "score": 0.69
+  },
+  {
+   "code": "BRK242",
+   "title": "Turn your agents into action: Connect tools, APIs, and documents",
+   "score": 0.69
+  },
+  {
+   "code": "OD806",
+   "title": ".NET 11 in depth: Runtime, libraries, and SDK for the AI era",
+   "score": 0.69
+  },
+  {
+   "code": "DEM302",
+   "title": "Build and deploy an Azure app with your agent team",
+   "score": 0.68
+  }
+ ],
+ "DEM314": [
+  {
+   "code": "KEY01",
+   "title": "Microsoft Build 2026 Opening Keynote (Satya Nadella)",
+   "score": 0.63
+  },
+  {
+   "code": "BRKSP90",
+   "title": "Stop routing docstrings to 70B models with on-device AI on Snapdragon",
+   "score": 0.6
+  },
+  {
+   "code": "BRK247",
+   "title": "Scott and Mark learn...how agents reshape software engineering",
+   "score": 0.58
+  },
+  {
+   "code": "OD812",
+   "title": "Fabric IQ: Bringing enterprise intelligence into the developer workflow",
+   "score": 0.57
+  },
+  {
+   "code": "BRKSP92",
+   "title": "Scale agentic AI from on-device to cloud orchestration",
+   "score": 0.57
+  }
+ ],
+ "DEM320": [
+  {
+   "code": "BRKSP94",
+   "title": "Orchestrate specialist agents with NVIDIA Nemotron models on Foundry",
+   "score": 0.74
+  },
+  {
+   "code": "DEMSP383",
+   "title": "Move AI workflows from test to production on Microsoft Foundry",
+   "score": 0.69
+  },
+  {
+   "code": "ODSP922",
+   "title": "Develop a conversational search experience without rebuilding your app",
+   "score": 0.68
+  },
+  {
+   "code": "OD839",
+   "title": "AI solutions built to power industrial innovation and sovereign control",
+   "score": 0.68
+  },
+  {
+   "code": "BRKSP91",
+   "title": "Turn foundation models into production AI on Microsoft Foundry",
+   "score": 0.67
+  }
+ ],
+ "DEM322": [
+  {
+   "code": "BRK231",
+   "title": "Deploy. Observe. Learn. Reinforcement learning for production agents",
+   "score": 0.7
+  },
+  {
+   "code": "BRKSP91",
+   "title": "Turn foundation models into production AI on Microsoft Foundry",
+   "score": 0.67
+  },
+  {
+   "code": "BRK230",
+   "title": "Build smarter AI systems in Foundry as models and costs evolve",
+   "score": 0.67
+  },
+  {
+   "code": "SEG01",
+   "title": "Frontier Tuning",
+   "score": 0.67
+  },
+  {
+   "code": "ODSP914",
+   "title": "Run AI at scale with Ray + Kubernetes using Anyscale on Azure",
+   "score": 0.66
+  }
+ ],
+ "DEM323": [
+  {
+   "code": "ODSP922",
+   "title": "Develop a conversational search experience without rebuilding your app",
+   "score": 0.68
+  },
+  {
+   "code": "BRKSP94",
+   "title": "Orchestrate specialist agents with NVIDIA Nemotron models on Foundry",
+   "score": 0.68
+  },
+  {
+   "code": "DEM320",
+   "title": "Hugging Face open-source models to production on Microsoft Foundry",
+   "score": 0.66
+  },
+  {
+   "code": "BRK250",
+   "title": "Observe and control agents across any framework with open source tools",
+   "score": 0.66
+  },
+  {
+   "code": "OD839",
+   "title": "AI solutions built to power industrial innovation and sovereign control",
+   "score": 0.65
+  }
+ ],
+ "DEM331": [
+  {
+   "code": "OD836",
+   "title": "From Test Kitchen to Table: A Demo-driven Tour of Foundry Portal for AI Developers",
+   "score": 0.7
+  },
+  {
+   "code": "OD832",
+   "title": "From workflows to agentic automation with Azure Logic Apps",
+   "score": 0.7
+  },
+  {
+   "code": "DEM302",
+   "title": "Build and deploy an Azure app with your agent team",
+   "score": 0.69
+  },
+  {
+   "code": "OD805",
+   "title": "AI Building Blocks for .NET: Add intelligence to your C# apps",
+   "score": 0.69
+  },
+  {
+   "code": "BRK241",
+   "title": "From prototype to production: build and run agents at scale",
+   "score": 0.69
+  }
+ ],
+ "DEM332": [
+  {
+   "code": "KEY01",
+   "title": "Microsoft Build 2026 Opening Keynote (Satya Nadella)",
+   "score": 0.71
+  },
+  {
+   "code": "BRK243",
+   "title": "Claw and agent harness in Microsoft Foundry",
+   "score": 0.71
+  },
+  {
+   "code": "BRK240",
+   "title": "Build context-aware agents: From data to decisions",
+   "score": 0.7
+  },
+  {
+   "code": "OD840",
+   "title": "Enable agents for enterprises using Agent 365 SDK",
+   "score": 0.7
+  },
+  {
+   "code": "BRK251",
+   "title": "Build secure and enterprise-ready agents with Agent 365",
+   "score": 0.7
+  }
+ ],
+ "DEM333": [
+  {
+   "code": "DEM302",
+   "title": "Build and deploy an Azure app with your agent team",
+   "score": 0.72
+  },
+  {
+   "code": "BRK230",
+   "title": "Build smarter AI systems in Foundry as models and costs evolve",
+   "score": 0.69
+  },
+  {
+   "code": "OD832",
+   "title": "From workflows to agentic automation with Azure Logic Apps",
+   "score": 0.69
+  },
+  {
+   "code": "BRK243",
+   "title": "Claw and agent harness in Microsoft Foundry",
+   "score": 0.68
+  },
+  {
+   "code": "BRK241",
+   "title": "From prototype to production: build and run agents at scale",
+   "score": 0.68
+  }
+ ],
+ "DEM340": [
+  {
+   "code": "BRK230",
+   "title": "Build smarter AI systems in Foundry as models and costs evolve",
+   "score": 0.76
+  },
+  {
+   "code": "OD840",
+   "title": "Enable agents for enterprises using Agent 365 SDK",
+   "score": 0.74
+  },
+  {
+   "code": "BRK240",
+   "title": "Build context-aware agents: From data to decisions",
+   "score": 0.73
+  },
+  {
+   "code": "DEM362",
+   "title": "Building a Multi-Agent Workflow in Microsoft Fabric",
+   "score": 0.73
+  },
+  {
+   "code": "ODSP915",
+   "title": "Resolve support cases with multi-agent workflows",
+   "score": 0.72
+  }
+ ],
+ "DEM341": [
+  {
+   "code": "BRK252",
+   "title": "From observability to ROI for AI agents on any framework",
+   "score": 0.74
+  },
+  {
+   "code": "BRK250",
+   "title": "Observe and control agents across any framework with open source tools",
+   "score": 0.72
+  },
+  {
+   "code": "DEM361",
+   "title": "Understand and fix Agent Framework apps with observability and evals",
+   "score": 0.7
+  },
+  {
+   "code": "ODSP909",
+   "title": "Take AI agents from prototype to production with OpenTelemetry",
+   "score": 0.69
+  },
+  {
+   "code": "ODSP933",
+   "title": "Agentic infrastructure needs agentic observability",
+   "score": 0.69
+  }
+ ],
+ "DEM345": [
+  {
+   "code": "BRK261",
+   "title": "Build and ship faster with a developer-optimized experience on Windows",
+   "score": 0.69
+  },
+  {
+   "code": "ODSP923",
+   "title": "Create enterprise apps with AI and MCP",
+   "score": 0.67
+  },
+  {
+   "code": "DEM351",
+   "title": "AI Skills Navigator: Accelerate tech skills with personalized learning",
+   "score": 0.67
+  },
+  {
+   "code": "OD802",
+   "title": "Building for the agentic web with .NET 11",
+   "score": 0.66
+  },
+  {
+   "code": "BRK242",
+   "title": "Turn your agents into action: Connect tools, APIs, and documents",
+   "score": 0.66
+  }
+ ],
+ "DEM346": [
+  {
+   "code": "BRK261",
+   "title": "Build and ship faster with a developer-optimized experience on Windows",
+   "score": 0.73
+  },
+  {
+   "code": "KEY01",
+   "title": "Microsoft Build 2026 Opening Keynote (Satya Nadella)",
+   "score": 0.67
+  },
+  {
+   "code": "DEM311",
+   "title": "Scale cloud-native workloads with Azure Linux",
+   "score": 0.64
+  },
+  {
+   "code": "OD803",
+   "title": "Taking your AI to the edge with .NET MAUI",
+   "score": 0.62
+  },
+  {
+   "code": "BRK222",
+   "title": "The honest practitioner's take on agentic AI on Kubernetes",
+   "score": 0.61
+  }
+ ],
+ "DEM350": [
+  {
+   "code": "OD800",
+   "title": "Using autonomous SRE to move from alerts to action",
+   "score": 0.73
+  },
+  {
+   "code": "BRK202",
+   "title": "Azure DevOps meets GitHub, the path to AI powered SDLC",
+   "score": 0.71
+  },
+  {
+   "code": "DEM301",
+   "title": "Rethinking CI: Actions, AI Agents, and the End of Commit-Fail-Commit",
+   "score": 0.71
+  },
+  {
+   "code": "OD854",
+   "title": "Building WinUI Apps with C# First Patterns and AI Assisted Workflows",
+   "score": 0.7
+  },
+  {
+   "code": "ODSP908",
+   "title": "Streamline your end-to-end developer workflow with AI",
+   "score": 0.7
+  }
+ ],
+ "DEM351": [
+  {
+   "code": "SEG01",
+   "title": "Frontier Tuning",
+   "score": 0.67
+  },
+  {
+   "code": "BRK242",
+   "title": "Turn your agents into action: Connect tools, APIs, and documents",
+   "score": 0.65
+  },
+  {
+   "code": "DEM323",
+   "title": "Under the hood of Microsoft AI models",
+   "score": 0.63
+  },
+  {
+   "code": "BRK207",
+   "title": "GitHub Copilot in Visual Studio: Agents That Debug, Profile, and Test",
+   "score": 0.63
+  },
+  {
+   "code": "DEM310",
+   "title": "Ship code faster with AI-powered NoSQL schema design",
+   "score": 0.63
+  }
+ ],
+ "DEM361": [
+  {
+   "code": "BRK252",
+   "title": "From observability to ROI for AI agents on any framework",
+   "score": 0.77
+  },
+  {
+   "code": "ODSP933",
+   "title": "Agentic infrastructure needs agentic observability",
+   "score": 0.72
+  },
+  {
+   "code": "DEM341",
+   "title": "Any agent, any cloud: Standardized tracing with Foundry+OpenTelemetry",
+   "score": 0.7
+  },
+  {
+   "code": "ODSP909",
+   "title": "Take AI agents from prototype to production with OpenTelemetry",
+   "score": 0.69
+  },
+  {
+   "code": "BRK250",
+   "title": "Observe and control agents across any framework with open source tools",
+   "score": 0.68
+  }
+ ],
+ "DEM362": [
+  {
+   "code": "DEM369",
+   "title": "Responsible AI in Action: From Principles to Real-World Engineering",
+   "score": 0.71
+  },
+  {
+   "code": "OD811",
+   "title": "Powering the next AI frontier with a unified data platform",
+   "score": 0.71
+  },
+  {
+   "code": "OD812",
+   "title": "Fabric IQ: Bringing enterprise intelligence into the developer workflow",
+   "score": 0.7
+  },
+  {
+   "code": "DEM312",
+   "title": "Multi-agents in action with 3 AI agents, 3 frameworks, tools & models",
+   "score": 0.69
+  },
+  {
+   "code": "DEM302",
+   "title": "Build and deploy an Azure app with your agent team",
+   "score": 0.69
+  }
+ ],
+ "DEM364": [
+  {
+   "code": "OD822",
+   "title": "Smarter PostgreSQL migrations to power modern, intelligent apps",
+   "score": 0.71
+  },
+  {
+   "code": "BRK223",
+   "title": "From rows to reasoning: Designing databases for AI apps and agents",
+   "score": 0.7
+  },
+  {
+   "code": "BRK228",
+   "title": "Modern resiliency from build to recovery through Agentic AI",
+   "score": 0.65
+  },
+  {
+   "code": "BRK225",
+   "title": "Data, apps, and agents: the future of app dev with Rayfin",
+   "score": 0.65
+  },
+  {
+   "code": "OD821",
+   "title": "Building Azure DocumentDB on Open-Source Foundations",
+   "score": 0.64
+  }
+ ],
+ "DEM367": [
+  {
+   "code": "DEM303",
+   "title": "Late to agentic coding? Don't panic, build.",
+   "score": 0.72
+  },
+  {
+   "code": "BRK203",
+   "title": "From CLI to PR: Automating the path to merged code",
+   "score": 0.71
+  },
+  {
+   "code": "BRK202",
+   "title": "Azure DevOps meets GitHub, the path to AI powered SDLC",
+   "score": 0.69
+  },
+  {
+   "code": "ODSP908",
+   "title": "Streamline your end-to-end developer workflow with AI",
+   "score": 0.69
+  },
+  {
+   "code": "BRK220",
+   "title": "Using AI tools to teach old apps new tricks",
+   "score": 0.68
+  }
+ ],
+ "DEM369": [
+  {
+   "code": "BRKSP94",
+   "title": "Orchestrate specialist agents with NVIDIA Nemotron models on Foundry",
+   "score": 0.69
+  },
+  {
+   "code": "DEM367",
+   "title": "Onboarding a Developer with AI: A Better First-Day Experience",
+   "score": 0.68
+  },
+  {
+   "code": "OD836",
+   "title": "From Test Kitchen to Table: A Demo-driven Tour of Foundry Portal for AI Developers",
+   "score": 0.68
+  },
+  {
+   "code": "BRK252",
+   "title": "From observability to ROI for AI agents on any framework",
+   "score": 0.67
+  },
+  {
+   "code": "BRKSP91",
+   "title": "Turn foundation models into production AI on Microsoft Foundry",
+   "score": 0.67
+  }
+ ],
+ "DEM375": [
+  {
+   "code": "DEM367",
+   "title": "Onboarding a Developer with AI: A Better First-Day Experience",
+   "score": 0.7
+  },
+  {
+   "code": "OD822",
+   "title": "Smarter PostgreSQL migrations to power modern, intelligent apps",
+   "score": 0.65
+  },
+  {
+   "code": "BRK224",
+   "title": "PepsiCo's blueprint for agentic AI",
+   "score": 0.64
+  },
+  {
+   "code": "OD827",
+   "title": "Build, deploy, and run Linux workloads on Azure",
+   "score": 0.63
+  },
+  {
+   "code": "DEM376",
+   "title": "The story of the Global AI Community that spans every continent",
+   "score": 0.58
+  }
+ ],
+ "DEM376": [
+  {
+   "code": "DEM375",
+   "title": "So you want to become an MVP?",
+   "score": 0.66
+  },
+  {
+   "code": "OD818",
+   "title": "The AI-native Data Engineer",
+   "score": 0.62
+  },
+  {
+   "code": "DEM323",
+   "title": "Under the hood of Microsoft AI models",
+   "score": 0.62
+  },
+  {
+   "code": "BRK247",
+   "title": "Scott and Mark learn...how agents reshape software engineering",
+   "score": 0.62
+  },
+  {
+   "code": "BRK229",
+   "title": "From Skeptic to Superpower: Real-World AI Coding Workflows That Scale",
+   "score": 0.62
+  }
+ ],
+ "DEMSP380": [
+  {
+   "code": "OD832",
+   "title": "From workflows to agentic automation with Azure Logic Apps",
+   "score": 0.68
+  },
+  {
+   "code": "BRKSP90",
+   "title": "Stop routing docstrings to 70B models with on-device AI on Snapdragon",
+   "score": 0.68
+  },
+  {
+   "code": "BRK243",
+   "title": "Claw and agent harness in Microsoft Foundry",
+   "score": 0.67
+  },
+  {
+   "code": "BRK230",
+   "title": "Build smarter AI systems in Foundry as models and costs evolve",
+   "score": 0.67
+  },
+  {
+   "code": "BRK241",
+   "title": "From prototype to production: build and run agents at scale",
+   "score": 0.66
+  }
+ ],
+ "DEMSP381": [
+  {
+   "code": "OD828",
+   "title": "Latest Cobalt VMs and Azure Boost enhancements",
+   "score": 0.75
+  },
+  {
+   "code": "ODSP900",
+   "title": "Performance tuning on Cobalt with Arm Performix",
+   "score": 0.73
+  },
+  {
+   "code": "OD823",
+   "title": "Faster AI Responses with Semantic Caching in Azure Managed Redis",
+   "score": 0.71
+  },
+  {
+   "code": "BRK222",
+   "title": "The honest practitioner's take on agentic AI on Kubernetes",
+   "score": 0.7
+  },
+  {
+   "code": "OD836",
+   "title": "From Test Kitchen to Table: A Demo-driven Tour of Foundry Portal for AI Developers",
+   "score": 0.7
+  }
+ ],
+ "DEMSP382": [
+  {
+   "code": "ODSP919",
+   "title": "Move from data to intelligence with Oracle MCP and Microsoft IQ",
+   "score": 0.73
+  },
+  {
+   "code": "OD818",
+   "title": "The AI-native Data Engineer",
+   "score": 0.71
+  },
+  {
+   "code": "ODSP923",
+   "title": "Create enterprise apps with AI and MCP",
+   "score": 0.69
+  },
+  {
+   "code": "BRK223",
+   "title": "From rows to reasoning: Designing databases for AI apps and agents",
+   "score": 0.69
+  },
+  {
+   "code": "BRK220",
+   "title": "Using AI tools to teach old apps new tricks",
+   "score": 0.69
+  }
+ ],
+ "DEMSP383": [
+  {
+   "code": "BRKSP94",
+   "title": "Orchestrate specialist agents with NVIDIA Nemotron models on Foundry",
+   "score": 0.71
+  },
+  {
+   "code": "ODSP909",
+   "title": "Take AI agents from prototype to production with OpenTelemetry",
+   "score": 0.68
+  },
+  {
+   "code": "DEM320",
+   "title": "Hugging Face open-source models to production on Microsoft Foundry",
+   "score": 0.67
+  },
+  {
+   "code": "DEM341",
+   "title": "Any agent, any cloud: Standardized tracing with Foundry+OpenTelemetry",
+   "score": 0.67
+  },
+  {
+   "code": "BRK252",
+   "title": "From observability to ROI for AI agents on any framework",
+   "score": 0.67
+  }
+ ],
+ "DEMSP385": [
+  {
+   "code": "BRK241",
+   "title": "From prototype to production: build and run agents at scale",
+   "score": 0.72
+  },
+  {
+   "code": "DEM361",
+   "title": "Understand and fix Agent Framework apps with observability and evals",
+   "score": 0.71
+  },
+  {
+   "code": "ODSP909",
+   "title": "Take AI agents from prototype to production with OpenTelemetry",
+   "score": 0.71
+  },
+  {
+   "code": "DEMSP395",
+   "title": "Teach AI agents to manage context with Elastic Agent Builder",
+   "score": 0.7
+  },
+  {
+   "code": "BRK252",
+   "title": "From observability to ROI for AI agents on any framework",
+   "score": 0.7
+  }
+ ],
+ "DEMSP387": [
+  {
+   "code": "OD841",
+   "title": "Ship fast, stay secure: from code to runtime",
+   "score": 0.71
+  },
+  {
+   "code": "BRKSP94",
+   "title": "Orchestrate specialist agents with NVIDIA Nemotron models on Foundry",
+   "score": 0.71
+  },
+  {
+   "code": "KEY01",
+   "title": "Microsoft Build 2026 Opening Keynote (Satya Nadella)",
+   "score": 0.7
+  },
+  {
+   "code": "ODSP908",
+   "title": "Streamline your end-to-end developer workflow with AI",
+   "score": 0.7
+  },
+  {
+   "code": "BRK203",
+   "title": "From CLI to PR: Automating the path to merged code",
+   "score": 0.7
+  }
+ ],
+ "DEMSP388": [
+  {
+   "code": "BRKSP94",
+   "title": "Orchestrate specialist agents with NVIDIA Nemotron models on Foundry",
+   "score": 0.73
+  },
+  {
+   "code": "DEM302",
+   "title": "Build and deploy an Azure app with your agent team",
+   "score": 0.69
+  },
+  {
+   "code": "DEM320",
+   "title": "Hugging Face open-source models to production on Microsoft Foundry",
+   "score": 0.69
+  },
+  {
+   "code": "BRK241",
+   "title": "From prototype to production: build and run agents at scale",
+   "score": 0.69
+  },
+  {
+   "code": "BRK230",
+   "title": "Build smarter AI systems in Foundry as models and costs evolve",
+   "score": 0.68
+  }
+ ],
+ "DEMSP390": [
+  {
+   "code": "OD836",
+   "title": "From Test Kitchen to Table: A Demo-driven Tour of Foundry Portal for AI Developers",
+   "score": 0.69
+  },
+  {
+   "code": "OD820",
+   "title": "Designing Reliable Multi-Agent Apps with Azure Cosmos DB",
+   "score": 0.69
+  },
+  {
+   "code": "OD805",
+   "title": "AI Building Blocks for .NET: Add intelligence to your C# apps",
+   "score": 0.69
+  },
+  {
+   "code": "OD823",
+   "title": "Faster AI Responses with Semantic Caching in Azure Managed Redis",
+   "score": 0.68
+  },
+  {
+   "code": "BRK223",
+   "title": "From rows to reasoning: Designing databases for AI apps and agents",
+   "score": 0.68
+  }
+ ],
+ "DEMSP393": [
+  {
+   "code": "BRK230",
+   "title": "Build smarter AI systems in Foundry as models and costs evolve",
+   "score": 0.69
+  },
+  {
+   "code": "DEM302",
+   "title": "Build and deploy an Azure app with your agent team",
+   "score": 0.68
+  },
+  {
+   "code": "BRK241",
+   "title": "From prototype to production: build and run agents at scale",
+   "score": 0.68
+  },
+  {
+   "code": "DEM312",
+   "title": "Multi-agents in action with 3 AI agents, 3 frameworks, tools & models",
+   "score": 0.68
+  },
+  {
+   "code": "BRK252",
+   "title": "From observability to ROI for AI agents on any framework",
+   "score": 0.67
+  }
+ ],
+ "DEMSP394": [
+  {
+   "code": "OD802",
+   "title": "Building for the agentic web with .NET 11",
+   "score": 0.69
+  },
+  {
+   "code": "OD854",
+   "title": "Building WinUI Apps with C# First Patterns and AI Assisted Workflows",
+   "score": 0.68
+  },
+  {
+   "code": "ODSP929",
+   "title": "Build modern .NET apps with Uno Platform, AI, and visual tools",
+   "score": 0.68
+  },
+  {
+   "code": "OD801",
+   "title": "Modernize intelligent apps and agents with .NET that scale as you grow",
+   "score": 0.68
+  },
+  {
+   "code": "OD804",
+   "title": "Simplifying .NET Installs with dotnetup",
+   "score": 0.68
+  }
+ ],
+ "DEMSP395": [
+  {
+   "code": "BRK240",
+   "title": "Build context-aware agents: From data to decisions",
+   "score": 0.66
+  },
+  {
+   "code": "DEMSP385",
+   "title": "Build context-aware agents using GitHub Copilot, Elastic, and Azure AI",
+   "score": 0.65
+  },
+  {
+   "code": "ODSP922",
+   "title": "Develop a conversational search experience without rebuilding your app",
+   "score": 0.63
+  },
+  {
+   "code": "OD818",
+   "title": "The AI-native Data Engineer",
+   "score": 0.63
+  },
+  {
+   "code": "OD800",
+   "title": "Using autonomous SRE to move from alerts to action",
+   "score": 0.63
+  }
+ ],
+ "KEY01": [
+  {
+   "code": "DEMSP381",
+   "title": "Scale agentic AI cost-efficiently on Azure with Arm Cobalt VMs",
+   "score": 0.76
+  },
+  {
+   "code": "OD836",
+   "title": "From Test Kitchen to Table: A Demo-driven Tour of Foundry Portal for AI Developers",
+   "score": 0.72
+  },
+  {
+   "code": "DEM302",
+   "title": "Build and deploy an Azure app with your agent team",
+   "score": 0.72
+  },
+  {
+   "code": "BRK241",
+   "title": "From prototype to production: build and run agents at scale",
+   "score": 0.72
+  },
+  {
+   "code": "DEM333",
+   "title": "How Foundry integrates with open-source frameworks and tools",
+   "score": 0.71
+  }
+ ],
+ "OD800": [
+  {
+   "code": "ODSP933",
+   "title": "Agentic infrastructure needs agentic observability",
+   "score": 0.68
+  },
+  {
+   "code": "BRK252",
+   "title": "From observability to ROI for AI agents on any framework",
+   "score": 0.67
+  },
+  {
+   "code": "DEM341",
+   "title": "Any agent, any cloud: Standardized tracing with Foundry+OpenTelemetry",
+   "score": 0.66
+  },
+  {
+   "code": "BRK243",
+   "title": "Claw and agent harness in Microsoft Foundry",
+   "score": 0.64
+  },
+  {
+   "code": "ODSP915",
+   "title": "Resolve support cases with multi-agent workflows",
+   "score": 0.64
+  }
+ ],
+ "OD801": [
+  {
+   "code": "OD802",
+   "title": "Building for the agentic web with .NET 11",
+   "score": 0.71
+  },
+  {
+   "code": "OD805",
+   "title": "AI Building Blocks for .NET: Add intelligence to your C# apps",
+   "score": 0.69
+  },
+  {
+   "code": "BRKSP94",
+   "title": "Orchestrate specialist agents with NVIDIA Nemotron models on Foundry",
+   "score": 0.67
+  },
+  {
+   "code": "ODSP923",
+   "title": "Create enterprise apps with AI and MCP",
+   "score": 0.66
+  },
+  {
+   "code": "DEM351",
+   "title": "AI Skills Navigator: Accelerate tech skills with personalized learning",
+   "score": 0.66
+  }
+ ],
+ "OD802": [
+  {
+   "code": "OD806",
+   "title": ".NET 11 in depth: Runtime, libraries, and SDK for the AI era",
+   "score": 0.7
+  },
+  {
+   "code": "OD803",
+   "title": "Taking your AI to the edge with .NET MAUI",
+   "score": 0.67
+  },
+  {
+   "code": "OD805",
+   "title": "AI Building Blocks for .NET: Add intelligence to your C# apps",
+   "score": 0.67
+  },
+  {
+   "code": "ODSP929",
+   "title": "Build modern .NET apps with Uno Platform, AI, and visual tools",
+   "score": 0.66
+  },
+  {
+   "code": "BRK241",
+   "title": "From prototype to production: build and run agents at scale",
+   "score": 0.66
+  }
+ ],
+ "OD803": [
+  {
+   "code": "DEM345",
+   "title": "From prompt to app, build AI powered apps on Windows",
+   "score": 0.71
+  },
+  {
+   "code": "ODSP929",
+   "title": "Build modern .NET apps with Uno Platform, AI, and visual tools",
+   "score": 0.66
+  },
+  {
+   "code": "ODSP902",
+   "title": "Build AI-driven UIs in .NET MAUI with design systems",
+   "score": 0.65
+  },
+  {
+   "code": "OD805",
+   "title": "AI Building Blocks for .NET: Add intelligence to your C# apps",
+   "score": 0.64
+  },
+  {
+   "code": "DEMSP394",
+   "title": "Scale enterprise .NET apps with AI-assisted cross-platform workflows",
+   "score": 0.64
+  }
+ ],
+ "OD804": [
+  {
+   "code": "OD802",
+   "title": "Building for the agentic web with .NET 11",
+   "score": 0.66
+  },
+  {
+   "code": "OD803",
+   "title": "Taking your AI to the edge with .NET MAUI",
+   "score": 0.66
+  },
+  {
+   "code": "OD801",
+   "title": "Modernize intelligent apps and agents with .NET that scale as you grow",
+   "score": 0.65
+  },
+  {
+   "code": "BRK261",
+   "title": "Build and ship faster with a developer-optimized experience on Windows",
+   "score": 0.64
+  },
+  {
+   "code": "OD806",
+   "title": ".NET 11 in depth: Runtime, libraries, and SDK for the AI era",
+   "score": 0.64
+  }
+ ],
+ "OD805": [
+  {
+   "code": "DEM345",
+   "title": "From prompt to app, build AI powered apps on Windows",
+   "score": 0.73
+  },
+  {
+   "code": "OD802",
+   "title": "Building for the agentic web with .NET 11",
+   "score": 0.72
+  },
+  {
+   "code": "OD803",
+   "title": "Taking your AI to the edge with .NET MAUI",
+   "score": 0.69
+  },
+  {
+   "code": "ODSP923",
+   "title": "Create enterprise apps with AI and MCP",
+   "score": 0.68
+  },
+  {
+   "code": "DEMSP394",
+   "title": "Scale enterprise .NET apps with AI-assisted cross-platform workflows",
+   "score": 0.68
+  }
+ ],
+ "OD806": [
+  {
+   "code": "OD803",
+   "title": "Taking your AI to the edge with .NET MAUI",
+   "score": 0.68
+  },
+  {
+   "code": "OD802",
+   "title": "Building for the agentic web with .NET 11",
+   "score": 0.67
+  },
+  {
+   "code": "OD805",
+   "title": "AI Building Blocks for .NET: Add intelligence to your C# apps",
+   "score": 0.65
+  },
+  {
+   "code": "DEMSP394",
+   "title": "Scale enterprise .NET apps with AI-assisted cross-platform workflows",
+   "score": 0.64
+  },
+  {
+   "code": "OD811",
+   "title": "Powering the next AI frontier with a unified data platform",
+   "score": 0.64
+  }
+ ],
+ "OD811": [
+  {
+   "code": "BRK224",
+   "title": "PepsiCo's blueprint for agentic AI",
+   "score": 0.7
+  },
+  {
+   "code": "OD815",
+   "title": "Unify your entire data estate on a single, AI-ready data lake",
+   "score": 0.69
+  },
+  {
+   "code": "DEM362",
+   "title": "Building a Multi-Agent Workflow in Microsoft Fabric",
+   "score": 0.69
+  },
+  {
+   "code": "DEM369",
+   "title": "Responsible AI in Action: From Principles to Real-World Engineering",
+   "score": 0.69
+  },
+  {
+   "code": "OD818",
+   "title": "The AI-native Data Engineer",
+   "score": 0.69
+  }
+ ],
+ "OD812": [
+  {
+   "code": "DEM362",
+   "title": "Building a Multi-Agent Workflow in Microsoft Fabric",
+   "score": 0.77
+  },
+  {
+   "code": "BRK240",
+   "title": "Build context-aware agents: From data to decisions",
+   "score": 0.76
+  },
+  {
+   "code": "OD811",
+   "title": "Powering the next AI frontier with a unified data platform",
+   "score": 0.74
+  },
+  {
+   "code": "OD819",
+   "title": "Real-Time Intelligence: Building event-driven AI apps and agents",
+   "score": 0.74
+  },
+  {
+   "code": "DEM369",
+   "title": "Responsible AI in Action: From Principles to Real-World Engineering",
+   "score": 0.72
+  }
+ ],
+ "OD815": [
+  {
+   "code": "BRK224",
+   "title": "PepsiCo's blueprint for agentic AI",
+   "score": 0.73
+  },
+  {
+   "code": "OD818",
+   "title": "The AI-native Data Engineer",
+   "score": 0.72
+  },
+  {
+   "code": "OD811",
+   "title": "Powering the next AI frontier with a unified data platform",
+   "score": 0.72
+  },
+  {
+   "code": "OD812",
+   "title": "Fabric IQ: Bringing enterprise intelligence into the developer workflow",
+   "score": 0.7
+  },
+  {
+   "code": "BRK225",
+   "title": "Data, apps, and agents: the future of app dev with Rayfin",
+   "score": 0.68
+  }
+ ],
+ "OD818": [
+  {
+   "code": "OD811",
+   "title": "Powering the next AI frontier with a unified data platform",
+   "score": 0.7
+  },
+  {
+   "code": "BRK224",
+   "title": "PepsiCo's blueprint for agentic AI",
+   "score": 0.67
+  },
+  {
+   "code": "OD815",
+   "title": "Unify your entire data estate on a single, AI-ready data lake",
+   "score": 0.66
+  },
+  {
+   "code": "OD819",
+   "title": "Real-Time Intelligence: Building event-driven AI apps and agents",
+   "score": 0.66
+  },
+  {
+   "code": "OD812",
+   "title": "Fabric IQ: Bringing enterprise intelligence into the developer workflow",
+   "score": 0.65
+  }
+ ],
+ "OD819": [
+  {
+   "code": "OD812",
+   "title": "Fabric IQ: Bringing enterprise intelligence into the developer workflow",
+   "score": 0.72
+  },
+  {
+   "code": "OD811",
+   "title": "Powering the next AI frontier with a unified data platform",
+   "score": 0.71
+  },
+  {
+   "code": "SEG04",
+   "title": "GitHub App + Rayfin",
+   "score": 0.69
+  },
+  {
+   "code": "DEM351",
+   "title": "AI Skills Navigator: Accelerate tech skills with personalized learning",
+   "score": 0.68
+  },
+  {
+   "code": "BRK222",
+   "title": "The honest practitioner's take on agentic AI on Kubernetes",
+   "score": 0.67
+  }
+ ],
+ "OD820": [
+  {
+   "code": "DEM310",
+   "title": "Ship code faster with AI-powered NoSQL schema design",
+   "score": 0.69
+  },
+  {
+   "code": "ODSP918",
+   "title": "Build persistent and scalable AI agent memory with TiDB",
+   "score": 0.68
+  },
+  {
+   "code": "BRK228",
+   "title": "Modern resiliency from build to recovery through Agentic AI",
+   "score": 0.66
+  },
+  {
+   "code": "BRK223",
+   "title": "From rows to reasoning: Designing databases for AI apps and agents",
+   "score": 0.66
+  },
+  {
+   "code": "OD805",
+   "title": "AI Building Blocks for .NET: Add intelligence to your C# apps",
+   "score": 0.66
+  }
+ ],
+ "OD821": [
+  {
+   "code": "ODSP916",
+   "title": "Design systems for every user including people and LLMs",
+   "score": 0.74
+  },
+  {
+   "code": "OD822",
+   "title": "Smarter PostgreSQL migrations to power modern, intelligent apps",
+   "score": 0.71
+  },
+  {
+   "code": "DEM310",
+   "title": "Ship code faster with AI-powered NoSQL schema design",
+   "score": 0.7
+  },
+  {
+   "code": "DEM364",
+   "title": "Simplify app dev with cloud-native PostgreSQL in Azure HorizonDB",
+   "score": 0.68
+  },
+  {
+   "code": "BRK223",
+   "title": "From rows to reasoning: Designing databases for AI apps and agents",
+   "score": 0.68
+  }
+ ],
+ "OD822": [
+  {
+   "code": "BRK220",
+   "title": "Using AI tools to teach old apps new tricks",
+   "score": 0.7
+  },
+  {
+   "code": "BRK223",
+   "title": "From rows to reasoning: Designing databases for AI apps and agents",
+   "score": 0.7
+  },
+  {
+   "code": "DEM364",
+   "title": "Simplify app dev with cloud-native PostgreSQL in Azure HorizonDB",
+   "score": 0.66
+  },
+  {
+   "code": "DEMSP382",
+   "title": "Build AI Apps with Oracle AI Database@Azure, MCP, and GitHub Copilot",
+   "score": 0.61
+  },
+  {
+   "code": "BRK228",
+   "title": "Modern resiliency from build to recovery through Agentic AI",
+   "score": 0.59
+  }
+ ],
+ "OD823": [
+  {
+   "code": "OD870",
+   "title": "Azure Storage for AI workloads",
+   "score": 0.7
+  },
+  {
+   "code": "ODSP925",
+   "title": "Deliver production-ready AI search on unstructured data with RAG",
+   "score": 0.67
+  },
+  {
+   "code": "ODSP918",
+   "title": "Build persistent and scalable AI agent memory with TiDB",
+   "score": 0.67
+  },
+  {
+   "code": "OD836",
+   "title": "From Test Kitchen to Table: A Demo-driven Tour of Foundry Portal for AI Developers",
+   "score": 0.66
+  },
+  {
+   "code": "DEM364",
+   "title": "Simplify app dev with cloud-native PostgreSQL in Azure HorizonDB",
+   "score": 0.66
+  }
+ ],
+ "OD824": [
+  {
+   "code": "DEM312",
+   "title": "Multi-agents in action with 3 AI agents, 3 frameworks, tools & models",
+   "score": 0.68
+  },
+  {
+   "code": "BRK223",
+   "title": "From rows to reasoning: Designing databases for AI apps and agents",
+   "score": 0.67
+  },
+  {
+   "code": "OD820",
+   "title": "Designing Reliable Multi-Agent Apps with Azure Cosmos DB",
+   "score": 0.65
+  },
+  {
+   "code": "OD801",
+   "title": "Modernize intelligent apps and agents with .NET that scale as you grow",
+   "score": 0.65
+  },
+  {
+   "code": "ODSP918",
+   "title": "Build persistent and scalable AI agent memory with TiDB",
+   "score": 0.65
+  }
+ ],
+ "OD827": [
+  {
+   "code": "DEM311",
+   "title": "Scale cloud-native workloads with Azure Linux",
+   "score": 0.74
+  },
+  {
+   "code": "BRK222",
+   "title": "The honest practitioner's take on agentic AI on Kubernetes",
+   "score": 0.73
+  },
+  {
+   "code": "DEM346",
+   "title": "WSL improvements and the new Containers CLI and APIs",
+   "score": 0.7
+  },
+  {
+   "code": "OD837",
+   "title": "Build and deploy AI at the edge for real-world impact",
+   "score": 0.69
+  },
+  {
+   "code": "BRK220",
+   "title": "Using AI tools to teach old apps new tricks",
+   "score": 0.64
+  }
+ ],
+ "OD828": [
+  {
+   "code": "DEMSP381",
+   "title": "Scale agentic AI cost-efficiently on Azure with Arm Cobalt VMs",
+   "score": 0.76
+  },
+  {
+   "code": "ODSP900",
+   "title": "Performance tuning on Cobalt with Arm Performix",
+   "score": 0.69
+  },
+  {
+   "code": "BRK228",
+   "title": "Modern resiliency from build to recovery through Agentic AI",
+   "score": 0.66
+  },
+  {
+   "code": "BRK226",
+   "title": "Inside Azure innovations with Mark Russinovich",
+   "score": 0.65
+  },
+  {
+   "code": "OD801",
+   "title": "Modernize intelligent apps and agents with .NET that scale as you grow",
+   "score": 0.64
+  }
+ ],
+ "OD831": [
+  {
+   "code": "ODSP922",
+   "title": "Develop a conversational search experience without rebuilding your app",
+   "score": 0.73
+  },
+  {
+   "code": "OD836",
+   "title": "From Test Kitchen to Table: A Demo-driven Tour of Foundry Portal for AI Developers",
+   "score": 0.68
+  },
+  {
+   "code": "DEM351",
+   "title": "AI Skills Navigator: Accelerate tech skills with personalized learning",
+   "score": 0.67
+  },
+  {
+   "code": "DEM369",
+   "title": "Responsible AI in Action: From Principles to Real-World Engineering",
+   "score": 0.67
+  },
+  {
+   "code": "OD805",
+   "title": "AI Building Blocks for .NET: Add intelligence to your C# apps",
+   "score": 0.67
+  }
+ ],
+ "OD832": [
+  {
+   "code": "DEM351",
+   "title": "AI Skills Navigator: Accelerate tech skills with personalized learning",
+   "score": 0.66
+  },
+  {
+   "code": "ODSP915",
+   "title": "Resolve support cases with multi-agent workflows",
+   "score": 0.66
+  },
+  {
+   "code": "ODSP922",
+   "title": "Develop a conversational search experience without rebuilding your app",
+   "score": 0.65
+  },
+  {
+   "code": "BRK243",
+   "title": "Claw and agent harness in Microsoft Foundry",
+   "score": 0.65
+  },
+  {
+   "code": "OD836",
+   "title": "From Test Kitchen to Table: A Demo-driven Tour of Foundry Portal for AI Developers",
+   "score": 0.65
+  }
+ ],
+ "OD836": [
+  {
+   "code": "BRK241",
+   "title": "From prototype to production: build and run agents at scale",
+   "score": 0.71
+  },
+  {
+   "code": "DEM361",
+   "title": "Understand and fix Agent Framework apps with observability and evals",
+   "score": 0.71
+  },
+  {
+   "code": "DEMSP383",
+   "title": "Move AI workflows from test to production on Microsoft Foundry",
+   "score": 0.71
+  },
+  {
+   "code": "BRK231",
+   "title": "Deploy. Observe. Learn. Reinforcement learning for production agents",
+   "score": 0.7
+  },
+  {
+   "code": "DEM320",
+   "title": "Hugging Face open-source models to production on Microsoft Foundry",
+   "score": 0.7
+  }
+ ],
+ "OD837": [
+  {
+   "code": "DEM345",
+   "title": "From prompt to app, build AI powered apps on Windows",
+   "score": 0.7
+  },
+  {
+   "code": "BRK222",
+   "title": "The honest practitioner's take on agentic AI on Kubernetes",
+   "score": 0.66
+  },
+  {
+   "code": "DEM351",
+   "title": "AI Skills Navigator: Accelerate tech skills with personalized learning",
+   "score": 0.65
+  },
+  {
+   "code": "BRK221",
+   "title": "Idea to production-ready agent in seconds on AI-native runtime",
+   "score": 0.64
+  },
+  {
+   "code": "ODSP940",
+   "title": "Create enterprise AI apps at scale with Bolt and Microsoft",
+   "score": 0.64
+  }
+ ],
+ "OD839": [
+  {
+   "code": "OD819",
+   "title": "Real-Time Intelligence: Building event-driven AI apps and agents",
+   "score": 0.64
+  },
+  {
+   "code": "ODSP940",
+   "title": "Create enterprise AI apps at scale with Bolt and Microsoft",
+   "score": 0.64
+  },
+  {
+   "code": "DEM351",
+   "title": "AI Skills Navigator: Accelerate tech skills with personalized learning",
+   "score": 0.63
+  },
+  {
+   "code": "OD837",
+   "title": "Build and deploy AI at the edge for real-world impact",
+   "score": 0.62
+  },
+  {
+   "code": "BRK241",
+   "title": "From prototype to production: build and run agents at scale",
+   "score": 0.61
+  }
+ ],
+ "OD840": [
+  {
+   "code": "BRK251",
+   "title": "Build secure and enterprise-ready agents with Agent 365",
+   "score": 0.73
+  },
+  {
+   "code": "DEM340",
+   "title": "Build work-ready agents with Foundry + Work IQ, govern with Agent 365",
+   "score": 0.7
+  },
+  {
+   "code": "BRKSP94",
+   "title": "Orchestrate specialist agents with NVIDIA Nemotron models on Foundry",
+   "score": 0.68
+  },
+  {
+   "code": "DEM362",
+   "title": "Building a Multi-Agent Workflow in Microsoft Fabric",
+   "score": 0.68
+  },
+  {
+   "code": "DEM332",
+   "title": "From zero to teammate in 25 minutes: Build a Teams agent live",
+   "score": 0.67
+  }
+ ],
+ "OD841": [
+  {
+   "code": "BRK203",
+   "title": "From CLI to PR: Automating the path to merged code",
+   "score": 0.69
+  },
+  {
+   "code": "ODSP938",
+   "title": "Mitigate software supply chain risks in GitHub Actions",
+   "score": 0.69
+  },
+  {
+   "code": "SEG02",
+   "title": "MDASH",
+   "score": 0.68
+  },
+  {
+   "code": "DEMSP387",
+   "title": "Secure agent workflows in GitHub Copilot with NVIDIA OpenShell",
+   "score": 0.68
+  },
+  {
+   "code": "BRK205",
+   "title": "Aspire for agents: Transform how you build and deploy distributed apps",
+   "score": 0.67
+  }
+ ],
+ "OD854": [
+  {
+   "code": "ODSP923",
+   "title": "Create enterprise apps with AI and MCP",
+   "score": 0.71
+  },
+  {
+   "code": "ODSP902",
+   "title": "Build AI-driven UIs in .NET MAUI with design systems",
+   "score": 0.7
+  },
+  {
+   "code": "DEM345",
+   "title": "From prompt to app, build AI powered apps on Windows",
+   "score": 0.7
+  },
+  {
+   "code": "OD803",
+   "title": "Taking your AI to the edge with .NET MAUI",
+   "score": 0.69
+  },
+  {
+   "code": "ODSP911",
+   "title": "Build AI-first business apps that turn dashboards into actions",
+   "score": 0.69
+  }
+ ],
+ "OD857": [
+  {
+   "code": "OD854",
+   "title": "Building WinUI Apps with C# First Patterns and AI Assisted Workflows",
+   "score": 0.62
+  },
+  {
+   "code": "BRK261",
+   "title": "Build and ship faster with a developer-optimized experience on Windows",
+   "score": 0.62
+  },
+  {
+   "code": "DEM345",
+   "title": "From prompt to app, build AI powered apps on Windows",
+   "score": 0.62
+  },
+  {
+   "code": "ODSP929",
+   "title": "Build modern .NET apps with Uno Platform, AI, and visual tools",
+   "score": 0.62
+  },
+  {
+   "code": "OD805",
+   "title": "AI Building Blocks for .NET: Add intelligence to your C# apps",
+   "score": 0.6
+  }
+ ],
+ "OD870": [
+  {
+   "code": "OD841",
+   "title": "Ship fast, stay secure: from code to runtime",
+   "score": 0.73
+  },
+  {
+   "code": "OD823",
+   "title": "Faster AI Responses with Semantic Caching in Azure Managed Redis",
+   "score": 0.73
+  },
+  {
+   "code": "ODSP916",
+   "title": "Design systems for every user including people and LLMs",
+   "score": 0.72
+  },
+  {
+   "code": "BRK223",
+   "title": "From rows to reasoning: Designing databases for AI apps and agents",
+   "score": 0.7
+  },
+  {
+   "code": "BRK228",
+   "title": "Modern resiliency from build to recovery through Agentic AI",
+   "score": 0.69
+  }
+ ],
+ "ODSP900": [
+  {
+   "code": "OD828",
+   "title": "Latest Cobalt VMs and Azure Boost enhancements",
+   "score": 0.66
+  },
+  {
+   "code": "DEMSP381",
+   "title": "Scale agentic AI cost-efficiently on Azure with Arm Cobalt VMs",
+   "score": 0.66
+  },
+  {
+   "code": "DEM300",
+   "title": "Supercharged profiling: Finding performance bugs with agents",
+   "score": 0.63
+  },
+  {
+   "code": "BRK207",
+   "title": "GitHub Copilot in Visual Studio: Agents That Debug, Profile, and Test",
+   "score": 0.62
+  },
+  {
+   "code": "DEM367",
+   "title": "Onboarding a Developer with AI: A Better First-Day Experience",
+   "score": 0.59
+  }
+ ],
+ "ODSP901": [
+  {
+   "code": "OD800",
+   "title": "Using autonomous SRE to move from alerts to action",
+   "score": 0.62
+  },
+  {
+   "code": "OD832",
+   "title": "From workflows to agentic automation with Azure Logic Apps",
+   "score": 0.59
+  }
+ ],
+ "ODSP902": [
+  {
+   "code": "OD803",
+   "title": "Taking your AI to the edge with .NET MAUI",
+   "score": 0.74
+  },
+  {
+   "code": "DEM345",
+   "title": "From prompt to app, build AI powered apps on Windows",
+   "score": 0.72
+  },
+  {
+   "code": "ODSP929",
+   "title": "Build modern .NET apps with Uno Platform, AI, and visual tools",
+   "score": 0.69
+  },
+  {
+   "code": "OD805",
+   "title": "AI Building Blocks for .NET: Add intelligence to your C# apps",
+   "score": 0.68
+  },
+  {
+   "code": "OD802",
+   "title": "Building for the agentic web with .NET 11",
+   "score": 0.66
+  }
+ ],
+ "ODSP906": [
+  {
+   "code": "DEM351",
+   "title": "AI Skills Navigator: Accelerate tech skills with personalized learning",
+   "score": 0.71
+  },
+  {
+   "code": "BRK243",
+   "title": "Claw and agent harness in Microsoft Foundry",
+   "score": 0.69
+  },
+  {
+   "code": "BRK221",
+   "title": "Idea to production-ready agent in seconds on AI-native runtime",
+   "score": 0.67
+  },
+  {
+   "code": "DEMSP388",
+   "title": "Ship faster with Claude Code and Cowork in Microsoft Foundry",
+   "score": 0.66
+  },
+  {
+   "code": "BRK250",
+   "title": "Observe and control agents across any framework with open source tools",
+   "score": 0.66
+  }
+ ],
+ "ODSP907": [
+  {
+   "code": "DEM361",
+   "title": "Understand and fix Agent Framework apps with observability and evals",
+   "score": 0.7
+  },
+  {
+   "code": "DEM322",
+   "title": "Smaller, faster, smarter: Distilling models with fine-tuning",
+   "score": 0.68
+  },
+  {
+   "code": "BRK252",
+   "title": "From observability to ROI for AI agents on any framework",
+   "score": 0.68
+  },
+  {
+   "code": "BRK224",
+   "title": "PepsiCo's blueprint for agentic AI",
+   "score": 0.67
+  },
+  {
+   "code": "OD836",
+   "title": "From Test Kitchen to Table: A Demo-driven Tour of Foundry Portal for AI Developers",
+   "score": 0.67
+  }
+ ],
+ "ODSP908": [
+  {
+   "code": "DEM351",
+   "title": "AI Skills Navigator: Accelerate tech skills with personalized learning",
+   "score": 0.68
+  },
+  {
+   "code": "DEMSP394",
+   "title": "Scale enterprise .NET apps with AI-assisted cross-platform workflows",
+   "score": 0.67
+  },
+  {
+   "code": "DEM367",
+   "title": "Onboarding a Developer with AI: A Better First-Day Experience",
+   "score": 0.67
+  },
+  {
+   "code": "OD818",
+   "title": "The AI-native Data Engineer",
+   "score": 0.66
+  },
+  {
+   "code": "DEM350",
+   "title": "GitHub Agentic Workflows: Automation That Actually Reads the Room",
+   "score": 0.66
+  }
+ ],
+ "ODSP909": [
+  {
+   "code": "BRK252",
+   "title": "From observability to ROI for AI agents on any framework",
+   "score": 0.74
+  },
+  {
+   "code": "DEM361",
+   "title": "Understand and fix Agent Framework apps with observability and evals",
+   "score": 0.74
+  },
+  {
+   "code": "ODSP933",
+   "title": "Agentic infrastructure needs agentic observability",
+   "score": 0.73
+  },
+  {
+   "code": "DEM341",
+   "title": "Any agent, any cloud: Standardized tracing with Foundry+OpenTelemetry",
+   "score": 0.73
+  },
+  {
+   "code": "BRK250",
+   "title": "Observe and control agents across any framework with open source tools",
+   "score": 0.72
+  }
+ ],
+ "ODSP911": [
+  {
+   "code": "ODSP923",
+   "title": "Create enterprise apps with AI and MCP",
+   "score": 0.67
+  },
+  {
+   "code": "OD819",
+   "title": "Real-Time Intelligence: Building event-driven AI apps and agents",
+   "score": 0.66
+  },
+  {
+   "code": "OD802",
+   "title": "Building for the agentic web with .NET 11",
+   "score": 0.66
+  },
+  {
+   "code": "DEM351",
+   "title": "AI Skills Navigator: Accelerate tech skills with personalized learning",
+   "score": 0.66
+  },
+  {
+   "code": "ODSP925",
+   "title": "Deliver production-ready AI search on unstructured data with RAG",
+   "score": 0.66
+  }
+ ],
+ "ODSP912": [
+  {
+   "code": "DEM351",
+   "title": "AI Skills Navigator: Accelerate tech skills with personalized learning",
+   "score": 0.75
+  },
+  {
+   "code": "ODSP929",
+   "title": "Build modern .NET apps with Uno Platform, AI, and visual tools",
+   "score": 0.69
+  },
+  {
+   "code": "DEM350",
+   "title": "GitHub Agentic Workflows: Automation That Actually Reads the Room",
+   "score": 0.68
+  },
+  {
+   "code": "DEM367",
+   "title": "Onboarding a Developer with AI: A Better First-Day Experience",
+   "score": 0.67
+  },
+  {
+   "code": "BRK208",
+   "title": "Ensuring your code works when AI testing isn't enough",
+   "score": 0.66
+  }
+ ],
+ "ODSP914": [
+  {
+   "code": "BRK222",
+   "title": "The honest practitioner's take on agentic AI on Kubernetes",
+   "score": 0.73
+  },
+  {
+   "code": "BRK227",
+   "title": "Distributed systems to AI platforms with Mark Russinovich & Ion Stoica",
+   "score": 0.67
+  },
+  {
+   "code": "OD839",
+   "title": "AI solutions built to power industrial innovation and sovereign control",
+   "score": 0.65
+  },
+  {
+   "code": "OD870",
+   "title": "Azure Storage for AI workloads",
+   "score": 0.65
+  },
+  {
+   "code": "OD841",
+   "title": "Ship fast, stay secure: from code to runtime",
+   "score": 0.64
+  }
+ ],
+ "ODSP915": [
+  {
+   "code": "DEM367",
+   "title": "Onboarding a Developer with AI: A Better First-Day Experience",
+   "score": 0.69
+  },
+  {
+   "code": "BRK208",
+   "title": "Ensuring your code works when AI testing isn't enough",
+   "score": 0.69
+  },
+  {
+   "code": "BRKSP94",
+   "title": "Orchestrate specialist agents with NVIDIA Nemotron models on Foundry",
+   "score": 0.69
+  },
+  {
+   "code": "BRK220",
+   "title": "Using AI tools to teach old apps new tricks",
+   "score": 0.68
+  },
+  {
+   "code": "DEM351",
+   "title": "AI Skills Navigator: Accelerate tech skills with personalized learning",
+   "score": 0.67
+  }
+ ],
+ "ODSP916": [
+  {
+   "code": "ODSP902",
+   "title": "Build AI-driven UIs in .NET MAUI with design systems",
+   "score": 0.72
+  },
+  {
+   "code": "BRK229",
+   "title": "From Skeptic to Superpower: Real-World AI Coding Workflows That Scale",
+   "score": 0.65
+  },
+  {
+   "code": "ODSP940",
+   "title": "Create enterprise AI apps at scale with Bolt and Microsoft",
+   "score": 0.63
+  },
+  {
+   "code": "BRK210",
+   "title": "Future of Developer Productivity: Microsoft's EngThrive Framework in Practice",
+   "score": 0.62
+  },
+  {
+   "code": "ODSP906",
+   "title": "Apply orchestration patterns for production AI agents",
+   "score": 0.62
+  }
+ ],
+ "ODSP918": [
+  {
+   "code": "DEMSP390",
+   "title": "Create multimodal AI agents with persistent memory",
+   "score": 0.64
+  },
+  {
+   "code": "OD820",
+   "title": "Designing Reliable Multi-Agent Apps with Azure Cosmos DB",
+   "score": 0.64
+  },
+  {
+   "code": "ODSP925",
+   "title": "Deliver production-ready AI search on unstructured data with RAG",
+   "score": 0.64
+  },
+  {
+   "code": "BRK223",
+   "title": "From rows to reasoning: Designing databases for AI apps and agents",
+   "score": 0.63
+  },
+  {
+   "code": "BRK241",
+   "title": "From prototype to production: build and run agents at scale",
+   "score": 0.63
+  }
+ ],
+ "ODSP919": [
+  {
+   "code": "OD812",
+   "title": "Fabric IQ: Bringing enterprise intelligence into the developer workflow",
+   "score": 0.72
+  },
+  {
+   "code": "DEMSP382",
+   "title": "Build AI Apps with Oracle AI Database@Azure, MCP, and GitHub Copilot",
+   "score": 0.71
+  },
+  {
+   "code": "BRK240",
+   "title": "Build context-aware agents: From data to decisions",
+   "score": 0.68
+  },
+  {
+   "code": "OD815",
+   "title": "Unify your entire data estate on a single, AI-ready data lake",
+   "score": 0.65
+  },
+  {
+   "code": "DEM362",
+   "title": "Building a Multi-Agent Workflow in Microsoft Fabric",
+   "score": 0.63
+  }
+ ],
+ "ODSP922": [
+  {
+   "code": "OD818",
+   "title": "The AI-native Data Engineer",
+   "score": 0.67
+  },
+  {
+   "code": "OD820",
+   "title": "Designing Reliable Multi-Agent Apps with Azure Cosmos DB",
+   "score": 0.65
+  },
+  {
+   "code": "ODSP925",
+   "title": "Deliver production-ready AI search on unstructured data with RAG",
+   "score": 0.64
+  },
+  {
+   "code": "DEM351",
+   "title": "AI Skills Navigator: Accelerate tech skills with personalized learning",
+   "score": 0.64
+  },
+  {
+   "code": "OD805",
+   "title": "AI Building Blocks for .NET: Add intelligence to your C# apps",
+   "score": 0.64
+  }
+ ],
+ "ODSP923": [
+  {
+   "code": "ODSP940",
+   "title": "Create enterprise AI apps at scale with Bolt and Microsoft",
+   "score": 0.7
+  },
+  {
+   "code": "OD802",
+   "title": "Building for the agentic web with .NET 11",
+   "score": 0.7
+  },
+  {
+   "code": "OD805",
+   "title": "AI Building Blocks for .NET: Add intelligence to your C# apps",
+   "score": 0.69
+  },
+  {
+   "code": "ODSP919",
+   "title": "Move from data to intelligence with Oracle MCP and Microsoft IQ",
+   "score": 0.69
+  },
+  {
+   "code": "BRK220",
+   "title": "Using AI tools to teach old apps new tricks",
+   "score": 0.69
+  }
+ ],
+ "ODSP925": [
+  {
+   "code": "OD805",
+   "title": "AI Building Blocks for .NET: Add intelligence to your C# apps",
+   "score": 0.72
+  },
+  {
+   "code": "OD870",
+   "title": "Azure Storage for AI workloads",
+   "score": 0.68
+  },
+  {
+   "code": "OD839",
+   "title": "AI solutions built to power industrial innovation and sovereign control",
+   "score": 0.67
+  },
+  {
+   "code": "ODSP916",
+   "title": "Design systems for every user including people and LLMs",
+   "score": 0.66
+  },
+  {
+   "code": "DEM331",
+   "title": "Turn APIs, tools, and data into real agent velocity",
+   "score": 0.66
+  }
+ ],
+ "ODSP929": [
+  {
+   "code": "DEMSP394",
+   "title": "Scale enterprise .NET apps with AI-assisted cross-platform workflows",
+   "score": 0.74
+  },
+  {
+   "code": "OD802",
+   "title": "Building for the agentic web with .NET 11",
+   "score": 0.71
+  },
+  {
+   "code": "OD805",
+   "title": "AI Building Blocks for .NET: Add intelligence to your C# apps",
+   "score": 0.69
+  },
+  {
+   "code": "OD803",
+   "title": "Taking your AI to the edge with .NET MAUI",
+   "score": 0.68
+  },
+  {
+   "code": "DEM345",
+   "title": "From prompt to app, build AI powered apps on Windows",
+   "score": 0.68
+  }
+ ],
+ "ODSP933": [
+  {
+   "code": "BRK252",
+   "title": "From observability to ROI for AI agents on any framework",
+   "score": 0.77
+  },
+  {
+   "code": "DEM341",
+   "title": "Any agent, any cloud: Standardized tracing with Foundry+OpenTelemetry",
+   "score": 0.7
+  },
+  {
+   "code": "DEM351",
+   "title": "AI Skills Navigator: Accelerate tech skills with personalized learning",
+   "score": 0.67
+  },
+  {
+   "code": "ODSP907",
+   "title": "Monitor GenAI applications beyond golden signals",
+   "score": 0.67
+  },
+  {
+   "code": "OD800",
+   "title": "Using autonomous SRE to move from alerts to action",
+   "score": 0.66
+  }
+ ],
+ "ODSP937": [
+  {
+   "code": "OD836",
+   "title": "From Test Kitchen to Table: A Demo-driven Tour of Foundry Portal for AI Developers",
+   "score": 0.68
+  },
+  {
+   "code": "ODSP922",
+   "title": "Develop a conversational search experience without rebuilding your app",
+   "score": 0.66
+  },
+  {
+   "code": "BRK241",
+   "title": "From prototype to production: build and run agents at scale",
+   "score": 0.65
+  },
+  {
+   "code": "DEMSP390",
+   "title": "Create multimodal AI agents with persistent memory",
+   "score": 0.65
+  },
+  {
+   "code": "OD840",
+   "title": "Enable agents for enterprises using Agent 365 SDK",
+   "score": 0.65
+  }
+ ],
+ "ODSP938": [
+  {
+   "code": "DEM301",
+   "title": "Rethinking CI: Actions, AI Agents, and the End of Commit-Fail-Commit",
+   "score": 0.68
+  },
+  {
+   "code": "DEMSP387",
+   "title": "Secure agent workflows in GitHub Copilot with NVIDIA OpenShell",
+   "score": 0.68
+  },
+  {
+   "code": "OD800",
+   "title": "Using autonomous SRE to move from alerts to action",
+   "score": 0.65
+  },
+  {
+   "code": "DEMSP385",
+   "title": "Build context-aware agents using GitHub Copilot, Elastic, and Azure AI",
+   "score": 0.65
+  },
+  {
+   "code": "OD841",
+   "title": "Ship fast, stay secure: from code to runtime",
+   "score": 0.65
+  }
+ ],
+ "ODSP940": [
+  {
+   "code": "BRK220",
+   "title": "Using AI tools to teach old apps new tricks",
+   "score": 0.66
+  },
+  {
+   "code": "ODSP923",
+   "title": "Create enterprise apps with AI and MCP",
+   "score": 0.65
+  },
+  {
+   "code": "OD822",
+   "title": "Smarter PostgreSQL migrations to power modern, intelligent apps",
+   "score": 0.65
+  },
+  {
+   "code": "OD805",
+   "title": "AI Building Blocks for .NET: Add intelligence to your C# apps",
+   "score": 0.65
+  },
+  {
+   "code": "OD801",
+   "title": "Modernize intelligent apps and agents with .NET that scale as you grow",
+   "score": 0.65
+  }
+ ],
+ "SEG01": [
+  {
+   "code": "BRK231",
+   "title": "Deploy. Observe. Learn. Reinforcement learning for production agents",
+   "score": 0.65
+  },
+  {
+   "code": "DEM322",
+   "title": "Smaller, faster, smarter: Distilling models with fine-tuning",
+   "score": 0.63
+  },
+  {
+   "code": "OD836",
+   "title": "From Test Kitchen to Table: A Demo-driven Tour of Foundry Portal for AI Developers",
+   "score": 0.6
+  },
+  {
+   "code": "BRKSP94",
+   "title": "Orchestrate specialist agents with NVIDIA Nemotron models on Foundry",
+   "score": 0.6
+  },
+  {
+   "code": "BRK241",
+   "title": "From prototype to production: build and run agents at scale",
+   "score": 0.6
+  }
+ ],
+ "SEG02": [
+  {
+   "code": "OD841",
+   "title": "Ship fast, stay secure: from code to runtime",
+   "score": 0.71
+  },
+  {
+   "code": "ODSP938",
+   "title": "Mitigate software supply chain risks in GitHub Actions",
+   "score": 0.71
+  },
+  {
+   "code": "KEY01",
+   "title": "Microsoft Build 2026 Opening Keynote (Satya Nadella)",
+   "score": 0.7
+  },
+  {
+   "code": "OD836",
+   "title": "From Test Kitchen to Table: A Demo-driven Tour of Foundry Portal for AI Developers",
+   "score": 0.64
+  },
+  {
+   "code": "OD839",
+   "title": "AI solutions built to power industrial innovation and sovereign control",
+   "score": 0.62
+  }
+ ],
+ "SEG03": [
+  {
+   "code": "ODSP922",
+   "title": "Develop a conversational search experience without rebuilding your app",
+   "score": 0.67
+  },
+  {
+   "code": "DEM323",
+   "title": "Under the hood of Microsoft AI models",
+   "score": 0.65
+  },
+  {
+   "code": "DEM320",
+   "title": "Hugging Face open-source models to production on Microsoft Foundry",
+   "score": 0.65
+  },
+  {
+   "code": "DEMSP381",
+   "title": "Scale agentic AI cost-efficiently on Azure with Arm Cobalt VMs",
+   "score": 0.63
+  },
+  {
+   "code": "BRKSP94",
+   "title": "Orchestrate specialist agents with NVIDIA Nemotron models on Foundry",
+   "score": 0.63
+  }
+ ],
+ "SEG04": [
+  {
+   "code": "BRK225",
+   "title": "Data, apps, and agents: the future of app dev with Rayfin",
+   "score": 0.7
+  },
+  {
+   "code": "KEY01",
+   "title": "Microsoft Build 2026 Opening Keynote (Satya Nadella)",
+   "score": 0.68
+  },
+  {
+   "code": "OD811",
+   "title": "Powering the next AI frontier with a unified data platform",
+   "score": 0.67
+  },
+  {
+   "code": "BRK230",
+   "title": "Build smarter AI systems in Foundry as models and costs evolve",
+   "score": 0.65
+  },
+  {
+   "code": "BRK202",
+   "title": "Azure DevOps meets GitHub, the path to AI powered SDLC",
+   "score": 0.64
+  }
+ ]
+}

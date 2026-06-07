@@ -17,6 +17,7 @@ Usage:
 from __future__ import annotations
 
 import html
+import json
 import re
 import shutil
 import sys
@@ -30,6 +31,12 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 MARKDOWN_DIR = REPO_ROOT / "markdown"
 PAGES_DIR = REPO_ROOT / "pages"
 ASSETS_DIR = REPO_ROOT / "assets"
+
+# Precomputed semantic "Related sessions" neighbours, produced at build time by
+# scripts/build_search_index.py (QMD vector search). Single source of truth:
+# this generator reads the committed JSON and bakes a static Related block into
+# each page. If the file is absent the block is simply omitted (graceful).
+RELATED_PATH = ASSETS_DIR / "related.json"
 
 # Drop any sys.path entries that would let `import markdown` resolve to the
 # notes directory, then import.
@@ -641,7 +648,7 @@ def build_card(session: Session) -> str:
 
     dur = fmt_duration(session.duration_min) if session.duration_min else "\u2014"
 
-    return f"""    <a class="card" href="pages/{html.escape(session.filename)}" data-search="{search_blob}">
+    return f"""    <a class="card" href="pages/{html.escape(session.filename)}" data-code="{html.escape(code)}" data-search="{search_blob}">
       <div class="card-top">
         <span class="badge">{html.escape(code)}</span>
         <span class="card-duration">\u23f1\ufe0f {dur}</span>
@@ -654,7 +661,7 @@ def build_card(session: Session) -> str:
 """
 
 
-def build_index(sessions: list[Session]) -> str:
+def build_index(sessions: list[Session], search_index: dict | None = None) -> str:
     sessions_sorted = sorted(sessions, key=lambda s: s.sort_key)
     total = len(sessions_sorted)
     total_min = sum(s.duration_min for s in sessions_sorted)
@@ -707,8 +714,9 @@ def build_index(sessions: list[Session]) -> str:
 <main class="container">
   <div class="toolbar">
     <input id="search" class="search" type="search"
-           placeholder="&#128269;  Filter by title, code, speaker, or topic&hellip;"
-           aria-label="Filter sessions" autocomplete="off">
+           placeholder="&#128269;  Search titles, speakers, topics &amp; full notes&hellip;"
+           aria-label="Search sessions and concepts" autocomplete="off"
+           role="combobox" aria-expanded="false" aria-controls="grid">
     <div class="result-count" id="resultCount"></div>
   </div>
 
@@ -716,44 +724,351 @@ def build_index(sessions: list[Session]) -> str:
 {cards}
   </section>
 
-  <p class="no-results" id="noResults" hidden>No sessions match your filter.</p>
+  <section class="concept-results" id="conceptResults" hidden
+           aria-label="Matching wiki concepts">
+    <h2 class="concept-results-h2">Concepts</h2>
+    <div class="concept-grid" id="conceptGrid"></div>
+  </section>
+
+  <p class="no-results" id="noResults" hidden>No sessions or concepts match your search.</p>
 </main>
 """
 
-    search_js = """
+    # ---------------------------------------------------------------------
+    # Inline the compact search index as a JSON <script> blob so search works
+    # fully offline (file://) with ZERO network requests. The browser ranks
+    # results with a BM25-lite scorer + a build-time synonym expansion map.
+    # We escape '<' to avoid any chance of a premature </script>.
+    # ---------------------------------------------------------------------
+    index_payload = search_index if isinstance(search_index, dict) else {"docs": [], "synonyms": {}}
+    index_json = json.dumps(index_payload, ensure_ascii=False, separators=(",", ":"))
+    index_json = index_json.replace("<", "\\u003c")
+    data_script = (
+        '<script id="search-data" type="application/json">'
+        + index_json + "</script>"
+    )
+
+    search_js = data_script + r"""
 <script>
 (function () {
+  'use strict';
   var input = document.getElementById('search');
+  var grid = document.getElementById('grid');
   var cards = Array.prototype.slice.call(document.querySelectorAll('.card'));
   var noResults = document.getElementById('noResults');
   var countEl = document.getElementById('resultCount');
+  var conceptWrap = document.getElementById('conceptResults');
+  var conceptGrid = document.getElementById('conceptGrid');
   var total = cards.length;
 
-  function update() {
-    var q = (input.value || '').trim().toLowerCase();
-    var shown = 0;
-    for (var i = 0; i < cards.length; i++) {
-      var blob = cards[i].getAttribute('data-search') || '';
-      var match = q === '' || blob.indexOf(q) !== -1;
-      cards[i].style.display = match ? '' : 'none';
-      if (match) shown++;
+  // ----- Load the inlined search index (no fetch -> works on file://) -----
+  var INDEX = { docs: [], synonyms: {} };
+  try {
+    var raw = document.getElementById('search-data');
+    if (raw) { INDEX = JSON.parse(raw.textContent || '{}'); }
+  } catch (e) { INDEX = { docs: [], synonyms: {} }; }
+  var DOCS = INDEX.docs || [];
+  var SYN = INDEX.synonyms || {};
+
+  // Map session code -> its existing DOM card (preserves nice card markup).
+  var cardByCode = {};
+  for (var i = 0; i < cards.length; i++) {
+    cardByCode[cards[i].getAttribute('data-code')] = cards[i];
+  }
+  var origOrder = cards.slice();
+
+  // ----- Tokenizer (mirrors the build-time Python tokenizer closely) -----
+  var STOP = {};
+  ('a an and the of to in on for with by from at as is are was were be been this' +
+   ' that it its they them their what which how why when where can could should' +
+   ' would may might will do does did have has had you your we our us i me my').split(' ')
+    .forEach(function (w) { STOP[w] = 1; });
+
+  function tokenize(s) {
+    var m = (s || '').toLowerCase().match(/[a-z0-9][a-z0-9.+#\/-]*[a-z0-9]|[a-z0-9]/g) || [];
+    var out = [];
+    for (var i = 0; i < m.length; i++) {
+      var t = m[i].replace(/^[.\-\/]+|[.\-\/]+$/g, '');
+      if (t.length < 2 || STOP[t]) continue;
+      out.push(t);
     }
-    noResults.hidden = shown !== 0;
+    return out;
+  }
+
+  // ----- Query expansion using the static synonym map -----
+  // Expand on whole-query phrase and on individual tokens. Expansion terms get
+  // a slightly lower weight than the user's original terms.
+  function expandQuery(q) {
+    var terms = {};                 // term -> weight
+    var base = tokenize(q);
+    base.forEach(function (t) { terms[t] = Math.max(terms[t] || 0, 1.0); });
+
+    function addSyn(list) {
+      (list || []).forEach(function (phrase) {
+        tokenize(phrase).forEach(function (t) {
+          terms[t] = Math.max(terms[t] || 0, 0.6);
+        });
+      });
+    }
+    var ql = (q || '').toLowerCase().trim();
+    if (SYN[ql]) addSyn(SYN[ql]);          // whole-query match
+    base.forEach(function (t) { if (SYN[t]) addSyn(SYN[t]); });  // per-token
+    // Also: if a synonym VALUE matches a query token, pull in its key+siblings.
+    for (var key in SYN) {
+      if (!SYN.hasOwnProperty(key)) continue;
+      var members = SYN[key];
+      for (var j = 0; j < base.length; j++) {
+        if (key.indexOf(base[j]) !== -1 || (members.join(' ').indexOf(base[j]) !== -1)) {
+          terms[tokenize(key)[0]] = Math.max(terms[tokenize(key)[0]] || 0, 0.5);
+          break;
+        }
+      }
+    }
+    return terms;
+  }
+
+  // ----- Precompute BM25 statistics over the corpus -----
+  // Each doc's searchable field = title(^3) + tags(^2) + speakers(^1.5) + text.
+  var N = DOCS.length;
+  var df = {};                  // document frequency per term
+  var docTokens = [];           // per-doc term-frequency map
+  var docLen = [];
+  var avgdl = 0;
+  for (var d = 0; d < N; d++) {
+    var doc = DOCS[d];
+    var weighted = []
+      .concat(repeat(tokenize(doc.title || ''), 3))
+      .concat(repeat(joinTokens(doc.tags), 2))
+      .concat(repeat(tokenize((doc.speakers || []).join(' ')), 2))
+      .concat(tokenize(doc.text || ''))
+      .concat(joinTokens(doc.keywords));
+    var tf = {};
+    for (var k = 0; k < weighted.length; k++) {
+      tf[weighted[k]] = (tf[weighted[k]] || 0) + 1;
+    }
+    docTokens.push(tf);
+    docLen.push(weighted.length);
+    avgdl += weighted.length;
+    var seen = {};
+    for (var term in tf) {
+      if (!seen[term]) { df[term] = (df[term] || 0) + 1; seen[term] = 1; }
+    }
+  }
+  avgdl = N ? (avgdl / N) : 1;
+
+  function repeat(arr, n) {
+    var out = [];
+    for (var r = 0; r < n; r++) { out = out.concat(arr); }
+    return out;
+  }
+  function joinTokens(list) {
+    if (!list || !list.length) return [];
+    return tokenize(list.join(' '));
+  }
+  function idf(term) {
+    var n = df[term] || 0;
+    // BM25 idf with +1 smoothing (always positive).
+    return Math.log(1 + (N - n + 0.5) / (n + 0.5));
+  }
+
+  var K1 = 1.5, B = 0.75;
+  function scoreDoc(d, qterms) {
+    var tf = docTokens[d], dl = docLen[d], s = 0;
+    for (var term in qterms) {
+      var f = tf[term]; if (!f) continue;
+      var num = f * (K1 + 1);
+      var den = f + K1 * (1 - B + B * dl / avgdl);
+      s += idf(term) * (num / den) * qterms[term];
+    }
+    // Small exact-substring boost for codes/titles (e.g. typing "BRK252").
+    return s;
+  }
+
+  // ----- Highlight matched query tokens within a string -----
+  function escapeHtml(str) {
+    return (str || '').replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function highlight(text, qterms) {
+    var esc = escapeHtml(text);
+    var keys = Object.keys(qterms).filter(function (t) { return t.length >= 2; })
+      .sort(function (a, b) { return b.length - a.length; });
+    if (!keys.length) return esc;
+    var rx;
+    try {
+      rx = new RegExp('(' + keys.map(function (t) {
+        return t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      }).join('|') + ')', 'gi');
+    } catch (e) { return esc; }
+    return esc.replace(rx, '<mark>$1</mark>');
+  }
+
+  // ----- Build a concept result card (concepts have no pre-rendered DOM) -----
+  function conceptCard(doc, qterms) {
+    var a = document.createElement('a');
+    a.className = 'concept-card';
+    a.href = doc.url;
+    var tag = (doc.tags && doc.tags[0]) ? doc.tags[0] : (doc.cluster || 'Concept');
+    a.innerHTML =
+      '<span class="concept-badge">Concept</span>' +
+      '<span class="concept-name">' + highlight(doc.title || doc.id, qterms) + '</span>' +
+      '<span class="concept-cluster">' + escapeHtml(tag) + '</span>';
+    return a;
+  }
+
+  // ----- Keyboard navigation state -----
+  var activeIdx = -1;
+  function visibleResultEls() {
+    var els = [];
+    for (var i = 0; i < origOrder.length; i++) {
+      if (origOrder[i].style.display !== 'none' && origOrder[i].parentNode === grid) {
+        // collected below in DOM order instead
+      }
+    }
+    // Collect in actual DOM order: session cards then concept cards.
+    Array.prototype.forEach.call(grid.querySelectorAll('.card'), function (el) {
+      if (el.style.display !== 'none') els.push(el);
+    });
+    Array.prototype.forEach.call(conceptGrid.querySelectorAll('.concept-card'), function (el) {
+      els.push(el);
+    });
+    return els;
+  }
+  function setActive(idx) {
+    var els = visibleResultEls();
+    if (!els.length) { activeIdx = -1; return; }
+    if (idx < 0) idx = 0;
+    if (idx >= els.length) idx = els.length - 1;
+    els.forEach(function (el) { el.classList.remove('kbd-active'); });
+    activeIdx = idx;
+    els[idx].classList.add('kbd-active');
+    els[idx].scrollIntoView({ block: 'nearest' });
+  }
+
+  // ----- Main update -----
+  function update() {
+    var q = (input.value || '').trim();
+    activeIdx = -1;
+
+    if (q === '') {
+      // Empty query: restore the original card grid, hide concepts.
+      origOrder.forEach(function (el) {
+        el.style.display = '';
+        el.classList.remove('kbd-active');
+        var t = el.querySelector('.card-title');
+        if (t && t.dataset.orig) t.innerHTML = t.dataset.orig;
+      });
+      conceptWrap.hidden = true;
+      conceptGrid.innerHTML = '';
+      noResults.hidden = true;
+      input.setAttribute('aria-expanded', 'false');
+      if (countEl) countEl.textContent = total + ' sessions';
+      return;
+    }
+
+    var qterms = expandQuery(q);
+    var qLower = q.toLowerCase();
+
+    // Score every doc.
+    var scored = [];
+    for (var d = 0; d < N; d++) {
+      var doc = DOCS[d];
+      var sc = scoreDoc(d, qterms);
+      // Strong boost for exact code or title substring hits.
+      var hay = ((doc.code || '') + ' ' + (doc.title || '')).toLowerCase();
+      if (doc.code && qLower === doc.code.toLowerCase()) sc += 1000;
+      else if (hay.indexOf(qLower) !== -1) sc += 5;
+      if (sc > 0) scored.push({ doc: doc, score: sc, ord: d });
+    }
+    // Sort: score desc, then stable by original order.
+    scored.sort(function (a, b) {
+      if (b.score !== a.score) return b.score - a.score;
+      return a.ord - b.ord;
+    });
+
+    // Split into sessions (reorder existing cards) and concepts (render).
+    var sessionMatches = 0, conceptMatches = 0;
+    var hiddenCards = {};
+    origOrder.forEach(function (el) { hiddenCards[el.getAttribute('data-code')] = el; });
+
+    conceptGrid.innerHTML = '';
+    var frag = document.createDocumentFragment();   // reordered session cards
+    var seenCard = {};
+
+    scored.forEach(function (item) {
+      var doc = item.doc;
+      if (doc.type === 'concept') {
+        conceptGrid.appendChild(conceptCard(doc, qterms));
+        conceptMatches++;
+      } else {
+        var el = cardByCode[doc.code || doc.id];
+        if (!el) return;
+        // Highlight the title.
+        var t = el.querySelector('.card-title');
+        if (t) {
+          if (!t.dataset.orig) t.dataset.orig = t.innerHTML;
+          t.innerHTML = highlight(t.textContent, qterms);
+        }
+        el.style.display = '';
+        frag.appendChild(el);
+        seenCard[doc.code || doc.id] = 1;
+        sessionMatches++;
+      }
+    });
+
+    // Hide non-matching session cards; then place matches in ranked order.
+    origOrder.forEach(function (el) {
+      if (!seenCard[el.getAttribute('data-code')]) {
+        el.style.display = 'none';
+        var t = el.querySelector('.card-title');
+        if (t && t.dataset.orig) t.innerHTML = t.dataset.orig;
+      }
+    });
+    grid.appendChild(frag);   // appending moves nodes into ranked order
+
+    conceptWrap.hidden = conceptMatches === 0;
+    var totalMatches = sessionMatches + conceptMatches;
+    noResults.hidden = totalMatches !== 0;
+    input.setAttribute('aria-expanded', totalMatches ? 'true' : 'false');
+
     if (countEl) {
-      countEl.textContent = (q === '')
-        ? (total + ' sessions')
-        : (shown + ' of ' + total + ' sessions');
+      if (totalMatches === 0) {
+        countEl.textContent = 'No matches';
+      } else {
+        var parts = [];
+        parts.push(sessionMatches + ' session' + (sessionMatches === 1 ? '' : 's'));
+        if (conceptMatches) parts.push(conceptMatches + ' concept' + (conceptMatches === 1 ? '' : 's'));
+        countEl.textContent = parts.join(' \u00b7 ');
+      }
     }
   }
 
-  input.addEventListener('input', update);
-  // Keyboard shortcut: "/" focuses search.
-  document.addEventListener('keydown', function (e) {
-    if (e.key === '/' && document.activeElement !== input) {
-      e.preventDefault();
-      input.focus();
+  // Debounce input slightly for snappier typing on the big corpus.
+  var t = null;
+  input.addEventListener('input', function () {
+    if (t) clearTimeout(t);
+    t = setTimeout(update, 60);
+  });
+
+  // Keyboard: '/' focuses; arrows navigate; Enter opens active result.
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowDown') { e.preventDefault(); setActive(activeIdx + 1); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); setActive(activeIdx - 1); }
+    else if (e.key === 'Enter') {
+      var els = visibleResultEls();
+      if (activeIdx >= 0 && els[activeIdx]) { window.location.href = els[activeIdx].href; }
+      else if (els.length) { window.location.href = els[0].href; }
+    } else if (e.key === 'Escape') {
+      input.value = ''; update();
     }
   });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === '/' && document.activeElement !== input) {
+      e.preventDefault(); input.focus();
+    }
+  });
+
   update();
 })();
 </script>
@@ -767,8 +1082,65 @@ def build_index(sessions: list[Session]) -> str:
     ).replace("</body>", search_js + "\n</body>")
 
 
+# ---------------------------------------------------------------------------
+# Related sessions (precomputed, semantic) -> static HTML block.
+# ---------------------------------------------------------------------------
+def load_related() -> dict:
+    """Load assets/related.json ({CODE: [{code,title,score}, ...]}).
+
+    Returns {} if the file is missing or malformed, so page generation simply
+    omits the Related block rather than failing.
+    """
+    if not RELATED_PATH.exists():
+        return {}
+    try:
+        data = json.loads(RELATED_PATH.read_text(encoding="utf-8"))
+        return data if isinstance(data, dict) else {}
+    except Exception as exc:  # pragma: no cover
+        print(f"WARN: could not read {RELATED_PATH.name}: {exc}", file=sys.stderr)
+        return {}
+
+
+def build_related_block(session: Session, related: dict,
+                        valid_codes: set[str]) -> str:
+    """Render the static "Related sessions" block for one session.
+
+    `related` is the parsed related.json. Each neighbour links to another
+    pages/<CODE>.html. Neighbours whose code is unknown in this repo are skipped
+    so we never emit a broken link. Returns "" when there is no usable data
+    (graceful degradation).
+    """
+    items = related.get(session.code) or []
+    cards = []
+    for it in items:
+        code = str(it.get("code", "")).strip()
+        if not code or code not in valid_codes or code == session.code:
+            continue
+        title = str(it.get("title", code)).strip() or code
+        cards.append(
+            f'<a class="related-card" href="{html.escape(code)}.html">'
+            f'<span class="related-code">{html.escape(code)}</span>'
+            f'<span class="related-title">{html.escape(title)}</span></a>'
+        )
+    if not cards:
+        return ""
+    inner = "\n      ".join(cards)
+    # Stable delimiters make the block easy to locate/verify in output HTML.
+    return (
+        '\n  <!-- RELATED:START (generated from assets/related.json) -->\n'
+        '  <aside class="related" aria-label="Related sessions">\n'
+        '    <h2 class="related-h2">Related sessions</h2>\n'
+        '    <p class="related-note">Semantically closest sessions, computed '
+        'from the notes at build time.</p>\n'
+        f'    <div class="related-grid">\n      {inner}\n    </div>\n'
+        '  </aside>\n'
+        '  <!-- RELATED:END -->\n'
+    )
+
+
 def build_session_page(session: Session, body_html: str,
-                       prev_s: Session | None, next_s: Session | None) -> str:
+                       prev_s: Session | None, next_s: Session | None,
+                       related_html: str = "") -> str:
     code = session.code or session.slug
     dur = fmt_duration(session.duration_min) if session.duration_min else None
 
@@ -843,7 +1215,7 @@ def build_session_page(session: Session, body_html: str,
   <article class="prose">
 {body_html}
   </article>
-
+{related_html}
   <nav class="pager-nav">
     {prev_html}
     {next_html}
@@ -981,6 +1353,51 @@ a:hover { text-decoration: underline; }
   box-shadow: 0 0 0 4px rgba(0,103,184,.14);
 }
 .result-count { color: var(--muted); font-size: .92rem; font-weight: 600; white-space: nowrap; }
+
+/* ---------- Search: highlights, keyboard nav, concept results ---------- */
+mark {
+  background: #fff3bf; color: inherit;
+  padding: 0 .08em; border-radius: 3px;
+}
+.card.kbd-active, .concept-card.kbd-active {
+  outline: 3px solid var(--blue);
+  outline-offset: 2px;
+}
+.concept-results { margin: 10px 0 8px; }
+.concept-results-h2 {
+  margin: 18px 0 12px; font-size: 1.15rem; font-weight: 750; color: var(--ink);
+  letter-spacing: -.01em;
+}
+.concept-grid {
+  display: grid; gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  padding-bottom: 8px;
+}
+.concept-card {
+  display: flex; flex-direction: column; gap: 8px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--cyan);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  box-shadow: var(--shadow);
+  color: var(--body) !important;
+  transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease;
+}
+.concept-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--cyan);
+  text-decoration: none;
+}
+.concept-badge {
+  align-self: flex-start;
+  font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: #024a86; background: var(--chip-bg);
+  padding: 3px 9px; border-radius: 999px;
+}
+.concept-name { font-size: 1.05rem; font-weight: 700; color: var(--ink); line-height: 1.3; }
+.concept-cluster { font-size: .82rem; color: var(--muted); font-weight: 600; }
 
 /* ---------- Card grid ---------- */
 .grid {
@@ -1217,6 +1634,51 @@ a.pager:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); borde
   color: var(--muted); font-size: .88rem; text-align: center;
 }
 
+/* ---------- Related sessions (precomputed, semantic) ---------- */
+.related {
+  max-width: 860px;
+  margin: 4px 0 8px;
+  padding: 22px 24px 24px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--blue);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.related-h2 {
+  margin: 0 0 2px; font-size: 1.18rem; font-weight: 750;
+  color: var(--ink); letter-spacing: -.01em;
+}
+.related-note { margin: 0 0 14px; font-size: .9rem; color: var(--muted); }
+.related-grid {
+  display: grid; gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+.related-card {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  color: var(--body) !important;
+  transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease;
+}
+.related-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+  border-color: #cfe2f3;
+  text-decoration: none;
+}
+.related-code {
+  flex: 0 0 auto;
+  font-family: var(--mono); font-weight: 700; font-size: .72rem; letter-spacing: .02em;
+  color: #fff; background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
+  padding: 3px 8px; border-radius: 6px;
+}
+.related-title {
+  font-size: .9rem; font-weight: 600; color: var(--ink); line-height: 1.3;
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 640px) {
   .container { padding: 0 16px; }
@@ -1284,6 +1746,11 @@ def main() -> int:
     sessions_sorted = sorted(sessions, key=lambda s: s.sort_key)
     resolver = make_resolver(sessions_sorted)
 
+    # --- Precomputed semantic "Related sessions" data (build-time / QMD) ---
+    related = load_related()
+    valid_codes = {(s.code or s.slug) for s in sessions_sorted}
+    n_related_pages = 0
+
     # --- Clean & recreate output dirs (idempotent) ---
     if PAGES_DIR.exists():
         shutil.rmtree(PAGES_DIR)
@@ -1298,11 +1765,25 @@ def main() -> int:
         prev_s = sessions_sorted[idx - 1] if idx > 0 else None
         next_s = sessions_sorted[idx + 1] if idx < len(sessions_sorted) - 1 else None
         body_html = render_body_html(s, resolver)
-        page = build_session_page(s, body_html, prev_s, next_s)
+        related_html = build_related_block(s, related, valid_codes)
+        if related_html:
+            n_related_pages += 1
+        page = build_session_page(s, body_html, prev_s, next_s, related_html)
         (PAGES_DIR / s.filename).write_text(page, encoding="utf-8")
 
     # --- Landing page ---
-    index_html = build_index(sessions_sorted)
+    # Inline the committed search index so the landing search works offline
+    # (file://) with no network. If absent, build_index falls back to an empty
+    # index and the page still renders (cards remain, ranking degrades).
+    search_index = None
+    search_index_path = ASSETS_DIR / "search-index.json"
+    if search_index_path.exists():
+        try:
+            search_index = json.loads(search_index_path.read_text(encoding="utf-8"))
+        except Exception as exc:  # pragma: no cover
+            print(f"WARN: could not read {search_index_path.name}: {exc}",
+                  file=sys.stderr)
+    index_html = build_index(sessions_sorted, search_index)
     (REPO_ROOT / "index.html").write_text(index_html, encoding="utf-8")
 
     # --- Report ---
@@ -1311,6 +1792,8 @@ def main() -> int:
     print(f"  index.html        -> {REPO_ROOT / 'index.html'}")
     print(f"  assets/style.css  -> {ASSETS_DIR / 'style.css'}")
     print(f"  pages/            -> {len(list(PAGES_DIR.glob('*.html')))} HTML files")
+    print(f"  related blocks    -> {n_related_pages} pages "
+          f"({'related.json present' if related else 'no related.json'})")
     total_min = sum(s.duration_min for s in sessions_sorted)
     print(f"  total runtime     -> {fmt_duration(total_min)} ({total_min} min)")
     print("=" * 64)
