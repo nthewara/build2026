@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEG04 — GitHub App + Rayfin</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">SEG04</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=gJX6MOyef8Q" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">GitHub App + Rayfin</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Microsoft (product segment — GitHub Copilot keynote demo)</span>
+      <span class="meta-item">⏱️ 6m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="github">GitHub</span><span class="chip" data-tag="fabric">Fabric</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Microsoft product segment (GitHub Copilot keynote demo; presenter name not stated in transcript — follows Satya Nadella, hands back to Satya)<br>
+<strong>Duration:</strong> ~6 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=gJX6MOyef8Q">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>This keynote segment introduces the <strong>new GitHub Copilot desktop app</strong> — a "home base for development and operations" that runs multiple agentic coding sessions in parallel using <strong>Git worktrees</strong> for isolation, plus <strong>agent merge</strong> to babysit PRs through CI, review, and conflicts. It showcases multi-model access via one Copilot subscription (OpenAI, Anthropic, Google) and a "rubber duck review" where one model cross-checks another's work. Two new interaction concepts are demoed: <strong>Canvas</strong> (an agent builds a custom UI on the fly — including a camera/computer-vision PR-approval widget) and <strong>pick and polish</strong> (point at any UI element and tell the agent to change it). The grand finale: an agent-built, containerized app gets deployed to enterprise-grade <strong>Microsoft Fabric</strong> infrastructure with a single <code>rayfin up</code> command via <strong>Rayfin</strong>.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li>The <strong>GitHub Copilot app</strong> is positioned as your <strong>home base</strong> for both development <em>and</em> operations on your own machine.</li>
+<li><strong>Parallel agentic sessions</strong>: kick off one session <em>per issue</em> with no stashing/conflict worries — handled by <strong>Git worktrees</strong> (isolated environments per session).</li>
+<li><strong>Agent merge</strong> continuously shepherds a PR through <strong>CI checks, code review, and merge conflicts</strong> — agents don't just write code, they finish it.</li>
+<li><strong>Single Copilot subscription = all top models</strong> (OpenAI, Anthropic, Google) in one <strong>model picker</strong>; pick the right model per task.</li>
+<li><strong>Rubber duck review</strong>: for bigger features, one model (e.g. GPT‑5.5) can request a review from another (e.g. <strong>Claude Opus 4.8</strong>) — multi-model catches blind spots earlier.</li>
+<li><strong>Canvas</strong>: agents can build a <strong>custom UI</strong> to communicate with you — going beyond chat (incl. live camera / computer-vision approval).</li>
+<li><strong>Pick and polish</strong>: select any element in the app, add it to chat, and ask the agent to modify it ("add reordering to this list") — and it just works.</li>
+<li><strong>Add a session from any repo</strong> (local <em>or</em> GitHub) with <strong>no clone, no pull</strong> — "it just works."</li>
+<li><strong>Rayfin</strong> = deploy your agent-built, containerized apps to <strong>enterprise back ends on Microsoft Fabric</strong> with <code>rayfin up</code>, "deploy with confidence."</li>
+<li>Core thesis: this is <strong>not just a session manager</strong> — session managers make it easy to <em>create</em> work; <strong>GitHub Copilot helps you finish it</strong>.</li>
+</ul>
+<h3 id="framing-what-can-i-try-on-my-laptop-today">Framing — "What can I try on my laptop today?"</h3>
+<p>The presenter opens to a developer audience late in a busy keynote day ("drinking from the fire hose"), urging everyone to watch with the mindset of <em>what can I try out on my laptop later today?</em> Satya had teased <strong>Rayfin</strong> (rendered "Raven" in auto-captions); the presenter pivots to start with the <strong>new GitHub Copilot app</strong> first.</p>
+<h3 id="the-github-copilot-app-home-base">The GitHub Copilot app — home base</h3>
+<ul>
+<li>The app is your <strong>home base for development and operations</strong> on your computer.</li>
+<li><strong>Home screen</strong>: kick off a new <strong>agentic coding session</strong> from the start.</li>
+<li>Playful touch: you can drag <strong>Mona</strong> (the GitHub mascot/octocat) around the home screen — there's a little <strong>game</strong> built in.</li>
+</ul>
+<h3 id="parallel-sessions-via-git-worktrees">Parallel sessions via Git worktrees</h3>
+<ul>
+<li>A session started earlier produced a <strong>review of release blockers</strong>; the presenter picks the <strong>critical ones (H3)</strong> then decides to <strong>do all of them</strong>.</li>
+<li>The app <strong>spins up a separate session for every single issue</strong> — no stashing, no coding conflicts.</li>
+<li>This is powered by <strong>Git worktrees</strong>: <em>isolated environments for each session</em>, so agents work <strong>in parallel without stepping on each other</strong>.</li>
+</ul>
+<h3 id="agent-merge">Agent merge</h3>
+<ul>
+<li>Parallel work still has to be <strong>merged</strong>. On a chosen issue, the presenter runs <strong><code>agent merge</code></strong>.</li>
+<li>Once enabled, <strong>Copilot continuously "babysits" the PR</strong> through <strong>CI checks, code review, and merge conflicts</strong> — automating the path to merge.</li>
+</ul>
+<h3 id="work-automations-and-sessions-views">Work, Automations, and Sessions views</h3>
+<ul>
+<li><strong>Work</strong> view: a focused view of all activity + loaded projects — <strong>issues and PRs</strong>, everything in one place.</li>
+<li><strong>Automations</strong>: a set of <strong>reusable sessions and workflows</strong> that can run <strong>locally or in the cloud</strong> (jokingly references "issue poetry" that is "real and load-bearing").</li>
+<li><strong>Sessions</strong>: add a new repository via a button — pull from a <strong>local repo or a GitHub repository</strong>. Demo adds a session in an open-source repo ("Pocket Cow"): <strong>start a session anywhere, it just loads</strong> — <em>no clone, no pull</em>.</li>
+</ul>
+<h3 id="inside-a-session-integrated-workspace">Inside a session — integrated workspace</h3>
+<ul>
+<li>Opening a session gives an <strong>integrated browser</strong>, a <strong>terminal</strong>, and the <strong>chat</strong>, all loading together.</li>
+<li>Can <strong>toggle light/dark mode</strong> within the session.</li>
+<li><strong>Pick and polish</strong> button: click it, then <strong>pick any element</strong> in the app — it's added to chat. Ask e.g. <em>"add reordering to this list"</em> and the change <em>just works</em>, all living inside the session.</li>
+</ul>
+<h3 id="multi-model-rubber-duck-review">Multi-model + Rubber duck review</h3>
+<ul>
+<li><strong>All the most popular models</strong> are available via a <strong>single GitHub Copilot subscription</strong>, including <strong>OpenAI, Anthropic, and Google</strong> — visible in the <strong>model picker</strong>.</li>
+<li>Beyond picking the right model per task, for <strong>bigger features Copilot can request a "rubber duck review."</strong></li>
+<li>Example: a session running on <strong>GPT‑5.5</strong> automatically requested a review from <strong>Claude Opus 4.8</strong>. Rationale: <em>all models have blind spots</em>; the <strong>multi-model approach catches them earlier</strong>.</li>
+</ul>
+<h3 id="beyond-chat-the-canvas-concept">Beyond chat — the Canvas concept</h3>
+<ul>
+<li>"Working with AI in 2026 should be <strong>more than just chat</strong>." Enter the <strong>Canvas</strong>: <em>how an agent can build a custom UI to communicate with you.</em></li>
+<li>Demo ("What if your AI could <strong>see</strong>?"): with the camera on, the agent renders a canvas showing your <strong>PRs</strong>, which you <strong>approve/reject with a thumbs up / thumbs down</strong> gesture (computer vision). The presenter approves a PR live.</li>
+<li>Framed as <em>just the beginning</em> of what custom agent-built UIs can do.</li>
+</ul>
+<h3 id="the-finale-deploy-to-enterprise-with-rayfin">The finale — deploy to enterprise with Rayfin</h3>
+<ul>
+<li>The presenter returns to the parallel sessions kicked off earlier, highlighting a <strong>"signal box" app</strong> that is <strong>100% agent-built</strong>, <strong>containerized with a database back end</strong>.</li>
+<li>Rhetorical question: <em>would you deploy this to your enterprise with no questions asked?</em> Audience: <strong>No.</strong> Answer: not on your own — <strong>but you can with Rayfin.</strong></li>
+<li>In a new terminal, the presenter types <strong><code>rayfin up</code></strong> and the app <strong>deploys</strong>, <strong>hosted on Microsoft Fabric</strong>.</li>
+<li>With <strong>Rayfin</strong>, <em>your agents get an enterprise back end</em>, so you can <strong>deploy with confidence</strong> in the way that's best for you.</li>
+</ul>
+<h3 id="closing-thesis">Closing thesis</h3>
+<ul>
+<li>The key message: this app is <strong>not just another session manager</strong>. It <em>does</em> manage many sessions, but <strong>session managers just make it easy to create work</strong> — whereas <strong>GitHub Copilot helps you to finish it.</strong> Sign-off: "Happy Pride. Back to you, Satya."</li>
+</ul>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>GitHub Copilot app</strong> — new desktop "home base" app for development + operations; runs agentic coding sessions locally.</li>
+<li><strong>Agentic coding sessions</strong> — agent-driven work sessions you launch from the app (one per issue if desired).</li>
+<li><strong>Git worktrees</strong> — isolated per-session environments enabling parallel agents without conflicts.</li>
+<li><strong>Agent merge</strong> — Copilot continuously manages a PR through CI checks, code review, and merge conflicts.</li>
+<li><strong>Work / Automations / Sessions views</strong> — focused activity view; reusable local/cloud workflows; repo session management.</li>
+<li><strong>Pick and polish</strong> — select any UI element, add it to chat, and have the agent modify it.</li>
+<li><strong>Model picker / multi-model access</strong> — all popular models (OpenAI, Anthropic, Google) via one Copilot subscription.</li>
+<li><strong>Rubber duck review</strong> — one model requests a review from another model to catch blind spots (e.g. GPT‑5.5 → Claude Opus 4.8).</li>
+<li><strong>Canvas</strong> — agent-built custom UI for richer-than-chat interaction (incl. live camera / computer-vision PR approval).</li>
+<li><strong>Rayfin</strong> — framework/CLI (<code>rayfin up</code>) to deploy agent-built, containerized apps onto enterprise back ends. <em>(Microsoft Fabric data-apps framework/SDK; auto-captions garble it as "Raven"/"Rayfen".)</em></li>
+<li><strong>Microsoft Fabric</strong> — the enterprise hosting platform Rayfin deploys onto.</li>
+<li><strong>Mona (octocat mascot)</strong> — draggable on the home screen with a built-in mini-game.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>New GitHub Copilot desktop app</strong> — introduced as the developer "home base" (development + operations). <em>Status: shown in keynote demo; GA/preview status not explicitly stated in transcript.</em></li>
+<li><strong>Agent merge</strong> — continuous, automated PR shepherding (CI, review, conflicts). <em>Status: demoed.</em></li>
+<li><strong>Canvas</strong> — agent-built custom UIs beyond chat, incl. camera/computer-vision interaction. <em>Status: demoed as "just the beginning."</em></li>
+<li><strong>Pick and polish</strong> — direct-manipulation UI editing via the agent. <em>Status: demoed.</em></li>
+<li><strong>Rubber duck review</strong> — cross-model review (GPT‑5.5 ↔ Claude Opus 4.8). <em>Status: demoed.</em></li>
+<li><strong>Rayfin</strong> — one-command (<code>rayfin up</code>) enterprise deployment of agent-built apps to Microsoft Fabric. <em>Status: demoed live ("Blammo!"). Specific GA/preview timing not stated in transcript.</em></li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Release-blocker triage → parallel sessions</strong> — kicking off a session per issue (worktrees) → proves agents can run in parallel with no conflicts.</li>
+<li><strong>Agent merge on a PR</strong> — proves Copilot can drive a PR to merge through CI/review/conflicts unattended.</li>
+<li><strong>Add a session from an open-source repo ("Pocket Cow")</strong> — proves zero clone/pull friction.</li>
+<li><strong>Pick and polish ("add reordering to this list")</strong> — proves direct, in-app, agent-driven UI edits.</li>
+<li><strong>Rubber duck review (GPT‑5.5 requesting Claude Opus 4.8)</strong> — proves multi-model blind-spot catching.</li>
+<li><strong>Canvas + camera PR approval</strong> — proves agents can build custom UIs and use computer vision (thumbs up/down to approve a PR).</li>
+<li><strong><code>rayfin up</code> deploy of an agent-built signal-box app to Fabric</strong> — proves enterprise-ready deployment of agent-built containerized apps.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><em>"Git worktrees are isolated environments for each session that you run, so your agents can work in parallel without stepping on each other."</em></li>
+<li><em>"All models have blind spots and the power of the Copilot multi-model approach means that I can catch them earlier."</em></li>
+<li><em>"The canvas is how an agent can build a custom UI to communicate with you."</em></li>
+<li><em>"Would you be able to deploy this to your enterprise with no questions asked? … No, but you can with Rayfin."</em></li>
+<li><em>"With Rayfin, your agents get an enterprise back end. So you can deploy with confidence in the way that's best for you."</em></li>
+<li><em>"Session managers just make it easy to create work. But GitHub Copilot helps you to finish it."</em></li>
+<li>"<strong>100% agent built</strong>" — the signal-box demo app (containerized, with a database back end).</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Install the new <strong>GitHub Copilot app</strong>; kick off <strong>multiple sessions across issues</strong> and confirm <strong>worktree</strong> isolation; enable <strong>agent merge</strong> on a low-risk PR; experiment with <strong>pick and polish</strong> and <strong>Canvas</strong>.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Stand up a small containerized app and run <strong><code>rayfin up</code></strong> to test Microsoft Fabric deployment end-to-end.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: Is the GitHub Copilot app <strong>GA or preview</strong>, and which OSes? Does <strong>agent merge</strong> require specific branch-protection/CI configs? What are <strong>Rayfin</strong>'s prerequisites (Fabric capacity, networking, cost model, supported runtimes)?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: How does <strong>rubber duck review</strong> pick the reviewing model, and is the model list configurable/governable for enterprise?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: Platform/DevEx teams evaluating agentic dev workflows; data-app teams adopting <strong>Rayfin + Fabric</strong>; anyone running parallel Copilot agents at scale.</li>
+</ul>
+<h2 id="related">🔗 Related</h2>
+<ul>
+<li><a class="wikilink wikilink--resolved" href="BRK225.html">BRK225 - Data apps and agents the future of app dev with Rayfin</a></li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="SEG03.html"><span class="pager-dir">← Previous</span><span class="pager-code">SEG03</span><span class="pager-title">Microsoft Discovery</span></a>
+    <span class="pager pager-empty"></span>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

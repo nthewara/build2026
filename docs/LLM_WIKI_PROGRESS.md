@@ -81,3 +81,48 @@ Plus: add a **link from `index.html`** to the wiki (separate, additive edit).
 ## Next sync hook
 
 This is also the same site that gets **incremental session syncs**. When the wiki is regenerated after new sessions land, re-run `scripts/generate_wiki.py` (and `scripts/generate_site.py` for the session pages) and push.
+
+---
+
+## Incremental Sync — 2026-06-07
+
+**5 final sessions added** (the closing batch — 4 keynote segments + the opening keynote), taking the corpus from **127 → 132 sessions**. Source notes were dropped into `markdown/` and the site + wiki were regenerated purely via the two generator scripts. No content outside the Build 2026 set was introduced.
+
+### New notes (in `markdown/`, rendered to `pages/`)
+
+| File | Page | One-liner |
+|------|------|-----------|
+| `SEG01 - Frontier Tuning.md` | `pages/SEG01.html` | **Frontier Tuning** — enterprise AI via RL fine-tuning of model + harness on your own data/workflows; `M AI Thinking 1` in Foundry Model Catalog private preview; dataset → grader → submit flow + low-level training API sneak peek. |
+| `SEG02 - MDASH.md` | `pages/SEG02.html` | **MDASH** — Microsoft's multi-agent code-security harness (Multi-agent Dynamic Application Security Harness). |
+| `SEG03 - Microsoft Discovery.md` | `pages/SEG03.html` | **Microsoft Discovery** — agentic scientific-discovery platform segment. |
+| `SEG04 - GitHub App and Rayfin.md` | `pages/SEG04.html` | **GitHub App + Rayfin** — segment; in-repo Related link to `BRK225` (Rayfin data apps & agents) resolves correctly. |
+| `KEY01 - Satya Nadella Opening Keynote.md` | `pages/KEY01.html` | **Satya Nadella Opening Keynote** — the marquee note: ~10.5k words, 44 announcements, 91.5 KB rendered. Adds many topic tags (incl. a new **quantum** concept). |
+
+### New totals after regen
+
+- **Sessions:** **132** (`pages/*.html` count = 132; `wiki/index.html` shows `132`). Total runtime 66h 41m.
+- **Wiki concept pages:** **92** (was 91 — KEY01 introduced a new `quantum` concept page; all other deltas were existing concepts gaining sessions).
+- **Graph:** **92 nodes**, **373 drawn edges** (424 total co-occurrence pairs). (was 91 / 364 / 407.)
+- **Long-tail topics:** 153 single-session topics (no page).
+- Concept counts ticked up as expected — the wiki is derived from `topic`/frontmatter tags, and KEY01 is tag-rich, so several hub concepts (ai, agents, azure, copilot, fabric, foundry, github, security, windows) gained sessions.
+
+**Exact script output captured:**
+- `generate_site.py` → `Built site for 132 sessions.` · `pages/ -> 132 HTML files` · `total runtime -> 66h 41m (4001 min)` · all frontmatter complete.
+- `generate_wiki.py` → `concept pages: 92` · `graph nodes: 92` · `graph edges (drawn): 373` · `cross-concept edges: 424` · `sessions covered: 132` · `long-tail topics: 153`. Cluster breakdown: AI&Agents 19, Data&Databases 14, Platforms&Devices 14, DevTools&Languages 12, Observability&Ops 12, Azure&Infra 9, Security&Governance 5, Other 5, Community&Career 2.
+
+### Scope integrity — respected ✅
+
+- **No out-of-Build2026 files or links introduced.** `git status --porcelain` shows **no `M`/`D` on any `markdown/*`**; the 5 new notes are untracked additions only. No hand-edits to `markdown/*`, `pages/*`, `index.html`, `assets/style.css`, or wiki HTML — all generated content was rebuilt by the scripts.
+- **`assets/style.css` NOT modified** (verified — scripts left it untouched; would have been a red flag otherwise).
+- **Vault-only link `[[2026 Build Session List]]`** present in the 5 notes' `## 🔗 Related` sections was **auto-stripped** by the generator's `strip_unresolved_wikilinks` — it does **not** appear in any of the 5 generated pages, and **no literal `[[` survives** in `pages/SEG0*.html` / `pages/KEY01.html`.
+- **SEG04's in-repo link `[[BRK225 …]]`** correctly resolved to `<a class="wikilink wikilink--resolved" href="BRK225.html">` (target `pages/BRK225.html` exists).
+- **Link integrity:** full scan of `pages/` + `wiki/` = **3094 navigational hrefs, 0 broken in-repo links** (in-page anchors, prev/next pager, concept↔session, concept↔concept all resolve). External links = 147, all legitimate (132 YouTube per-session videos, 5 GitHub repos, MS Learn/devblogs/NVIDIA/OpenTelemetry docs, and the single Karpathy gist in the wiki). The 226 "broken" hits in a naive first pass were inline `data:image/svg+xml` favicon URIs, not links.
+- Prev/next pager verified on all 5 new pages; SEG04 is last alphabetically so its `next` is intentionally empty.
+
+### Changed files (all in-scope)
+
+- New: `markdown/{SEG01,SEG02,SEG03,SEG04,KEY01}` + `pages/{SEG01,SEG02,SEG03,SEG04,KEY01}.html` + `wiki/concepts/quantum.html`.
+- Modified (by scripts): `index.html`; `pages/{DEMSP395,OD800,ODSP940}.html` (neighbour prev/next re-stitch); `wiki/index.html`, `wiki/graph.html`, and 9 `wiki/concepts/*.html` (ai, agents, azure, copilot, fabric, foundry, github, security, windows) for updated session lists/counts.
+- Hand-edited: this `docs/LLM_WIKI_PROGRESS.md` only.
+
+**Commit:** `Add 5 final sessions (SEG01-04 segments + KEY01 keynote); regen site + wiki to 132 sessions` as `nthewara <nthewara@gmail.com>`.

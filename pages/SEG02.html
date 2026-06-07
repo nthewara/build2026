@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEG02 — MDASH</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">SEG02</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=8QBDaRbur70" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">MDASH</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Microsoft (keynote security demo segment)</span>
+      <span class="meta-item">⏱️ 4m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="security">Security</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Microsoft presenter (keynote security demo segment, following Satya Nadella on stage)<br>
+<strong>Duration:</strong> ~4 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=8QBDaRbur70">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p><strong>MDASH (rendered "M-Dash", and spoken as "M-code scan" in the demo) is Microsoft's new multi-agent AI security harness for finding and fixing code vulnerabilities.</strong> Under the hood, <strong>over 100 specialized agents work together to discover, debate, and <em>prove</em> exploitable vulnerabilities end-to-end</strong> — not just flag suspicious patterns. The demo runs MDASH against a real code base from inside GitHub Copilot on a local dev machine, surfacing both traditional issues (coding errors, hard-coded secrets) and <strong>AI-specific vulnerabilities</strong>, then remediating them with a <code>Defender fix</code> command while keeping a human-in-the-loop diff review. The headline proof point: MDASH independently found a real, multi-file Wasmtime memory-safety bug that fooled normal scanners and single AI models. It's positioned as helping developers "create secure code from the start" and is <strong>coming soon to the CLI and the Microsoft Defender portal</strong>.</p>
+<div class="callout callout-note">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">📝</span><span class="callout-title-text">Name uncertainty</span></div>
+  <div class="callout-body">
+<p>The on-screen product name is shown as <strong>"M-Dash" / MDASH</strong>, but the presenter verbally refers to running an <strong>"M-code scan."</strong> These appear to be the same offering (caption ambiguity around the "M-…" branding). Treat "M-Dash," "MDASH," and "M-code scan" as the same tool until a clearer official name is confirmed.</p>
+  </div>
+</div>
+
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>MDASH = a multi-agent code-security harness</strong>, not a single scanner — <strong>100+ specialized agents</strong> collaborate to <em>discover, debate, and prove</em> exploitable bugs end-to-end.</li>
+<li>It runs as a <strong>standalone CLI</strong> but was demoed <strong>inside GitHub Copilot on a local dev machine</strong>.</li>
+<li>Findings are <strong>broken down by vulnerability domain and severity</strong>, covering both <strong>traditional flaws</strong> (coding errors, hard-coded secrets) and <strong>AI-specific vulnerabilities</strong>.</li>
+<li>It produces <strong>enterprise-ready output</strong>: a <strong>SARIF log</strong> + an <strong>HTML report</strong> suitable to hand to management.</li>
+<li>A <strong><code>Defender detailed</code></strong> command drills into each vulnerability (what it is, where it is, severity); a <strong><code>Defender fix</code></strong> command <strong>auto-remediates directly in the local dev environment</strong> with a <strong>diff for human review</strong> (human-in-the-loop preserved).</li>
+<li>It plugs into existing workflows: <strong>create a PR</strong>, push to the repo, and <strong>upload SARIF to GitHub Advanced Security</strong> to manage alongside other app-sec findings.</li>
+<li><strong>Proof of capability:</strong> MDASH found a real <strong>Wasmtime</strong> out-of-bounds/host-crash bug whose flaw was <strong>spread across three parts of the code base</strong> — invisible to per-file scanning — and even saw past a developer comment confidently asserting the code was fine.</li>
+<li><strong>Status:</strong> <strong>Coming soon to your CLI and the Microsoft Defender portal.</strong></li>
+</ul>
+<h3 id="what-mdash-is-and-where-it-runs">What MDASH is and where it runs</h3>
+<p>The presenter notes that security scans take a while, so they show the <strong>results of a scan already run</strong> rather than running one live. MDASH operates as a <strong>standalone CLI</strong>, but in the demo it's used from <strong>within the GitHub Copilot app on a local dev machine</strong> — i.e. it meets developers where they already work rather than forcing a separate tool.</p>
+<h3 id="how-the-scan-results-are-structured">How the scan results are structured</h3>
+<p>The scan output is <strong>broken down by vulnerability domains and severity</strong>. Critically, it surfaces two classes of issues side by side:
+- <strong>Traditional issues</strong> — coding errors and hard-coded secrets.
+- <strong>AI-specific vulnerabilities</strong> in the code base — the kinds of weaknesses introduced or relevant in AI-assisted/AI-powered code.</p>
+<h3 id="under-the-hood-100-agents-that-prove-exploitability">Under the hood: 100+ agents that prove exploitability</h3>
+<p>The differentiator is the architecture. <strong>Over 100 specialized agents work together to discover, debate, and prove exploitable vulnerabilities end-to-end.</strong> This is framed as <strong>"joined-up reasoning"</strong> — moving beyond pattern-matching to actually demonstrating that a flaw is reachable and exploitable, work that <em>"previously required significant manual security research effort."</em></p>
+<h3 id="outputs-sarif-html-report">Outputs: SARIF + HTML report</h3>
+<p>When the scan finishes it generates <strong>both a SARIF log and an HTML report</strong>. The HTML report is explicitly positioned as something <em>"I can give to my management"</em> — i.e. a human-readable executive artifact — while <strong>SARIF</strong> is the machine-readable format for tooling integration.</p>
+<h3 id="triage-and-remediation-the-defender-commands">Triage and remediation (the Defender commands)</h3>
+<ul>
+<li><strong><code>Defender detailed</code></strong> — lets the developer <strong>dig into each vulnerability</strong>: <em>what</em> it is, <em>where</em> it sits in the code, and its <strong>severity</strong>, to help prioritize.</li>
+<li><strong><code>Defender fix</code></strong> — the system <strong>remediates suggested fixes directly in the local dev environment</strong>. Afterward the developer <strong>checks the diff</strong>, giving <strong>full transparency about what the harness did</strong> and preserving a <strong>human-in-the-loop check</strong>. (Nothing lands silently.)</li>
+</ul>
+<h3 id="fitting-into-existing-workflows">Fitting into existing workflows</h3>
+<p>Although everything shown ran <strong>locally</strong>, MDASH integrates upstream:
+- <strong>Create a PR</strong> to plug into existing workflows and <strong>push up to the repo</strong>.
+- Take the <strong>SARIF output</strong> and <strong>upload it to tools like GitHub Advanced Security</strong>, managing MDASH findings <strong>alongside other application security findings</strong>.</p>
+<h3 id="the-real-world-proof-the-wasmtime-bug">The real-world proof: the Wasmtime bug</h3>
+<p>To show this isn't just a demo on tidy code, the presenter highlights a vulnerability that <strong>security research teams identified using MDASH in an open-source code base — one you can go look up yourself.</strong></p>
+<p>The bug (TL;DR per the segment): <strong>Wasmtime reads an out-of-date map of an object, runs off the end, and crashes the host.</strong> What makes it the <em>exact</em> kind of bug MDASH was built for:
+- The flaw is <strong>spread across three different parts of the code base</strong>, so <strong>no single file looks wrong on its own</strong> — each looks "absolutely fine."
+- There's even a <strong>confident developer statement claiming everything is fine</strong> — the presenter's "favorite part" — precisely the kind of reassurance that <strong>fools normal scanners and single AI models</strong>.</p>
+<p><strong>MDASH wasn't fooled.</strong> The multi-team agent dynamic cracked it:
+1. <strong>One team of agents spotted the suspicious gap.</strong>
+2. <strong>Another team argued it apart</strong> (the "debate" step).
+3. <strong>A third team built a working example that actually triggered the crash</strong> (the "prove" step).</p>
+<p>This three-stage discover → debate → prove pattern is the core of how MDASH establishes a vulnerability is genuinely exploitable.</p>
+<h3 id="positioning">Positioning</h3>
+<p>The segment closes by framing MDASH as <strong>"helping developers create secure code from the start,"</strong> and confirms it is <strong>coming soon to your CLI and the Microsoft Defender portal</strong>, before handing back to Satya.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>MDASH / M-Dash ("M-code scan")</strong> — Microsoft's multi-agent code-security harness; 100+ agents that discover, debate, and prove exploitable vulnerabilities end-to-end.</li>
+<li><strong><code>Defender detailed</code> command</strong> — drills into a finding (what / where / severity) for prioritization.</li>
+<li><strong><code>Defender fix</code> command</strong> — auto-remediates fixes in the local dev environment with a reviewable diff.</li>
+<li><strong>GitHub Copilot (app, local dev machine)</strong> — the surface MDASH was demoed inside.</li>
+<li><strong>Microsoft Defender portal</strong> — a forthcoming home for MDASH (alongside the CLI).</li>
+<li><strong>SARIF (log/output)</strong> — machine-readable findings format; uploadable to other security tooling.</li>
+<li><strong>HTML report</strong> — human-readable report intended for management.</li>
+<li><strong>GitHub Advanced Security</strong> — destination for uploaded SARIF, to manage MDASH findings with other app-sec results.</li>
+<li><strong>Pull Requests (PRs)</strong> — integration point to push local findings/fixes into existing workflows.</li>
+<li><strong>Wasmtime</strong> — the open-source WebAssembly runtime where the demonstrated real-world multi-file memory-safety bug was found.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>MDASH ("M-Dash" / "M-code scan")</strong> — multi-agent security harness for discovering, debating, and proving exploitable vulnerabilities, including <strong>AI-specific</strong> ones. <strong>Status: Coming soon to the CLI and the Microsoft Defender portal.</strong></li>
+<li><strong><code>Defender detailed</code> / <code>Defender fix</code> commands</strong> — triage and in-place remediation with human-in-the-loop diff review. <em>(Demoed; ships as part of MDASH "coming soon.")</em></li>
+<li><strong>SARIF + HTML report generation</strong> and <strong>GitHub Advanced Security / PR integration</strong> — shown as part of the MDASH workflow.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Pre-run MDASH scan inside GitHub Copilot (local dev machine):</strong> showed findings grouped by domain/severity, mixing traditional issues (coding errors, hard-coded secrets) with AI-specific vulnerabilities. <strong>Point proved:</strong> MDASH integrates into the developer's existing local environment and covers both classic and AI-era risks.</li>
+<li><strong><code>Defender detailed</code> → <code>Defender fix</code> flow:</strong> drilled into a vulnerability, then auto-remediated it locally and reviewed the diff. <strong>Point proved:</strong> end-to-end detect-and-fix with full transparency and a human-in-the-loop gate.</li>
+<li><strong>Wasmtime real-world bug walkthrough:</strong> a genuine, exploitable, <strong>three-file</strong> memory-safety/host-crash bug in an open-source code base — including a misleading "everything is fine" developer comment. <strong>Point proved:</strong> MDASH's discover/debate/prove agent teams catch joined-up vulnerabilities that fool single scanners and single AI models, replacing significant manual security-research effort.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>"Over 100 specialized agents are working together to discover, debate, and prove exploitable vulnerabilities end-to-end."</strong></li>
+<li><strong>Wasmtime bug TL;DR:</strong> <em>"Wasmtime reads an out-of-date map of an object, runs off the end, and then it crashes the host."</em></li>
+<li>Flaw <strong>spread across three different parts of the code base</strong> — <em>"no single file looks wrong on its own."</em></li>
+<li>On the misleading code comment: <em>"a very confident statement from the developers claiming everything is fine … exactly the sort of reassurance that fools normal scanners and single AI models. But M-Dash wasn't fooled."</em></li>
+<li>Agent teamwork: <em>"One team of agents spotted the suspicious gap, another team argued it apart, and a third team built a working example that actually triggered the crash."</em></li>
+<li><em>"This is the kind of joined-up reasoning that previously required significant manual security research effort."</em></li>
+<li>Tagline: <strong>"M-Dash helping developers create secure code from the start, coming soon to your CLI and the Microsoft Defender portal."</strong></li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Run MDASH (once available) as a CLI scan against a personal repo; confirm the SARIF → GitHub Advanced Security upload path and check the HTML report format.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Test the <code>Defender fix</code> diff-review loop end-to-end and verify the human-in-the-loop gate behaves as shown.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: What's the official product name — is "M-Dash"/MDASH the brand and "M-code scan" just a verbal slip, or are they distinct? Confirm against the Defender portal listing.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: Which "AI-specific vulnerability" categories does MDASH detect (prompt injection, insecure tool use, secret leakage in agent code, etc.)?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: Where can I find the published Wasmtime bug write-up referenced ("you can go and look up yourself")? Get the CVE/advisory link.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: Pricing/licensing — is MDASH part of Defender for Cloud / GitHub Advanced Security entitlements, or standalone?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: AppSec / secure SDLC, AI-assisted coding security, Microsoft Defender, GitHub Advanced Security adoption.</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="SEG01.html"><span class="pager-dir">← Previous</span><span class="pager-code">SEG01</span><span class="pager-title">Frontier Tuning</span></a>
+    <a class="pager pager-next" href="SEG03.html"><span class="pager-dir">Next →</span><span class="pager-code">SEG03</span><span class="pager-title">Microsoft Discovery</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEG03 — Microsoft Discovery</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">SEG03</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=uHtva5r9itY" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Microsoft Discovery</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Microsoft Discovery &amp; Quantum team (product segment)</span>
+      <span class="meta-item">⏱️ 6m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ai">AI</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Presenter from the Microsoft Discovery &amp; Quantum team (product segment) — name not stated on-screen<br>
+<strong>Duration:</strong> ~6 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=uHtva5r9itY">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p><strong>Microsoft Discovery</strong> is an agentic platform for scientific R&amp;D that treats discovery like agentic software engineering. The app is built on VS Code, and its core insight is that science maps onto a developer's workflow: <strong>planning → coding → testing/deploying</strong> becomes <strong>write a paper → run the discovery → test in a real lab</strong>. It runs a "discovery engine" — a team of specialized agents that continuously follow the scientific method in the background, exploring hypotheses and running long-running simulations (hours or days). The demo, built with <strong>Cambridge Consultants (part of Capgemini)</strong>, used Discovery to find new proteins that can decompose PET plastic so it can be truly recycled instead of downcycled — all the way through to submitting jobs to a real automated lab.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Agentic discovery ≈ agentic software engineering.</strong> Discovery is deliberately built on VS Code because the parallels are strong; developers will recognise the plan/code/test/deploy loop.</li>
+<li><strong>Three scientist tasks mirror the dev lifecycle:</strong> (1) write a scientific paper / explore a line of research = <em>planning</em>; (2) perform the actual discovery to find new proteins = <em>coding</em>; (3) create a lab protocol &amp; test in a real lab = <em>testing + deploying to production</em>.</li>
+<li><strong>The discovery engine is a background team of agents</strong> always running, following the scientific method — <strong>not sequential</strong>; it explores hypotheses and runs simulations dynamically, sometimes for hours or days.</li>
+<li><strong>Open agent ecosystem:</strong> Discovery includes a community of agents, models, and tools across many domains. You can use open source, third parties, or build your own.</li>
+<li><strong>It creates agents on the fly.</strong> If no out-of-the-box agent exists for a task, Discovery generates one (with its YAML definition and supporting code).</li>
+<li><strong>Knowledge graph for full traceability:</strong> Discovery internally builds a knowledge graph combining public scientific literature with internal knowledge — giving complete visibility into the reasoning so scientists stay in full control.</li>
+<li><strong>HPC-integrated:</strong> Agents tap high-performance computing for compute-heavy simulations (e.g. generating protein candidates millions of times in parallel).</li>
+<li><strong>Closes the loop to the physical world:</strong> Discovery can integrate directly with an automated lab, sending instructions to lab equipment — unifying the digital agents and the physical world in one discovery loop.</li>
+</ul>
+<h3 id="the-problem-pet-plastic-is-downcycled-not-recycled">The problem: PET plastic is downcycled, not recycled</h3>
+<p>Today, recycling a PET plastic bottle means shredding and melting it. The result is <strong>degraded</strong> material — you can't make the same bottle again. This is <strong>downcycling</strong>. <strong>Cambridge Consultants (part of Capgemini)</strong> is using Microsoft Discovery to advance research toward a better approach: instead of melting the plastic, use <strong>proteins to decompose it</strong>, so it can be recycled again and again.</p>
+<h3 id="what-microsoft-discovery-is">What Microsoft Discovery is</h3>
+<ul>
+<li>The <strong>Microsoft Discovery app</strong> is based on <strong>VS Code</strong>, because <em>agentic discovery has many parallels with agentic software engineering</em>.</li>
+<li>The presenter frames the scientist's goals as three tasks that look just like a developer's workflow:
+  1. <strong>Write a scientific paper</strong> about the topic / explore an existing line of research → like <strong>planning</strong>.
+  2. <strong>Perform the actual discovery</strong> to find new proteins → like <strong>coding</strong>.
+  3. <strong>Create a lab protocol</strong> to test results in a real lab → like <strong>testing &amp; deploying to production</strong>, but for science.</li>
+</ul>
+<h3 id="the-discovery-engine-the-background-agent-team">The discovery engine (the background agent team)</h3>
+<ul>
+<li>Launching kicks off the <strong>discovery engine</strong>: think of it as a <strong>team of specialized agents always running in the background, following the scientific method</strong>.</li>
+<li>You can <strong>see the agents</strong> in the app and <strong>add more</strong>.</li>
+<li>Discovery ships with a <strong>community of agents, models, and tools across many domains</strong> — use <strong>open source, third parties, or create your own</strong>.</li>
+<li>Crucially, the engine is <strong>not sequential</strong>. Like science itself, it <strong>explores hypotheses and performs long-running simulations dynamically</strong>, and can keep running for <strong>hours or even days</strong>.</li>
+</ul>
+<h3 id="step-1-the-research-paper-knowledge-graph-traceability">Step 1 — The research paper (knowledge graph + traceability)</h3>
+<ul>
+<li>Opening a completed run shows the <strong>files it created</strong>, including the <strong>research paper</strong> the scientist asked for.</li>
+<li>To produce it, Discovery uses an <strong>internal knowledge graph</strong> that brings together <strong>public scientific literature and internal knowledge</strong>.</li>
+<li>This is described as a <strong>critical asset</strong>: it provides <strong>complete visibility of the reasoning</strong>, so <strong>scientists can be in full control</strong>.</li>
+</ul>
+<h3 id="step-2-the-discovery-itself-finding-new-proteins">Step 2 — The discovery itself (finding new proteins)</h3>
+<p>The approach Discovery took to come up with new plastic-decomposing proteins:
+1. <strong>An AI model</strong> to predict how good a protein is for the task.
+2. <strong>A way to generate new proteins.</strong>
+3. <strong>A way to identify the most promising ones.</strong></p>
+<p><strong>The model:</strong>
+- Discovery <strong>trained multiple models and picked the best</strong>.
+- There was <strong>no out-of-the-box agent</strong> for this — so Discovery <strong>created one on the fly</strong> ("pretty cool").
+- It generated all the files, including the <strong>agent's YAML</strong> definition and the <strong>Python code to train the models</strong>.</p>
+<p><strong>Generating candidates (HPC):</strong>
+- Generating new protein candidates <strong>requires a lot of compute</strong>, and Discovery is <strong>integrated with HPC</strong> for complex simulations.
+- The process: it started with a <strong>seed protein</strong>, then created <strong>variations by replacing small segments</strong>, then <strong>applied the trained model</strong> to judge whether each variation helped — <strong>learning in the process</strong>.
+- This was done <strong>millions of times, in multiple parallel jobs</strong>, exploring a <strong>huge tree of proteins</strong>.
+- <strong>Result: 80 proteins</strong> ready to be sent to the lab for testing — the equivalent of "deploying software."</p>
+<h3 id="step-3-from-digital-proteins-to-the-physical-lab">Step 3 — From digital proteins to the physical lab</h3>
+<ul>
+<li>Making a real protein is more complicated. The <strong>most common method is inserting DNA into bacteria</strong> so the bacteria produce the protein.</li>
+<li>Discovery generated another file containing <strong>all the DNA sequences</strong> to create each protein. This could be sent to a lab to create and test the proteins manually.</li>
+<li><strong>Or go one step further:</strong> with an <strong>automated lab</strong>, integrate it directly with the agents. In the session, the presenter simply runs <strong>"submit job to lab."</strong></li>
+<li>This uses a <strong>custom agent that sends instructions to the lab equipment</strong> — and it's <strong>very real</strong>: <strong>Cambridge Consultants has an automated lab</strong>, shown live.</li>
+<li>The lab application has a <strong>Copilot interface</strong> so scientists can interact with the lab to <strong>design experiments</strong> — "it feels like being <strong>Iron Man, but for chemistry</strong>."</li>
+<li>Discovery submits the job; since the <strong>bacteria need to grow</strong>, it takes time. A previous run shows <strong>all the steps the agents performed — most completely automated, with human supervision</strong>.</li>
+</ul>
+<h3 id="the-big-picture">The big picture</h3>
+<p>This is <strong>bringing together the physical world and the digital agents in a unified discovery loop</strong>. The plastic-recycling protein hunt was <strong>just one example</strong> — <strong>customers across industries are using Microsoft Discovery today</strong> to embrace "a new era of scientific discovery."</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Microsoft Discovery</strong> — Agentic platform for scientific R&D; the central product of the segment.</li>
+<li><strong>Microsoft Discovery app</strong> — The application itself, <strong>built on VS Code</strong>, reflecting the parallels between agentic discovery and agentic software engineering.</li>
+<li><strong>Discovery engine</strong> — Background "team" of specialized agents continuously following the scientific method; non-sequential, runs hypotheses &amp; simulations for hours/days.</li>
+<li><strong>Community of agents, models &amp; tools</strong> — Open ecosystem spanning many domains; supports open source, third-party, and custom-built agents.</li>
+<li><strong>On-the-fly agent creation</strong> — When no agent exists for a task, Discovery generates one (incl. its YAML definition and supporting code).</li>
+<li><strong>Knowledge graph</strong> — Internal graph combining public scientific literature + internal knowledge; provides full reasoning visibility / traceability.</li>
+<li><strong>HPC integration</strong> — Agents use high-performance computing for compute-heavy simulations (e.g. massively parallel protein generation).</li>
+<li><strong>Automated lab integration / custom lab agent</strong> — Sends instructions to physical lab equipment, closing the digital-to-physical loop.</li>
+<li><strong>Copilot interface (in the lab app)</strong> — Lets scientists interact with the automated lab to design experiments.</li>
+<li><strong>VS Code</strong> — The base/IDE the Discovery app is built on.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li>No explicit GA dates, version numbers, or formal roadmap milestones were stated in this segment.</li>
+<li>Framed as <strong>available and in use today</strong>: <em>"Customers across industries are using it today."</em></li>
+<li>Notable <em>capabilities highlighted</em> (presented as current, not "coming soon"): the VS Code–based app, the always-on agentic discovery engine, on-the-fly agent creation, the knowledge graph, HPC integration, and direct automated-lab integration.</li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>End-to-end PET-recycling protein discovery (with Cambridge Consultants / Capgemini).</strong> A single live walkthrough proving Discovery can take a scientist from <em>research paper → model training → protein candidate generation → DNA sequences → submitting a job to a real automated lab</em>, all driven by background agents with human supervision.</li>
+<li><strong>Point proved:</strong> Agentic discovery can run the full scientific lifecycle (plan/code/test/deploy analog) and <strong>connect digital agents to the physical world</strong> via a real automated lab — not just a simulation.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>80 proteins</strong> generated and "ready to be sent to the lab for testing."</li>
+<li>Protein variations evaluated <strong>"millions of times, in multiple jobs in parallel,"</strong> exploring "a huge tree of proteins."</li>
+<li>Discovery runs can continue <strong>"for a while, even hours or days."</strong></li>
+<li>
+<blockquote>
+<p>"It feels like being <strong>Iron Man, but for chemistry</strong>." — on the lab's Copilot interface.</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>"This is bringing together the <strong>physical world and the digital agents in a unified discovery loop</strong>."</p>
+</blockquote>
+</li>
+<li>
+<blockquote>
+<p>"Customers across industries are <strong>using it today</strong> to embrace a new era of scientific discovery."</p>
+</blockquote>
+</li>
+<li>On recycling today: shredding + melting PET yields a <strong>degraded</strong> result you "cannot use to make this bottle again" — i.e. <strong>downcycling</strong>.</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Explore the Microsoft Discovery docs — how the agent <strong>community/marketplace</strong> works, and how "create an agent on the fly" is exposed to users.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Look at how the <strong>knowledge graph</strong> ingests "internal knowledge" — connectors, data residency, IP controls.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: Which <strong>HPC</strong> backend does Discovery integrate with (Azure HPC? specific SKUs?), and what's the cost/quota model for "millions of jobs in parallel"?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: What's required to integrate a <strong>custom automated lab</strong> (the lab agent + equipment instructions interface) — is there an SDK/protocol?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: Is Microsoft Discovery GA, in preview, or access-gated? Availability/pricing not stated here.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: Anyone framing <strong>agentic AI for R&amp;D / scientific computing</strong>; the "science = software lifecycle" analogy is a strong mental model for dev audiences.</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="SEG02.html"><span class="pager-dir">← Previous</span><span class="pager-code">SEG02</span><span class="pager-title">MDASH</span></a>
+    <a class="pager pager-next" href="SEG04.html"><span class="pager-dir">Next →</span><span class="pager-code">SEG04</span><span class="pager-title">GitHub App + Rayfin</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

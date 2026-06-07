@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KEY01 — Microsoft Build 2026 Opening Keynote (Satya Nadella)</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">KEY01</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=FFMm454fxNA" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Microsoft Build 2026 Opening Keynote (Satya Nadella)</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Satya Nadella (+ Jensen Huang, Mustafa Suleyman, Peter Steinberger, Stevie Bathiche, Cristiano Amon, Dr. Gianrico Farrugia, The Chainsmokers, + demo presenters)</span>
+      <span class="meta-item">⏱️ 2h 23m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ai">AI</span><span class="chip" data-tag="azure">Azure</span><span class="chip" data-tag="keynote">Keynote</span><span class="chip" data-tag="foundry">Foundry</span><span class="chip" data-tag="copilot">Copilot</span><span class="chip" data-tag="agents">Agents</span><span class="chip" data-tag="windows">Windows</span><span class="chip" data-tag="quantum">Quantum</span><span class="chip" data-tag="silicon">Silicon</span><span class="chip" data-tag="security">Security</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Satya Nadella + guests (Jensen Huang/NVIDIA, Mustafa Suleyman/Microsoft AI, Peter Steinberger/Open Claw, Stevie Bathiche, Cristiano Amon/Qualcomm, Dr. Gianrico Farrugia/Mayo Clinic, The Chainsmokers, plus demo presenters Kayla, Elijah, Cassidy, Amanda, Sarah, Tanaya, David)<br>
+<strong>Duration:</strong> ~143 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=FFMm454fxNA">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>The 2026 Build keynote frames the entire conference around one question: how every developer can <strong>participate fully in the frontier intelligence ecosystem</strong> — not by consuming a single model or platform, but by compounding their own value on top of the stack. Satya walks the full AI stack bottom-up: <strong>ubiquitous compute</strong> (edge → cloud), a new <strong>intelligence layer</strong> (models + context + tools, branded as "IQ"), an <strong>agent runtime</strong> (Windows + Foundry), and the <strong>tooling/security/governance</strong> wrapping it all. Headline moves include on-device unmetered intelligence on Windows (new MAI Ion models, Surface RTX/DevBox dream machines, NVIDIA N1X SOC), Azure's Fairwater AI super-factory with NVIDIA Vera Rubin and Microsoft's own Maia/Cobalt silicon, <strong>Project Solara</strong> agent-first devices, the <strong>Microsoft IQ</strong> layer (Web IQ, Fabric IQ, Work IQ), <strong>Foundry as a full agent application platform</strong>, <strong>Agent 365</strong> governance, <strong>Open Claw running natively on Windows</strong> with new MXC isolation, and <strong>seven new MAI models</strong> plus a Mayo Clinic frontier health-model partnership. The throughline is "<strong>humanist superintelligence</strong>" and a "<strong>hill-climbing machine</strong>" / <strong>frontier tuning</strong> vision where each organization keeps and compounds its own tacit knowledge as a moat.</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li>The conference's single message: <strong>participate in the frontier intelligence ecosystem</strong> — value compounds on top of the platform, not in any one model/chip.</li>
+<li>The AI stack as framed: <strong>ubiquitous compute fabric (edge+cloud) → models/context/tools layer → agent + app runtime → tooling + security/compliance/governance.</strong></li>
+<li><strong>Unmetered intelligence at the edge</strong>: Windows ML/AI expanded to the full installed base of NPUs/GPUs/CPUs so every developer can build local on-device AI; new <strong>MAI Ion Instruct</strong> (reasoning) and <strong>MAI Ion Plan</strong> (planning) models run locally for a full agentic loop with no cloud round-trip.</li>
+<li>New hardware tier: <strong>NVIDIA N1X</strong> next-gen PC SOC (CPU+GPU+AI, unified memory, integrated DRTM); <strong>Surface Ultra</strong> (128 GB unified memory, ~2K display, all-day battery, this fall); <strong>Surface RTX DevBox</strong> "dream machine" (~1 petaflop AI, 20 CPU cores, 128 GB unified memory); Windows is coming to the <strong>NVIDIA DGX (GB300) "desktop data center"</strong> capable of running a ~1T-parameter model locally.</li>
+<li>The cloud driving equation is <strong>tokens per dollar per watt</strong>, optimized end-to-end "from electrons to tokens"; <strong>community trust principles</strong> (don't raise local electricity prices, responsible water use, local jobs/tax base, training &amp; nonprofit investment) are the <em>first</em> design criteria before any tech.</li>
+<li><strong>Azure scale</strong>: 500+ data center regions; more capacity added in the last 18 months than in the first decade; three dominant workloads now = <strong>training, inference, agent runtime</strong>.</li>
+<li><strong>Fairwater</strong> = Microsoft's first AI "super-factory" (Georgia + Wisconsin), two-story dense-GPU architecture co-designed with NVIDIA; closed-loop liquid cooling → ~zero water consumption (yearly water ≈ one restaurant's usage); ~100 kW/rack power delivery rethought.</li>
+<li><strong>Silicon choice</strong>: largest fleet of NVIDIA Grace Blackwell in the world; validating <strong>NVIDIA Vera Rubin</strong> (built for agents, low latency); <strong>AMD MI</strong> next-gen partnership; first-party <strong>Maia 200</strong> (~30% better tokens/$ vs leading GPU, will power M365 Copilot) and <strong>Cobalt 200</strong> CPU preview (~30% better than prior Cobalt; agent traces show ~33% lower latency, ~14% faster, ~23% higher throughput).</li>
+<li><strong>Project Solara</strong>: a turnkey platform for <strong>agent-first purpose-built devices</strong> — "the next computer is all your devices working as one system." Three pillars: enterprise-ready (AOSP-based Microsoft Device Ecosystem Platform), agent-driven just-in-time UI, and bring-your-own-agent extensibility; unified by Azure. Two device categories previewed — a stationary desk device (MediaTek) and a portable <strong>agent access badge</strong> (Qualcomm).</li>
+<li><strong>Microsoft IQ</strong> = the unified context layer: <strong>Web IQ</strong> (LLM/agent-native web grounding, MCP-native, model-agnostic, best-in-class quality/speed/cost), <strong>Fabric IQ</strong> (live operational ontology of the business), <strong>Work IQ</strong> (people + procedures grounded in M365/SharePoint, always current).</li>
+<li><strong>Foundry</strong> becomes a <strong>full application platform for the agent era</strong>: Foundry-hosted long-running agents with IQ layers, durability/memory/state, fast sandboxes, auto-generated rubrics/evals, built-in self-improvement loop; 121k+ models in the catalog (largest), now including OpenAI realtime voice + Claude Opus 4.8, MAI models, plus new <strong>Fireworks AI</strong> open-weight partnership.</li>
+<li><strong>Agent 365</strong> is the <strong>agent control plane</strong> — agents get their own identities/access controls; Defender extended for real-time agent defense, Purview for data protection/compliance; works across AWS/GCP and any framework; <strong>Agent 365 SDK now GA</strong> and extended to local Windows agents.</li>
+<li><strong>Open Claw now runs natively on Windows</strong> using new <strong>Microsoft eXecution Containers (MXC)</strong> OS-native isolation; Peter Steinberger announced an <strong>Open Claw Foundation</strong> (nonprofit, any model/any OS), pluggable harness (Copilot/Codex/etc.), folder-level permissions, and "you can run it inside your company now."</li>
+<li><strong>Copilot becomes a super-app</strong>: chat + Cowork + code unified by summer; new <strong>Autopilots</strong> ("enterprise-grade claws") — autonomous long-running agents with identity, personality, memory, running in your tenant; first autopilot is <strong>Scout</strong> (available now on Copilot Frontier).</li>
+<li><strong>Mustafa Suleyman / MAI</strong> announced <strong>seven new models</strong> (image, voice, transcription, reasoning, coding) built toward <strong>humanist superintelligence</strong>; codesigned with Microsoft's own Maia silicon for a further ~1.4× perf/watt.</li>
+<li><strong>Frontier tuning</strong> + <strong>RLEs (reinforcement learning environments)</strong> let every org build its own <strong>"hill-climbing machine"</strong> — private evals, traces, tools, rubrics, and even custom-trained models become <em>your moat</em>; only you keep the resulting model and benefits.</li>
+<li><strong>Mayo Clinic</strong> partnership: co-creating a <strong>frontier health model</strong> to deploy in their hospitals and beyond, encoding decades of clinical practice (not just textbook knowledge), with patient-first, safe/secure/trustworthy framing.</li>
+<li><strong>Microsoft Discovery</strong> went <strong>GA</strong> — an agentic scientific-discovery loop (models + HPC compute + scientific knowledge graphs + automated lab + simulation); demoed enzyme/protein design for true plastic recycling, sending real DNA sequences to an automated lab.</li>
+<li><strong>Quantum</strong>: announced <strong>Majorana 2</strong> — topological qubits with ~20 seconds to ~1 minute coherence lifetime (~1000× Majorana 1), same tiny qubit form factor (~1/100th mm), digital control, path to ~1M qubits on a credit-card-sized chip; <strong>Q North</strong> quantum computer coming (Atom Computing neutral atoms + Microsoft stack).</li>
+<li>Satya's closing North Star: two possible stories about technology — concentrating power vs. unlocking opportunity for developers/scientists/enterprises/communities — "<strong>Our job is to make the second story true.</strong>"</li>
+</ul>
+<h3 id="opening-vision-participate-fully-in-the-frontier-intelligence-ecosystem">Opening Vision — "Participate fully in the frontier intelligence ecosystem"</h3>
+<p>Satya opens back in San Francisco, framing developer conferences as the place to understand tech shifts, the new stack, and the new opportunity for developers, their companies, and the broader world. <strong>The single key takeaway:</strong> <em>How do you all participate fully in this frontier intelligence ecosystem?</em> It's explicitly <strong>not</strong> about any one piece of technology or even the platform itself — it's about the <strong>value you can build, compound, and create on top of the platform.</strong></p>
+<p>He lays out the <strong>AI stack</strong> the conference will unpack:
+1. <strong>Ubiquitous compute fabric</strong> spanning the edge and the cloud.
+2. The <strong>emerging intelligence layer</strong> — models + context + the tools models can access.
+3. The <strong>runtime</strong> where you deploy the agents and applications you build on the content/model layer.
+4. The <strong>best tooling</strong> to do all of this, wrapped in <strong>security, compliance, and governance.</strong></p>
+<p>He then walks the stack bottom-up, starting at the very edge: <strong>Windows.</strong></p>
+<h3 id="the-edge-windows-as-the-place-to-build-local-unmetered-ai">The Edge — Windows as the place to build local, unmetered AI</h3>
+<p>The amount of compute at the edge is "astounding" — every NPU, GPU, CPU, every PC. Microsoft is already delivering on-device AI: <strong>Outlook Summarize</strong> uses onboard local AI, <strong>PowerPoint</strong> all-text, <strong>Teams super-resolution</strong> — and it's not just Microsoft: <strong>Adobe After Effects / Premiere</strong> use <strong>Windows ML</strong> too. Microsoft is <strong>expanding the scope of Windows ML and Windows AI</strong> so developers can reach the <strong>full installed base of GPUs</strong> — build once for local onboard AI and run it across the entire install base.</p>
+<p>Two new local models announced for Windows:
+- <strong>MAI Ion Instruct</strong> — a strong reasoning model.
+- <strong>MAI Ion Plan</strong> — a planning model.</p>
+<p>Together they give a <strong>full local agentic loop</strong>: give the models tool access and build fully agentic applications <strong>without a round-trip to the cloud.</strong></p>
+<p><strong>Hardware ecosystem</strong> pushing "unmetered intelligence":
+- <strong>Intel</strong> — exciting new silicon.
+- <strong>Qualcomm</strong> — two announcements: high-end <strong>Snapdragon X</strong> and a lower-end part for <strong>sub-$500 PCs.</strong>
+- <strong>NVIDIA N1X</strong> — next-gen <strong>SOC for PCs</strong> bringing CPU + GPU + AI capabilities into a single SOC, with <strong>unified memory architecture</strong> and <strong>integrated DRTM</strong>.
+- <strong>Surface Ultra</strong> — built on the NVIDIA platform, <strong>128 GB unified memory</strong>, beautiful ~<strong>2,000 (2K) display</strong>, <strong>all-day battery life</strong>; shipping this <strong>fall</strong>. Many OEM partners are building exciting machines on the new platform/SOC.</p>
+<p>Pushing the architecture to its limit for developers → <strong>Surface RTX DevBox</strong> ("dream machine"): <strong>1 petaflop of AI compute</strong>, <strong>20 CPU cores</strong>, <strong>128 GB unified memory access</strong> (there's a wait list — Satya jokes he's on it). And going further: <strong>Windows is coming to the NVIDIA DGX (GB300) station</strong> — a "<strong>desktop data center</strong>" that can run a <strong>1-trillion-parameter model locally</strong>, "close to what we had when we built GPT-5 / one of the first supercomputers."</p>
+<p>Extending developer endpoints to the cloud: <strong>Windows 365</strong> with a developer distribution optimized for developer productivity (Satya uses it daily). The goal: make Windows — laptop, desktop, or cloud — <strong>the best place to build.</strong></p>
+<p><strong>Windows developer experience updates:</strong>
+- A <strong>distraction-free dev environment</strong>.
+- An <strong>intelligent terminal</strong> with built-in <strong>GitHub Copilot</strong> intelligence.
+- Lots of <strong>Linux love</strong>: <strong>70+ utilities</strong> coming to Windows; <strong>Homebrew on native</strong>; first-class <strong>container</strong> support for local development.</p>
+<h3 id="demo-kayla-windows-dev-tooling-on-surface-rtx-devbox">Demo — Kayla: Windows dev tooling on Surface RTX DevBox</h3>
+<p>Kayla shows the default experience on the <strong>Surface RTX Spark DevBox</strong> — calm, no news feed/widgets/notifications, dark mode. Highlights:
+- <strong>Vertical task bar</strong> announced for Windows Insider build (popular demand), set via PowerToys-built run/command palette.
+- DevBox ships with tools pre-installed (Python, Node); the <strong>config file is published in a public repo</strong> so anyone can reproduce the setup (applies Windows adjustments + installs tools).
+- <strong>PowerToys "Grab and Move"</strong> — hold a key and move windows from anywhere; <strong>End Task</strong> to kill a process without Task Manager.
+- <strong>Dev Drive</strong> with Defender running async for authorized performance; Git-aware shell (file status, branch name bottom-left).
+- <strong>Intelligent terminal</strong> lets you pick your favorite agent (she uses GitHub Copilot); terminal pane on top, agent pane on bottom; the agent <strong>detects errors and proposes fixes</strong>.
+- Building <strong>Open Claw</strong> using a <strong>WSL container</strong> — native container experience on Windows that can <strong>leverage the GPU</strong> and reference existing container files (e.g., the one in the Open Claw project); opened in <strong>Microsoft Edit</strong> with syntax highlighting.
+- A <strong>WSL profile</strong> comfortable for zsh/csh/Homebrew users with favorite utilities (incl. <strong>btop</strong>), available in the repo.
+- <strong>Large local models for coding</strong>: ran a <strong>120-billion-parameter model</strong> most machines can't load; <strong>3.4 million tokens</strong> used locally on-device.
+- Kicking off agents using <strong>Fleet</strong>; <strong>Copilot voice</strong> feature (local model) to delegate: "find any <code>Console.WriteLine</code> calls and convert them to the standard logger." The <strong>main agent delegates sub-agent tasks of appropriate complexity to the local model</strong>, using the GPU and making it cost-efficient.
+- <strong>75+ command-line utilities</strong> added to Windows (on top of curl, etc.) — <code>grep</code>, <code>head</code>, <code>tail</code>, <code>touch</code>, etc.
+- <strong>MAI Ion Instruct</strong> continuously analyzing log files locally for instant diagnosis — no token-usage worries since it's all local.
+- Machine resources: <strong>~90 GB of RAM</strong> utilized by the GPU using the full power of RTX Spark — multiple local models running simultaneously, unmetered, "without a hitch."</p>
+<p>The point proved: <strong>on-device unmetered intelligence</strong> — models and agents working in parallel to you, locally, as a first-class Windows capability.</p>
+<h3 id="the-cloud-electrons-in-tokens-out-and-community-trust-first">The Cloud — "Electrons in, tokens out" and community trust first</h3>
+<p>Driving equation: <strong>tokens per dollar per watt.</strong> Microsoft thinks of the systems problem as <strong>electrons coming in one end, tokens out the other</strong>, optimizing end-to-end: data center design itself (core compute/storage/network), accelerators for each component, <strong>DC-to-DC connectivity and networking</strong>, and offload to the edge.</p>
+<p><strong>Before</strong> any tech, the most important design criterion is <strong>earning permission from the communities</strong> where data centers are built. Grounding principles:
+- <strong>Don't increase local electricity prices.</strong>
+- <strong>Responsible water use.</strong>
+- <strong>Create jobs for local residents.</strong>
+- <strong>Add to the tax base.</strong>
+- <strong>Strengthen communities</strong> via local training investment and area nonprofits.</p>
+<p>Only after living up to those principles does the hard innovation work happen.</p>
+<p><strong>Azure footprint:</strong> more than <strong>500 data centers / regions</strong> — the most expansive hyperscaler footprint. <strong>More data center capacity added in the last 18 months than in the first decade.</strong> Built for <strong>heterogeneous workloads</strong> across the enterprise, with <strong>three dominant workloads</strong>: <strong>training, inference, and the agent runtime.</strong></p>
+<p><strong>Fairwater</strong> — Microsoft's first <strong>AI super-factory</strong>, spanning two regions (<strong>Georgia + Wisconsin</strong>), designed from the ground up for AI, co-designed closely with NVIDIA:
+- <strong>Two-story architecture</strong> to densely pack GPUs with network access → higher performance networking, lower latency, more bandwidth across the cluster.
+- <strong>Power delivery rethought</strong>: how to deliver <strong>~100 kW/rack</strong> with minimal conversion loss from grid to silicon.
+- <strong>Cooling/water</strong>: closed-loop liquid cooling — the loop is filled once and the DC operates effectively with <strong>zero water consumption</strong>; daily water usage over a full year ≈ what a <strong>single restaurant</strong> uses.</p>
+<p><strong>Silicon — lots of choice (first-party + partners):</strong>
+- First cloud to bring up NVIDIA; <strong>largest deployment of NVIDIA Grace Blackwell in the world.</strong>
+- <strong>AMD</strong> partnership — working on next-gen <strong>AMD MI</strong> GPU.
+- <strong>Maia 200</strong> — first-party accelerator, continuing to scale, live in Arizona, deploying internationally; <strong>~30% better tokens/$</strong> vs the leading GPU today; validated with <strong>GPT-5.5</strong>; will <strong>power Microsoft 365 Copilot</strong>.
+- For running agents, <strong>CPU is critical</strong> — accelerator-to-CPU ratios may approach 1:1. Hence <strong>Cobalt 200</strong> CPU <strong>preview</strong> — next-gen, designed for cloud-native and agent workloads; <strong>~30% better than Cobalt</strong> on cloud-native; using <strong>GitHub Copilot agentic traces</strong>, agents show <strong>~33% lower latency</strong>, <strong>~14% faster speed</strong>, <strong>~23% higher throughput</strong> — a co-design of AI accelerator + CPU for agents.</p>
+<p><strong>Networking:</strong> rebuilt how traffic moves across Azure to support <strong>synchronous data workloads spanning tens of thousands of GPUs</strong> that must stay coherent — the next frontier of network scaling, both inside and across continent-spanning data centers, creating a <strong>fungible compute fabric.</strong></p>
+<h3 id="guest-jensen-huang-nvidia-live-from-taipei">Guest — Jensen Huang (NVIDIA), live from Taipei</h3>
+<p>Satya brings on <strong>Jensen Huang</strong>, calling NVIDIA the best company and Jensen the best person to talk systems + AI. Key points:
+- The collaboration started <strong>~3 years ago</strong> with a conversation about a new class of PCs incredible for designers/creators <em>and</em> AI — processing capability plus an integrated software stack. Three years later: a new chip + the new Windows software, with <strong>autonomous agents running on the PC.</strong>
+- Over ~30–40 years (from inventing <strong>DirectX</strong> together to today), the <strong>PC evolved from a tool to a tool used autonomously by an AI assistant</strong> — "personal computer → personal AI." Jensen's vision: text your PC while traveling, it fires up the tools, makes the changes/design, and iterates with you while you're away.
+- <strong>RTX Spark</strong>: ~<strong>1 petaflop</strong> of AI performance in <strong>NVFP4</strong> numerical format (a format the companies developed together), exploiting <strong>128 GB memory</strong> to fit a <strong>couple hundred billion-parameter model</strong> — state-of-the-art; "a really smart assistant running on the PC is here."
+- <strong>Data center journey</strong>: <strong>Hopper</strong> (pretraining) → <strong>Grace Blackwell</strong> (post-training, RL, reasoning models / mixture-of-experts; the whole <strong>NVL72 rack became one computer</strong>) → <strong>Vera Rubin</strong> (built for the <strong>agentic</strong> era). Fairwater described as magnificent, liquid-cooled, closed-loop, near-zero water, environmentally friendly, increasing token generation rate and <strong>reducing cost per token by ~an order of magnitude (~30× over Hopper).</strong>
+- <strong>Vera (the CPU)</strong> designed for <strong>extremely low latency</strong> — "in the past CPUs were designed for humans; agents want low latency." The whole disaggregated/distributed system: storage = long-term memory, working memory; <strong>data encrypted in transit, at rest, and in use.</strong>
+- Both teams aligned <strong>long before chips taped out</strong> — Microsoft stood up Vera Rubin systems the moment they rolled off the line.
+- On the broader opportunity: it's about creating opportunity for <strong>every developer and organization</strong> to build on the platforms. NVIDIA software/models will be in <strong>Foundry</strong>; NVIDIA software accelerates Microsoft workloads (data warehouse, etc.). <strong>GitHub commits have gone "parabolic" — up ~3× in the last several months</strong> — proof agentic systems are useful, productive, and profitable. NVIDIA + Microsoft are making <strong>all agent tools fully GPU-accelerated</strong> (Fabric, data processing, SQL, Spark, semantic/graph) because <strong>"agents are impatient"</strong> — faster iteration = more profitable, intelligent tokens.</p>
+<h3 id="new-form-factors-project-solara-agent-first-devices">New Form Factors — Project Solara (agent-first devices)</h3>
+<p>Satya reflects on Jensen's weekend photo of all the desktops — "I'm back in the 90s" — the same beloved form factors with <strong>unbelievable new function</strong> thanks to onboard AI. That sets up the next question: if you can put new function into existing form factors, <strong>can you purpose-build new form factors for the new function? Can you build a new platform for the agent era?</strong> → <strong>Project Solara.</strong></p>
+<p>A cinematic video frames it: agent-first devices that come forward when you approach, understand your speech, surface what matters and let everything else fall away, keep going when you want, "light the path / clear the way."</p>
+<p><strong>Stevie Bathiche</strong> ("Stevie") presents the "why," referencing his <strong>Build 2023</strong> talk on outside-in AI infrastructure that moves within the application frame to operate globally, <strong>maintaining context across workflows, devices, and timescales.</strong> The big insight for Solara: <strong>don't choose one form factor — create a system that extends your agent across a constellation of devices.</strong> <em>"The next computer is all of the devices working together as one system, with agents closer to where and when you need them."</em></p>
+<p>Two challenges Solara solves:
+1. Specialized form factors exist but rely on <strong>custom one-off apps and fragmented stacks</strong> — hard/expensive to build, deploy, maintain.
+2. Organizations are already building <strong>deeply specialized agents</strong> whose impact is <strong>constrained by where they can exist.</strong></p>
+<p><strong>Solara's three pillars</strong> (unified by <strong>Azure</strong> across cloud + device):
+1. <strong>Enterprise-ready</strong> — built on the <strong>AOSP-based Microsoft Device Ecosystem Platform.</strong>
+2. <strong>Agent-driven interaction model</strong> with <strong>just-in-time UI</strong> that adapts to the form factor.
+3. <strong>Extensibility</strong> — <strong>bring your own agents.</strong></p>
+<p><strong>Two device categories previewed:</strong>
+- <strong>Stationary (desk) device</strong> — built on <strong>MediaTek</strong>; <strong>Windows Hello for Business</strong> signs you in by walking up, giving direct, frictionless-yet-protected access to <strong>Microsoft 365 Copilot grounded in Work IQ</strong>; surfaces "what matters next in your workday," lets you delegate tasks to your agent with a tap or voice. A dedicated <strong>ambient device for work</strong> that acts as a companion to your existing <strong>Windows Copilot+ PC</strong> or accesses <strong>Windows 365</strong> on a connected monitor. (Demoed by Nathan.)
+- <strong>Portable — an "agent access badge"</strong> — re-imagining the access badge millions wear daily; built using <strong>Qualcomm</strong> silicon, lightweight, designed for <strong>agents on the go</strong>, adaptable across verticals/workflows. Demo: unlock with fingerprint → all your agents securely available → "gather content for a social media post," hit record, the badge's camera captures, the agent finds/cleans up the best shots and sends them to the team for review — fully agent-driven.</p>
+<p><strong>Vertical examples &amp; flexibility:</strong> With small changes (different agent, shape, screen size, sensors, input methods), the <em>same foundation/software</em> adapts to <strong>retail, industrial, hospitality, financial services, legal</strong>, and more. <strong>Healthcare</strong> example: a small wearable where the right agent shapes the experience around role/workflow — check-ins, patient records, critical insights via enterprise-grade secure access; built-in mics enable hands-free voice documentation (incl. diarization/annotation); a side-facing camera captures vitals, scans medications, verifies workflows — bringing intelligence into the flow of patient care while the nurse stays present with the patient.</p>
+<p><strong>Named early explorers:</strong> <strong>Accenture, Best Buy, Target</strong>, and others are exploring how these devices can improve their workflows. The broader opportunity: <em>agents moving outside the app and taking shape in devices designed for a specific scenario, customer, and place</em> — "imagine where your agent should live, what form it should take, and what new work it can unlock."</p>
+<h3 id="guest-cristiano-amon-qualcomm">Guest — Cristiano Amon (Qualcomm)</h3>
+<p>A recorded device-lab conversation between Satya and Qualcomm CEO <strong>Cristiano Amon</strong> on the platform shift from building OSes/devices <strong>for apps</strong> to building <strong>for agents</strong>:
+- <strong>Agents change the nature of the device.</strong> As AI understands the world the way we do, computing moves <strong>closer to our senses</strong> — eyes, mouth, ears — into things we <strong>wear</strong>; you need silicon geared toward <strong>real-time context</strong>, from silicon to cloud.
+- Requires a <strong>power-efficient CPU</strong> and a <strong>cloud-native experience</strong> with many <strong>sensors</strong> for personalization — a fundamental change in the nature of devices; the wearable platform itself is changing.
+- The key shift: today the <strong>smartphone is the center</strong> of digital life and other devices extend it, which pushed vertical (single-company) platforms. With agents, <strong>the agent becomes the center</strong> of the digital experience — and agents will want an <strong>open, horizontal platform</strong> that lets them interact with the <strong>best possible device for each application.</strong> The goal: make it possible for any agentic system to live across <strong>many devices</strong> carrying that intelligence — an <strong>open ecosystem</strong> built together. "That's just the beginning."</p>
+<p>Satya's takeaway: new platforms mean <strong>new platform rules</strong> that don't hem in the form factors where agents live — "when new platforms come, you get to rewrite the rules of how platforms operate." Solara gives developers/enterprises the flexibility to imagine the form factors they want and make agents <strong>ubiquitous.</strong></p>
+<h3 id="the-intelligence-layer-models-context-tools">The Intelligence Layer — models + context + tools</h3>
+<p>Moving up the stack to a <strong>new intelligence layer</strong> bringing together <strong>models, context, and tools.</strong> It starts with <strong>model choice</strong> — every customer/developer chooses the right model for the right task, eval mix, and agency/budget. <strong>Foundry has 121k+ models</strong> ("the largest model catalog out there") — from <strong>OpenAI</strong> to <strong>Anthropic</strong> to <strong>MAI</strong> models. Last week Microsoft brought <strong>OpenAI realtime voice models</strong> and <strong>Claude Opus 4.8</strong> to Foundry, continuing to bring frontier models.</p>
+<p><strong>Context starts at the data tier.</strong> Data has historically been built for user-facing applications; now it must be <strong>rebuilt for agents</strong> (different call patterns even at the data tier). Agents are continuously <strong>storing, retrieving, reasoning, acting, and learning</strong> — using <strong>Cosmos DB</strong> (as ChatGPT does), <strong>Azure Search</strong> retrieval of indices, <strong>Fabric real-time intelligence</strong> as the business-logic tier for agents.</p>
+<p>New data services announced:
+- <strong>"Verizon DB"</strong> <em>(caption-uncertain name — described as a fully managed PostgreSQL/SQL service on Azure; likely a garbled product name)</em> — ground-up managed Postgres service for <strong>high availability and scale-out</strong>, <strong>automated failover</strong>, <strong>128 TB per cluster</strong>, built for read-heavy workloads; internal testing shows <strong>~3× throughput vs PostgreSQL.</strong>
+- <strong>Data warehouse with GPU acceleration in Fabric</strong> — for a world where agents constantly query data on the fly; <strong>~7× performance gain</strong> bringing AI acceleration to Fabric.</p>
+<p><strong>Microsoft IQ</strong> = the <strong>IQ layer</strong> that mixes model capability with data to deliver the <strong>right context</strong> and unlock intelligence. <strong>Token efficiency</strong> is framed as <em>the</em> key consideration: structure the context right and feed the models well, and you are by definition far more token-efficient.</p>
+<p><strong>Web IQ</strong> (announced): LLM/agent-native <strong>web grounding</strong> built on Microsoft's global infrastructure already serving <strong>1B+ users</strong>, but <strong>fundamentally re-architected</strong> for LLM/agentic workflows — <strong>model-agnostic, MCP-native</strong>, plugs into any agent runtime; covers <strong>web, news, images, video</strong> so agents ground responses in <strong>fresh, verifiable</strong> content. <strong>Best-in-class on all three criteria: quality, speed, and cost.</strong></p>
+<p>Beyond the web, Microsoft unifies <strong>Foundry + Fabric + Microsoft 365</strong> as a unified IQ layer — a continuously updated understanding of your organization. The three sub-layers:
+- <strong>Web IQ</strong> — external, fresh web grounding.
+- <strong>Fabric IQ</strong> — a <strong>living operational ontology</strong> of the business (the grid, the operation) coupled with <strong>live telemetry</strong>, reflecting real state minute-by-minute; extends models used by millions of customers into rich ontologies.
+- <strong>Work IQ</strong> — <strong>people + procedures</strong> grounded in <strong>M365/SharePoint</strong> playbooks, <strong>always current</strong> (no re-uploads, no stale versions; when the procedure changes, the answer changes). <em>Critically: this is your knowledge — the assets you create stay with you regardless of which model/agent reasons over them.</em></p>
+<h3 id="demo-elijah-microsoft-iq-in-a-power-utility-control-center">Demo — Elijah: Microsoft IQ in a power-utility control center</h3>
+<p>Elijah ("agents are only as good as the context we give them") demos a fictional utility, <strong>Brightline</strong>, in a grid-operations control center:
+- Kicks off a <strong>long-running agent</strong> to assess a grid incident and produce a brief, built in <strong>Foundry</strong> and wired to a <strong>Foundry IQ knowledge base</strong> (a single grounded source packaging documents, operational data, and people), then <strong>published to Microsoft 365</strong> for the whole team.
+- In M365, asks about <strong>current electricity prices in SF</strong> — the agent pulls <strong>Web IQ</strong> to ground in fresh official sources.
+- Asks about <strong>at-risk substations</strong> — the agent pulls <strong>Fabric IQ</strong>: Brightline's grid as an operational <strong>ontology</strong> + live telemetry, returning a table of most-exposed substations.
+- Asks <strong>"what are the steps to respond to a substation trip"</strong> — the agent pulls <strong>Work IQ</strong>: Brightline's response procedure in <strong>SharePoint</strong>, answered from the same source the team maintains daily (not a stale snapshot).
+- The <strong>long-running agent</strong> finishes: it used Web IQ (outside) → Fabric IQ via Foundry (state of operations) → Work IQ (people + procedures), and even <strong>alerted Elijah directly in Teams</strong> with a brief. With <strong>Foundry routines</strong> this can run on a <strong>schedule</strong> — turning a one-off response into <strong>continuous, proactive execution.</strong></p>
+<p><strong>Point proved:</strong> <em>"When the crisis hits, teams don't chance an answer — they get an answer, all in one place they can trust."</em> The combination of external + internal context (Microsoft IQ) is what makes agents reliable.</p>
+<h3 id="the-agent-runtime-windows-microsoft-execution-containers-mxc">The Agent Runtime — Windows + Microsoft eXecution Containers (MXC)</h3>
+<p>Moving from context to <strong>deploying agents</strong> — you need a first-class <strong>agent runtime</strong>, shipping in both <strong>Windows</strong> and <strong>Foundry/Azure</strong>. Agents are a <strong>new execution environment / paradigm</strong>: they reason continuously, <strong>generate and run code dynamically</strong>, and act across files, devices, and the network — powerful, but it creates <strong>new risk.</strong></p>
+<p><strong>Microsoft eXecution Containers (MXC)</strong> — a new <strong>policy layer</strong> that lets Windows apply <strong>isolation and containment using OS-native primitives</strong> (baked into the OS so containment is <strong>policy-enforced</strong>):
+- <strong>Process-level isolation</strong> for lightweight agent actions.
+- <strong>Session-level isolation</strong> for user separation across Windows and Linux machines (incl. <strong>WSL</strong>) for stronger boundaries.
+- <strong>Windows 365 for agents</strong> — <strong>maximum isolation</strong> in a separate managed environment.
+Pick the right containment option per workload; Windows enforces it <strong>regardless of who builds the agent.</strong> Partners are engaged; <strong>NVIDIA is bringing Open Shell</strong> <em>(caption-uncertain phrasing)</em> to Windows.</p>
+<h3 id="demo-scott-samantha-peter-steinberger-open-claw-native-on-windows">Demo — Scott, Samantha &amp; Peter Steinberger: Open Claw native on Windows</h3>
+<p>Microsoft announced <strong>Open Claw running natively on Windows leveraging MXC.</strong> Scott and Samantha demo a new <strong>Open Claw Windows companion app</strong> (alpha):
+- Open Claw "came out in November of last year and took the world by storm"; people use it for health/blood-sugar tracking, triaging email &amp; GitHub issues, buying movie tickets, even as a <strong>triathlon coach</strong> building a work-back plan from personal data.
+- The companion app is a <strong>native Windows app</strong> with info about the gateway, other machines, sessions, usage; quick access to chat, Canvas, the main dashboard; <strong>full chat support with tool calling</strong>; sandbox configuration in the corner.
+- <strong>Sandbox uses MXC</strong> (process isolation; newer Windows versions will add more containment options). One-click security settings plus <strong>custom folder permissions</strong> — granular control over files/folders Open Claw can access, plus features like clipboard access or internet access.
+- <strong>The "scary" test:</strong> they give Open Claw read-only access to the desktop folder, then ask it to <strong>delete all files on the desktop.</strong> Even with <strong>all of Open Claw's own safety layers turned off</strong>, <strong>MXC's read-only sandbox</strong> (set by IT/Samantha) blocks every deletion attempt — the files stay safe ("Foiled again!"). The point: <strong>OS-enforced containment</strong> holds even when the agent tries hard and its own guardrails are disabled.
+- The work was done on a calm Windows dev machine with WSL, containers, containment, and <strong>GitHub Copilot with multi-model support</strong>.</p>
+<p><strong>Peter Steinberger</strong> ("the claw father himself", creator of Open Claw) joins:
+- He built Open Claw to have access to <strong>everything</strong> — files, machines, chats — always-on and <strong>fully open source</strong>; that power made companies nervous ("Peter, I love my claw — can I use this at work?").
+- The last few months' work (with <strong>Microsoft, GitHub, OpenAI, NVIDIA</strong> among others): <strong>observability, auto-mode for permissions</strong>, changed how access works — <strong>"not all or nothing anymore"</strong> (pick read-only or hidden folders). <strong>"You can run it inside your company now."</strong>
+- Made the <strong>harness itself a plugin</strong> — bring your own (<strong>Copilot, Codex</strong>, whatever you trust) and your rules come with it; plus <strong>persistent memory, heartbeats</strong>, and a claw inside <strong>Slack or Teams.</strong>
+- Announced the <strong>Open Claw Foundation</strong> — a nonprofit; <strong>any model, any operating system</strong> — "a new era of building agents, more capability for people who don't code, more power for those who do… Come build with us."</p>
+<p>This was the first time Open Claw ran on a <strong>Surface Ultra</strong>.</p>
+<h3 id="foundry-as-a-full-application-platform-for-the-agent-era">Foundry as a Full Application Platform for the Agent Era</h3>
+<p>Moving from edge to cloud: <strong>Foundry</strong> is becoming a <strong>full application platform</strong> — the cloud stack for the agent era:
+- <strong>Foundry-hosted agents</strong> as a runtime for <strong>long-running agents</strong>, with all the <strong>IQ layers</strong>, tools, <strong>durability, memory, and state</strong>, and a <strong>super-fast sandbox</strong> you can spin up.
+- <strong>Generate rubrics and evals</strong>; full <strong>safety/guardrails</strong> around the agentic system.
+- A <strong>continuously improving / self-improvement loop</strong> built in — agents that <strong>keep getting better.</strong>
+- New partnership with <strong>Fireworks AI</strong> — bringing their <strong>open-weight models</strong> to Foundry plus a great inference stack, with Foundry's enterprise guardrails/governance.</p>
+<h3 id="github-as-the-agent-control-plane-the-new-github-copilot-app">GitHub as the Agent Control Plane + the new GitHub Copilot app</h3>
+<p>GitHub is becoming <strong>the control plane for all agents</strong> (as Jensen noted). Nearly everything measured on GitHub — repo creation, PR activity, API usage, Actions — is <strong>accelerating</strong> because of agentic workflows; the new scale is <strong>humans + agents collaborating</strong>, exposing tooling across every form factor. <strong>CLI</strong> growth has been tremendous (approachable + natural language), but <strong>hundreds of CLIs don't scale</strong> — too much cognitive load with 100 sessions open.</p>
+<p>So Microsoft built the <strong>new GitHub Copilot app</strong> — the speed/flexibility of a CLI, the capability of an IDE, and the ability to <strong>scale to an infinite number of agent sessions</strong> — "your home base for development and operations."</p>
+<p><strong>Rayfin</strong> — an <strong>agent-first SDK</strong> that connects agents to the <strong>backend-as-a-service</strong> (identities, storage, database schemas) — "code is easy to generate, but what about the backend?" Brought everywhere you build. Partnership with <strong>Replit</strong>: build an app in Replit while the app + data deploy into an <strong>enterprise-managed Fabric tenant</strong> via the Rayfin SDK; available now for any tool to use as a backend.</p>
+<h3 id="demo-cassidy-github-copilot-app-canvas-rayfin">Demo — Cassidy: GitHub Copilot app, Canvas &amp; Rayfin</h3>
+<p>Cassidy demos the <strong>GitHub Copilot app</strong>:
+- Home screen kicks off new agentic coding sessions (you can drag <strong>Mona</strong> around — there's a hidden game).
+- Reviews release blockers and <strong>kicks off a separate session for every issue</strong> using <strong>Git worktrees</strong> (isolated environments) so agents work in parallel without stepping on each other.
+- <strong>Agent merge</strong> — Copilot babysits a PR through CI checks, code review, and merge conflicts.
+- A <strong>Work</strong> view shows all activity (projects, PRs); <strong>Automation</strong> has reusable sessions (local or cloud), including a real, "load-bearing" <strong>issue-poetry</strong> session (joke).
+- <strong>Sessions</strong>: add any repo/open-source project, start a session anywhere; integrated <strong>browser + chat</strong>, light/dark toggle, a <strong>"pick and polish"</strong> button to refine UI ("add reordering to this list" → it just works).
+- <strong>All popular models via one GitHub Copilot subscription</strong> (OpenAI, Anthropic, Google); model change is easy; <strong>"rubber-duck review"</strong> — a session using <strong>GPT-5.5</strong> can request a review from <strong>Claude Opus 4.8</strong> to catch each model's blind spots.
+- <strong>Canvas</strong> — "working with AI in 2026 should be more than chat"; an agent can <strong>build a custom UI</strong> to communicate with you (e.g., a camera-driven canvas where you thumbs-up/down to approve PRs). "IDEs that have UI — come full circle."
+- <strong>Rayfin deploy</strong>: a 100% agent-built, containerized signal-box app with a database backend deploys to enterprise via <strong><code>rayfin up</code></strong> — hosted on <strong>Microsoft Fabric</strong>, giving agents a complete enterprise backend. <em>"This app is not just another session manager — session managers make it easy to create work; this helps you finish it."</em></p>
+<h3 id="agent-365-the-agent-control-plane-govern-observe-secure">Agent 365 — the agent control plane (govern, observe, secure)</h3>
+<p><strong>Agent 365</strong> is the <strong>control plane</strong> for agents at scale. Agents need their <strong>own identities and access controls</strong> even when working on your behalf (work-on-behalf identity enforced):
+- <strong>Defender</strong> extended for <strong>real-time agent defense.</strong>
+- <strong>Purview</strong> extended for <strong>always-on data protection and compliance.</strong>
+- Agents can be <strong>hosted everywhere</strong> — <strong>AWS, GCP</strong>, not just Azure — and built with <strong>any framework.</strong>
+- Announcements include <strong>GA of the Agent 365 SDK</strong>, expanded to <strong>local agents running on Windows</strong> and elsewhere (and the claws shown earlier).</p>
+<h3 id="demo-amanda-foundry-from-local-to-enterprise-ready">Demo — Amanda: Foundry from local to enterprise-ready</h3>
+<p>Amanda shows how <strong>Foundry</strong> makes integrating + governing agents easy:
+- Built a <strong>LangGraph agent</strong> locally; <strong>Foundry Tool Box</strong> — add tools once, any agent consumes them through a <strong>single MCP endpoint</strong>; governance applied once (a <strong>guardrail blocking PII leakage</strong>) protects all agents.
+- <strong>Deploy with one block of code</strong> → push → <strong>GitHub Actions</strong> takes over; then use the agent in the Foundry extension.
+- Each session spins up a <strong>dedicated microVM</strong> with its <strong>own persistent file system</strong> (the agent literally writes to a file you can see in the Files tab); <strong>server-side traces and evals</strong> show exactly what happened on every run.
+- <strong>Rubric evaluators</strong> (brand-new): one command, <strong>Foundry reads the agent and generates evaluation criteria</strong> (a personalized rubric with dimensions like governance, outcome correctness, prescribed source usage) <strong>from production traces</strong> — then scores the agent.
+- <strong>Agent optimizer</strong> (brand-new): tunes four things — <strong>model, instructions, tool descriptions, and scales</strong> — generates improved <strong>candidates</strong>, scores each with the rubric, shows strategy/scores/exact changes, and deploys the best as a <strong>new agent version.</strong> Every run feeds the next eval — <em>agents get better the more they're used.</em>
+- Published the agent to <strong>Teams + M365 Copilot</strong> as an <strong>autopilot agent</strong> (its own identity + productivity license, works across M365 on its own behalf), living in the team's Teams group chat to catch the user up on missed updates.
+- <strong>Governance first:</strong> every autopilot agent requires <strong>admin approval</strong>; admins review, choose who can talk to it, monitor it, and block it at any time — every agent managed with the same rigor as users/apps. <em>"You build the agent; we handle the rest."</em></p>
+<h3 id="defender-security-harness-mdash-ai-defending-against-ai">Defender Security Harness — "MDASH" (AI defending against AI)</h3>
+<p>Last month Microsoft announced a <strong>multi-model agentic security system</strong> — an <strong>agent harness for security</strong> (referred to as <strong>"MDASH"</strong>, caption-uncertain spelling) that brings together <strong>~100 agents</strong> across frontier + custom models to find <strong>exploitable bugs</strong> better than any single model. It debuted on top of the <strong>CyberGym</strong> <em>(caption-uncertain)</em> benchmark.</p>
+<h3 id="demo-sarah-mdash-finding-fixing-vulnerabilities">Demo — Sarah: MDASH finding &amp; fixing vulnerabilities</h3>
+<p>Sarah shows results of a scan run from the <strong>GitHub Copilot app</strong> on a local dev machine (the system also runs as a standalone CLI):
+- Results broken down by <strong>vulnerability, demands, and severity</strong>; finds traditional issues (coding errors, hard-coded secrets) <strong>plus AI-specific vulnerabilities.</strong> Under the hood: <strong>100+ specialized agents discover, debate, and prove exploitable vulnerabilities end-to-end.</strong>
+- Generates a <strong>log + HTML report</strong> for management; <strong><code>defender details</code></strong> to dig into each vuln (what/where/severity).
+- <strong><code>defender fix</code></strong> — remediates directly in the local dev environment; review the diff (human-in-the-loop), or create a <strong>PR</strong> to push to the repo; output can upload to tools like <strong>GitHub Advanced Security.</strong>
+- A real vulnerability found by Microsoft's security-research teams using MDASH: a bug spread across <strong>three different parts</strong> of the codebase — no single file looks wrong (even a developer comment claims "everything is fine," which fools normal scanners/single models). <strong>MDASH wasn't fooled</strong>: one agent team spotted the gap, another argued it, a third built a working crash example — joined-up reasoning that previously required significant manual research. <strong>Coming soon to the CLI and Microsoft Defender portal.</strong></p>
+<h3 id="guests-the-chainsmokers-alex-pall-drew-taggart-mantis-vc">Guests — The Chainsmokers (Alex Pall &amp; Drew Taggart, Mantis VC)</h3>
+<p>A lighter interlude: <strong>Alex Pall and Drew Taggart of The Chainsmokers</strong>, now general partners at their VC firm <strong>Mantis</strong> (~7+ years; ~14 years as a duo). They met founders from the consumer/mobile/cloud-era startups, fell in love with early-stage investing, institutionalized in <strong>2020</strong>, and focus on <strong>B2B SaaS.</strong> On the opportunity: AI is moving <strong>"from producing outputs to producing actions"</strong> — reimagining the entire architecture of enterprise software (machines, not humans, producing outputs). Advice to founders mirrors making music: find your <strong>authentic</strong> "sound," stay connected to the product, and <strong>iterate</strong> relentlessly to lock in your fan base. They agreed to <strong>play a set at 6 p.m.</strong> for attendees.</p>
+<h3 id="copilot-ecosystem-discovery-super-app-autopilots">Copilot Ecosystem — discovery, super-app &amp; Autopilots</h3>
+<p>For any builder (AI-native company, SaaS, or enterprise), <strong>job one</strong> is making your plugins/agents/AI apps <strong>discovered through the Microsoft ecosystem</strong> — Windows, Microsoft 365 Copilot, Teams, GitHub. Line-of-business apps/agents built with <strong>Copilot Studio</strong> are discoverable as part of the Copilot experience. <strong>Teams</strong> has become the destination for <strong>multiplayer, human-to-agent</strong> interaction.</p>
+<p><strong>Copilot's evolution:</strong> started as <strong>chat</strong> (best models + Work IQ) → <strong>Cowork</strong> (a new way of working: generate stunning artifacts, solve multi-step problems, assign multi-step tasks) → <strong>GitHub/code</strong> → by <strong>summer</strong>, <strong>coding comes to all knowledge work in one Copilot "super-app"</strong> (chat + Cowork + code in one Copilot).</p>
+<p><strong>Autopilots</strong> (brand-new) — think <strong>"enterprise-grade claws"</strong>: autonomous, long-running agents with <strong>full enterprise compliance</strong> running <strong>in your tenant</strong>, with a <strong>name, personality, custom connectors, context, and memory</strong> — to reduce toil. The <strong>first autopilot is Scout</strong> (joins group chats/Teams, handles threads in Outlook) — <strong>available today on Copilot Frontier</strong>; over coming months this builds out to a <strong>complete digital team of autopilots</strong> inside Copilot.</p>
+<h3 id="the-future-of-the-firm-tacit-knowledge-the-hill-climbing-machine">"The Future of the Firm" — tacit knowledge &amp; the hill-climbing machine</h3>
+<p>What makes any organization unique is its <strong>tacit knowledge</strong>, continuously compounding through operations. The key question in an AI age: <strong>"What is the future of the firm?"</strong> — how do you preserve and compound tacit knowledge when models can learn anything from the data/trajectories they see? The answer: every organization should build its own <strong>"hill-climbing machine"</strong> — a system that <strong>continuously improves against your objectives and private evals, compounding <em>your</em> advantage over time — not someone else's.</strong></p>
+<h3 id="guest-mustafa-suleyman-microsoft-ai-humanist-superintelligence-7-new-mai-models">Guest — Mustafa Suleyman (Microsoft AI): Humanist Superintelligence &amp; 7 new MAI models</h3>
+<p><strong>Mustafa Suleyman</strong> takes the stage to supercharge <strong>frontier tuning</strong> with innovation from Microsoft's <strong>superintelligence lab (MAI)</strong>:
+- Since he started in AI, training compute for frontier models has increased <strong>~1 trillion-fold</strong> — <strong>12 orders of magnitude in ~15 years</strong> — and <strong>~3 more orders of magnitude</strong> are coming in the next few years. <strong>Scaling laws are clearly holding</strong>; "long, linear hill climbing is the norm."
+- <strong>Humanist superintelligence</strong>: state-of-the-art AI <strong>explicitly designed to serve people and organizations, not replace them</strong> — placing <strong>humanity first</strong>, prioritizing human well-being and progress. As a platform company, the job is to keep developers building at the <strong>absolute frontier.</strong></p>
+<p><strong>Seven new MAI models</strong> (image, voice, transcription, reasoning, coding):
+1. <strong>MAI Image 2.5</strong> and <strong>MAI Image 2.5 Flash</strong> — a step change in quality, now <strong>#2</strong>, surpassing the core of <strong>Nano Banana 2</strong>; precise editing with control/consistency; Flash for efficient production, 2.5 for maximum fidelity. <strong>Live in PowerPoint today</strong>, rolling out to <strong>OneDrive</strong>, on <strong>Foundry</strong> at market-leading quality-per-dollar.
+2. <strong>MAI Transcribe 1.5</strong> — "the best transcription model in the world," SOTA accuracy across <strong>43 languages</strong>, beating Gemini and OpenAI flagships, <strong>~5× faster</strong>; integrated in <strong>GitHub, Copilot, Dynamics 365 Contact Center</strong>, and <strong>Foundry</strong> (fastest, most efficient, most cost-effective transcription of any hyperscaler).
+3. <strong>MAI Voice 2</strong> + <strong>Voice 2 Flash</strong> — latest speech generation; beautiful prosody, natural delivery, fine-grained control in <strong>15 languages</strong> (more coming); Flash for ultra-low-latency voice ("the biggest thing in 2026").
+4. <strong>MAI Thinking 1</strong> — first <strong>reasoning</strong> model; <strong>35B active-parameter MoE</strong> ("medium weight class"); independent human raters on Surge <strong>prefer it over Sonnet 4.6</strong> in overall quality; <strong>97% on AIME 2025</strong>; <strong>53% on SWE-bench Pro</strong> (alongside Opus 4.6 on the toughest coding benchmark). Notably <strong>climbed entirely "from the bottom"</strong> — <strong>no benchmark-specific targeting, zero distillation</strong> — giving <strong>clean, commercially licensed data lineage</strong> for trustworthy production use.
+5. <strong>MAI Code 1 Flash</strong> — inference-efficient coding model tuned for <strong>VS Code and GitHub CLI</strong>; <strong>51%</strong> on a coding benchmark despite only <strong>~5B parameters</strong> (close to Haiku in size but cheaper), rolling out <strong>inside VS Code.</strong></p>
+<p><strong>Distribution &amp; openness:</strong> alongside Foundry + 1P-product optimization, models are available on <strong>OpenRouter, Fireworks, and Baseten</strong> — for the first time you can <strong>tune the weights directly yourself</strong> in your ecosystem of choice.</p>
+<p><strong>Safety &amp; silicon codesign:</strong> built-in from the start — voice models have <strong>anti-cloning protection</strong>, <strong>everything watermarked</strong>, reduced refusals, plus a <strong>detailed technical report</strong> for transparency. MAI models are <strong>codesigned with Microsoft's own silicon</strong>: <strong>MAI Thinking 1 optimized on Maia 200</strong>, benchmarked against the GB300, with a further <strong>~1.4× performance-per-watt</strong> gain running end-to-end on Maia. These faster/more-efficient MAI models are coming to the <strong>N1X</strong> Satya mentioned — best performance on Windows in a few months.</p>
+<p><strong>RLEs (reinforcement learning environments)</strong> — "unique training gyms for your AIs" that create company/task-specific agents adapted only to you, built on MAI models:
+- Internally, MAI used RLEs to climb toward the <strong>best agentic uses on Excel</strong> — on par with <strong>GPT-5.4</strong> on public/private benchmarks while <strong>~10× more cost-efficient.</strong>
+- Tuned on <strong>McKinsey's</strong> tasks, MAI delivered the <strong>highest win rate</strong>, outperforming <strong>GPT-5.5</strong> with <strong>~10× greater cost efficiency.</strong>
+- Unlike shared-model-only approaches, <strong>only you keep</strong> the benefits from your workflows, know-how, and institutional data — <strong>the RLEs and the models you build inside them become your moat.</strong></p>
+<h3 id="guest-dr-gianrico-farrugia-mayo-clinic-a-frontier-health-model">Guest — Dr. Gianrico Farrugia (Mayo Clinic): a frontier health model</h3>
+<p><strong>Dr. Gianrico Farrugia</strong> (physician, researcher, President &amp; CEO of <strong>Mayo Clinic</strong>) joins to announce a partnership to build a <strong>frontier health model</strong> for deployment in Mayo's hospitals and beyond:
+- Mayo is ranked the <strong>#1 healthcare organization in the world</strong>, but most people will never have access — so <strong>7 years ago</strong> they built the <strong>Mayo Clinic Platform</strong>, moving healthcare from a pipeline to a platform; it now spans <strong>4 continents</strong>, reaches <strong>~100 million people</strong>, and holds what they believe is the <strong>largest longitudinal, multimodal (genomics) healthcare dataset</strong> in the world.
+- The collaboration encodes not just textbook knowledge (models already know the journals) but <strong>decades of clinical practice and clinical expertise</strong> — the model can act as a <strong>real-time team member</strong>, predict what's likely to happen next, <strong>prevent harm</strong>, and improve <strong>patient safety.</strong>
+- Each side does what it does best: Mayo brings the <strong>right data, the right people, and a patient-focused lens</strong>; together they build a frontier model offering <strong>safe, secure, trustworthy, effective</strong> healthcare solutions for all — "<strong>the needs of the patient come first.</strong>"</p>
+<h3 id="demo-tanaya-frontier-tuning-in-practice-hill-climbing-as-smooth-as-butter">Demo — Tanaya: Frontier tuning in practice ("hill climbing as smooth as butter")</h3>
+<p>Tanaya shows how to build your own enterprise AI with <strong>frontier tuning</strong>:
+- <strong>MAI Thinking 1</strong> is in <strong>private preview</strong> in the <strong>Foundry model catalog</strong> — deploy as-is, or click <strong>fine-tune</strong>: set up the job, add a <strong>grader</strong>, create the job; it runs through logs, scores them, and starts the <strong>hill climb.</strong>
+- A <strong>low-level training API</strong> gives full control: configure <strong>rollout strategy, hyperparameters</strong>, and incorporate your <strong>own RLM</strong> by defining the tools the model interacts with.
+- As an <strong>M365 customer you never start from scratch</strong> — hop into Copilot to <strong>build environments based on your data and workflows.</strong> Customer <strong>Land O'Lakes</strong> (one of the largest U.S. businesses) uses it to perfect butter-report generation — complex tasks needing many manual steps and high precision where ~80% accuracy isn't good enough.
+- Microsoft <strong>extends the industry definition of "skills" to include rubrics</strong> of what good looks like; uses <strong>M365 signals (Teams, Outlook, Word, Excel, PowerPoint)</strong> to suggest skills/rubrics that define how you work; add organizational/branding knowledge from <strong>OneDrive/SharePoint</strong>; tools are <strong>simulated</strong> so the model learns <strong>without impacting live business state.</strong>
+- The science: by <strong>generalizing learnings into the main model + the embedding model</strong>, they hill-climb to <strong>&gt;90% accuracy</strong> for the Land O'Lakes class — estimated <strong>~10× more efficient</strong> than baseline. Output "doesn't feel generic — it feels undoubtedly Land O'Lakes," and the task <strong>continuously retrospects and evaluates success.</strong> <em>"Frontier tuning as smooth as butter."</em></p>
+<p>Satya's synthesis: a significant shift — <strong>from consuming a frontier model to fully participating at the frontier.</strong> With <strong>private evals/outcomes, private RLEs/traces, and enterprise knowledge</strong>, you create scaffolding for models to hill-climb. The <strong>new operating point</strong>: use a very <strong>efficient reasoning + coding model</strong> yet achieve frontier results because you did the hard work to build the <strong>RLE / hill-climbing machine.</strong> The future is <strong>the ecosystem built around you (you in control)</strong> vs. "a few models hungry for all data."</p>
+<h3 id="microsoft-discovery-ga-the-scientific-discovery-loop">Microsoft Discovery (GA) — the scientific discovery loop</h3>
+<p>Building the <strong>scientific discovery loop</strong> may have the biggest societal impact. Science today is too <strong>"lenient"</strong> (hypothesize → experiment → wait for lab results → repeat). <strong>Microsoft Discovery</strong> makes the scientific method <strong>continuous and programmable</strong>, bringing together models, <strong>HPC compute</strong>, <strong>knowledge graphs of scientific knowledge</strong>, an <strong>automated lab</strong>, and <strong>simulation</strong> into one <strong>agentic discovery loop</strong>. <strong>GA announced.</strong></p>
+<h3 id="demo-david-microsoft-discovery-designing-enzymes-for-true-plastic-recycling">Demo — David: Microsoft Discovery designing enzymes for true plastic recycling</h3>
+<p>David (Microsoft Discovery &amp; Quantum team) shows the <strong>Discovery Studio</strong> (built on VS Code) tackling <strong>true plastic recycling</strong> — today recycling a bottle requires shredding/melting (down-cycling); the goal is using <strong>proteins/enzymes</strong> so plastic can be recycled again and again:
+- Three scientist goals: <strong>write a scientific paper</strong>, <strong>perform the actual discovery</strong>, and <strong>create a protocol to test results in a real lab.</strong>
+- Launches the <strong>discovery engine</strong> — specialized agents always running, following the scientific method (add more from a community of agents/models/tools, or create your own). Runs can take <strong>hours or days</strong> running simulations; files (incl. the research paper) appear as created. Uses an internal <strong>knowledge graph</strong> for complete provenance/visibility.
+- No out-of-the-box agent for generating candidate proteins? <strong>Create one on the fly</strong> (YAML-defined). Candidate generation is compute-heavy — <strong>integrated with HPC</strong>: start with a seed protein, vary small segments, test if each helps, repeat <strong>millions of times</strong> exploring a huge tree → <strong>80 proteins</strong> sent to the lab.
+- To make a protein, bacteria produce it; Discovery creates a file with <strong>DNA sequences</strong> that can be <strong>submitted to a real automated lab</strong> via a custom agent. David shows a <strong>real automated lab</strong> with a <strong>Copilot interface</strong> — the job is submitted live; a previous run shows all the (mostly automated, human-supervised) steps. <em>"Bringing together the physical and agents in a unified Discovery loop."</em> Industries are using it today.</p>
+<h3 id="quantum-majorana-2">Quantum — Majorana 2</h3>
+<p>Last year Microsoft announced its <strong>first QPU</strong>, creating a <strong>new state of matter</strong> (theorized ~100 years ago, proven to exist) — a radically different approach to the barriers of <strong>reliability, speed, and size.</strong> Progress since, with academic + industry partners:
+- <strong>Q North</strong>: a quantum computer powered by <strong>Atom Computing neutral atoms</strong> with Microsoft's stack (partners incl. algorithmic/Columbia/Zurich — caption-uncertain).
+- Microsoft used the <strong>Discovery agentic loop</strong> to compress years of quantum research into the last year.
+- <strong>Majorana 2</strong> (announced): qubits that are <strong>reliable and maintain state much longer</strong> — vs <strong>microsecond</strong> lifetimes for common approaches, Majorana 2 delivers <strong>~20 seconds up to ~1 minute</strong> (<strong>~1000× Majorana 1</strong>), enabling complex quantum computation in that lifetime. Same tiny <strong>qubit form factor</strong> (~<strong>1/100th of a millimeter</strong>) with <strong>digital control</strong> — making it possible to fit <strong>~1 million qubits on a chip smaller than a credit card.</strong> Reliability + speed + size make the <strong>topological approach</strong> unique: Majorana 1 proved the physics; <strong>Majorana 2 begins the engineering scale.</strong></p>
+<h3 id="closing-the-frontier-ecosystem-the-north-star">Closing — The frontier ecosystem &amp; the North Star</h3>
+<p>Satya closes: it's never <strong>tech for tech's sake</strong> — it's about tackling the pressing challenges of <strong>people and planet.</strong> The real question isn't whether you <em>can</em> build the next great model/platform/quantum machine — it's <strong>how do we build the frontier ecosystem.</strong> Two possible stories about technology:
+1. Technology <strong>concentrates power, reduces human agency</strong>, and leaves society to absorb the consequences.
+2. We use this next wave to <strong>unlock opportunity</strong> for developers, scientists, enterprises, and every community.</p>
+<blockquote>
+<p><strong>"Our job is to make the second story true. That's our North Star for the frontier ecosystem. Let's all go build together."</strong></p>
+</blockquote>
+<p>A closing video reinforces the quantum vision (reliable + scalable quantum unlocking chemistry, life-sciences discovery, faster drugs-to-market) — "Quantum will change the world. This change is just beginning to happen."</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Windows ML / Windows AI</strong> — expanded to the full installed base of NPUs/GPUs/CPUs for local on-device AI.</li>
+<li><strong>MAI Ion Instruct</strong> — local reasoning model for Windows.</li>
+<li><strong>MAI Ion Plan</strong> — local planning model for Windows (full local agentic loop).</li>
+<li><strong>NVIDIA N1X</strong> — next-gen PC SOC (CPU+GPU+AI, unified memory, integrated DRTM).</li>
+<li><strong>Surface Ultra</strong> — NVIDIA-based Surface; 128 GB unified memory, ~2K display, all-day battery (this fall).</li>
+<li><strong>Surface RTX DevBox</strong> ("Spark") — dev "dream machine": ~1 petaflop AI, 20 CPU cores, 128 GB unified memory.</li>
+<li><strong>NVIDIA DGX / GB300 station</strong> — "desktop data center" running a ~1T-parameter model locally; Windows coming to it.</li>
+<li><strong>Windows 365</strong> — cloud developer distribution; also <strong>Windows 365 for agents</strong> (max isolation).</li>
+<li><strong>Intelligent terminal (Windows)</strong> — built-in GitHub Copilot; pick your agent.</li>
+<li><strong>PowerToys</strong> — vertical taskbar, command palette, "Grab and Move," End Task.</li>
+<li><strong>Dev Drive</strong> — Git-aware, Defender async for performance.</li>
+<li><strong>WSL / containers on Windows</strong> — native, GPU-leveraging; 75+ CLI utilities; Homebrew native; Microsoft Edit.</li>
+<li><strong>Fleet</strong> — kick off agents on Windows.</li>
+<li><strong>Copilot voice (local model)</strong> — delegate coding via voice on-device.</li>
+<li><strong>Maia 200</strong> — first-party AI accelerator (~30% better tokens/$; powers M365 Copilot).</li>
+<li><strong>Cobalt 200</strong> — first-party CPU (preview) for cloud-native + agent workloads.</li>
+<li><strong>NVIDIA Grace Blackwell / NVL72</strong> — training/post-training racks (largest fleet at Microsoft).</li>
+<li><strong>NVIDIA Vera Rubin / Vera CPU</strong> — next-gen, built for agents + ultra-low latency.</li>
+<li><strong>AMD MI (next-gen GPU)</strong> — partner silicon.</li>
+<li><strong>Fairwater</strong> — Microsoft's first AI super-factory (Georgia + Wisconsin), closed-loop cooling, ~zero water.</li>
+<li><strong>Project Solara</strong> — turnkey platform for agent-first purpose-built devices.</li>
+<li><strong>Microsoft Device Ecosystem Platform (AOSP-based)</strong> — enterprise-ready Solara foundation.</li>
+<li><strong>Solara stationary device (MediaTek)</strong> — ambient desk device; Windows Hello for Business; M365 Copilot + Work IQ.</li>
+<li><strong>Solara agent access badge (Qualcomm)</strong> — portable wearable for agents on the go.</li>
+<li><strong>Foundry</strong> — 121k+ model catalog + full agent application platform (hosted agents, IQ knowledge base, routines, Tool Box, microVMs, rubric evaluators, agent optimizer).</li>
+<li><strong>Cosmos DB / Azure Search / Fabric real-time intelligence</strong> — agent data tier.</li>
+<li><strong>"Verizon DB"</strong> <em>(caption-uncertain)</em> — fully managed Postgres/SQL service; HA, scale-out, 128 TB/cluster, ~3× throughput vs PostgreSQL.</li>
+<li><strong>Fabric (GPU-accelerated data warehouse)</strong> — ~7× performance gain.</li>
+<li><strong>Microsoft IQ</strong> — unified context layer: <strong>Web IQ</strong>, <strong>Fabric IQ</strong>, <strong>Work IQ</strong> (+ <strong>Foundry IQ</strong> knowledge base).</li>
+<li><strong>Web IQ</strong> — LLM/agent-native web grounding; MCP-native, model-agnostic.</li>
+<li><strong>Microsoft eXecution Containers (MXC)</strong> — OS-native agent isolation policy layer.</li>
+<li><strong>Open Claw on Windows</strong> — native companion app (alpha) using MXC; <strong>Open Claw Foundation</strong> (nonprofit).</li>
+<li><strong>Fireworks AI partnership</strong> — open-weight models to Foundry.</li>
+<li><strong>GitHub Copilot app</strong> — home base for dev/ops; Git worktrees, agent merge, Canvas, rubber-duck reviews, multi-model.</li>
+<li><strong>Canvas</strong> — agent-built custom UI.</li>
+<li><strong>Rayfin</strong> — agent-first backend-as-a-service SDK (<code>rayfin up</code>); deploys to Microsoft Fabric; <strong>Replit</strong> partnership.</li>
+<li><strong>Agent 365</strong> — agent control plane; <strong>Agent 365 SDK GA</strong>; Defender + Purview extended; cross-cloud (AWS/GCP).</li>
+<li><strong>Foundry Tool Box</strong> — tools once → single MCP endpoint + governance.</li>
+<li><strong>Microsoft Defender security harness ("MDASH")</strong> — ~100-agent security system; <code>defender details</code> / <code>defender fix</code>.</li>
+<li><strong>Copilot Studio</strong> — build discoverable line-of-business agents.</li>
+<li><strong>Microsoft 365 Copilot</strong> — chat + Cowork + code super-app (by summer); <strong>Cowork</strong>, <strong>Autopilots</strong>, <strong>Scout</strong>.</li>
+<li><strong>Frontier tuning + RLEs (reinforcement learning environments)</strong> — build your own hill-climbing machine.</li>
+<li><strong>MAI Image 2.5 / 2.5 Flash, MAI Transcribe 1.5, MAI Voice 2 / Voice 2 Flash, MAI Thinking 1, MAI Code 1 Flash</strong> — seven new MAI models.</li>
+<li><strong>OpenRouter / Fireworks / Baseten</strong> — distribution for self-tuning MAI weights.</li>
+<li><strong>Mayo Clinic Platform / frontier health model</strong> — co-created clinical model.</li>
+<li><strong>Microsoft Discovery</strong> — agentic scientific-discovery loop (GA); Discovery Studio, HPC, knowledge graph, automated lab.</li>
+<li><strong>Majorana 2 / Q North</strong> — topological qubits; neutral-atom quantum computer (Atom Computing).</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ol>
+<li><strong>Windows ML/AI expanded</strong> to the <strong>full installed base</strong> of NPUs/GPUs/CPUs for local on-device AI (build once, run across the install base).</li>
+<li><strong>MAI Ion Instruct</strong> (reasoning) + <strong>MAI Ion Plan</strong> (planning) — new <strong>local</strong> models on Windows for a full local agentic loop.</li>
+<li><strong>NVIDIA N1X</strong> next-gen PC SOC announced (CPU+GPU+AI, unified memory, integrated DRTM).</li>
+<li><strong>Intel</strong> new silicon; <strong>Qualcomm</strong> two parts — high-end <strong>Snapdragon X</strong> + a sub-$500 PC part.</li>
+<li><strong>Surface Ultra</strong> — 128 GB unified memory, ~2K display, all-day battery; <strong>available this fall.</strong></li>
+<li><strong>Surface RTX DevBox</strong> developer "dream machine" — ~1 petaflop AI, 20 CPU cores, 128 GB unified memory (<strong>wait list</strong>).</li>
+<li><strong>Windows coming to the NVIDIA DGX/GB300</strong> — "desktop data center" running a ~1T-parameter model locally.</li>
+<li><strong>Vertical taskbar</strong> — available in the <strong>Windows Insider</strong> build.</li>
+<li><strong>DevBox config file</strong> published in a <strong>public repo</strong> to reproduce the setup.</li>
+<li><strong>PowerToys</strong> updates — "Grab and Move," End Task, command palette.</li>
+<li><strong>75+ CLI utilities</strong> added to Windows; <strong>Homebrew native</strong>; first-class <strong>container</strong> support; <strong>Microsoft Edit</strong> updates.</li>
+<li><strong>Intelligent terminal</strong> with built-in GitHub Copilot — pick-your-agent.</li>
+<li><strong>Maia 200</strong> scaling (live in Arizona, deploying internationally); ~30% better tokens/$; validated with GPT-5.5; will power M365 Copilot.</li>
+<li><strong>Cobalt 200 CPU — preview</strong>; cloud-native + agent workloads; ~30% better than Cobalt; agent traces ~33% lower latency / ~14% faster / ~23% higher throughput.</li>
+<li><strong>AMD MI next-gen GPU</strong> partnership.</li>
+<li><strong>Fairwater</strong> AI super-factory detailed (Georgia + Wisconsin; closed-loop, ~zero-water).</li>
+<li><strong>NVIDIA Vera Rubin</strong> being validated/stood up at Microsoft (built for agents).</li>
+<li><strong>Project Solara</strong> — agent-first device platform; two device categories previewed (stationary MediaTek desk device + portable Qualcomm agent badge). Early explorers: <strong>Accenture, Best Buy, Target.</strong></li>
+<li><strong>OpenAI realtime voice models</strong> + <strong>Claude Opus 4.8</strong> brought to <strong>Foundry</strong> (last week).</li>
+<li><strong>"Verizon DB"</strong> <em>(caption-uncertain)</em> — fully managed Postgres/SQL service; HA, scale-out, 128 TB/cluster (~3× throughput vs PostgreSQL).</li>
+<li><strong>GPU-accelerated data warehouse in Fabric</strong> (~7× performance gain).</li>
+<li><strong>Web IQ</strong> announced — LLM/agent-native web grounding (MCP-native, model-agnostic; best-in-class quality/speed/cost).</li>
+<li><strong>Microsoft IQ</strong> unified layer (<strong>Web IQ + Fabric IQ + Work IQ</strong>, plus <strong>Foundry IQ</strong> knowledge base) across Foundry + Fabric + M365.</li>
+<li><strong>Microsoft eXecution Containers (MXC)</strong> — new OS-native agent isolation in Windows (process / session / Windows 365 for agents).</li>
+<li><strong>Open Claw runs natively on Windows</strong> via MXC; new <strong>Open Claw Windows companion app</strong> (alpha).</li>
+<li><strong>Open Claw Foundation</strong> announced (nonprofit; any model/any OS); pluggable harness, folder-level permissions, auto-mode, observability — "you can run it inside your company now."</li>
+<li><strong>Foundry as a full application platform</strong> — hosted long-running agents, fast sandbox, durability/memory/state, auto rubrics/evals, self-improvement loop.</li>
+<li><strong>Fireworks AI partnership</strong> — open-weight models to Foundry.</li>
+<li><strong>New GitHub Copilot app</strong> — CLI speed + IDE capability, infinite agent sessions; Git worktrees, agent merge, Canvas.</li>
+<li><strong>Canvas</strong> — agent-built custom UIs.</li>
+<li><strong>Rayfin</strong> — agent-first backend-as-a-service SDK; deploys to <strong>Microsoft Fabric</strong>; <strong>Replit</strong> partnership; available now.</li>
+<li><strong>Agent 365</strong> — agent control plane; <strong>Agent 365 SDK GA</strong>, extended to local Windows agents; Defender + Purview extended; cross-cloud.</li>
+<li><strong>Foundry Tool Box, rubric evaluators, and agent optimizer</strong> — brand-new Foundry capabilities.</li>
+<li><strong>Microsoft Defender security harness ("MDASH")</strong> — ~100-agent system; <code>defender fix</code>/<code>details</code>; <strong>coming soon to CLI + Defender portal.</strong></li>
+<li><strong>Copilot super-app</strong> — chat + Cowork + code unified <strong>by summer.</strong></li>
+<li><strong>Autopilots</strong> — enterprise-grade autonomous agents in your tenant; <strong>first autopilot Scout available today on Copilot Frontier.</strong></li>
+<li><strong>Frontier tuning</strong> supercharged with MAI; <strong>RLEs</strong> to build your own hill-climbing machine.</li>
+<li><strong>Seven new MAI models</strong>: <strong>Image 2.5 / 2.5 Flash</strong> (live in PowerPoint today; rolling to OneDrive + Foundry), <strong>Transcribe 1.5</strong>, <strong>Voice 2 / Voice 2 Flash</strong>, <strong>Thinking 1</strong> (private preview in Foundry catalog), <strong>Code 1 Flash</strong> (rolling out in VS Code).</li>
+<li>MAI models on <strong>OpenRouter / Fireworks / Baseten</strong> — self-tunable weights for the first time; MAI <strong>technical report</strong> published.</li>
+<li><strong>MAI Thinking 1 optimized on Maia 200</strong> (~1.4× perf/watt); MAI models coming to <strong>N1X</strong> in a few months.</li>
+<li><strong>Mayo Clinic partnership</strong> — co-creating a <strong>frontier health model</strong> for hospitals and beyond.</li>
+<li><strong>Microsoft Discovery — GA</strong> (agentic scientific-discovery loop; Discovery Studio + automated lab).</li>
+<li><strong>Majorana 2</strong> — topological qubits, ~20 s–1 min lifetime (~1000× Majorana 1); path to ~1M qubits on a credit-card-sized chip.</li>
+<li><strong>Q North</strong> — forthcoming quantum computer (Atom Computing neutral atoms + Microsoft stack).</li>
+</ol>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Kayla — Windows dev tooling (Surface RTX DevBox):</strong> vertical taskbar, PowerToys, Dev Drive, intelligent terminal + Copilot, WSL containers w/ GPU, <strong>120B-param local model (3.4M local tokens)</strong>, Copilot voice delegation, 75+ CLI tools, local log analysis via MAI Ion Instruct, ~90 GB GPU RAM running multiple models at once. <strong>Proves:</strong> on-device unmetered intelligence as a first-class Windows capability.</li>
+<li><strong>Jensen Huang (NVIDIA, remote from Taipei):</strong> personal-computer → personal-AI vision; RTX Spark (1 petaflop, NVFP4); Hopper→Grace Blackwell→Vera Rubin journey; Fairwater ~30× cost-per-token vs Hopper; GitHub commits ~3×; all agent tools GPU-accelerated. <strong>Proves:</strong> systems co-design powers the agent era.</li>
+<li><strong>Project Solara video + Stevie Bathiche + Nathan:</strong> agent-first stationary device (MediaTek, Windows Hello) and portable agent badge (Qualcomm) capturing/cleaning social content. <strong>Proves:</strong> agents can live across a constellation of purpose-built devices.</li>
+<li><strong>Cristiano Amon (Qualcomm, recorded):</strong> agents become the center of digital life → open horizontal device platform. <strong>Proves:</strong> the app→agent shift reshapes silicon + devices.</li>
+<li><strong>Elijah — Microsoft IQ (Brightline utility):</strong> one agent answering grid questions via Web IQ → Fabric IQ → Work IQ, plus a long-running agent alerting via Teams. <strong>Proves:</strong> combining external + internal context makes agents trustworthy in a crisis.</li>
+<li><strong>Scott, Samantha &amp; Peter Steinberger — Open Claw on Windows:</strong> native companion app + MXC read-only sandbox blocking a deliberate "delete all desktop files" attempt even with Open Claw's own guardrails disabled. <strong>Proves:</strong> OS-enforced containment makes autonomous agents enterprise-safe.</li>
+<li><strong>Cassidy — GitHub Copilot app + Rayfin:</strong> parallel issue sessions via Git worktrees, agent merge, multi-model rubber-duck review, Canvas (camera PR approval), <code>rayfin up</code> deploy to Microsoft Fabric. <strong>Proves:</strong> finish (not just create) agent work, with an enterprise backend.</li>
+<li><strong>Amanda — Foundry local→enterprise:</strong> Tool Box + single MCP endpoint + PII guardrail, one-block deploy via GitHub Actions, per-session microVM w/ persistent FS, auto-generated rubric evaluators + agent optimizer, autopilot agent in a Teams group chat. <strong>Proves:</strong> "you build the agent; we handle the rest," governed at scale.</li>
+<li><strong>Sarah — Defender MDASH:</strong> ~100-agent scan finding AI-specific + traditional vulns, <code>defender fix</code> remediation, and a real 3-part cross-file bug other scanners miss. <strong>Proves:</strong> multi-agent joined-up reasoning beats single models at security.</li>
+<li><strong>Tanaya — Frontier tuning (Land O'Lakes):</strong> fine-tune MAI Thinking 1 in Foundry, skills-as-rubrics from M365 signals, simulated tools, hill-climb to &gt;90% accuracy (~10× more efficient). <strong>Proves:</strong> every org can build its own hill-climbing machine / moat.</li>
+<li><strong>David — Microsoft Discovery:</strong> agentic enzyme design for true plastic recycling — HPC-driven protein search (millions of variants → 80 candidates) and DNA sequences submitted to a real automated lab via Copilot. <strong>Proves:</strong> a continuous, programmable scientific-discovery loop.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>121,000+ models</strong> in the Foundry catalog ("the largest model catalog out there").</li>
+<li><strong>500+ Azure data center regions</strong>; more capacity added in the <strong>last 18 months</strong> than in the <strong>first decade.</strong></li>
+<li><strong>Fairwater</strong>: ~<strong>100 kW/rack</strong> power delivery; closed-loop cooling → <strong>~zero water</strong> (annual water ≈ one restaurant's usage).</li>
+<li><strong>Maia 200</strong>: ~<strong>30% better tokens/$</strong> vs leading GPU; <strong>Cobalt 200</strong>: ~30% better cloud-native, <strong>~33% lower latency / ~14% faster / ~23% higher throughput</strong> on agent traces.</li>
+<li><strong>NVIDIA / Fairwater</strong>: <strong>~30×</strong> cost-per-token improvement over Hopper (~order of magnitude).</li>
+<li><strong>GitHub commits up ~3×</strong> in the last several months ("gone completely parabolic").</li>
+<li><strong>"Verizon DB"</strong> <em>(caption-uncertain)</em>: <strong>~3× throughput vs PostgreSQL</strong>, <strong>128 TB/cluster</strong>.</li>
+<li><strong>GPU-accelerated Fabric data warehouse: ~7×</strong> performance gain.</li>
+<li><strong>Web IQ</strong> serves on infra already used by <strong>1B+ users.</strong></li>
+<li><strong>DevBox</strong>: ~<strong>1 petaflop AI</strong>, <strong>20 CPU cores</strong>, <strong>128 GB unified memory</strong>; demo ran a <strong>120B-param model</strong> and <strong>3.4M tokens locally</strong>, ~<strong>90 GB GPU RAM</strong> utilized.</li>
+<li><strong>Compute for frontier training up ~1 trillion-fold (12 orders of magnitude) in ~15 years</strong>; <strong>~3 more orders of magnitude</strong> coming.</li>
+<li><strong>MAI Thinking 1</strong>: <strong>97% on AIME 2025</strong>, <strong>53% on SWE-bench Pro</strong>, preferred over <strong>Sonnet 4.6</strong>; <strong>35B active params</strong>, <strong>zero distillation.</strong></li>
+<li><strong>MAI Code 1 Flash</strong>: <strong>51%</strong> on a coding benchmark at only <strong>~5B params.</strong></li>
+<li><strong>MAI Transcribe 1.5</strong>: SOTA across <strong>43 languages</strong>, <strong>~5× faster</strong> than rivals.</li>
+<li><strong>RLE results</strong>: Excel agent on par with <strong>GPT-5.4</strong> at <strong>~10×</strong> lower cost; McKinsey tasks beat <strong>GPT-5.5</strong> with <strong>~10×</strong> efficiency.</li>
+<li><strong>MAI Thinking 1 on Maia 200</strong>: <strong>~1.4× perf/watt</strong> end-to-end.</li>
+<li><strong>Mayo Clinic Platform</strong>: <strong>4 continents</strong>, <strong>~100M people</strong>, largest longitudinal multimodal healthcare dataset.</li>
+<li><strong>Majorana 2</strong>: qubit lifetime <strong>~20 s up to ~1 min</strong> (<strong>~1000× Majorana 1</strong>); <strong>~1M qubits</strong> on a chip smaller than a credit card; qubit ~<strong>1/100th mm.</strong></li>
+<li>Quotes: <em>"Agents are impatient."</em> (Jensen) · <em>"In the past CPUs were designed for humans; agents want low latency."</em> (Jensen) · <em>"The next computer is all of the devices working together as one system."</em> (Stevie/Solara) · <em>"Agents become the center of your digital experience."</em> (Cristiano Amon) · <em>"Humanist superintelligence — designed to serve people and organizations, not replace them."</em> (Mustafa) · <em>"The RLEs and the models you build inside them become your moat."</em> (Mustafa) · <em>"What's the future of the firm?"</em> (Satya) · <em>"Our job is to make the second story true."</em> (Satya, closing).</li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try:</li>
+<li class="task-list-item"><input type="checkbox" disabled> Stand up an <strong>Open Claw companion</strong> on Windows once available; test <strong>MXC</strong> folder-level sandbox + auto-mode permissions.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Try <strong>MAI Thinking 1</strong> (private preview) in the <strong>Foundry</strong> catalog and run a <strong>fine-tune / RLE</strong> on a small internal workflow.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Pilot the <strong>new GitHub Copilot app</strong> (Git worktrees + agent merge + rubber-duck reviews) and <strong>Rayfin</strong> deploy to Fabric.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Evaluate <strong>Web IQ</strong> for agent grounding vs current web-search stack; test <strong>Fabric IQ / Work IQ</strong> for internal context.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Look at <strong>Microsoft Discovery</strong> (now GA) for any research/simulation use cases.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions:</li>
+<li class="task-list-item"><input type="checkbox" disabled> Confirm the real name of <strong>"Verizon DB"</strong> (caption-garbled — likely a managed Postgres service; verify against official Build announcements).</li>
+<li class="task-list-item"><input type="checkbox" disabled> Verify the <strong>"MDASH"</strong> / <strong>"CyberGym"</strong> spellings and the <strong>"Open Shell"</strong> NVIDIA item.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Pricing / availability dates for <strong>Surface Ultra</strong>, <strong>DevBox</strong>, <strong>Cobalt 200</strong>, and <strong>Agent 365 SDK</strong> in <strong>australiaeast</strong>.</li>
+<li class="task-list-item"><input type="checkbox" disabled> How <strong>Autopilots</strong> (Copilot) relate to <strong>Foundry-hosted agents</strong> and <strong>Agent 365</strong> governance — one control plane or several?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
+<li class="task-list-item"><input type="checkbox" disabled> Azure platform/architecture decisions; agent governance (Agent 365 / Purview / Defender); dev tooling standardization on GitHub Copilot.</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="DEMSP395.html"><span class="pager-dir">← Previous</span><span class="pager-code">DEMSP395</span><span class="pager-title">Teach AI agents to manage context with Elastic Agent Builder</span></a>
+    <a class="pager pager-next" href="OD800.html"><span class="pager-dir">Next →</span><span class="pager-code">OD800</span><span class="pager-title">Using autonomous SRE to move from alerts to action</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>

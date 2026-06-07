@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEG01 — Frontier Tuning</title>
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='48' height='48' x='2' y='2' fill='%23f25022'/%3E%3Crect width='48' height='48' x='50' y='2' fill='%237fba00'/%3E%3Crect width='48' height='48' x='2' y='50' fill='%2300a4ef'/%3E%3Crect width='48' height='48' x='50' y='50' fill='%23ffb900'/%3E%3C/svg%3E">
+
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="container topnav-inner">
+    <a class="back-link" href="../index.html">← All sessions</a>
+    <a class="topnav-title" href="../index.html">Microsoft Build 2026 <span>· Notes</span></a>
+  </div>
+</nav>
+
+<header class="session-header">
+  <div class="container">
+    <div class="session-head-top">
+      <span class="badge badge-lg">SEG01</span>
+      <a class="btn btn-youtube" href="https://www.youtube.com/watch?v=ynxh3ujRIKk" target="_blank" rel="noopener noreferrer"><span class="yt-glyph" aria-hidden="true">▶</span> Watch on YouTube</a>
+    </div>
+    <h1 class="session-title">Frontier Tuning</h1>
+    <div class="meta-row">
+      <span class="meta-item">🏢 Microsoft Build 2026</span>
+      <span class="meta-item">🎤 Microsoft (product segment)</span>
+      <span class="meta-item">⏱️ 5m</span>
+    </div>
+    <div class="chips"><span class="chip" data-tag="ai">AI</span></div>
+  </div>
+</header>
+
+<main class="container">
+  <article class="prose">
+<div class="callout callout-info">
+  <div class="callout-title"><span class="callout-icon" aria-hidden="true">ℹ️</span><span class="callout-title-text">Session Info</span></div>
+  <div class="callout-body">
+<p><strong>Event:</strong> Microsoft Build 2026<br>
+<strong>Speakers:</strong> Microsoft product segment (presenter unnamed; hands back to Satya at the end)<br>
+<strong>Duration:</strong> ~5 min<br>
+<strong>Watch:</strong> <a href="https://www.youtube.com/watch?v=ynxh3ujRIKk">YouTube</a></p>
+  </div>
+</div>
+
+<h2 id="tldr">🎯 TL;DR</h2>
+<p>Frontier Tuning lets enterprises create their <em>own</em> enterprise AI by tuning both the model and the surrounding "harness" on their own data and workflows. The presenter demos fine-tuning via reinforcement learning (RL) in Foundry — uploading a dataset, adding a grader, and watching the model "hill climb" to higher accuracy through rollouts and scoring — and reveals a low-level training API for full control over the RL loop. The headline customer story is Land O'Lakes (a major US agribusiness), whose complex "butter report generation" workflow is codified into an RL environment of skills, knowledge, and tools, pushing accuracy past 90% with a model estimated to be 10x more efficient than baseline. The big idea: your agent continuously improves inside a compliant RL environment that encodes the way <em>you</em> work — "frontier tuning as smooth as butter."</p>
+<h2 id="key-takeaways">🔑 Key Takeaways</h2>
+<ul>
+<li><strong>Frontier Tuning = tune the model <em>and</em> the harness</strong> on your own enterprise data and workflows to build a bespoke "hill climbing machine."</li>
+<li>A new model, <strong>"M AI Thinking 1"</strong> (caption-uncertain name), is in <strong>private preview in the Foundry Model Catalog</strong> — deployable as-is or fine-tunable.</li>
+<li>Fine-tuning flow is deliberately simple in the UI: <strong>add dataset → add grader → submit job</strong>; within a couple of hours you can watch the model generate rollouts, score them, and hill climb.</li>
+<li>A <strong>low-level training API</strong> gives full control over the RL loop: choose the model, configure rollout strategy + hyperparameters, and bring your own <strong>RL gym</strong> by defining the tools the model interacts with.</li>
+<li>For <strong>M365 customers, you're "never starting from scratch"</strong> — Copilot can build <strong>RL environments from your existing data and workflows</strong>.</li>
+<li>An RL environment = <strong>skills + knowledge + tools</strong>, backed by a full <strong>RL gym</strong> where agents continuously learn how you work.</li>
+<li>Microsoft is <strong>extending the industry definition of "skills" to include rubrics</strong> ("what good looks like") because for precision-heavy tasks even <strong>80% accuracy isn't good enough</strong>.</li>
+<li>Skills and rubrics can be <strong>auto-suggested from M365 signals</strong> (Teams, Outlook, Word, Excel, PowerPoint) to codify how you work at scale.</li>
+<li><strong>Grounding knowledge</strong> can be pulled from OneDrive / SharePoint; environments ship with <strong>built-in Microsoft tools</strong> plus support for <strong>custom tools</strong>.</li>
+<li>Tools are <strong>virtualized to simulate execution</strong>, so the model can learn from real workflows <strong>without impacting live business state</strong>.</li>
+<li>Generalizing learnings into both the <strong>main model and the embedding model</strong> drove Land O'Lakes tasks to <strong>&gt;90% accuracy</strong> with an estimated <strong>10x efficiency</strong> vs baseline.</li>
+<li>At inference, the tuned environment acts as an <strong>inferencing harness</strong>; the agent uses <strong>test-time pre-search across multiple models</strong> (including a fine-tuned one) and <strong>continuously retrospects and self-evaluates</strong>.</li>
+</ul>
+<h3 id="what-frontier-tuning-is">What Frontier Tuning is</h3>
+<p>Frontier Tuning is positioned as a way to <strong>create your own enterprise AI</strong>, where <em>both</em> the model and the surrounding harness are tuned on <strong>your data and your workflows</strong>. The framing metaphor throughout is building your own <strong>"hill climbing machine"</strong> — i.e., an RL-driven system that iteratively improves toward higher accuracy.</p>
+<h3 id="the-model-m-ai-thinking-1-in-foundry">The model: M AI Thinking 1 in Foundry</h3>
+<ul>
+<li>A thinking model — captioned <strong>"M AI Thinking 1"</strong> (name caption-uncertain; likely a Microsoft "MAI"-family model) — is <strong>now available in private preview</strong> in the <strong>Foundry Model Catalog</strong>.</li>
+<li>Two paths: <strong>deploy as-is</strong>, or click <strong>fine-tune</strong> to start your own "hill climbing journey."</li>
+</ul>
+<h3 id="fine-tuning-in-the-ui-rl-workflow">Fine-tuning in the UI (RL workflow)</h3>
+<ul>
+<li>In the fine-tuning UI: first <strong>add the dataset</strong>, then <strong>add a grader</strong>, then <strong>submit the job</strong> — presented as that simple ("and that's it").</li>
+<li><strong>A couple of hours in</strong>, you can observe learning: the model <strong>generates rollouts</strong>, <strong>scores them</strong>, and begins to <strong>hill climb</strong> (the RL improvement loop).</li>
+</ul>
+<h3 id="low-level-training-api-full-control">Low-level training API (full control)</h3>
+<p>For teams wanting full control over the RL training loop, there's a <strong>sneak peek at a low-level training API</strong>:
+- Select the model (the <strong>M AI Thinking</strong> model shown).
+- <strong>Configure rollout strategy</strong> and <strong>hyperparameters</strong> to define exactly how the training algorithm works.
+- <strong>Incorporate your own RL gym</strong> by <strong>defining the tools</strong> the model interacts with.</p>
+<h3 id="from-code-to-m365-building-rl-environments-from-your-work">From code to M365: building RL environments from your work</h3>
+<p>Pivoting from raw code, the presenter notes <strong>M365 customers never start from scratch</strong> and switches to <strong>Copilot</strong>. As part of Frontier Tuning, Microsoft introduces a <strong>new way to build RL environments based on your data and workflows</strong>.</p>
+<p><strong>Customer: Land O'Lakes</strong> — described as one of the largest agribusinesses in the US — is using this to "perfect that butter on your morning toast." Their environment is walked through as the running example.</p>
+<h3 id="anatomy-of-an-rl-environment">Anatomy of an RL environment</h3>
+<ul>
+<li><strong>High level:</strong> an environment consists of <strong>skills, knowledge, and tools</strong>.</li>
+<li><strong>Back end:</strong> Microsoft creates an <strong>entire RL gym</strong> so agents <strong>continuously learn the way you work</strong>.</li>
+</ul>
+<p><strong>Example skill — "butter report generation":</strong>
+- These tasks are <strong>very complex</strong>, with <strong>many manual steps</strong> and a <strong>high degree of precision</strong>.
+- For such tasks, <strong>even 80% accuracy isn't good enough</strong>.
+- To reach higher accuracy, Microsoft is <strong>extending the industry definition of skills to include rubrics</strong> — explicit definitions of <strong>"what good looks like."</strong></p>
+<h3 id="scaling-skills-across-the-enterprise">Scaling skills across the enterprise</h3>
+<p>To codify <em>all</em> enterprise tasks (not just one):
+- Leverage the <strong>time you spend in M365</strong> — <strong>Teams, Outlook, Word, Excel, PowerPoint</strong> — using those <strong>signals to suggest skills and rubrics</strong> that define how you work.
+- Add <strong>organizational knowledge for grounding</strong> from sources like <strong>OneDrive</strong> and <strong>SharePoint</strong>.
+- Environments come <strong>built in with Microsoft tools</strong>, and you can <strong>add custom tools</strong>.</p>
+<h3 id="virtualized-tools-safe-learning">Virtualized tools (safe learning)</h3>
+<p>Because these tools <strong>tap into real workflows</strong>, Microsoft <strong>virtualizes them to simulate execution</strong> — letting the model <strong>learn without actually impacting the live state of the business</strong>.</p>
+<h3 id="the-science-generalization-results">"The science" — generalization + results</h3>
+<p>The presenter's "favorite part" is the science:
+- Learnings are <strong>generalized into both the main model and the embedding model</strong>, helping clients on <strong>high-accuracy tasks</strong>.
+- For <strong>Land O'Lakes tasks</strong>, they <strong>hill climb to &gt;90% accuracy</strong> using the <strong>"MEI" model</strong> (caption-uncertain — possibly "MAI"; flagged).
+- The model is <strong>estimated to be 10x more efficient than baseline models</strong>.</p>
+<h3 id="inference-with-the-tuned-environment">Inference with the tuned environment</h3>
+<p>Back to butter reporting, now running the task <strong>using the tuned environment as an inferencing harness</strong>:
+- The task <strong>normally takes a couple of minutes</strong>, so a <strong>cached response</strong> is shown.
+- The agent <strong>leveraged test-time pre-search with multiple models, including a fine-tuned model</strong>.
+- The resulting <strong>summary doesn't feel generic — it feels "undoubtedly Land O'Lakes."</strong>
+- The task <strong>holds itself to high standards</strong> and <strong>continuously retrospects and evaluates itself</strong>.</p>
+<p><strong>Closing:</strong> With Frontier Tuning, your agent <strong>continuously improves</strong> within a <strong>compliant RL environment</strong> built <strong>on your data</strong>, encoding the way you work — "frontier tuning as smooth as butter." Microsoft is eager to see the environments customers build, then hands back to <strong>Satya</strong>.</p>
+<h2 id="products-features-technologies-mentioned">🛠️ Products / Features / Technologies Mentioned</h2>
+<ul>
+<li><strong>Frontier Tuning</strong> — Microsoft's offering to build your own enterprise AI by RL-tuning the model + harness on your data and workflows.</li>
+<li><strong>M AI Thinking 1</strong> <em>(caption-uncertain name; likely a Microsoft "MAI" thinking model)</em> — thinking model in private preview, deployable or fine-tunable.</li>
+<li><strong>Foundry Model Catalog</strong> — where M AI Thinking 1 is available; entry point to deploy or fine-tune.</li>
+<li><strong>Fine-tuning UI</strong> — add dataset + grader, submit RL job, watch rollouts/scoring/hill-climbing.</li>
+<li><strong>Grader</strong> — scoring component added during fine-tuning to drive RL improvement.</li>
+<li><strong>Low-level training API</strong> — full control over the RL loop: model, rollout strategy, hyperparameters, custom RL gym/tools.</li>
+<li><strong>RL gym / RL environment</strong> — backend simulation where agents continuously learn your workflows; composed of skills, knowledge, tools.</li>
+<li><strong>Microsoft 365 Copilot</strong> — surface used to build RL environments from M365 data/workflows.</li>
+<li><strong>Skills (with rubrics)</strong> — extended skill definition including rubrics defining "what good looks like."</li>
+<li><strong>M365 apps as signal sources</strong> — Teams, Outlook, Word, Excel, PowerPoint signals used to suggest skills/rubrics.</li>
+<li><strong>Knowledge grounding</strong> — organizational knowledge from OneDrive / SharePoint.</li>
+<li><strong>Built-in + custom tools</strong> — Microsoft tools shipped with the environment, plus customer-added tools.</li>
+<li><strong>Tool virtualization</strong> — simulates tool execution so the model learns without affecting live business state.</li>
+<li><strong>Embedding model + main model generalization</strong> — learnings generalized into both for high-accuracy tasks.</li>
+<li><strong>"MEI" model</strong> <em>(caption-uncertain; possibly "MAI")</em> — the tuned model achieving &gt;90% accuracy on Land O'Lakes tasks.</li>
+<li><strong>Inferencing harness</strong> — the tuned environment used at inference time.</li>
+<li><strong>Test-time pre-search</strong> — inference-time search across multiple models (incl. a fine-tuned model) used by the agent.</li>
+</ul>
+<h2 id="announcements-whats-new">🚀 Announcements / What's New</h2>
+<ul>
+<li><strong>M AI Thinking 1</strong> <em>(name caption-uncertain)</em> — <strong>now available in private preview</strong> in the <strong>Foundry Model Catalog</strong>. <em>(Status: Private preview)</em></li>
+<li><strong>Frontier Tuning</strong> — introduced as a way to create enterprise AI by tuning model + harness on your data/workflows. <em>(Status: Introduced this segment; preview-stage)</em></li>
+<li><strong>Low-level training API</strong> — shown as a <strong>"sneak peek"</strong> for full RL-loop control. <em>(Status: Sneak peek / preview)</em></li>
+<li><strong>New way to build RL environments in Copilot</strong> — based on your M365 data and workflows. <em>(Status: Introduced as part of Frontier Tuning)</em></li>
+<li><strong>Extended definition of "skills" to include rubrics</strong> — expanding the industry definition. <em>(Status: Newly introduced concept)</em></li>
+</ul>
+<h2 id="demos">💡 Demos</h2>
+<ul>
+<li><strong>Fine-tuning UI walkthrough</strong> — Proved how simple the RL fine-tuning flow is (dataset → grader → submit) and showed real learning via rollouts + scoring + hill climbing within a couple of hours.</li>
+<li><strong>Low-level training API sneak peek</strong> — Proved that advanced users get full control: configurable rollout strategy, hyperparameters, and a bring-your-own RL gym via tool definitions.</li>
+<li><strong>Land O'Lakes RL environment (butter report generation)</strong> — Proved Frontier Tuning works on a real, complex, precision-heavy enterprise workflow; showed environment anatomy (skills/knowledge/tools), rubrics, M365 signal-driven skill suggestions, OneDrive/SharePoint grounding, and virtualized tools.</li>
+<li><strong>Tuned-environment inference (cached butter report)</strong> — Proved the end result: a non-generic, "undoubtedly Land O'Lakes" summary produced via test-time pre-search across multiple models, with the agent self-retrospecting and self-evaluating to high standards.</li>
+</ul>
+<h2 id="notable-stats-quotes">📊 Notable Stats / Quotes</h2>
+<ul>
+<li><strong>&gt;90% accuracy</strong> achieved on Land O'Lakes tasks with the tuned ("MEI"/MAI) model.</li>
+<li><strong>~10x more efficient</strong> than baseline models (estimated).</li>
+<li><strong>"even 80% accuracy isn't good enough"</strong> — on precision-heavy enterprise tasks.</li>
+<li><strong>"a couple of hours in"</strong> — time to start seeing the model learn during fine-tuning.</li>
+<li>Land O'Lakes described as <strong>"one amongst the largest agribusinesses in the United States."</strong></li>
+<li><strong>"a summary that doesn't feel generic… it feels undoubtedly Land O'Lakes."</strong></li>
+<li><strong>"frontier tuning as smooth as butter."</strong></li>
+</ul>
+<h2 id="my-notes-follow-ups">🧠 My Notes / Follow-ups</h2>
+<ul>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Find M AI Thinking 1 in the Foundry Model Catalog (private preview) and test the dataset → grader → submit RL fine-tuning flow.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Things to try: Explore building an RL environment from M365 Copilot (skills + rubrics suggested from Teams/Outlook/Office signals) on a real internal workflow.</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: What's the exact/official model name? ("M AI Thinking 1" / "MEI" are caption-garbled — confirm if these are MAI-family models.)</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: How does the low-level training API expose rollout strategy + hyperparameters (SDK? config schema?), and how is the custom RL gym defined?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: What does "compliant RL environment" entail re: data residency/governance, and how is tool virtualization implemented to guarantee no live-state impact?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Questions: How is "10x more efficient than baseline" measured (cost? tokens? latency?), and against which baseline?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Relevant to: Foundry fine-tuning, M365 Copilot extensibility, enterprise agent accuracy/RL, internal high-precision workflow automation.</li>
+</ul>
+  </article>
+
+  <nav class="pager-nav">
+    <a class="pager pager-prev" href="ODSP940.html"><span class="pager-dir">← Previous</span><span class="pager-code">ODSP940</span><span class="pager-title">Create enterprise AI apps at scale with Bolt and Microsoft</span></a>
+    <a class="pager pager-next" href="SEG02.html"><span class="pager-dir">Next →</span><span class="pager-code">SEG02</span><span class="pager-title">MDASH</span></a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    Microsoft Build 2026 · Session notes &amp; summaries · Generated static site — no tracking, no CDNs.
+  </div>
+</footer>
+</body>
+</html>
