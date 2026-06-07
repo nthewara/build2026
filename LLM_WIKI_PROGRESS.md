@@ -55,7 +55,9 @@ Plus: add a **link from `index.html`** to the wiki (separate, additive edit).
 | 3 | Build `wiki/` via subagent (generator + concept pages + graph + wiki.css) | ✅ Done | 91 concept pages, 91-node graph, 364 drawn edges (407 total co-occurrence), 127 sessions, 152 long-tail topics. Clusters: AI&Agents 19, Data 14, Platforms 13, DevTools 12, Observability 12, Azure 9, Security 5, Other 5, Community 2. |
 | 4 | Add link from main `index.html` → wiki (additive, no deletions) | ✅ Done | Added hero CTA: "Explore the LLM Wiki →" + "Concept graph" buttons + blurb. Patched BOTH rendered `index.html` AND `scripts/generate_site.py` hero template so it survives regeneration. |
 | 5 | Verify: pages render, wikilinks interconnect, graph works, **existing content intact** (`git status` shows only new files) | ✅ Done | Independent checks: 1838 hrefs, **0 broken_file + 0 broken_anchor** (incl. cluster `#` anchors); all 91 graph node targets resolve; 0 out-of-range edges; only external href = Karpathy gist; no CDN refs. `git status`: only new `wiki/`, `assets/wiki.css`, `scripts/generate_wiki.py` + intentional `index.html`/`generate_site.py` edits. |
-| 6 | Commit + push as `nthewara`; verify live on GitHub Pages | 🔄 In progress | |
+| 6 | Commit + push as `nthewara`; verify live on GitHub Pages | ✅ Done | Commit `da41f5e` as `nthewara <nthewara@gmail.com>`. Live: wiki home, graph, concept pages, wiki.css all HTTP 200; landing hero CTA links live. |
+
+**✅ ALL STEPS COMPLETE — LLM Wiki shipped and live.**
 
 **Legend:** ✅ done · 🔄 in progress · ⬜ pending · ⚠️ blocked
 
