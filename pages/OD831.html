@@ -67,7 +67,6 @@
 <li><strong>API Center</strong> is the enterprise catalog/system of record for four+ asset types (REST APIs, MCP tools, skills/plugins, models, agents) with <strong>Git-repo sync</strong>, <strong>LLM-as-a-judge quality scoring</strong> (4 dimensions, 1–5 scale, default threshold 3), and a <strong>marketplace endpoint</strong> that surfaces skills/plugins/MCP to Claude Code and Copilot CLI.</li>
 <li><strong>NEW (GA):</strong> <strong>Agent-to-Agent (A2A) support in APIM</strong> — bring A2A agents under the same enterprise-grade governance, security, and observability as REST APIs (agent cards, runtime operations, Gen AI semantic-convention OTel traces, throttling/IP-filtering/content-safety policies).</li>
 </ul>
-<h2 id="detailed-notes">📚 Detailed Notes</h2>
 <h3 id="why-now-ai-is-in-production-not-a-pilot">Why now — AI is in production, not a pilot</h3>
 <p>The session opens by reframing the AI conversation: although AI and AI workflows have been discussed since 2023, <strong>AI is no longer a pilot</strong>. Most enterprises are moving AI into production. Gartner is cited: <strong>by 2028, more than 95% of enterprises will be using LLMs, GenAI APIs, and models in production applications.</strong> That shift makes governance urgent — enterprises must decide how to govern diverse AI endpoints, ensure secure access, and observe what's actually happening (cost, security, troubleshooting).</p>
 <p>The core argument: AI brings the <em>same</em> class of challenges enterprises already faced with APIs, but <strong>magnified</strong>:
@@ -280,13 +279,12 @@ Registering an A2A agent is simple, with <strong>agent-specific metadata</strong
 <h2 id="related">🔗 Related</h2>
 <ul>
 <li><a class="wikilink wikilink--resolved" href="ODSP923.html">ODSP923 - Create enterprise apps with AI and MCP</a> — enterprise apps built on MCP; complements APIM's MCP governance.</li>
-<li>Azure API Management — product hub note for APIM concepts, policies, and gateways.</li>
-<li>Model Context Protocol (MCP) — protocol background for tools/servers governed here.</li>
-<li>Azure AI Foundry — model host + agent service; target for Bring Your Own Model and agent deployment.</li>
-<li>AI Gateway — the gateway pattern for mediating model/tool/agent access.</li>
-<li>Agent-to-Agent (A2A) — multi-agent protocol now governable in APIM (GA).</li>
-<li>GitHub Copilot — client/coding agent used for tool discovery and agent code-gen in the demos.</li>
-<li>Source list: 2026 Build Session List</li>
+<li>product hub note for APIM concepts, policies, and gateways.</li>
+<li>protocol background for tools/servers governed here.</li>
+<li>model host + agent service; target for Bring Your Own Model and agent deployment.</li>
+<li>the gateway pattern for mediating model/tool/agent access.</li>
+<li>multi-agent protocol now governable in APIM (GA).</li>
+<li>client/coding agent used for tool discovery and agent code-gen in the demos.</li>
 </ul>
   </article>
 

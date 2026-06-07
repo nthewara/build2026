@@ -67,7 +67,6 @@
 <li><strong>Azure Integrated HSM</strong> (internal name <strong>ManaCore</strong>; announced late last year) puts a <strong>FIPS 140‑3 Level 3 HSM in every Azure server</strong>; keys can be released <em>with policy</em> from Azure Managed HSM / Key Vault into it and used directly by the VM. Demo: AKV signing <strong>~640 ops/s → ~18,800 ops/s</strong> with no loss of security. Built on Microsoft's <strong>Caliptra</strong> root of trust (donated to Open Compute Project).</li>
 <li><strong>Project Mosaic</strong> (MSR, experimental): replace high-power optical lasers with <strong>many low-speed channels of standard micro-LEDs</strong> over imaging fiber, read by <strong>silicon camera sensor arrays</strong> — riding commodity VR/camera supply chains. Live demo from <strong>MSR Cambridge</strong> rendered the letter "Z" by individually modulating micro-LEDs at gigabit speeds.</li>
 </ul>
-<h2 id="detailed-notes">📚 Detailed Notes</h2>
 <h3 id="framing-format">Framing &amp; format</h3>
 <p>Mark Russinovich opens as <strong>CTO and Deputy CISO for Azure</strong>, noting this recurring "Inside Azure Innovations" talk spans the whole Azure infrastructure stack — <strong>data centers → cybersecurity → systems under development</strong>. Standard caveat: some content hasn't shipped, some just shipped, and some may never ship (or not in the form shown). The unifying thread is <strong>innovation powering AI</strong>, specifically the <strong>co-design of AI data centers, the core infrastructure, and the software running on top</strong>.</p>
 <h3 id="1-infrastructure-fairwater-data-centers">1. Infrastructure — Fairwater data centers</h3>
@@ -228,8 +227,6 @@
 <li class="task-list-item"><input type="checkbox" disabled> Questions: When does the <strong>GP bare-metal</strong> offering GA, and which regions? Is <strong>container live migration</strong> / <strong>Azure Context Cache</strong> GA timeline public? Is <strong>confidential VM live migration</strong> AMD-bound too or Intel-TDX-only at first? What models/sizes does <strong>Azure Context Cache</strong> support, and storage-cost vs prefill-savings tradeoff?</li>
 <li class="task-list-item"><input type="checkbox" disabled> Relevant to: AI infra/platform planning, Foundry inference cost optimization, confidential-computing migration story for regulated workloads, key-management/HSM strategy, and ACI-based agent sandboxing.</li>
 </ul>
-<h2 id="related">🔗 Related</h2>
-<h2 id="-2026-build-session-list">- 2026 Build Session List</h2>
   </article>
 
   <nav class="pager-nav">

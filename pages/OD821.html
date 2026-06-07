@@ -66,7 +66,6 @@
 <li><strong>Better via open-source foundation:</strong> <strong>multicloud replication</strong> (Azure primary → AWS + GCP) and <strong>hybrid-cloud sync</strong> (on-prem/Kubernetes ↔ Azure) with <strong>global strong consistency and zero data loss</strong>, managed via a <strong>Kubernetes operator</strong> and a <strong>VS Code extension</strong>.</li>
 <li><strong><code>documentdb.io</code></strong> is a fully independent, community-driven site (own repo you can contribute to) with an <strong>AI-built samples gallery and a <code>skills.md</code></strong> so samples can be "vibe coded."</li>
 </ul>
-<h2 id="detailed-notes">📚 Detailed Notes</h2>
 <h3 id="who-they-are-the-product-in-one-breath">Who they are: the product in one breath</h3>
 <p>Azure DocumentDB is positioned as an <strong>open-source, fully MongoDB-compatible NoSQL document database</strong> that is <strong>Postgres-backed</strong> — and that Postgres backing is where the open-source fundamentals come from. Because it's fully open source, it supports <strong>multicloud</strong>, which means two things: (1) running across multiple cloud providers, and (2) <strong>hybrid cloud</strong> — "one foot on-prem and one foot on Azure." On top of that foundation Microsoft built a <strong>managed service</strong>, so Azure DocumentDB gives you "all the managed bells and whistles, the knobs and levers" of the engine, but fully managed in Azure.</p>
 <p>The overarching theme of the talk: they <strong>started with a managed service, went back to build an open-source engine from it, and then funnelled all the open-source learnings back into the managed service.</strong></p>
@@ -207,15 +206,14 @@
 </ul>
 <h2 id="related">🔗 Related</h2>
 <ul>
-<li>PostgreSQL — the extensible open-source engine underneath DocumentDB.</li>
-<li>Citus — scale-out Postgres extension (acquired 2019) that mentored the project.</li>
-<li>PG vector — Postgres vector-search extension powering RAG/AI scenarios.</li>
-<li>MongoDB — the API/wire compatibility target for DocumentDB.</li>
-<li>Azure Cosmos DB for MongoDB (vCore) — the closely related managed Mongo-compatible Azure offering / lineage.</li>
-<li>Premium SSD v2 — Azure managed-disk tech behind the IOPS/performance gains.</li>
-<li>Linux Foundation — the open-source foundation DocumentDB joined for governance/credibility.</li>
-<li>Vector search &amp; RAG — the AI database pattern this engine targets.</li>
-<li>Source list: 2026 Build Session List</li>
+<li>the extensible open-source engine underneath DocumentDB.</li>
+<li>scale-out Postgres extension (acquired 2019) that mentored the project.</li>
+<li>Postgres vector-search extension powering RAG/AI scenarios.</li>
+<li>the API/wire compatibility target for DocumentDB.</li>
+<li>the closely related managed Mongo-compatible Azure offering / lineage.</li>
+<li>Azure managed-disk tech behind the IOPS/performance gains.</li>
+<li>the open-source foundation DocumentDB joined for governance/credibility.</li>
+<li>the AI database pattern this engine targets.</li>
 </ul>
   </article>
 

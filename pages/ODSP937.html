@@ -63,7 +63,6 @@
 <li><strong>Credibility signal:</strong> LiveKit is the <strong>transport layer ChatGPT chose for its voice mode</strong>.</li>
 <li><strong>Getting started is genuinely simple:</strong> scaffold with <code>lk app create</code> (Python agent + React front-end templates), edit a <strong>single <code>agent.py</code></strong>, set a handful of env vars, and run — LiveKit Cloud gives <strong>three free env vars</strong> on signup.</li>
 </ul>
-<h2 id="detailed-notes">📚 Detailed Notes</h2>
 <h3 id="why-real-time-agents-are-a-different-problem">Why real-time agents are a different problem</h3>
 <p>Most agents being built today are <strong>single-modal text agents</strong>, and for text, <strong>latency is forgiving</strong> — users accept a spinner or a dimmed text field as a signal that "something's happening." <strong>Real-time agents flip that:</strong> latency becomes the defining constraint. The session's framing line is that <strong>"real-time is built different."</strong></p>
 <p>The concrete real-time loop for voice: take the user's voice from <strong>their microphone, wherever they are in the world</strong>, ship it to the models, generate a reply, and return it to <strong>the user's speakers</strong> — and to <em>count</em> as real-time, the whole round trip must land within <strong>a few hundred milliseconds</strong>, all <strong>over networks you don't control</strong>.</p>
@@ -193,10 +192,6 @@
 <li class="task-list-item"><input type="checkbox" disabled> Questions: Does LiveKit support a <strong>speech-to-speech / realtime (non-cascaded)</strong> model path, or is the cascaded pipeline the recommended pattern? (Session only covered cascaded.)</li>
 <li class="task-list-item"><input type="checkbox" disabled> Questions: How does SIP/telephony bridging work in practice for taking the same agent to phone systems?</li>
 <li class="task-list-item"><input type="checkbox" disabled> Relevant to: Any voice-assistant / real-time multimodal agent build on Azure; telephony/IVR modernization; embedded/automotive/wearable voice UX; demos needing a fast "wow" voice agent.</li>
-</ul>
-<h2 id="related">🔗 Related</h2>
-<ul>
-<li></li>
 </ul>
   </article>
 

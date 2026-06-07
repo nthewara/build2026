@@ -270,6 +270,90 @@ def replace_wikilinks(text: str, resolver) -> str:
 
 
 # ---------------------------------------------------------------------------
+# Strip vault-only wikilinks BEFORE rendering.
+#
+# A wikilink whose target resolves to another session page in THIS repo is a
+# real cross-link and is kept (replace_wikilinks turns it into an <a>).
+# A wikilink whose target is a vault concept/MOC note (e.g. [[Azure AI Foundry]],
+# [[2026 Build Session List]], [[32.02 Content]]) does NOT belong in this repo
+# and is removed entirely here — including dropping list items / headings that
+# would otherwise be left empty.
+# ---------------------------------------------------------------------------
+LIST_ITEM_RE = re.compile(r"^(\s*(?:[-*+]|\d+[.)])\s+)(.*)$")
+RELATED_HEADING_RE = re.compile(r"^#{1,6}\s+.*$")
+
+
+def strip_unresolved_wikilinks(text: str, resolver) -> str:
+    def has_unresolved(s: str) -> bool:
+        return any(resolver(m.group(1).strip()) is None
+                   for m in WIKILINK_RE.finditer(s))
+
+    def remove_unresolved_tokens(s: str) -> str:
+        # Drop only the [[...]] tokens whose target does NOT resolve in-repo.
+        def _sub(m: re.Match) -> str:
+            target = m.group(1).strip()
+            return m.group(0) if resolver(target) else ""
+        return WIKILINK_RE.sub(_sub, s)
+
+    out_lines: list[str] = []
+    for line in text.split("\n"):
+        if "[[" not in line or not has_unresolved(line):
+            out_lines.append(line)
+            continue
+
+        li = LIST_ITEM_RE.match(line)
+        if li:
+            marker, content = li.group(1), li.group(2)
+            cleaned = remove_unresolved_tokens(content)
+            # Tidy leftover join punctuation/dashes from removed tokens.
+            cleaned = re.sub(r"\s*[/|,;–—-]\s*(?=$)", "", cleaned)
+            cleaned = re.sub(r"^\s*[/|,;–—-]\s*", "", cleaned)
+            cleaned = re.sub(r"\s{2,}", " ", cleaned).strip()
+            # Strip a leftover leading em-dash descriptor like "— sibling ...".
+            cleaned = re.sub(r"^[–—-]\s*", "", cleaned).strip()
+            # A bullet reduced to just a dangling label like "Source list:" (a
+            # label that only introduced the removed vault ref) is dropped too.
+            is_dangling_label = bool(re.fullmatch(r"[A-Za-z][\w ./&-]*:", cleaned))
+            if cleaned and not is_dangling_label and not re.fullmatch(r"[/|,;:.–—-]*", cleaned):
+                out_lines.append(f"{marker}{cleaned}")
+            # else: the bullet was only a vault reference → drop the whole line.
+        else:
+            # Inline (non-list) line: remove just the unresolved tokens.
+            cleaned = remove_unresolved_tokens(line)
+            cleaned = re.sub(r"\s{2,}", " ", cleaned).rstrip()
+            out_lines.append(cleaned)
+
+    text = "\n".join(out_lines)
+
+    # Remove now-empty list markers (e.g. a leftover '- ' with nothing after,
+    # or a bullet that held only a removed vault ref).
+    text = re.sub(r"^\s*(?:[-*+]|\d+[.)])\s*$", "", text, flags=re.MULTILINE)
+
+    # Drop any now-empty trailing-style section headings (e.g. '## 🔗 Related')
+    # that have no remaining real content before the next heading / EOF.
+    lines = text.split("\n")
+    keep = [True] * len(lines)
+    for i, line in enumerate(lines):
+        if RELATED_HEADING_RE.match(line):
+            has_content = False
+            for j in range(i + 1, len(lines)):
+                nxt = lines[j]
+                if RELATED_HEADING_RE.match(nxt):
+                    break
+                # An empty / whitespace-only / bare-list-marker line is NOT content.
+                if nxt.strip() and not re.fullmatch(r"(?:[-*+]|\d+[.)])\s*", nxt.strip()):
+                    has_content = True
+                    break
+            if not has_content:
+                keep[i] = False
+    text = "\n".join(l for l, k in zip(lines, keep) if k)
+
+    # Collapse 3+ blank lines left behind into at most 2.
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    return text
+
+
+# ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 def slugify(value: str) -> str:
@@ -470,7 +554,11 @@ def render_body_html(session: Session, resolver) -> str:
     # Remove the first H1 from the body (it's shown in the page header already).
     body = re.sub(r"^#\s+.*$", "", body, count=1, flags=re.MULTILINE).lstrip("\n")
 
-    # Resolve wikilinks first (before markdown so labels are clean).
+    # Remove vault-only concept/MOC wikilinks entirely (drops empty list items
+    # and now-empty 'Related' headings). Keeps in-repo session cross-links.
+    body = strip_unresolved_wikilinks(body, resolver)
+
+    # Resolve the remaining (in-repo) wikilinks to <a> links.
     body = replace_wikilinks(body, resolver)
 
     md_block = make_md()

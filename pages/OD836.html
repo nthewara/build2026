@@ -69,7 +69,6 @@
 <li>The <strong>operate tab</strong> gives a fleet-level view across <em>all</em> agents in the project (e.g. the retail agent + the auto-routing agent) — cost, success/fail counts, token usage — then drill down per agent. Foundry isn't just build+deploy, it's <strong>maintain a fleet at scale</strong>.</li>
 <li><strong>Test kitchen → table:</strong> when the recipe passes, click <strong>View sample app code</strong> to grab env vars + sample app, move to <strong>VS Code</strong>, and continue <strong>pro-code</strong> with the <strong>Foundry SDK</strong> (Python/JS/Java/.NET), the <strong>Foundry toolkit</strong> extension, <strong>Foundry skills</strong>, <strong>GitHub Copilot for Azure</strong> and the <strong>Azure Developer CLI</strong> — "agents helping you build agents."</li>
 </ul>
-<h2 id="detailed-notes">📚 Detailed Notes</h2>
 <h3 id="framing-the-business-scenario-zava-kora-and-why-agentic-ai">Framing: the business scenario (Zava + Kora) and why agentic AI</h3>
 <p>Nitya opens with the standing principle that <strong>every AI development journey starts with a business scenario</strong>. The running example is <strong>Zava</strong>, a <em>fictitious enterprise retailer</em> selling home-improvement goods to DIY enthusiasts. "You" are on the AI dev team, tasked to build <strong>Kora</strong>, an AI shopping assistant that answers customer questions in-store or online and provides customer service. Design goals for Kora: <strong>friendly, helpful, and cost-effective to deploy</strong>, and — critically — able to <strong>keep adapting</strong> to changing conditions, systems and needs.</p>
 <p>At the most basic level, an AI app is just <strong>a model that takes a prompt, processes it, and generates a response</strong>, where the response can trigger further actions that generate new prompts, and the cycle continues. That's a <strong>monolithic</strong> app: a single model with coordination glue around it. But <strong>at scale</strong> you have many models, many prompts, many concurrent conversations, plus the need to extract information from all of them to decide what to do next. A monolith can't do that agilely.</p>
@@ -271,13 +270,9 @@ For each category the red-team agent crafts <strong>≥3 prompts</strong> per st
 </ul>
 <h2 id="related">🔗 Related</h2>
 <ul>
-<li>Source list: 2026 Build Session List</li>
-<li>Event: Microsoft Build 2026</li>
-<li>Platform: Microsoft Foundry · Microsoft Foundry portal</li>
-<li>Models &amp; routing: Model router</li>
-<li>Knowledge: Foundry IQ</li>
-<li>Evaluation &amp; safety: Foundry evaluators · AI red teaming</li>
-<li>Pro-code path: Foundry SDK · GitHub Copilot for Azure</li>
+<li>Platform: ·</li>
+<li>Evaluation &amp; safety: ·</li>
+<li>Pro-code path: ·</li>
 <li>Related Build sessions: <strong>BRK241</strong> (prototype → production: build &amp; run agents at scale) · <strong>BRK242</strong> (connect agents to tools/APIs/documents) · <strong>DEM333</strong> (Foundry + open-source frameworks) · <strong>LAB540</strong> (<a href="https://github.com/microsoft/Build26-LAB540-observe-optimize-and-protect-your-hosted-agents-in-microsoft-foundry">observe, optimize &amp; protect your hosted agents in Microsoft Foundry</a>)</li>
 <li>Speakers: <a href="https://developer.microsoft.com/en-us/advocates/carlotta-castelluccio">Carlotta Castelluccio</a> · Nitya Narasimhan, PhD</li>
 </ul>

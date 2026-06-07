@@ -65,7 +65,6 @@
 <li>You can <strong>hand-author a union</strong> (apply <code>[Union]</code> + provide the required <code>public object value</code> property + a <strong>construction member/constructor per case</strong>) to make different implementation choices — e.g. a <strong>non-boxing</strong> layout for performance, or to <strong>retrofit an existing pre-union type</strong> so it gains exhaustiveness + implicit conversions "for free."</li>
 <li>The design took <strong>~5 years</strong>; the team explored <strong>structural (TypeScript-style) unions</strong> but rejected them because <strong>.NET types must exist at runtime</strong>, so C# unions are <strong>nominal (named, declared)</strong> — a structural-ish layer on top via generics remains a possible future.</li>
 </ul>
-<h2 id="detailed-notes">📚 Detailed Notes</h2>
 <h3 id="framing-what-unions-are-and-the-goldilocks-stance">Framing: what unions are and the "Goldilocks" stance</h3>
 <p>Mads Torgersen (lead designer of C#) and Dustin Campbell (engineer on the C# team) present <strong>one feature: union types</strong>, landing in <strong>C# 15</strong> (out in November), with bits already in preview. They set expectations up front: lots of languages already have "unions," but they're <strong>all different</strong> — TypeScript has unions, most functional languages have some form of <strong>discriminated unions</strong> — and C# is adding <strong>its own</strong> take, jokingly called the <strong>"Goldilocks"</strong> (or "compromise") version. So existing union knowledge transfers only partially; the session shows "how unions <em>should</em> be" from scratch.</p>
 <h3 id="scenario-1-the-problem-unrelated-types-and-the-object-fallback">Scenario 1 — the problem: unrelated types and the <code>object</code> fallback</h3>
@@ -225,12 +224,11 @@ record Error(string Message);
 <h2 id="related">🔗 Related</h2>
 <ul>
 <li><a class="wikilink wikilink--resolved" href="OD806.html">OD806 - NET 11 in depth</a> — broader .NET 11 release context that ships the union-supporting APIs (<code>[Union]</code>, <code>IUnion</code>).</li>
-<li>Pattern matching in C# — unions plug directly into <code>switch</code>/pattern matching and add exhaustiveness checking.</li>
-<li>Records in C# — the recommended case type for discriminated unions; enables payload deconstruction.</li>
-<li>C# language design — the "feature built on a compiler-recognised pattern/attribute" philosophy behind unions.</li>
-<li>Discriminated unions — functional-language concept C#'s Scenario 2 emulates.</li>
-<li>TypeScript union types — the structural-union comparison the team drew (and rejected for runtime reasons).</li>
-<li>Source list: 2026 Build Session List</li>
+<li>unions plug directly into <code>switch</code>/pattern matching and add exhaustiveness checking.</li>
+<li>the recommended case type for discriminated unions; enables payload deconstruction.</li>
+<li>the "feature built on a compiler-recognised pattern/attribute" philosophy behind unions.</li>
+<li>functional-language concept C#'s Scenario 2 emulates.</li>
+<li>the structural-union comparison the team drew (and rejected for runtime reasons).</li>
 </ul>
   </article>
 

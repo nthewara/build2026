@@ -66,7 +66,6 @@
 <li><strong>Trust-building CI loop:</strong> generate code + unit tests (seeded with a "North Star" gold-standard test), run Spark jobs locally, auto-fix-and-retry without a human in the loop, test on real OneLake production data via Azure DevOps/GitHub Actions <em>before</em> merging, then run the same Spark code in Fabric Spark at scale (up to ~200 nodes × 64 cores).</li>
 <li>The foundation persists even as models/tools churn: <strong>ground AI in your context, structure code to be AI-extensible, and provide an excellent local dev environment.</strong></li>
 </ul>
-<h2 id="detailed-notes">📚 Detailed Notes</h2>
 <h3 id="framing-the-role-is-evolving-not-disappearing">Framing: the role is evolving, not disappearing</h3>
 <p>Pierro opens by positioning AI as something that changes <em>how</em> engineers work — not merely by generating code, but by helping rethink the <strong>full developer workflow</strong> across Fabric, VS Code, and CLI. He contrasts two columns:
 - <strong>Traditional data engineer (left):</strong> building pipelines, writing ETL logic, debugging issues, managing dependencies, ensuring data flows reliably. This work is <em>still critical</em>.
@@ -249,13 +248,12 @@
 </ul>
 <h2 id="related">🔗 Related</h2>
 <ul>
-<li>Microsoft Fabric / OneLake — the lakehouse + governed-storage foundation this session builds on.</li>
-<li>Fabric Data Engineering extension for VS Code / Copilot chat in Fabric notebooks — the two AI surfaces demoed (IDE vs portal).</li>
-<li>GitHub Copilot CLI / MCP (Model Context Protocol) — the terminal-agent + Fabric-aware tooling path ("Ralph loop").</li>
-<li>Medallion architecture (bronze → silver → gold) — the pipeline pattern both demos implement.</li>
+<li>the lakehouse + governed-storage foundation this session builds on.</li>
+<li>the two AI surfaces demoed (IDE vs portal).</li>
+<li>the terminal-agent + Fabric-aware tooling path ("Ralph loop").</li>
+<li>(bronze → silver → gold) — the pipeline pattern both demos implement.</li>
 <li><a class="wikilink wikilink--resolved" href="OD812.html">OD812 - Fabric IQ Bringing enterprise intelligence into the developer workflow</a> — sibling Fabric session (semantic/ontology layer above the data-engineering layer).</li>
 <li>Related Build 2026 Fabric sessions: <strong>OD811</strong> (unified data platform), <strong>OD815</strong> (AI-ready data lake), <strong>OD819</strong> (Real-Time Intelligence), <strong>OD817</strong> (agentic analytics with Power BI).</li>
-<li>Source list: 2026 Build Session List</li>
 </ul>
   </article>
 

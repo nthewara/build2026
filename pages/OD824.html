@@ -65,7 +65,6 @@
 <li><strong>Economics:</strong> eliminate side-cars (no separate vector/graph DB), serverless scales 2→80 cores on demand and back, storage 10 GB → 128 TB with no over-provisioning, <strong>one SQL skillset instead of five personas</strong>, <strong>68% better performance than competitors</strong>, and <strong>license-free</strong>.</li>
 <li><strong>Bottom line ("2 acts, 5 ideas"):</strong> polyglot is a <em>choice, not an inevitability</em>; one size doesn't fit all (extreme DWH or graph cases may still need a specialist), but for most scenarios Microsoft SQL + Hyperscale covers you. <strong>Avoid the tax, ship at scale, sleep at night.</strong></li>
 </ul>
-<h2 id="detailed-notes">📚 Detailed Notes</h2>
 <h3 id="what-is-the-polyglot-tax">What is the "polyglot tax"?</h3>
 <p>The polyglot tax is the price you pay for <strong>choosing multiple databases</strong>. The talk frames it through a relatable lifecycle: everyone builds applications constantly, and you can build a <em>prototype</em> extremely fast — start at 9:00 a.m., have it working before lunch. But success creates pressure to extend it:</p>
 <ul>
@@ -92,7 +91,6 @@
 <li><strong>Cognitive load</strong> — the developer must learn five tools and five query languages. For a <em>human user</em> this is merely painful; for an <strong>agent</strong> it's worse, because agents faced with many choices <strong>hallucinate more</strong>, and more hallucination means more wrong data.</li>
 </ul>
 <p>This sets up the two-act structure: <strong>Act 1</strong> — avoid the tax via capabilities built into the Microsoft SQL core engine; <strong>Act 2</strong> — scale that engine with Azure SQL Hyperscale ("you need scale to perform and use the best of this engine; that best comes from Azure SQL Hyperscale").</p>
-<h3 id="act-1-the-core-engine-eliminating-the-side-car-databases">Act 1 — The core engine: eliminating the side-car databases</h3>
 <h4 id="native-json">Native JSON</h4>
 <p>Recently SQL introduced a <strong>native JSON type</strong> plus <strong>JSON indexes</strong>. Key points:
 - It is <strong>no longer <code>nvarchar(max)</code></strong> (the original approach) — it's a <strong>purely native JSON type</strong>.
@@ -126,7 +124,6 @@
 <p>All of it executes atomically: <strong>if the JSON write fails, everything fails.</strong> This is "very, very important for agents."</p>
 <h4 id="why-acid-is-even-more-critical-in-the-agentic-world">Why ACID is even more critical in the agentic world</h4>
 <p>A learning Aditya emphasizes: agents need lots of data to <strong>read</strong>, but agents also <strong>love idempotency</strong>. Because of many factors, if an agent writes it <strong>might rewrite</strong> — so it needs proper <strong>rollback</strong>. ACID semantics are <em>more</em> important in the agentic world than the normal world: a human developer sits and ensures each transaction has the right boundary, but agents "just come in, put the transaction, and go out." ACID is the <strong>only way</strong> to know that incoming data is fully committed — so it becomes even more important when agents are doing the writing.</p>
-<h3 id="act-2-azure-sql-hyperscale-scaling-the-core-engine">Act 2 — Azure SQL Hyperscale: scaling the core engine</h3>
 <h4 id="the-peace-of-mind-database">The "peace of mind database"</h4>
 <p>Take the (now polyglot-tax-free) core engine and plug it into something that <strong>scales</strong> → that's <strong>Hyperscale</strong>. Aditya calls it the <strong>"peace of mind database,"</strong> inspired by a customer who said that after switching to Hyperscale he could <strong>sleep peacefully at night</strong>. The reason: the customer never has to wake up for a <strong>file-full, file-group-full, or log-full</strong> condition — <strong>Hyperscale just grows as the application grows</strong>, with its own dedicated log service, page servers, and Azure storage.</p>
 <h4 id="architecture-deliberately-shown-without-a-diagram">Architecture (deliberately shown without a diagram)</h4>
@@ -246,7 +243,6 @@
 </ul>
 <h2 id="related">🔗 Related</h2>
 <ul>
-<li>Microsoft Build 2026</li>
 <li>Topics: Azure SQL · Azure SQL Hyperscale · Native JSON in SQL · Graph in SQL · DiskANN vector indexes · Clustered columnstore (HTAP) · Named replicas / RBPEX · Serverless compute · Data API Builder · SQL MCP server · ACID for agents</li>
 </ul>
   </article>

@@ -66,7 +66,6 @@
 <li>Microsoft is <strong>deeply invested in OpenTelemetry</strong> as the standard underpinning both tracing and evaluation — engineers actively contribute to the open-source community (newly contributed <strong>memory semantics</strong> coming to Foundry soon).</li>
 <li>Customer proof point: <strong>NTT Data</strong> uses Foundry + Azure Monitor to turn AI into an enterprise-grade, production-ready system.</li>
 </ul>
-<h2 id="detailed-notes">📚 Detailed Notes</h2>
 <h3 id="why-observability-for-agents-the-non-determinism-problem">Why observability for agents — the non-determinism problem</h3>
 <p>Agents are <strong>non-deterministic</strong>, which creates new reliability and consistency challenges for both developers and operators. A traditional deterministic app behaves predictably; an agent may answer the same class of question differently, hallucinate, or take an unexpectedly long path to a correct answer. Observability is the discipline that lets you <em>see</em> what your agent actually did, <em>assess</em> whether it was good, <em>catch</em> regressions in production, and <em>improve</em> over time. The session frames this as the reason the whole agent DevOps life cycle has to evolve.</p>
 <h3 id="the-four-pillars-of-foundry-observability">The four pillars of Foundry observability</h3>
@@ -241,15 +240,14 @@ Foundry observability broadly covers the <strong>tracing, evaluation, monitoring
 </ul>
 <h2 id="related">🔗 Related</h2>
 <ul>
-<li>BRK241 - Developing production agents — the companion session whose data-center vendor scenario this builds on</li>
+<li>the companion session whose data-center vendor scenario this builds on</li>
 <li><a class="wikilink wikilink--resolved" href="ODSP933.html">ODSP933 - Agentic infrastructure needs agentic observability</a> — sibling take on why agents demand purpose-built observability</li>
 <li><a class="wikilink wikilink--resolved" href="ODSP907.html">ODSP907 - Monitor GenAI applications beyond golden signals</a> — deeper monitoring angle for GenAI apps</li>
-<li>Microsoft Foundry — the platform hosting agents, evaluation, optimization, and observability</li>
-<li>OpenTelemetry GenAI semantic conventions — the open standard underpinning Foundry tracing + evaluation</li>
-<li>Azure Monitor — full-stack observability partner that round-trips data with Foundry</li>
-<li>AI agent evaluation — rubric / multi-turn / code-based evaluators and the evaluator catalog</li>
-<li>Agent DevOps inner loop and outer loop — the lifecycle model this session is organized around</li>
-<li>Source list: 2026 Build Session List</li>
+<li>the platform hosting agents, evaluation, optimization, and observability</li>
+<li>the open standard underpinning Foundry tracing + evaluation</li>
+<li>full-stack observability partner that round-trips data with Foundry</li>
+<li>rubric / multi-turn / code-based evaluators and the evaluator catalog</li>
+<li>the lifecycle model this session is organized around</li>
 </ul>
   </article>
 

@@ -64,7 +64,6 @@
 <li><strong>Knowledge graphs</strong> are stored natively in Postgres via the <strong>Apache AGE</strong> extension, queried with <strong>Cypher</strong>, to encode style relationships (e.g., "mid-century modern" connects coffee tables, chairs, bookcases) and <strong>"similar-to" relationships between styles</strong> (mid-century modern ↔ bohemian) to broaden furniture matches.</li>
 <li>End result: a sophisticated AI room-design agent built with <strong>no external services</strong> and <strong>very few lines of SQL</strong>, all inside HorizonDB.</li>
 </ul>
-<h2 id="detailed-notes">📚 Detailed Notes</h2>
 <h3 id="what-horizondb-is-refresher">What HorizonDB Is (Refresher)</h3>
 <p>HorizonDB is Microsoft's new PostgreSQL database. The construction approach: take the <strong>open-source PostgreSQL engine</strong> and connect it to a <strong>cloud-optimized, scalable storage backend</strong>. Decoupling compute from this storage layer is what delivers:
 - <strong>Higher resiliency</strong>
@@ -241,8 +240,6 @@
 <li>RAG and AI-agent retrieval architectures (vector + hybrid + rerank in one engine).</li>
 <li>Any "search/recommendation inside the database" use case wanting to avoid external vector DBs/services.</li>
 </ul>
-<h2 id="related">🔗 Related</h2>
-<h2 id="-build2026">- Build2026</h2>
   </article>
 
   <nav class="pager-nav">

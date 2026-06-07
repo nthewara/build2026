@@ -65,7 +65,6 @@
 <li><strong>Two consumption paths:</strong> no-code (UI dashboard + HTML <strong>widget builder</strong> for quick search experiences with citations) and code-first (<strong>SDKs for .NET, TypeScript/JavaScript, Python + REST APIs</strong>) for custom agents, UIs, and full app architectures.</li>
 <li><strong>Structured output from unstructured data is the standout SDK trick:</strong> the C# SDK <code>AskAsync</code> method accepts a plain class type (e.g. <code>ChartAugmentedAnswer</code>); it's turned into a JSON schema the retrieval agent fills from search results, then deserialized back into your object — so you get chart-ready <em>structured</em> data out of PDFs.</li>
 </ul>
-<h2 id="detailed-notes">📚 Detailed Notes</h2>
 <h3 id="why-rag-matters-the-data-deluge">Why RAG matters — the data deluge</h3>
 <p>Ed opens by grounding RAG in a data-scale argument he's been making since an <strong>M3 conference talk in 2016</strong> on the future of data storage and its relationship to machine learning. Back then the estimate was <strong>44 zettabytes</strong> collected by 2020. By <strong>2026</strong>, the world generates/collects roughly <strong>400 million terabytes per day</strong> worldwide — about <strong>0.4 zettabytes/day</strong>, or <strong>~147 zettabytes/year</strong>. The point: humans cannot make use of data at that scale without AI. His 2016 prescription was machine learning; today ML is "a commodity in the form of large language models," and the job of sifting data for answers is done by <strong>human operators assisted by agentic systems</strong>. RAG is how you connect those LLMs to <em>your</em> data.</p>
 <h3 id="context-augmented-generation-the-parent-concept">Context augmented generation — the parent concept</h3>
@@ -188,17 +187,6 @@
 <li><strong>.NET / Blazor</strong> teams wanting LLM-backed search with <strong>structured (chart-ready) outputs</strong> via an SDK.</li>
 <li>Architects evaluating <strong>agentic retrieval</strong> (rerankers + evaluation agents) vs. classic vector-only RAG.</li>
 <li>Our own Azure AI Search RAG work — useful conceptual contrast (hybrid search, citations/grounding, chunking, evaluation) even though the product is a third-party (Progress) platform, not Azure.</li>
-</ul>
-<h2 id="related">🔗 Related</h2>
-<ul>
-<li>RAG (Retrieval Augmented Generation)</li>
-<li>Vector search &amp; embeddings</li>
-<li>Azure AI Search</li>
-<li>Chunking strategies for RAG</li>
-<li>Grounding &amp; citations in LLM apps</li>
-<li>Blazor</li>
-<li>Microsoft Build 2026</li>
-<li>Source list: 2026 Build Session List</li>
 </ul>
   </article>
 

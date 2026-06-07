@@ -62,7 +62,6 @@
 <li><strong>Short-lived tokens limit blast radius:</strong> even if a credential leaks, it expires quickly. Octo STS issues temporary, scoped credentials using the concepts behind Sigstore/Cosign.</li>
 <li><strong>Defense in depth, not removing functionality:</strong> the goal is removing what you <em>don't</em> need (extra deps, broad scopes, mutable refs), not stripping features you actually use.</li>
 </ul>
-<h2 id="detailed-notes">📚 Detailed Notes</h2>
 <h3 id="framing-why-github-actions-is-a-supply-chain-target">Framing: why GitHub Actions is a supply chain target</h3>
 <p>GitHub Actions workflows execute code with access to secrets, tokens, and environment variables, and they pull in third-party actions and dependencies — both <strong>direct and transitive</strong>. Any weak link in that chain can become a foothold. Even <strong>low-privilege access</strong> can be a starting point for privilege escalation and further exploitation. Erica frames the talk around five strategies, each illustrated with concrete misconfigurations and the real-world <strong>Trivy</strong> compromise.</p>
 <h3 id="tip-1-inspect-repositories-for-insecure-defaults-and-bad-practices">Tip 1 — Inspect repositories for insecure defaults and bad practices</h3>
@@ -168,10 +167,6 @@
 <li>Coverage/limits of Copilot's vulnerability detection vs dedicated tooling (e.g. GHAS code scanning, zizmor, StepSecurity Harden-Runner)?</li>
 <li class="task-list-item"><input type="checkbox" disabled> Relevant to:</li>
 <li>Any team owning GitHub Actions pipelines; DevSecOps / platform engineering; supply chain security (SLSA), SBOM, and CI/CD hardening initiatives.</li>
-</ul>
-<h2 id="related">🔗 Related</h2>
-<ul>
-<li></li>
 </ul>
   </article>
 

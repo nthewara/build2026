@@ -63,7 +63,6 @@
 <li><strong>Don't reinvent policies.</strong> The <strong>Terraform Registry</strong> (<code>registry.terraform.io</code>) has ready-made <strong>policy packs for Azure</strong> to get you started.</li>
 <li><strong>It can be made agentic.</strong> HashiCorp <strong>Terraform agent skills</strong> let you set much of this up programmatically / through agentic loops.</li>
 </ul>
-<h2 id="detailed-notes">📚 Detailed Notes</h2>
 <h3 id="the-problem-the-gap-between-state-and-reality">The problem: the gap between state and reality</h3>
 <p>The session frames a problem "every Azure team has but very few have a clean answer for": the gap between <strong>what's in your Terraform state</strong> and <strong>what's actually running</strong> in your subscriptions and tenants.</p>
 <p>When the speaker asks practitioners for a coverage number, he hears 80%, 90%, sometimes higher. But when they sit down and actually compare Terraform state against what's running, the <strong>real number is 40–60%</strong>. A few teams genuinely hit 80%. Regardless of the number, everyone believes the same thing: <em>"we do everything with Terraform."</em></p>
@@ -192,12 +191,11 @@
 </ul>
 <h2 id="related">🔗 Related</h2>
 <ul>
-<li>Terraform — the IaC tool whose import/query workflow this session uses to close the coverage gap on Azure.</li>
-<li>Terraform import and terraform query — the discover→query→generate evolution (import blocks → <code>terraform query</code>/search) headlined here.</li>
-<li>HashiCorp Sentinel — the policy-as-code engine demoed for governing Azure resources (soft-fail vs hard-fail).</li>
+<li>the IaC tool whose import/query workflow this session uses to close the coverage gap on Azure.</li>
+<li>the discover→query→generate evolution (import blocks → <code>terraform query</code>/search) headlined here.</li>
+<li>the policy-as-code engine demoed for governing Azure resources (soft-fail vs hard-fail).</li>
 <li><a class="wikilink wikilink--resolved" href="OD827.html">OD827 - Build deploy and run Linux workloads on Azure</a> — adjacent Azure infrastructure/operations session.</li>
-<li>Azure governance and policy-as-code — broader governance context (Azure Policy packs, naming standards) this talk plugs into.</li>
-<li>Source list: 2026 Build Session List</li>
+<li>broader governance context (Azure Policy packs, naming standards) this talk plugs into.</li>
 </ul>
   </article>
 

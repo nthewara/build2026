@@ -64,7 +64,6 @@
 <li>That cloud demo uses <strong>OpenClaw as the agent harness on Kubernetes</strong> (<code>oc status</code>), wired to the local LLM (served via <strong>SGLang</strong>), with <strong>GitHub CLI inside the harness</strong> to list issues and find the "riskiest files" for an issue — at <strong>~15–16 tok/s</strong> (→ <strong>~21 tok/s</strong> with <code>torch.compile</code>; speculative decoding/draft models coming to SGLang).</li>
 <li>The harness is <strong>swappable</strong> (OpenClaw, pi-dev, Hermes, etc.) and the K8s pods <strong>autoscale on CPU load</strong>, enabling multi-agent / multi-persona (PM, reviewer) workflows and nightly agent-to-agent jobs to complete a PR/issue.</li>
 </ul>
-<h2 id="detailed-notes">📚 Detailed Notes</h2>
 <h3 id="framing-ai-spans-client-edge-cloud">Framing — AI spans client → edge → cloud</h3>
 <p>Eddie (Intel engineer, host) opens the partner session by reframing AI: it's "no longer just a single model running in a single place." Developers now build <strong>agentic systems that distribute across cloud, edge, and client</strong>. The session structure mirrors that spectrum with three demos:
 1. <strong>Client</strong> — lightweight agents running locally for fast, real-time interaction.
@@ -208,7 +207,6 @@ The differentiator vs. other sandboxing tools: <strong>MXC is part of the Micros
 </ul>
 <h2 id="related">🔗 Related</h2>
 <ul>
-<li>2026 Build Session List</li>
 <li>Microsoft Build 2026 — Intel partner session (BRKSP92)</li>
 </ul>
   </article>

@@ -65,7 +65,6 @@
 <li>You don't need the full stack to get value: <strong>even just loading OpenTelemetry latency data</strong> lets you catch spikes; postmortems and RCAs add richer matching on top.</li>
 <li>The pattern works in <strong>dev too</strong> — run postmortems in dev, store those lessons in Elastic, and match against them to get ahead of issues before they reach production.</li>
 </ul>
-<h2 id="detailed-notes">📚 Detailed Notes</h2>
 <h3 id="the-problem-pr-review-only-checks-correctness-not-operational-history">The problem: PR review only checks correctness, not operational history</h3>
 <p>Today, when you push a PR, automated review tells you whether the code <em>works</em> — is it syntactically correct, does it pass the checks you've configured. If it fails, it's blocked; otherwise you merge. What that review <strong>doesn't</strong> tell you is whether the change will reproduce a failure you've already lived through. The speaker's framing: shift from <em>"now it looks good"</em> to <em>"it might be syntactically correct, but it hits the same production issue that happened last month."</em> The raw materials to answer that — <strong>postmortem incidents, RCAs, and OpenTelemetry traces</strong> — already exist in Elasticsearch; the demo ties them into the review.</p>
 <h3 id="high-level-architecture">High-level architecture</h3>
@@ -208,13 +207,12 @@
 </ul>
 <h2 id="related">🔗 Related</h2>
 <ul>
-<li>GitHub Copilot — The in-editor AI used here with the Elastic MCP server to investigate incidents and auto-apply fixes.</li>
-<li>Model Context Protocol (MCP) — The protocol exposing Elastic's tools/data to Copilot and other clients.</li>
-<li>Elasticsearch — The vector/semantic search store underpinning the context-aware agent.</li>
-<li>OpenTelemetry — The trace/telemetry data used as evidence for incidents and latency spikes.</li>
-<li>RAG - Retrieval Augmented Generation — The broader pattern of grounding agent answers in retrieved (here, semantically matched) operational data.</li>
-<li>Race conditions and concurrency — The specific failure class the demo guards against (inventory checkout under load).</li>
-<li>Source list: 2026 Build Session List</li>
+<li>The in-editor AI used here with the Elastic MCP server to investigate incidents and auto-apply fixes.</li>
+<li>The protocol exposing Elastic's tools/data to Copilot and other clients.</li>
+<li>The vector/semantic search store underpinning the context-aware agent.</li>
+<li>The trace/telemetry data used as evidence for incidents and latency spikes.</li>
+<li>The broader pattern of grounding agent answers in retrieved (here, semantically matched) operational data.</li>
+<li>The specific failure class the demo guards against (inventory checkout under load).</li>
 </ul>
   </article>
 

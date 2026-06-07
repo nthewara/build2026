@@ -62,7 +62,6 @@
 <li><strong>One fix can close multiple CVEs, auto-assigned to Copilot.</strong> From an attack path, a GitHub issue can be created directly, assigned to Copilot; fixing one package can resolve additional transitive CVEs (demo: bumping a package fixed the critical + 2-3 more).</li>
 <li><strong>AI models are an unguarded supply chain.</strong> Models flow in daily from Hugging Face, internal training pipelines, and shared registries — mostly uninspected. Malicious pickle serializations can embed arbitrary-code payloads inside seemingly normal PyTorch models. Defender discovers all models across workspaces/registries, flags malicious/vulnerable content, and the same CLI can scan model artifacts in the pipeline before deployment.</li>
 </ul>
-<h2 id="detailed-notes">📚 Detailed Notes</h2>
 <h3 id="the-core-problem-a-broken-collaboration-workflow">The core problem: a broken collaboration workflow</h3>
 <p>James Brotsos frames application security as a "team sport" with developers on one side and security managers on the other, theoretically collaborating in the middle. In reality, that collaboration breaks down: security teams drop findings on developers' desks roughly <strong>two weeks after the code shipped</strong>, or a developer ignores a scan result because they lacked enough context to act on it. The intent is good but the workflow is broken. The proposed fix is <strong>not</strong> more process, more tools, or more dashboards — it's embedding security directly into the surfaces developers already use: the terminal, the pull request, and the IDE.</p>
 <h3 id="the-two-worlds-and-the-intersection">The two worlds and the intersection</h3>
@@ -200,10 +199,6 @@
 <li>GitHub Advanced Security + Copilot adoption for automated remediation.</li>
 <li>AI/ML supply-chain security and model governance (Azure ML workspaces/registries).</li>
 <li>Any team shipping containerized, internet-exposed workloads handling sensitive data.</li>
-</ul>
-<h2 id="related">🔗 Related</h2>
-<ul>
-<li></li>
 </ul>
   </article>
 

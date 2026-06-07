@@ -63,7 +63,6 @@
 <li><strong>Plan mode</strong> lets you preview the agent's intended implementation (and answer clarifying questions) before it builds — saving time and tokens.</li>
 <li><strong>Built-in database security scan</strong> runs before publishing; with no issues found, the site publishes to a live URL ready for customers.</li>
 </ul>
-<h2 id="detailed-notes">📚 Detailed Notes</h2>
 <h3 id="the-enterprise-problem-with-prompt-driven-development">The enterprise problem with prompt-driven development</h3>
 <p>Prompt-driven development has already transformed what individual creators can do: a product manager, designer, or developer can describe an idea and quickly get a working prototype, internal tool, or new feature on screen. That speed is powerful because it shortens the distance between an idea and something people can actually use.</p>
 <p>But for enterprise teams, <strong>speed on its own is not enough</strong> — especially for the developers and IT teams responsible for what happens <em>after</em> something is generated. The fundamental flaw: most AI app-building tools assume you're starting from a <strong>blank canvas</strong>. That's fine for prototypes and some internal tools, but it's not how most enterprise software works. Large organizations already have:
@@ -171,10 +170,6 @@
 <li class="task-list-item"><input type="checkbox" disabled> Things to try: Bundle a local component library into a Bolt design system via the <strong>Bolt CLI</strong> (tarball vs private NPM registry) and build a sample app on top of it; test the <strong>Copilot → Bolt "Build"</strong> handoff; try <strong>plan mode</strong> to compare token usage vs straight build; wire a <strong>server function</strong> calling OpenAI with a key stored in Bolt <strong>Secrets</strong>; deploy Bolt front-end output into <strong>Azure</strong> via GitHub/Azure DevOps.</li>
 <li class="task-list-item"><input type="checkbox" disabled> Questions: What exactly does "deploy into Azure" cover — App Service / Static Web Apps / Container Apps? How deep is the GitHub/Azure DevOps + Microsoft identity integration (SSO/Entra ID)? Is the Bolt database first-party or a partner backend, and where does it run relative to Azure governance? Pricing/licensing of "Bolt on Azure + M365"? Availability/GA status of the partnership? Does the design-system training keep components in sync as the source library evolves?</li>
 <li class="task-list-item"><input type="checkbox" disabled> Relevant to: Enterprise/low-code app teams wanting governed AI app generation; platform/dev-tooling teams standardizing on approved design systems; Microsoft customers consolidating on Copilot + M365 + Azure who want faster front-end delivery without losing governance, security, or code review.</li>
-</ul>
-<h2 id="related">🔗 Related</h2>
-<ul>
-<li></li>
 </ul>
   </article>
 

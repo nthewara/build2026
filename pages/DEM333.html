@@ -66,7 +66,6 @@
 <li><strong>Copilot CLI consumed the hosted agent</strong> by exposing a tiny <strong>A2A directory as an MCP server</strong> with two tools (<code>search agent</code>, <code>call agent</code>), discovering the right agent and invoking it over A2A.</li>
 <li><strong>The central thesis:</strong> compose modules via open standards (LangGraph, MCP, skills, Playwright CLI, OpenTelemetry, Responses API, A2A); each piece works in isolation and stays freely swappable — no component knew about the others.</li>
 </ul>
-<h2 id="detailed-notes">📚 Detailed Notes</h2>
 <h3 id="the-framing-question">The framing question</h3>
 <p>The session opens with a deliberately simple premise: developers love building agents with open-source technology, but the hard part is <strong>packaging and deploying to production without a rewrite.</strong> To make it concrete, the presenters set out to <strong>build their own "OpenClaw" live</strong> — a general-purpose agent (the kind that browses the web, searches email, and gets things done) — using only open-source frameworks and tools, then deploy it to <strong>Microsoft Foundry</strong> for production. The whole talk is a progressive enhancement story: start with the smallest possible agent, then add one open-source capability at a time.</p>
 <h3 id="step-1-the-minimal-agent-model-agent-loop">Step 1 — The minimal agent: model + agent loop</h3>
@@ -225,13 +224,6 @@
 <h2 id="related">🔗 Related</h2>
 <ul>
 <li><a class="wikilink wikilink--resolved" href="DEM310.html">DEM310 - Ship code faster with AI-powered NoSQL schema design</a> — sibling Build 2026 demo using MCP + Copilot skills against an open ecosystem.</li>
-<li>Microsoft Agent Framework</li>
-<li>Microsoft Foundry</li>
-<li>Model Context Protocol (MCP)</li>
-<li>A2A - Agent-to-Agent Protocol</li>
-<li>OpenTelemetry GenAI Semantic Conventions</li>
-<li>LangGraph</li>
-<li>Source list: 2026 Build Session List</li>
 </ul>
   </article>
 

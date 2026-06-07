@@ -64,7 +64,6 @@
 <li><strong>External agents are always "guests"</strong> — they don't control the API surface, indexing, or correlation primitives, so they operate on <strong>partial context</strong>, which is exactly what creates <strong>hallucinated diagnoses</strong> (a pointed critique of MCP-style demos).</li>
 <li><strong>Observability is becoming active, not passive</strong> — eventually instrumenting on the fly, raising fidelity dynamically, and supporting remediation during incidents. It becomes the <strong>operating system for the agentic SDLC</strong>, raising hard governance questions about autonomy, approval, and ownership of agent-driven actions.</li>
 </ul>
-<h2 id="detailed-notes">📚 Detailed Notes</h2>
 <h3 id="the-framing-a-diagnosis-not-a-product-pitch">The framing: a diagnosis, not a product pitch</h3>
 <p>Jimmy (Solutions Engineering Lead at <strong>Groundcover</strong>) opens with a historical setup: <em>"Once upon a time, humans wrote software, humans operated software, and humans debugged software. Observability was built around this."</em> Logs, traces, dashboards, and alerts all assumed <strong>a human investigator sitting in front of the data trying to figure out what happened</strong>.</p>
 <p>That world is changing. Agents now <strong>write code, operate systems, make decisions, debug failures, and interact with infrastructure without a human in the loop</strong>. The core thesis: once the <em>consumer</em> of observability changes from humans to agents, <strong>the assumptions underneath the category start to fail</strong>.</p>
@@ -178,17 +177,6 @@
 <li class="task-list-item"><input type="checkbox" disabled> Questions: Is Groundcover genuinely architecturally different here, or is "reason over complete system state" achievable with OpenTelemetry + a data lake + an agent orchestrator? What's the <em>real</em> cost story when you stop sampling and keep everything? How do you define and enforce guardrails/approvals for an agent that can remediate production at 2 a.m.? Who owns a bad auto-remediation?</li>
 <li class="task-list-item"><input type="checkbox" disabled> Questions: How do you validate that auto-normalized telemetry schemas are correct when no human defined them? Does "move the LLM up, push analysis down" map cleanly onto existing query engines (e.g. ClickHouse / Kusto / Prometheus)?</li>
 <li class="task-list-item"><input type="checkbox" disabled> Relevant to: SRE / platform engineering, AI agent observability &amp; evaluation, anyone building or operating agentic systems in production, security/compliance teams worried about PII in telemetry, and the broader "agentic SDLC" tooling conversation.</li>
-</ul>
-<h2 id="related">🔗 Related</h2>
-<ul>
-<li>Observability for AI agents</li>
-<li>Agentic AI in production</li>
-<li>OpenTelemetry tracing and spans</li>
-<li>Model Context Protocol (MCP)</li>
-<li>Agentic SDLC</li>
-<li>SRE and incident remediation</li>
-<li>PII and telemetry data governance</li>
-<li>Source list: 2026 Build Session List</li>
 </ul>
   </article>
 

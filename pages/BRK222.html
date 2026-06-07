@@ -68,7 +68,6 @@
 <li><strong>Real customers prove it in production:</strong> <strong>Royal Bank of Canada</strong> runs KAITO for production model serving inside a strict compliance perimeter (Entra ID, Key Vault, private ACR, self-service GPU provisioning via CI/CD, secure-by-default). <strong>Wave</strong> rewrote the self-driving playbook with end-to-end deep learning on <strong>AKS + Ray + Anyscale</strong>, connecting thousands of GPUs into a flexible supercomputer — their AI driver demonstrated autonomous driving in Tokyo after only ~4 months. Microsoft itself runs <strong>AKS Claw</strong> (SRE subject-matter expertise encoded as an agent — each on-call engineer gets an isolated Claw instance, up and running in minutes).</li>
 <li><strong>The takeaway checklist:</strong> start with Kubernetes (the substrate you likely already run) → build the agent layer with MCP + skills + reference stacks like OpenClaw/KARS → choose tooling matching your build-vs-buy (KAITO/AI Runway for inference, Ray/Anyscale for training, KARS for agentic runtime specialization) → <strong>invest in Fleet early</strong>, before your workloads outgrow a single cluster.</li>
 </ul>
-<h2 id="detailed-notes">📚 Detailed Notes</h2>
 <h3 id="framing-the-honest-practitioner">Framing: "the honest practitioner"</h3>
 <p>Lachlan Evenson opens with high energy (5pm slot, "the only thing between you and the Chainsmokers tonight") and sets the session's promise: this is for people <strong>already running Kubernetes</strong> who are trying to figure out <strong>what AI workloads actually need on top of Kubernetes</strong>. The arc is deliberately three-part: <strong>what works today, what's harder than it looks, and where the ecosystem is going.</strong> He repeatedly returns to being the <em>honest</em> practitioner — naming trade-offs and immature areas rather than selling hype. He promises a tangible payoff: demos, real customer cases, links to Kubernetes repos, and a <strong>checklist you can take back to your team this week</strong>.</p>
 <h3 id="why-kubernetes-shows-up-as-the-ai-substrate">Why Kubernetes shows up as the AI substrate</h3>
@@ -314,7 +313,6 @@
 <li><a class="wikilink wikilink--resolved" href="OD800.html">OD800 - Using autonomous SRE to move from alerts to action</a></li>
 <li><a class="wikilink wikilink--resolved" href="OD837.html">OD837 - Build and deploy AI at the edge for real-world impact</a></li>
 <li><a class="wikilink wikilink--resolved" href="BRK241.html">BRK241 - From prototype to production build and run agents at scale</a></li>
-<li>Source list: 2026 Build Session List</li>
 </ul>
   </article>
 

@@ -64,7 +64,6 @@
 <li>The profiler's <strong>"Analyze" / Top Insights</strong> feature flags known bad .NET/C++ patterns (e.g. <code>IndexOf</code> on a linked list, <code>Contains</code> on a list → suggest a set); <strong>"Generate Top Insights"</strong> has Copilot read the trace and propose ideas when none auto-fire.</li>
 <li>⚠️ Caveat: when analyzing a trace, the agent doesn't always recognize it ran inside a benchmark and may try to optimize the surrounding benchmark harness — steer it back to user code.</li>
 </ul>
-<h2 id="detailed-notes">📚 Detailed Notes</h2>
 <h3 id="speaker-framing">Speaker &amp; Framing</h3>
 <p>Nick Karpinski is a Microsoft software engineer of ~12.5 years, having spent his entire career on Visual Studio and most of it specifically on the <strong>Visual Studio Profiler</strong>. He opened by polling the room: a good number were .NET developers, many had used the VS profiler, a couple had used <strong>BenchmarkDotNet</strong>, but only one person had used the <strong>Visual Studio integration with BenchmarkDotNet</strong> — the feature he was there to showcase. The session is deliberately demo-heavy with a single supporting slide.</p>
 <h3 id="the-optimization-flowchart-the-one-slide">The Optimization Flowchart (the one slide)</h3>
@@ -202,7 +201,7 @@
 <li><a href="https://github.com/JoshClose/CsvHelper">CsvHelper</a> — the optimization target library (session GitHub repo also hosts the resource + optimization PR).</li>
 <li><a href="https://benchmarkdotnet.org/">BenchmarkDotNet</a> — the .NET benchmarking framework used throughout.</li>
 <li>Visual Studio Profiler agent documentation (linked from the session's closing slide / GitHub repo).</li>
-<li>Build2026 — Microsoft Build 2026 session notes index.</li>
+<li>Microsoft Build 2026 session notes index.</li>
 </ul>
   </article>
 

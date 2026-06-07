@@ -63,7 +63,6 @@
 <li>Architecturally, the <strong>AI layer doesn't swallow the app</strong>: pages keep using DevExpress controls for UX, services still own business data, AI tools expose only <em>selected</em> capabilities.</li>
 <li>Custom-thought-out buttons only cover scenarios you anticipated; natural-language + tools let users work in ways you <em>didn't</em> pre-build — and when a request can't be honored, the user gets an <strong>explanation, not a flat "no."</strong></li>
 </ul>
-<h2 id="detailed-notes">📚 Detailed Notes</h2>
 <h3 id="thesis-connect-ai-to-controls-not-chatbots-beside-apps">Thesis: connect AI to controls, not chatbots beside apps</h3>
 <p>The session opens by ruling out two anti-patterns: this is <strong>not about generating code</strong>, and <strong>not about dropping a chatbot beside an existing app and calling it done</strong>. The real objective is to connect AI to the <strong>controls</strong>, the <strong>data</strong>, and the <strong>workflows</strong> users already use. The demo app is built in <strong>Visual Studio</strong> with <strong>.NET</strong>, <strong>DevExpress Blazor controls</strong>, <strong>DevExpress Reporting</strong>, and <strong>Azure OpenAI through <code>IChatClient</code></strong>. Three worked examples follow, each illustrating a different integration pattern.</p>
 <h3 id="example-1-ai-drives-a-devexpress-grid-via-tool-calling">Example 1 — AI drives a DevExpress Grid via tool calling</h3>
@@ -157,16 +156,6 @@
 <li>Internal Blazor LOB apps that want <strong>agentic, intent-driven</strong> UX over dashboards.</li>
 <li>Teams evaluating <strong><code>IChatClient</code> / Microsoft.Extensions.AI</strong> tool-calling patterns.</li>
 <li>Reporting/document-heavy workflows (translation, contract/risk review) needing <strong>AI-derived visual state</strong>.</li>
-</ul>
-<h2 id="related">🔗 Related</h2>
-<ul>
-<li>Microsoft Build 2026</li>
-<li>Azure OpenAI</li>
-<li>Blazor</li>
-<li>IChatClient</li>
-<li>DevExpress</li>
-<li>AI Tool Calling</li>
-<li>Source list: 2026 Build Session List</li>
 </ul>
   </article>
 
